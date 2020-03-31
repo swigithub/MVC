@@ -1,0 +1,540 @@
+﻿@model WebApplication.Models.WorkorderEdit
+
+
+@{
+    ViewBag.Title = "NewWordOrder";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Bands = jss.Serialize(@Model); //jss.Serialize(ViewBag.Bands);
+    var Carriers = jss.Serialize(ViewBag.Carriers);
+
+    int count = 0;
+}
+
+
+
+<div class="box box-solid">
+    <div class="box-header with-border boxHeader">
+        <h3 class="box-title">Edit Work Order</h3>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <form method="post" action="/WorkOrder/Edit" id="frm-wo">
+                    <div class="box box-solid">
+                        <div class="box-header with-border boxHeader">
+                            <h3 class="box-title">Site Information</h3>
+                        </div>
+                        <div class="box-body boxBody">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <!--Client-->
+                                    <input type="hidden" name="SiteId" data-required="no" id="SiteId-r0" />
+                                    <div class="form-group">
+                                        <label for="Client">Client</label>
+                                        @Html.DropDownList("Client", ViewBag.Clients as List<SelectListItem>, new { @class = "form-control select Row Client", required = "required", data_name = "Client", tabindex = "1", onchange = "ClientChange();" })
+                                    </div>
+
+
+                                    <!--State-->
+                                    <div class="form-group">
+                                        <label for="State">State</label>
+                                        @Html.DropDownList("State", ViewBag.States as List<SelectListItem>, new { @class = "form-control select2 Row State", required = "required", data_parsley_min = "1", data_name = "State", onchange = "StateChange(); return false;", tabindex = "5" })
+                                    </div>
+                                    <!--SiteTypeId-->
+                                    <div class="form-group CLSHIDE">
+                                        <label for="SiteTypeId">Site Type</label>
+                                        @Html.DropDownList("SiteTypeId", ViewBag.SiteTypes as List<SelectListItem>, new { @class = "form-control select2 Row SiteTypeId", data_name = "SiteTypeId", tabindex = "9" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <!--Scope-->
+                                    <div class="form-group">
+                                        <label for="Scope">Scope</label>
+                                        @Html.DropDownList("Scope", ViewBag.Scopes as List<SelectListItem>, new { @class = "form-control Row select2 Scope", data_parsley_min = "1", data_name = "Scope", onchange = "ScopeChange(); return false;", tabindex = "2" })
+                                    </div>
+
+                                    <!--Region-->
+                                    <div class="form-group">
+                                        <label for="Region">Region</label>
+                                        <select class="form-control select2 Row Region" data-name="Region" data-parsley-min="1" name="Region" id="Region" onchange="RegionChange(); return false;" required tabindex="6">
+                                            <option value="0">-Region-</option>
+                                        </select>
+                                    </div>
+                                    <!--Site Class-->
+                                    <div class="form-group CLSHIDE">
+                                        <label for="SiteClassId">Site Class</label>
+                                        @Html.DropDownList("SiteClassId", ViewBag.SiteClasses as List<SelectListItem>, new { @class = "form-control select2 Row SiteClassId", required = "required", data_name = "SiteClassId", tabindex = "10" })
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <!--clusterCode-->
+                                    <div class="form-group">
+                                        <label for="clusterCode">Cluster Id</label>
+                                        <input data-required="yes" class="form-control Row clusterCode" id="clusterCode" name="clusterCode" data-name="clusterCode" tabindex="3">
+                                    </div>
+
+                                    <!--Market-->
+                                    <div class="form-group">
+                                        <label for="Market">Market</label>
+                                        <select class="form-control select2 Row" data-name="Market" data-parsley-min="1" name="Market" id="Market" tabindex="7" required>
+                                            <option value="0">-Market-</option>
+                                        </select>
+                                    </div>
+                                    <!--site Code-->
+                                    <div class="form-group CLSHIDE">
+                                        <label for="siteCode">Site Id</label>
+                                        <input data-required="no" class="form-control siteCode Row" id="siteCode" name="siteCode" data-name="siteCode" tabindex="11">
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <!----Project---->
+                                            <div class="form-group">
+                                                <label for="ProjectId">Project</label>
+                                                <select class="form-control select2 Row ProjectId" data-name="Project" data-parsley-min="1" name="ProjectId" id="ProjectId" onchange="" data-required="yes" required tabindex="6">
+                                                    <option value="0">-Project-</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <!--Received On-->
+                                            <div class="form-group">
+                                                <label for="ReceivedOn">Received On</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input data-required="no" type="text" value="@DateTime.Now.ToString("MM/dd/yyyy")" tabindex="4" class="form-control Row ReceivedOn UserLiveDate" style="width:150px;" id="ReceivedOn" name="ReceivedOn" data-name="ReceivedOn" readonly>
+                                                    <label style="margin-left:100px;">
+                                                        <input data-required="no" id="SectorLatLng" type="checkbox">
+                                                        Sector Lat/Long same as Site
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <!--Address-->
+                                    <div class="form-group">
+                                        <label for="siteLongitude">Address</label>
+                                        <input data-required="no" class="form-control Row Address AllowPaste" id="SiteAddress" data-required="no" name="SiteAddress" data-name="SiteAddress" tabindex="8">
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <!--Site Name-->
+                                            <div class="form-group CLSHIDE">
+                                                <label for="SiteName">Site Name</label>
+                                                <input data-required="no" type="text" class="form-control Row SiteName AllowPaste" id="SiteName" name="SiteName" data-name="SiteName" tabindex="12">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <!--siteLatitude-->
+                                            <div class="form-group CLSHIDE">
+                                                <label for="siteLatitude">Latitude</label>
+                                                <input data-required="no" type="text" class="form-control Row siteLatitude AllowPaste" id="siteLatitude" name="siteLatitude" data-name="siteLatitude" tabindex="13">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 CLSHIDE">
+                                            <!--siteLongitude-->
+                                            <div class="form-group">
+                                                <label for="siteLongitude">Longitude</label>
+                                                <input data-required="no" type="text" class="form-control Row siteLongitude AllowPaste" id="siteLongitude" name="siteLongitude" data-name="siteLongitude" tabindex="14">
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="Row">
+                                    <div class="col-sm-12">
+                                        <!--Description-->
+                                        <div class="form-group">
+                                            <label for="Description">Description</label>
+                                            <input data-required="no" class="form-control Row Description AllowPaste" id="Description" name="Description" data-name="Description" tabindex="15">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+
+                    <div class="box box-solid">
+                        <div class="box-header with-border boxHeader">
+                            <h3 class="box-title">Sector Information</h3>
+                        </div>
+                        <div class="box-body boxBody">
+                            
+                        </div>
+
+                    </div>
+
+                    <div class="form-group pull-right">
+                        <div class="">
+                            <button type="reset" class="btn btn-default"><i class="fa fa-refresh"></i><b> Reset</b></button>
+                            <button type="submit"  class="btn btn-success"><i class="fa fa-save"></i><b> Save</b></button>
+                          
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+@section scripts{
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+    <script>
+        $(function () {
+
+            var loading = $.loading();
+            var NewDeviceRow = $('#LastRow').html();
+            var count = 1;
+
+            var Bands = JSON.parse('@Html.Raw(Bands)');
+            var CarrierIds = JSON.parse('@Html.Raw(Carriers)');
+
+
+            var SelectedNetworkMode = 0;
+            var SelectedScope = 0;
+            var SelectedBand = 0;
+            var SelectedCarrier = 0;
+            var SelectedSector = 0;
+            var RowCount = parseInt('@count') - 1;
+
+
+            $(document).on('change', '.NetworkModeId', function () {
+                SelectedNetworkModeId = $(this).val();
+                var row = $(this).attr('data-row');
+                LoadBands(row, SelectedNetworkModeId);
+
+            });
+            function LoadBands(row, value) {
+                $('#BandId-' + row).empty();
+                $('#BandId-' + row).append(' <option >-BandId-</option></select>');
+                $.each(Bands, function (i, v) {
+                    if (v.PDefinationId == value) {
+                        $('#BandId-' + row).append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+
+                    }
+                });
+
+            }
+
+
+            $(document).on('change', '.ScopeId', function () {
+                SelectedScope = $(this).val();
+            });
+
+            $(document).on('change', '.BandId', function () {
+                SelectedBand = $(this).val();
+                var row = $(this).attr('data-row');
+                LoadCarrierIds(row, SelectedBand);
+
+            });
+
+            function LoadCarrierIds(row, value) {
+                $('#CarrierId-' + row).empty();
+                $.each(CarrierIds, function (i, v) {
+                    if (v.PDefinationId == value && v.IsActive == true) {
+                        $('#CarrierId-' + row).append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                    }
+                });
+            }
+
+            $(document).on('change', '.CarrierId', function () {
+                SelectedCarrierId = $(this).val();
+            });
+
+
+
+
+            //$(document).on('keydown', '.Row', function (e) {
+            //    alert('sdf');
+
+            //});
+            var lastSectorRemoved = 0;
+            //$(document).on('keydown', '.LastField:last', function (e) {
+            //    var keyCode = e.keyCode || e.which;
+
+            //    if (keyCode == 9) {
+            //        e.preventDefault();
+
+            //        var NewNumber = RowCount + 1;
+
+
+
+            //        var NewRow = $(this).closest("tr").html();
+
+            //        var RowsFields = (NewRow.match(new RegExp("r" + RowCount, "g")) || []).length;
+
+            //        for (var i = 0; i < RowsFields; i++) {
+            //            NewRow = NewRow.replace("r" + RowCount, "r" + NewNumber + "");
+            //        }
+            //        $('#tbl-wo').append('<tr>' + NewRow + '</tr>');
+
+            //        $('#NetworkModeId-r' + NewNumber).val(SelectedNetworkModeId);
+            //        $('#sectorCode-r' + NewNumber).val(SelectedSector);
+            //        $('#ScopeId-r' + NewNumber).val(SelectedScope);
+            //        $('#BandId-r' + NewNumber).val(SelectedBand);
+
+            //        RowCount++;
+
+            //        if (lastSectorRemoved==0) {
+            //            $('.SectorId:last').remove();
+            //            lastSectorRemoved++;
+            //        }
+            //    }
+            //});
+
+            // delete row
+            $(document).on('keydown', '.Row', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (e.keyCode == 46) {
+                    e.preventDefault();
+                    // $('.newrow').last().remove();
+                    $(this).closest('tr').remove();
+                    //  $('.RowLast').last().focus();
+                }
+
+            });
+
+            var count = 0;
+            $(".ddl").each(function (j) {
+                //  debugger;
+                var selected = $(this).attr('data-selected');
+                var id = $(this).attr('id');
+
+                $('#' + id).val(selected);
+                var name = $(this).attr('data-name');
+
+                if (name == 'NetworkModeId') {
+                    LoadBands('r' + count, selected);
+                    SelectedNetworkModeId = selected;
+                }
+
+                if (name == 'ScopeId') {
+                    SelectedScopeId = selected;
+                }
+
+
+                if (name == 'BandId') {
+                    LoadCarrierIds('r' + count, selected);
+
+                }
+                if (name == 'sectorCode') {
+                    SelectedSector = selected;
+
+                }
+                if (name == 'CarrierId') {
+                    SelectedCarrierId = selected;
+                    count++;
+                }
+
+
+            });
+
+
+
+            $(document).on('submit', '#frm-wo', function () {
+
+                var hit = 0;
+                $('.form-control').each(function () {
+                    var textBox = $.trim($(this).val())
+                    var required = $(this).attr('data-required');
+                    if (required != 'no') {
+                        if (textBox == "") {
+                            $(this).addClass('required');
+                            hit = 1;
+                            return false;
+                        } else {
+                            $(this).removeClass('required');
+                        }
+                    }
+                });
+                $("#tbl-wo tr").each(function (i) {
+                    i = i - 1;
+                    $("td input", this).each(function (j) {
+                        var name = $(this).attr('data-name');
+                        $(this).attr('name', '[' + i + '].' + name);
+                    });
+
+                    $("td .select", this).each(function (j) {
+                        // debugger;
+                        var name = $(this).attr('data-name');
+                        //console.log(name);
+                        $(this).attr('name', '[' + i + '].' + name);
+                    });
+                });
+
+
+                if (hit == 0) {
+                    $.ajax({
+                        url: '/workorder/Edit',
+                        type: 'post',
+                        async: false,
+                        data: $(this).serialize(),
+                        success: function (res) {
+
+                            if (res != 'session expired') {
+                                if (res.Status == 'success') {
+                                    $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                                } else {
+                                    $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                                }
+                            } else {
+                                $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+                        },
+                        error: function (err) {
+                            $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+
+                        },
+
+                    });
+                }
+
+                return false;
+            });
+
+        });
+    </script>
+}
+@section style{
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="~/Content/box.css" rel="stylesheet" />
+    <style>
+        .required {
+            border-color: red;
+        }
+    </style>
+}
+
+
+
+
+
+
+
+
+@*<div class="row">
+        <div class="col-sm-12">
+            <table class="table" style="width:50%">
+                <tr>
+                    <th>Site Id</th>
+                    <td><input type="hidden" name="SiteId" value="@ViewBag.Site.SiteId" /><input type="text" class="form-control" value="@ViewBag.Site.SiteCode" name="SiteCode" />  </td>
+                    <th style="width:10%">Market</th>
+
+                    <td>@Html.DropDownList("CityId", new SelectList(ViewBag.UserMarkets, "Value", "Text", ViewBag.Site.CityId), new { @class = "form-control select", required = "required", style = "width:100%;" })</td>
+                </tr>
+
+                <tr>
+                    <th>Latitude</th>
+                    <td><input type="text" class="form-control" value="@ViewBag.Site.Latitude" name="Latitude" /></td>
+                    <th>Longitude</th>
+                    <td><input type="text" class="form-control" value="@ViewBag.Site.Longitude" name="Longitude" /></td>
+                </tr>
+
+                <tr>
+                    <th>Address</th>
+                    <td colspan="7"><input type="text" class="form-control" value="@ViewBag.Site.SiteAddress" name="SiteAddress" /> </td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td colspan="4">
+                        <textarea rows="3" data-required="no" name="Description" class="form-control">@ViewBag.Site.Description</textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="row">
+                                    <div class="col-sm-12">
+                                        <table class="table" style="width:100%" id="tbl-wo">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sector Id</th>
+                                                    <th>Network Mode</th>
+                                                    <th>Scope</th>
+                                                    <th>Band</th>
+                                                    <th>Carrier</th>
+                                                    <th>Antenna</th>
+                                                    <th>Beamwidth</th>
+                                                    <th>Azimuth</th>
+                                                    <th>PCI/PSC/BCCH</th>
+                                                    <th>Cell Id</th>
+                                                    <th>MRBTS</th>
+                                                    <th>RF Height</th>
+                                                    <th>M-Tilt</th>
+                                                    <th>E-Tilt</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                    string LastRowId = "";
+                                                    if (Model.Count() - 1 == count)
+                                                    {
+                                                        LastRowId = "LastRow";
+                                                    }
+                                                    <tr id="@LastRowId" class="tbl-row @LastRowId">
+                                                        <td>
+                                                            <input type="hidden" name="SectorId" class="SectorId" value="@item.SectorId" data-name="SectorId" />
+                                                            @Html.DropDownList("SectorCode", ViewBag.Sectors as List<SelectListItem>, new { @class = "form-control select Row sectorCode ddl", id = "sectorCode-r" + count, data_selected = item.SectorCode, required = "required", data_name = "sectorCode", data_row = "r" + count, style = "width:100px;" })
+                                                        </td>
+                                                        <td>
+                                                            @Html.DropDownList("NetworkModeId", new SelectList(ViewBag.NetworkModes, "Value", "Text"), new { @class = "form-control select Row NetworkModeId ddl", id = "NetworkModeId-r" + count, data_selected = item.NetworkModeId, required = "required", data_name = "NetworkModeId", data_row = "r" + count, style = "width:100px;" })
+                                                        </td>
+
+                                                        <td> @Html.DropDownList("ScopeId", ViewBag.Scopes as List<SelectListItem>, new { @class = "form-control select Row ScopeId ddl", id = "ScopeId-r" + count, data_selected = item.ScopeId, required = "required", data_name = "ScopeId", data_row = "r" + count, style = "width:100px;" })</td>
+
+                                                        <td>
+                                                            @Html.DropDownList("BandId", Enumerable.Empty<SelectListItem>(), "-Select BandId-", new { @class = "form-control select Row BandId ddl", id = "BandId-r" + count, data_selected = item.BandId, required = "required", data_name = "BandId", data_row = "r" + count, style = "width:100px;" })
+
+                                                        </td>
+                                                        <td>
+                                                            @Html.DropDownList("CarrierId", Enumerable.Empty<SelectListItem>(), "-Select CarrierId-", new { @class = "form-control select Row CarrierId ddl", id = "CarrierId-r" + count, data_selected = item.CarrierId, required = "required", data_name = "CarrierId", data_row = "r" + count, style = "width:100px;" })
+                                                        </td>
+                                                        <td><input type="text" class="form-control Row" name="Antenna" value="@item.Antenna" data-name="Antenna" /></td>
+                                                        <td><input type="text" class="form-control Row" name="BeamWidth" data-name="BeamWidth" value="@item.BeamWidth" /></td>
+                                                        <td><input type="text" class="form-control Row" name="Azimuth" data-name="Azimuth" value="@item.Azimuth" /></td>
+                                                        <td><input type="text" class="form-control Row" name="PCI" data-name="PCI" value="@item.PCI" /></td>
+                                                        <td><input type="text" class="form-control Row "  name="CellId" data-name="CellId" value="@item.CellId" /></td>
+
+                                                        <td><input type="text" class="form-control Row" data-required="no" name="MRBTS" data-name="MRBTS" value="@item.MRBTS" /></td>
+                                                        <td><input type="text" class="form-control Row" name="RFHeight" data-name="RFHeight" value="@item.RFHeight" /></td>
+                                                        <td><input type="text" class="form-control Row" name="MTilt" data-name="MTilt" value="@item.MTilt" /></td>
+                                                        <td><input type="text" class="form-control Row LastField @LastRowId" data-row="@count" name="ETilt" data-name="ETilt" value="@item.ETilt" /></td>
+
+
+
+                                                    </tr>
+                                                    count++;
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>*@

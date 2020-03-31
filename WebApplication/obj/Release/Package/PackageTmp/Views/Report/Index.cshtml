@@ -1,0 +1,476 @@
+﻿@{
+    ViewBag.Title = "QueryBuilder";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html ng-app="app" style="height: 100%;overflow-x:hidden">
+<head>
+    <title>Query Builder</title>
+    <meta charset="utf-8" />
+    <link href="~/Content/js/Plugins/AngularQueryBuilder/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link href="~/Content/js/Plugins/AngularQueryBuilder/css/styles.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/AngularQueryBuilder/css/StyleQueryBuilder.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/AngularQueryBuilder/css/pivot.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/AngularQueryBuilder/css/c3.min.css" rel="stylesheet" />
+
+    <style>
+        #notification {
+            margin-top: -20px;
+            position: fixed;
+            right: 4px;
+            width: 100%;
+            z-index: 105;
+            text-align: center;
+            font-weight: normal;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            background-color: #cc4944;
+            padding: 5px;
+        }
+
+            #notification span.dismiss {
+                /*border:2px solid #FFF;*/
+                padding: 0 5px;
+                cursor: pointer;
+                float: right;
+                margin-right: 10px;
+            }
+
+            #notification a {
+                color: white;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+
+        table {
+            page-break-inside: auto;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-footer-group;
+        }
+
+        .MainGroup {
+            background-color: #eee;
+        }
+
+        .content {
+            min-height: 0;
+            padding: 0;
+            margin-right: 0;
+            margin-left: 0;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .pvtTable, .pvtUi {
+            width: 100%;
+        }
+
+        .pvtVals {
+            width: 220px;
+        }
+
+        .content-wrapper {
+            min-height: 0 !important;
+        }
+
+        .pvtRowOrder {
+            display: none;
+        }
+
+        .pvtColOrder {
+            display: none;
+        }
+
+        multiselect {
+            display: block;
+        }
+
+            multiselect .btn {
+                width: 100%;
+                background-color: #ffffff;
+                float: right;
+                border: 1px solid #e5e5e5;
+            }
+
+                multiselect .btn:focus, .btn:active:focus {
+                }
+
+                multiselect .btn.error {
+                    border: 1px solid #da4f49 !important;
+                }
+
+            multiselect .dropdown-menu {
+                max-height: 300px;
+                overflow-y: auto;
+            }
+
+            multiselect .dropdown-menu {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 2px;
+            }
+
+                multiselect .dropdown-menu > li > a {
+                    padding: 3px 10px;
+                    cursor: pointer;
+                }
+
+            multiselect .dropdown-menu {
+                width: 100%;
+            }
+
+            multiselect input[type='text'] {
+                width: 100%;
+            }
+
+        .grid {
+            margin-top: 0px;
+            width: 102%;
+            float: right;
+            margin-left: 0px;
+            margin-right: -16px;
+        }
+
+        div.relative {
+            position: relative;
+        }
+
+        div.absolute {
+            position: absolute;
+        }
+
+        @@media print and (color) {
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @@page {
+            size: A4 landscape;
+            margin: 2mm 1mm 2mm 1mm;
+            border: dotted 1px;
+        }
+
+        table {
+            page-break-inside: auto;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        thead {
+            display: table-header-group;
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+        }
+
+        tfoot {
+            display: table-footer-group;
+        }
+
+    
+
+        
+#mydiv {  
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:1000;
+    background-color:grey;
+    opacity: .8;
+ }
+
+.ajax-loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -32px; /* -1 * image width / 2 */
+    margin-top: -32px;  /* -1 * image height / 2 */
+    display: block;     
+}
+    </style>
+
+   
+</head>
+<body style="height: 100%;">
+
+    <div id="notification" style="display: none;">
+        <span class="dismiss"><a title="dismiss this notification">x</a></span>
+    </div>
+    <div ng-controller="ReportController" style="height: 100%;">
+
+
+        <div id="mydiv">
+            <img src="~/Content/Images/Common/AirViewxceleratelogo.png" class="ajax-loader" />
+        </div>
+     
+   
+        <div class="col-md-12" style="height: 53px;width: 100%;background-color: #efefef;">
+            <label style="margin-top: 15px;float:left;margin-left: -11px;">Reports</label>
+
+            <select style="width:220px;left:1%;margin-top:10px;" class="form-control input-sm col-md-3" ng-model="MapColumn" ng-change="getColumnByReportId()" ng-options="rep.MapColumn as rep.DefinationName for rep in Report"></select>
+            <label style="margin-left: 3%;margin-top: 15px;"><input type="checkbox" ng-model="isPivot" /> Cross Tab Report</label>
+            <a style="margin-top: 10px;float: right;font-size: 26px;color:#474544;" class="justfy" data-toggle="collapse" data-target="#collapseOne" href="#collapseOne" ng-click="managCss()"><span class="fa fa-align-justify"></span></a>
+        </div>
+
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default" id="panel1">
+                <div class="panel-heading">
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="panel-body" style="padding:0">
+
+                        <div class="col-md-12" style="height:280px;width:104%;left:-34px;background: #efefef;">
+                            <div class="col-md-6">
+                                <article>
+
+                                    <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false" data-widget-fullscreenbutton="false">
+
+                                        <header>
+                                            <div class="jarviswidget-ctrls" role="menu"> </div>
+                                            <span class="widget-icon"> <i class="fa fa-magic txt-color-white"></i> </span>
+                                            <h2> Query Builder </h2>
+                                        </header>
+                                        <div role="content" style="height:250px;overflow-y:auto;">
+                                            <query-builder group="filter.group"></query-builder>
+                                        </div>
+
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="col-md-6">
+                                <article style="margin-left: -24px;">
+
+                                    <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false" data-widget-fullscreenbutton="false">
+
+                                        <header>
+                                            <div class="jarviswidget-ctrls" role="menu"> </div>
+                                            <span class="widget-icon"> <i class="fa fa-wrench txt-color-white"></i> </span>
+                                            <h2> Report Settings </h2>
+
+
+
+                                        </header>
+                                        <div class="row" style="height:250px;overflow-y:auto;">
+                                            <div class="col-md-3" style="margin-top:-11px;">
+                                                <input ng-model="searchText" placeholder="Search" style="margin-left: -23px;width: 212px;" />
+                                                <div style="margin-left: -21px;max-height: 250px;height: auto;overflow-y:auto;width:212px;">
+
+                                                    <label style="margin-left:20px;" class="checkbox" ng-repeat="rep in Column | filter:searchText">
+                                                        <span>
+
+                                                            <input type="checkbox"
+                                                                   ng-model="rep.selected"
+                                                                   ng-true-value="'YES'"
+                                                                   ng-change="GroupBy($index)"
+                                                                   ng-false-value="'NO'" />{{rep.name}}
+                                                        </span>
+
+                                                    </label>
+                                                    <br />
+
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <div class="col-md-9" ng-if="Object1.length>0">
+                                                <table class="table table-striped" style="overflow-x: hidden;border: 1px solid #e8e8e8;margin-left:2px;width: 103%;max-width: 103%;">
+                                                    <thead style="background:#ededed">
+                                                        <tr style="font-weight:900">
+                                                            <td>Display Column</td>
+                                                            <td>Column Name</td>
+                                                            <td ng-if="!isPivot">Function</td>
+                                                            <td ng-if="isPivot">Pivot</td>
+                                                            <td></td>
+
+                                                        </tr>
+
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="obj in Object1">
+                                                            <td><input type="text" ng-model="obj.name" /></td>
+                                                            <td><input type="text" ng-model="obj.alias" reg-ex-input reg-ex="^[a-zA-Z0-9]+$" /></td>
+                                                            <td ng-if="!isPivot">
+                                                                <select ng-model="obj.function">
+                                                                    <option></option>
+                                                                    <option>COUNT</option>
+                                                                </select>
+
+                                                            </td>
+                                                            <td ng-if="isPivot">
+                                                                <select ng-model="obj.pivot">
+                                                                    <option></option>
+                                                                    <option>Row</option>
+                                                                    <option>Col</option>
+                                                                    <option>Val</option>
+
+                                                                </select>
+                                                            </td>
+
+                                                            <td><a ng-click="RemoveRow($index)" style="color:red;"><span class="fa fa-trash"></span></a></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+
+
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div>
+            <article class="artical" style="margin-top: -8px;margin-left: -3px;">
+
+                <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false" data-widget-fullscreenbutton="false">
+                    <header>
+
+                        <span class="widget-icon"> <i class="fa fa-file txt-color-white"></i> </span> <h2>Report Preview</h2>
+                        <div class="widget-toolbar" role="menu">
+
+
+                            <div class="btn-group">
+
+
+                                <a pdf-save-button="idOne" pdf-name="someone.pdf" ng-click="printToCart('printSectionId')" class="btn  btn-xs btn-default" style="margin-right:5px;margin-top:2px;border:0;background-color:transparent;">
+                                    <img src="/Content/js/Plugins/AngularQueryBuilder/img/pdf_x32_1.png" style="height:28px;">
+                                </a>
+
+                                <a class="btn  btn-xs btn-default" ng-click="exportToExcel('#tableToExport')" style="margin-right:5px;margin-top:2px;border:0;background-color:transparent;">
+                                    <img src="/Content/js/Plugins/AngularQueryBuilder/img/excel_x32.png" style="height:28px;">
+                                </a>
+                                <a ng-click="Search()" style="height: 29px;font-weight:bold;background-color:#4fc135;padding-top:4px;margin-top:2px;font-size: unset;border-radius: 0;" class="btn  btn-xs btn-info">
+                                    View Report
+                                </a>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="innerartical" style="max-height: 600px;height: auto;overflow-y: auto;">
+                        @*<div id="printSectionId" class="col-md-12" style="overflow-y:auto;max-height:420px;min-height:274px;">*@
+                        <label style="margin-left:42%;margin-top:-8px;font-size: 24px;"> {{ReportId}}</label>
+                        @*<label ng-hide="hidefromtabel" style="float:right"><button pdf-save-button="idOne" pdf-name="someone.pdf" style="float: right;position: relative;" ng-click="printToCart('printSectionId')" class="btn btn-default btn-s-md hidefromtabel"><img src="~/Content/js/Plugins/AngularQueryBuilder/img/pdf_x32_1.png" /></button></label>
+                            <label ng-hide="hidefromtabel" style="float:right"><button ng-click="exportToExcel('#tableToExport')" pdf-save-button="idOne" pdf-name="someone.pdf" style="float: right;position: relative; margin-right: 2px;" class="btn btn-default btn-s-md hidefromtabel"><img src="~/Content/js/Plugins/AngularQueryBuilder/img/excel_x32.png" /></button></label>*@
+
+                        <div id="output1" ng-if="isPivot" style="width:100%;height: 400px;"></div>
+                        <div ng-if="!isPivot" style="width:100%;height: 600px;">
+                            <table id="tableToExport" class="table table-striped RecordTable" style="max-height: 600px;height: auto;overflow: auto;margin-top: 15px;" ng-if="!isPivot">
+
+                                <thead style="font-weight: bold;background:#cbc9c9">
+                                    <tr>
+                                        <td ng-repeat="item in selectedColumns">{{item.name}}</td>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="(key, value) in Table" id="row" class="tbl">
+
+                                        <td ng-repeat="v in value">{{v.Value}}</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        @*</div>*@
+                    </div>
+
+
+
+                </div>
+
+
+            </article>
+        </div>
+
+
+    </div>
+
+
+
+    @section scripts{
+
+    @*<script src="~/Content/js/Plugins/AngularQueryBuilder/js/jquery.min.js"></script>*@
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/jquery-ui.min.js"></script>
+    <script src="~/Content/js/Plugins/jQuery.print.js"></script>
+    
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/d3.min.js"></script>
+    
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/jquery.ui.touch-punch.min.js"></script>
+    
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/c3.min.js"></script>
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/pivot.js"></script>
+    
+
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/c3_renderers.min.js"></script>
+
+    @*<script src="~/Content/js/Plugins/AngularQueryBuilder/js/angular.min.js"></script>*@
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
+    
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/angular-animate.js"></script>
+    
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/ui-bootstrap-tpls-0.13.3.js"></script>
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/multiselect.js"></script>
+
+    <script src="~/AdminLTE/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/sortable.js"></script>
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/angular-sanitize.min.js"></script>
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/QueryBuilderDirective.js"></script>
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/ReportController.js"></script>
+    <script>
+        $('.content-wrapper').css("min-height", "0");
+
+
+
+        function Notify(Message) {
+
+            $("#notification").fadeIn("slow").empty();
+            $("#notification").fadeIn("slow").append(Message);
+
+            $("#notification").delay(4000).fadeOut("slow");
+
+            $(".dismiss").click(function () {
+                $("#notification").fadeOut("slow");
+            });
+        }
+
+    </script>
+        }
+
+</body>
+</html>

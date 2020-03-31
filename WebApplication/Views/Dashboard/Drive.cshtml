@@ -1,0 +1,1219 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+   
+}
+@using Jmelosegui.Mvc.GoogleMap
+<style>
+    html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+</style>
+   <div class="row">
+       <div class="col-lg-12">
+           <div id="driveRoute"></div>
+       </div>
+   </div>
+     
+<script>
+    var PageLoad;
+    var SelectedRow = 0;
+    var DSelectedRow = 0;
+    var DLineCode;
+    var MyFilter="";
+    var DCounter=1;
+    var DCounter2=1;
+    var   DCounter3=0;
+    var DirectionRecall=[];
+    function DeleteRoute(target){
+        MyFilter=target;
+        SaveKml();
+        ////console.log(target);
+    }
+   function check(e) {
+        let data;
+        if(e.checked) {
+            data = $(e).parents('td').siblings('.TstType').html();
+            $(e).prop("checked", false);
+            let splitval=data.split(',');
+            for(k=0;k<splitval.length;k++){
+                let result=checkRoutes(splitval[k]);
+                  
+                if(result==false){
+                    $.notify('Multiple Routes cannot be active for same Route Type.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    $(e).prop("checked", false)
+                    return false;
+                    break;
+                }else {
+                    
+                }
+            }
+            
+            $(e).prop("checked", true);
+        }
+    };
+   function checkRoutes(Data){
+        var RoutArray=[];
+       
+        var   IsChecked;
+        let value="";
+        $('#tbl-route > tbody > tr').each(function (i,e){
+            var sinlerount={};
+            IsChecked = $(e).find('input[type="checkbox"]').prop('checked');
+            value = $(e).find('.TstType').html();
+       
+            sinlerount.ischecked=IsChecked;
+            sinlerount.TestType=value;
+            RoutArray.push(sinlerount);
+
+        });
+        for(i=0;i<RoutArray.length;i++){
+            if(RoutArray[i].ischecked == true){
+                let split=RoutArray[i].TestType.split(',');
+                for(j=0;j<split.length;j++){
+                    if(split[j] == Data){
+                        return false;
+                    }
+                }
+               
+
+            }
+
+        }
+        return true;
+    }
+
+    function RouteDirection(target){
+        ///////
+        if($('#direction-panel').css('display') == 'none')
+        {
+            $("#direction-panel").css("display","block");
+        }
+        if(DSelectedRow == SelectedRow && DLineCode == target)
+            return false;
+        DLineCode = target;
+        DCounter=1;
+        DCounter2=1;
+        DCounter3=0;
+        Directionwaypts=[];
+     var   MyData = {'SiteId': @ViewBag.Id, 'SiteCode': '@ViewBag.SelectedSiteCode','RouteId': SelectedRow,'LineCode':target ,'ClientPrefix': '@ViewBag.currentClientPrefix' }
+                            
+        $.ajax({
+            url: '/Dashboard/RouteDirection',
+            type: 'POST',
+            data: MyData,
+            success: function (res) {
+                if (res != 'session expired') {
+                    if (res.Status == 'success') {
+
+                       //$.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 2000, });
+                       
+                        $('#tbl-d > tbody').empty();
+                        $('#tbl-d > tbody').append('<tr><td>Directions</td></tr>');
+                        Directions(res.Value);
+
+                        DirectionRecall = res.Value;
+                      
+                    } else {
+                        alert("error");
+                    }
+                } else {
+                    $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                }
+
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    ////////
+    }
+    </script>
+<script src="~/Content/js/Plugins/Confirm/js/confirm.min.js"></script><!--Confirm box-->
+<link href="~/Content/js/Plugins/Confirm/css/confirm.min.css" rel="stylesheet" />
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.GmapsKey)&sensor=false&libraries=geometry&bogusParam=.js"></script>
+
+<script>
+
+    ///---controller SiteRoute
+    //----action Index---
+
+    //---==global variables==-->
+    var StartLtd=undefined,StartLng=undefined,EndLtd=undefined,EndLng=undefined;
+    var DStartLtd=undefined,DStartLng=undefined,DEndLtd=undefined,DEndLng=undefined;
+    var MyDataArray = [];
+    var mapZoom = 5;
+    var waypts = [];
+    var Directionwaypts = [];
+    var waypts2 = [];
+    var res1, res2;
+    var MyRoutes;
+    var MyRoutes2;
+    //console.log(MyRoutes2);
+    var poly;
+    var map;
+    var Routemarkers = [];
+    var startpath = 0;
+    var Routes = [];
+    var CurrentRoute = [];
+    var RoutesList = [];
+    var RoutesList1 = [];
+    var PolyLines = [];
+    var centerPt;
+    var SelectedRouteSite = 0;
+    var SelectedSiteCode = '';
+    var PathColor = '#CC0000';
+    var SelectedColor;
+    var SelectedScope;
+    var SelectedScopeId = 0;
+    var SelectedSiteId = 0;
+    var Latitude = 0;
+    var Longitude = 0;
+    var AzRecord;
+    var OK=true;
+    var currentClientPrefix = '';
+    var domain = domain = document.location.origin;// '@ViewBag.domain';
+
+    //-----functions-->
+    function MarketSites(SiteCode, Latitude, Longitude) {
+        if (AzRecord == null) {
+            $.ajax({
+                url: '/Site/MarketSitesAngles?filter=bySiteCode&SiteId=' + SelectedSiteId + '&SiteCode=' + SiteCode + '&Latitude=' + Latitude + '&Longitude=' + Longitude,
+                type: "post",
+                data: $(this).serialize(),
+                success: function (res) {
+                    // //console.log(res);
+                    AzRecord = res;
+                    Azmiuth(res);
+                    if (res.length == 0) {
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: centerPt,
+                        });
+                    }
+                },
+                error: function (err) {
+                }
+            });
+        } else {
+            //   ////debugger;
+            Azmiuth(AzRecord);
+        }
+
+
+    }
+
+    function AddLatLngToArray(lats, longs) {
+
+        CurrentRoute.push({ lat: lats, lng: longs });
+        //  //console.log(CurrentRoute.length);
+    }
+
+    function AddRouteToArray() {
+        // ////debugger;
+        if (CurrentRoute.length > 0) {
+            Routes.push({ RoutesList: CurrentRoute, Color: PathColor });
+            CurrentRoute = [];
+            return true;
+        }
+
+        return false;
+    }
+    ////Get Direction
+    function Directions(abc){
+        OK=true;
+        ////debugger;
+        var i=1;
+
+        for (x in abc) {
+            //debugger
+            if(x!="remove"){
+                var def = abc[i-1];
+                var cords = def.split(",");
+                x=parseInt(x)+1;
+                if(DStartLtd==undefined && x>=DCounter2)
+                {
+                    DStartLtd =  parseFloat(cords[1]);
+                    DStartLng = parseFloat(cords[0]);
+                    DCounter++;
+                }
+           
+                else if(DCounter <23 &&  x>=DCounter2 && x<abc.length-3)
+                {
+                    var obj = { lat: parseFloat(cords[1]), lng: parseFloat(cords[0]) };
+                    Directionwaypts.push({
+                        location: obj,
+                        stopover: false
+                    });
+                    DCounter++;
+                }
+                else if((DEndLtd==undefined && x>=DCounter2 && DCounter==23) || x>=abc.length-3 && x>=DCounter2)
+                {
+                    DEndLtd = parseFloat(cords[1]);
+                    DEndLng = parseFloat(cords[0]);
+                    DCounter++;
+                }
+                else{
+
+                }
+           
+                i++;
+                DCounter3=i;
+            }
+        }
+        DCounter2 += DCounter;
+        //console.log("DCounter2",DCounter2+"        "+DCounter3);
+        DCounter=1;
+
+        $("#myclick").click();
+       //console.log(Directionwaypts);
+        //console.log(DStartLtd+" "+DStartLng+","+DEndLtd+" "+DEndLng);
+    }
+    /////scroll ajax
+    var processing;
+    //$("#info-panel").scroll(function(e){
+    //    ////debugger;
+    //    return
+    //    if (processing)
+    //        return false;
+
+    //    if ($(window).scrollTop() >= ($("#info-panel").height() - $(window).height())*0.7){
+    //        processing = true;
+    //        $.post('/echo/html/', 'html=<div class="loadedcontent">new div</div>', function(data){
+    //            $('#container').append(data);
+    //            processing = false;
+    //        });
+    //    }
+    //});
+  
+    ////
+    function SaveKml(SiteId) {
+        ////debugger
+        var TestTypes = '';
+        if(MyFilter == "")
+        {
+            $("input:checkbox[name=TestType]:checked").each(function () {
+                TestTypes = TestTypes + $(this).val() + ',';
+            });
+            if (TestTypes.length < 3) {
+                $('#RouteMsg').text('Select Test Type');
+                return false;
+            } else {
+                $('#RouteMsg').text('');
+            }
+
+        }
+        //var  rleg = directionsDisplay.directions.routes[0].legs[0];
+        ////console.log("res1", rleg[0].lat() + "   " + rleg[0].lng());
+
+        var Data;
+        ////debugger;
+        MyDataArray = [];
+        var  PathJson=[];
+        var aa = { lat: StartLtd, lng: StartLng };
+        PathJson.push({
+            location: aa,
+            stopover: false
+        });
+        for (var i = 0; i < waypts.length; i++)
+        {
+            PathJson.push(waypts[i]);
+        }
+        for (var i = 0; i < waypts2.length; i++) {
+            PathJson.push(waypts2[i]);
+        }
+        var bb = { lat: EndLtd, lng: EndLng };
+        PathJson.push({
+            location: bb,
+            stopover: false
+        });
+        //var obj = { lat: EndLtd, lng: EndLng };
+        //MyDataArray.push({
+        //    location: obj,
+        //    stopover: false
+        //});
+        //var obj2 = { lat: StartLtd, lng: StartLng };
+        //MyDataArray.push({
+        //    location: obj2,
+        //    stopover: false
+        //});
+
+        if(MyFilter == ""){
+            var abcd = MyRoutes.routes[0].overview_path;
+            for (var i = 0; i < abcd.length; i++) {
+                var obj2 = { lat: abcd[i].lat(), lng:abcd[i].lng() };
+                var ghj={
+                    location: obj2,
+                    stopover: false
+                }
+                MyDataArray.push(ghj);
+            }
+            if(MyRoutes2 != undefined)
+            {
+                var abcde = MyRoutes2.routes[0].overview_path;
+                for (var i = 0; i < abcde.length; i++) {
+                    var obj3 = { lat: abcde[i].lat(), lng:abcde[i].lng() };
+                    var ghj={
+                        location: obj3,
+                        stopover: false
+                    }
+                    MyDataArray.push(ghj);
+                }
+            }
+            if (SelectedRow > 0) {
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Do you want to Save As new Drive Route?  <br><br> Press <b>Yes</b> for Save As new Drive Route! <br>Press <b>No</b> for Update Existly Route !',
+                    buttons: {
+                        Yes: function () {
+                            Data = { 'cordinates': MyDataArray, 'SiteId': @ViewBag.Id, 'SiteCode': '@ViewBag.SelectedSiteCode', 'TestType': TestTypes, 'ScopeId': @ViewBag.SelectedScopeId, 'RouteId': SelectedRow, 'Filter': 'Insert', 'ClientPrefix': '@ViewBag.currentClientPrefix','Delete':MyFilter,'PathJson':PathJson  }
+                            fnSave(Data)
+                        },
+                        No: function () {
+                            Data = { 'cordinates': MyDataArray, 'SiteId':  @ViewBag.Id, 'SiteCode': '@ViewBag.SelectedSiteCode', 'TestType': TestTypes, 'ScopeId':  @ViewBag.SelectedScopeId, 'RouteId': SelectedRow, 'Filter': 'Update', 'ClientPrefix': '@ViewBag.currentClientPrefix','Delete': MyFilter,'PathJson':PathJson  }
+                            fnSave(Data)
+                        },
+                        Cancel: function () {
+                            //ShowMapWindow('bySiteCode', @ViewBag.Id, '@ViewBag.SelectedSiteCode',@ViewBag.Latitude,@ViewBag.Longitude, '@ViewBag.Scope', @ViewBag.SelectedScopeId, '@ViewBag.currentClientPrefix');
+                        }
+                    }
+                });
+           @*Data = { 'cordinates': MyDataArray, 'SiteId':  @ViewBag.Id, 'SiteCode': '@ViewBag.SelectedSiteCode', 'TestType': TestTypes, 'ScopeId': @ViewBag.SelectedScopeId, 'RouteId': SelectedRow, 'Filter': 'Insert', 'ClientPrefix':  '@ViewBag.currentClientPrefix' }
+                fnSave(Data)*@
+                } else {
+                Data = { 'cordinates': MyDataArray, 'SiteId': @ViewBag.Id, 'SiteCode': '@ViewBag.SelectedSiteCode', 'TestType': TestTypes, 'ScopeId': @ViewBag.SelectedScopeId, 'RouteId': SelectedRow, 'Filter': 'Insert', 'ClientPrefix': '@ViewBag.currentClientPrefix' ,'Delete':MyFilter,'PathJson':PathJson }
+                fnSave(Data)
+
+            }
+        }
+        else{
+            Data = { 'cordinates': MyDataArray, 'SiteId':  @ViewBag.Id, 'SiteCode': '@ViewBag.SelectedSiteCode', 'TestType': TestTypes, 'ScopeId':  @ViewBag.SelectedScopeId, 'RouteId': SelectedRow, 'Filter': 'Update', 'ClientPrefix': '@ViewBag.currentClientPrefix','Delete': MyFilter ,'PathJson':PathJson }
+            fnSave(Data)
+        }
+
+    }
+
+    function fnSave(Data) {
+        // ////debugger;
+        // AddRouteToArray();
+        // ////debugger;
+        //if (Routes != null) {
+        if(EndLtd != undefined || MyFilter!="")
+        {
+            debugger
+            ////debugger
+            console.log('fnSave:'+Data);
+            $.ajax({
+                url: '/Dashboard/DriveRoute',
+                type: 'POST',
+                data: Data,
+                // dataType: 'json',
+                // contentType: 'application/json',
+                success: function (res) {
+                    if (res != 'session expired') {
+                        if (res.Status == 'success') {
+                            StartLtd = undefined, StartLng = undefined, EndLtd = undefined, EndLng = undefined;
+                            waypts = [];
+                            waypts2 = [];
+                            MyDataArray = [];
+                            MyFilter="";
+                            //$('#map2').empty();
+                            //map = null;
+                            //modal_body.empty();
+                            //modal.modal('hide');
+                            PageLoad=false;
+                            $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 2000, });
+                           ShowMapWindow('bySiteCode', @ViewBag.Id,'@ViewBag.SelectedSiteCode',@ViewBag.Latitude,@ViewBag.Longitude, '@ViewBag.Scope', @ViewBag.SelectedScopeId, '@ViewBag.currentClientPrefix')
+                            // ShowMapWindow('bySiteCode', SelectedSiteId, SelectedSiteCode, Latitude, Longitude, SelectedScope, SelectedScopeId, currentClientPrefix);
+
+                        } else {
+                            MyFilter="";
+                            MyDataArray = [];
+                            PageLoad=false;
+                            $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 2000, });
+                        }
+                    } else {
+                        MyFilter="";
+                        MyDataArray = [];
+                        $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+
+
+
+                },
+                error: function () {
+                    MyFilter="";
+                    MyDataArray = [];
+                    alert("error");
+                }
+            });
+            SelectedRow = 0;
+        }
+        else
+        {
+            $('#RouteMsg').text('please draw atleast one route before saving...!');
+        }
+        //} else {
+        //    $('#RouteMsg').text('please draw atleast one route before saving...!');
+        //    return false;
+        //}
+
+    }
+
+    function initMap(lats, longs) {
+        if(lats == 0 && longs == 0){
+            lats = 31.47846;
+            longs = 74.28164;
+        }
+
+        Routes = [];
+
+        $("#tbl-route tr").removeClass("SelectedRow");
+
+        centerPt = new google.maps.LatLng(lats, longs);
+        map = new google.maps.Map(document.getElementById('map2'), {
+            zoom:mapZoom,
+            center: { lat: lats, lng: longs },
+            draggable:true
+        });
+        var directionsService = new google.maps.DirectionsService;
+        var directionsService2 = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            //draggable: true,
+            map: map
+        });
+
+        directionsDisplay.setMap(map);
+        function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+
+            if (waypts2.length > 0) {
+
+                directionsService.route({
+                    origin: { lat: StartLtd, lng: StartLng },
+                    destination: { lat: waypts[waypts.length-1].location.lat, lng:waypts[waypts.length-1].location.lng},
+                    waypoints: waypts,
+                    travelMode: 'DRIVING'
+                }, function (response, status) {
+                    MyRoutes;
+                    MyRoutes = response;
+
+                    if (status === 'OK') {
+                        //console.log("myroutes", MyRoutes);
+                        //res1 = response.routes[0].legs[0].via_waypoints;
+                        //res1 = directionsDisplay.directions.routes[0].legs[0];
+                        var newRoute = response.routes[0].legs[0].via_waypoints;
+                        //   //console.log("old", newRoute[0].lat() + "   " + newRoute[0].lng());
+                        if (waypts2.length > 0)
+                        {
+
+                        }
+                        else{
+                            directionsDisplay.setOptions({ preserveViewport: true });
+                            directionsDisplay.setDirections(response);
+                        }
+                        var route = response.routes.legs;
+                        // var summaryPanel = document.getElementById('directions-panel');
+                        //summaryPanel.innerHTML = '';
+                        //// For each route, display summary information.
+                        //for (var i = 0; i < route.legs.length; i++) {
+                        //    var routeSegment = i + 1;
+                        //    summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                        //        '</b><br>';
+                        //    summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+                        //    summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+                        //    summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+                        //}
+                    } else {
+                        window.alert('Directions request failed due to ' + status);
+                    }
+                });
+
+                /////////////////////////////////////////////////////////////////////
+                directionsService2.route({
+                    origin: { lat: waypts2[0].location.lat, lng: waypts2[0].location.lng },
+                    destination: { lat: EndLtd, lng: EndLng },
+                    waypoints: waypts2,
+                    travelMode: 'DRIVING'
+                }, function (response, status) {
+                    if (status === 'OK') {
+                        MyRoutes2=response;
+                        //console.log("myroutes",MyRoutes);
+                        //  res2 = response.routes[0].legs[0].via_waypoints;
+                        //   //console.log("res2",res2[0].lat()+"   "+res2[0].lng());
+                        for (var i = 0; i < response.routes[0].legs.length; i++) {
+                            //console.log(response.routes[0].legs[i]);
+                            MyRoutes.routes[0].legs.push(response.routes[0].legs[i]);
+                            // MyRoutes.routes[0].legs[0].via_waypoint.push(response.routes[0].legs[0].via_waypoint[i]);
+                            //  MyRoutes.routes.push(response.routes[0]);
+
+                        }
+                        //for(var i = 0; i < response.routes[0].overview_path.length; i++) {
+                        // MyRoutes.routes[0].overview_path.push(response.routes[0].overview_path[i]);
+                        //}
+                        //MyRoutes.routes.push(response.routes[0]);
+                        //console.log("Latest json",MyRoutes);
+                        directionsDisplay.setOptions({ preserveViewport: true });
+                        directionsDisplay.setDirections(MyRoutes);
+                        var route = response.routes[0];
+                        // var summaryPanel = document.getElementById('directions-panel');
+                        //summaryPanel.innerHTML = '';
+                        //// For each route, display summary information.
+                        //for (var i = 0; i < route.legs.length; i++) {
+                        //    var routeSegment = i + 1;
+                        //    summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                        //        '</b><br>';
+                        //    summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+                        //    summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+                        //    summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+                        //}
+                    } else {
+                        window.alert('Directions request failed due to ' + status);
+                    }
+                });
+            }
+            else{
+                directionsService.route({
+                    origin: { lat: StartLtd, lng: StartLng },
+                    destination: { lat: EndLtd, lng: EndLng },
+                    waypoints: waypts,
+                    travelMode: 'DRIVING'
+                }, function (response, status) {
+                    MyRoutes;
+                    MyRoutes = response;
+
+                    if (status === 'OK') {
+                        //console.log("myroutes", MyRoutes);
+                        //res1 = response.routes[0].legs[0].via_waypoints;
+                        //res1 = directionsDisplay.directions.routes[0].legs[0];
+                        var newRoute = response.routes[0].legs[0].via_waypoints;
+                        //   //console.log("old", newRoute[0].lat() + "   " + newRoute[0].lng());
+                        if (waypts2.length > 0)
+                        {
+
+                        }
+                        else{
+                            directionsDisplay.setOptions({ preserveViewport: true });
+                            directionsDisplay.setDirections(response);
+                        }
+                        var route = response.routes.legs;
+                        // var summaryPanel = document.getElementById('directions-panel');
+                        //summaryPanel.innerHTML = '';
+                        //// For each route, display summary information.
+                        //for (var i = 0; i < route.legs.length; i++) {
+                        //    var routeSegment = i + 1;
+                        //    summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                        //        '</b><br>';
+                        //    summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+                        //    summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+                        //    summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+                        //}
+                    } else {
+                        window.alert('Directions request failed due to ' + status);
+                    }
+                });
+            }
+
+        }
+        ///evenyt listener click on map
+        function addLatLng(event) {
+            ////debugger
+            //console.log(event);
+            $("#ui-id-16").hide();
+            // var path = poly.getPath();
+            // path.push(event.latLng);
+            AddLatLngToArray(event.latLng.lng(), event.latLng.lat());
+
+            if (StartLtd == undefined) {
+                ////debugger
+                StartLtd = event.latLng.lat();
+                StartLng = event.latLng.lng();
+            }
+            else if (EndLtd == undefined) {
+                ////debugger
+                EndLtd = event.latLng.lat();
+                EndLng = event.latLng.lng();
+                calculateAndDisplayRoute(directionsService, directionsDisplay);
+            }
+            else {
+                ////debugger
+                if (waypts.length <= 22)
+                {
+                    var obj = { lat: EndLtd, lng: EndLng };
+                    waypts.push({
+                        location: obj,
+                        stopover: false
+                    });
+                }
+                else {
+                    var obj = { lat: EndLtd, lng: EndLng };
+                    waypts2.push({
+                        location: obj,
+                        stopover: false
+                    });
+                }
+                EndLtd = event.latLng.lat();
+                EndLng = event.latLng.lng();
+                calculateAndDisplayRoute(directionsService, directionsDisplay);
+            }
+
+            //obj = { lat:49.27816468568685, lng:-123.1263542175293}
+            // calculateAndDisplayRoute(directionsService, directionsDisplay,);
+            ////
+            //if (startpath < 1) {
+            //    startpath = 1;
+            //}
+
+            //if (CurrentRoute.length > 0) {
+            if (waypts.length != 0) {
+                $('#Undo').show();
+            } else {
+                $('#Undo').hide();
+            }
+
+
+        }
+        /////distance
+        function computeTotalDistance(result) {
+            var total = 0;
+            var myroute = result.routes[0];
+            //console.log(myroute);
+            //var newRoute = result.routes[0].legs[0].via_waypoints;
+            ////console.log("new", newRoute[0].lat() + "   " + newRoute[0].lng());
+
+            var w;
+            //console.log(myroute.legs.length);
+            for (var i = 0; i < myroute.legs.length; i++) {
+                total += myroute.legs[i].distance.value;
+                w = myroute.legs[i].via_waypoints;
+
+            }
+            //console.log(w);
+            waypts = [];
+            waypts2 = [];
+            for (var i = 0; i < w.length; i++) {
+               if (i <= 22) {
+                    var obj = { lat: w[i].lat(), lng: w[i].lng() };
+                    waypts.push({
+                        location: obj,
+                        stopover:false
+                    });
+                }
+                else {
+                    var obj = { lat: EndLtd, lng: EndLng };
+                    waypts2.push({
+                        location: obj,
+                        stopover: false
+                    });
+                }
+            }
+            var hjh = result.routes[0].legs[0];
+            //console.log(StartLtd, hjh.start_location.lat());
+            //console.log(EndLtd, hjh.end_location.lat());
+            StartLtd = hjh.start_location.lat();
+            StartLng = hjh.start_location.lng();
+            EndLtd = hjh.end_location.lat();
+            EndLng = hjh.end_location.lng();
+            total = total / 1000;
+            //document.getElementById('total').innerHTML = total + ' km';
+        }
+        ///gET dIRECTION
+        $('#myclick').click(function () {
+            ////debugger
+            if(OK==true){
+                OK=false;
+                calculateAndDisplayRoute2(directionsService, directionsDisplay);
+                
+            }
+        } );
+        function calculateAndDisplayRoute2(directionsService, directionsDisplay) {
+
+               directionsService.route({
+                    origin: { lat: DStartLtd, lng: DStartLng },
+                    destination: { lat: DEndLtd, lng: DEndLng },
+                    waypoints: Directionwaypts,
+                    travelMode: 'DRIVING'
+               }, function (response, status) {
+                   DStartLtd=undefined,DStartLng=undefined,DEndLtd=undefined,DEndLng=undefined;
+                   Directionwaypts=[];
+                   if (status === 'OK') {
+                       //console.log("Direction",response);
+                     
+                  
+                       var route = response.routes[0];
+                       var summaryPanel = document.getElementById('tbl-d');
+                       if(DSelectedRow != SelectedRow)
+                       {
+                           
+                            $('#tbl-d > tbody').empty();
+                            $('#tbl-d > tbody').append('<tr><td>Directions</td></tr>');
+                        }
+                        //// For each route, display summary information.
+                        for (var i = 0; i < route.legs[0].steps.length; i++) {
+                            var routeSegment = i + 1;
+                          //  var abc ='<tr><td>'+route.legs[0].steps[i].instructions+" "+route.legs[0].steps[i].distance.text+" "+route.legs[0].steps[i].duration.text+'</td></tr>';
+                            $('#tbl-d > tbody:last-child').append('<tr><td>'+route.legs[0].steps[i].instructions+" "+route.legs[0].steps[i].distance.text+" "+route.legs[0].steps[i].duration.text+'</td></tr>');
+                            //console.log(route.legs[0].steps[i].instructions+" "+route.legs[0].steps[i].distance.text+" "+route.legs[0].steps[i].duration.text);
+                        }
+                        DSelectedRow = SelectedRow;
+                        //console.log(DirectionRecall.length+"     "+DCounter2);
+                        setTimeout(function(){
+                            if(DirectionRecall.length > DCounter2){
+                                Directions(DirectionRecall);
+                            }
+                        }, 1000);
+                    } else {
+                        window.alert('Directions request failed due to ' + status);
+                    }
+                });
+            
+
+        }
+        ///DIRECTION CHANGED
+        directionsDisplay.addListener('directions_changed', function () {
+            ////debugger
+            $(".ui-tooltip").hide();
+            $("#ui-id-16").hide();
+            //   computeTotalDistance(directionsDisplay.getDirections());
+        });
+        //undo
+        $('#Undo').click(function (ev) {
+
+            ////debugger;
+            var lngth = CurrentRoute.length - 1;
+            ////console.log(lngth);
+            // poly.getPath().removeAt(lngth);
+            CurrentRoute.splice(lngth, 1);
+            if (waypts2.length != 0)
+            {
+                ////debugger
+                var MyLastDestination = waypts2[waypts2.length - 1];
+                //console.log(MyLastDestination);
+                EndLtd = MyLastDestination.location.lat;
+                EndLng = MyLastDestination.location.lng;
+                waypts2.splice(waypts2.length - 1, 1);
+                calculateAndDisplayRoute(directionsService, directionsDisplay);
+                map.setZoom(17);
+                //if (StartLtd == undefined) {
+                //    ////debugger
+                //    StartLtd = event.latLng.lat();
+                //    StartLng = event.latLng.lng();
+                //}
+                //else if (EndLtd == undefined) {
+                //    ////debugger
+                //    EndLtd = event.latLng.lat();
+                //    EndLng = event.latLng.lng();
+                //    calculateAndDisplayRoute(directionsService, directionsDisplay);
+                //}
+                //else {
+                //    ////debugger
+                //    var obj = { lat: EndLtd, lng: EndLng };
+                //    waypts.push({
+                //        location: obj,
+                //        stopover: true
+                //    });
+                //    EndLtd = event.latLng.lat();
+                //    EndLng = event.latLng.lng();
+                //    calculateAndDisplayRoute(directionsService, directionsDisplay);
+                //}
+            }
+            else {
+                ////debugger
+                var MyLastDestination = waypts[waypts.length -1];
+                //console.log(MyLastDestination);
+                EndLtd = MyLastDestination.location.lat;
+                EndLng = MyLastDestination.location.lng;
+                waypts.splice(waypts.length -1, 1);
+                calculateAndDisplayRoute(directionsService, directionsDisplay);
+                map.setZoom(17);
+            }
+            if (waypts.length != 0) {
+                $('#Undo').show();
+            } else {
+                $('#Undo').hide();
+            }
+
+        });
+        $(".ui-tooltip ui-widget ui-corner-all ui-widget-content").click(function (ev) {
+            ////debugger
+            $(".ui-tooltip").hide();
+            $("#ui-id-16").hide();
+        });
+        poly = new google.maps.Polyline({
+            strokeColor: PathColor,
+            strokeOpacity: 1.0,
+            strokeWeight: 3
+        });
+        poly.setMap(map);
+        PolyLines.push(poly);
+
+
+        map.panTo(centerPt);
+        map.setZoom(17);
+
+        map.addListener('click', addLatLng);
+
+        $('#clear').click(function (ev) {
+            $("#direction-panel").slideToggle("fast");
+            $("#info-panel").slideToggle("fast");
+            $('#map2').empty();
+            map = null;
+            centerPt = null;
+            var PathColor = '#CC0000';
+            StartLtd = undefined, StartLng = undefined, EndLtd = undefined, EndLng = undefined;
+            waypts = [];
+            waypts2 = [];
+            PageLoad= false;
+            ShowMapWindow('bySiteCode', SelectedSiteId, SelectedSiteCode, Latitude, Longitude, SelectedScope, SelectedScopeId, currentClientPrefix);
+            //LoadMapWithAzimuth(Latitude, Longitude, SelectedSiteCode)
+            SelectedRow = 0;
+
+        });
+
+        $('#new').click(function (ev) {
+
+            if (AddRouteToArray()) {
+                startpath = 0;
+                PathColor = SelectedColor;
+                poly = new google.maps.Polyline({
+                    strokeColor: PathColor,
+                    strokeOpacity: 1.0,
+                    strokeWeight: 3
+                });
+                poly.setMap(map);
+                PolyLines.push(poly);
+            }
+
+
+        });
+        $('#Undo').hide();
+        //Close
+
+        $('#Close').click(function () {
+            ////debugger
+            window.close();
+            open(location, '_self').close();
+            window.close();
+            $('#map2').empty();
+            map = null;
+            centerPt = null;
+            var PathColor = '#CC0000';
+            StartLtd = undefined, StartLng = undefined, EndLtd = undefined, EndLng = undefined;
+            waypts = [];
+            waypts2 = [];
+            //modal_body.empty();
+            //modal.modal('hide');
+        
+        });
+
+        //    $('#Undo').click(function (ev) {
+
+        //        if (waypts.length <= 22)
+        //        {
+        //            waypts.splice(waypts.length-1,1)
+        //        }
+        //        else {
+        //            waypts2.splice(waypts2.length - 1, 1)
+        //        }
+        //        //   ////debugger;
+        //        var lngth = CurrentRoute.length -1;
+        //        ////console.log(lngth);
+        //        poly.getPath().removeAt(lngth);
+        //        CurrentRoute.splice(lngth, 1);
+
+        //        if (CurrentRoute.length > 0) {
+        //            $('#Undo').show();
+        //        } else {
+        //            $('#Undo').hide();
+        //    }
+
+        //});
+
+        //poly.addListener('click', polyOnClick);
+        google.maps.event.addListener(poly, 'click', function (event) {
+            alert(this.id);
+
+        });
+
+        google.maps.event.addListenerOnce(map, 'idle', function () {
+            //alert('after initialize function');
+            google.maps.event.trigger(map, 'resize');
+            map.setCenter({
+                lat: lats,
+                lng: longs
+            });
+        });
+
+
+    }
+    function polyOnClick(event) {
+
+    }
+
+    function setMapOnAll(map) {
+        for (var i = 0; i < Routemarkers.length; i++) {
+            Routemarkers[i].setMap(map);
+        }
+    }
+
+    function NewTabDrive(filter, siteid, SiteCode, lat, lng, Scope, ScopeId, ClientPrefix) {
+        ////debugger
+        window.open("/Dashboard/Drive?SiteId=" + siteid + '&Scope=' + Scope + '&SelectedSiteCode=' + SiteCode + '&Latitude=' + lat + '&Longitude=' + lng + '&SelectedScopeId=' + ScopeId + '&currentClientPrefix=' + ClientPrefix + '&filter=' + filter, "_blank");
+    }
+
+
+    function ShowMapWindow(filter, siteid, SiteCode, lat, lng, Scope, ScopeId, ClientPrefix) {
+        Routemarkers = [];
+        startpath = 0;
+        Routes = [];
+        CurrentRoute = [];
+        RoutesList = [];
+        RoutesList1 = [];
+        PolyLines = [];
+        centerPt;
+        SelectedRouteSite = 0;
+        Latitude = lat;
+        Longitude = lng;
+        SelectedScope = Scope;
+        PathColor = '#CC0000';
+        // ////debugger;
+        startpath = 0;
+        AzRecord = null
+        currentClientPrefix = ClientPrefix;
+
+        SelectedSiteId = siteid;
+        var body = '<div id="Site-Save-Alert" class="alert alert-success fade in alert-dismissable" style="margin-top:18px; display:none;">' +
+                        '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>' +
+                        '<strong>Success!</strong> Route saved successfully...!' +
+                    '</div>' +
+            '<div style="width:100%;height:500px; margin-bottom:20px;" id="map2"></div>' +
+
+    '<button style="margin-right:5px;" class="btn btn-success" id="1050"  id="" onclick=SaveKml();>Export To Kml</button>' +
+    '<button style="margin-right:5px;" class="btn btn-primary" id="new">Create new path</button>' +
+            '<button style="margin-right:5px;" class="btn btn-danger" id="clear">Clear</button>';
+
+        $.ajax({
+            url: '/Dashboard/DriveRoute?SiteId=' + siteid + '&Scope=' + Scope,
+            async: false,
+            success: function (res) {
+                body = res;
+            }
+        });
+        //modal_title.text('Plan Drive Route');
+        //modal
+        //modal_content.css({ 'width': '80%' });
+        //modal
+        //modal_footer.hide();
+        //modal_body.empty();
+        //modal_body.html(body);
+        //modal.modal('show');
+        $("#driveRoute").empty();
+        $("#driveRoute").html(body);
+
+        ColorPicker("#RouteColor");
+        LoadMapWithAzimuth(lat, lng, SiteCode)
+
+        SelectedRouteSite = siteid;
+        SelectedSiteCode = SiteCode;
+        SelectedScopeId = ScopeId
+        //debugger
+        if(PageLoad == false)
+        $("#info-panel").slideToggle("fast");
+    }
+
+    function LoadMapWithAzimuth(lat, lng, SiteCode) {
+        initMap(lat, lng);
+        google.maps.event.trigger(map, 'resize');
+        MarketSites(SiteCode, lat, lng);
+    }
+
+    function Azmiuth(Angles, Radius) {
+        //  ////debugger;
+        // 0 = start angle
+        // 1 = end angle
+        // 2 = color
+        if (Radius == undefined) {
+            Radius = 100;
+        }
+        polys = [],
+        i = 0,
+        radiusMeters = Radius;
+        var latlng;
+        for (; i < Angles.length; i++) {
+
+            latlng = new google.maps.LatLng(Angles[i].Latitude, Angles[i].Longitude);
+            var path = getArcPath(latlng, radiusMeters, Angles[i].StartAngle, Angles[i].EndAngle);
+            // //console.log(path);
+
+            path.unshift(latlng);
+            path.push(latlng);
+            var poly = new google.maps.Polygon({
+                path: path,
+                map: map,
+                fillColor: Angles[i].Color,
+                fillOpacity: 1,
+            });
+            polys.push(poly);
+        }
+    }
+
+    function getArcPath(center, radiusMeters, startAngle, endAngle, direction) {
+        // ////debugger;
+        var point, previous,
+            atEnd = false,
+            points = Array(),
+            a = startAngle;
+        while (true) {
+            point = google.maps.geometry.spherical.computeOffset(center, radiusMeters, a);
+            points.push(point);
+            if (a == endAngle) {
+                break;
+            }
+            a++;
+            if (a > 360) {
+                a = 1;
+            }
+        }
+        if (direction == 'counterclockwise') {
+            points = points.reverse();
+        }
+        return points;
+    }
+
+    function ColorPicker(Selector) {
+
+
+        //$(Selector).spectrum({
+        //    preferredFormat: "hex",
+        //    color: PathColor,
+        //    showInput: true,
+        //    className: "full-spectrum",
+        //    showPaletteOnly: true,
+        //    showPalette: true,
+        //    hideAfterPaletteSelect: true,
+        //    move: function (color) {
+
+        //    },
+        //    show: function () {
+        //        //$('.full-spectrum').css({
+        //        //    'top': '500px'
+        //        //});
+
+
+        //    },
+        //    beforeShow: function () {
+
+        //    },
+        //    hide: function () {
+        //        startpath = 0;
+        //        ////debugger;
+        //        AddRouteToArray();
+
+        //        PathColor = SelectedColor;
+        //        poly = new google.maps.Polyline({
+        //            strokeColor: PathColor,
+        //            strokeOpacity: 1.0,
+        //            strokeWeight: 3
+        //        });
+        //        poly.setMap(map);
+        //        PolyLines.push(poly);
+
+        //    },
+        //    change: function () {
+
+        //        SelectedColor = $(this).val();
+
+        //    },
+        //    palette: [
+        //        ["#A0522D", "#CD5C5C", "#FF4500", "#008B8B"],
+        //         ["#B8860B", "#32CD32", "#FFD700", "#48D1CC"],
+        //         ["#87CEEB", "#FF69B4", "#CD5C5C", "#87CEFA"],
+        //         ["#6495ED", "#DC143C", "#FF8C00", "#C71585"],
+        //         ["#000000"]
+
+        //    ]
+        //});
+
+        //  $('.sp-replacer').append('Add Aditional Routes');
+
+    }
+
+
+    //$(document).on('change', '#RouteColor', function () {
+
+
+    //    SelectedColor = $(this).val();
+    //});
+
+
+
+    $(document).on('click', '#RouteColor', function () {
+        //  ColorPicker(this);
+    });
+
+    $(document).on('click', '#tbl-route tr', function () {
+
+        LoadMapWithAzimuth(Latitude, Longitude, SelectedSiteCode);
+        $("#tbl-route tr").removeClass("SelectedRow");
+        var RouteId = $(this).attr('data-RouteId');
+        SelectedRow = RouteId;
+        var myParser = new geoXML3.parser({ map: map });
+        $(this).addClass("SelectedRow");
+
+        try {
+            ////console.log(domain);
+            myParser.parse(domain + '/Content/AirViewLogs/' + currentClientPrefix + '/' + SelectedSiteCode + '/route-' + RouteId + '.kml');
+        } catch (e) {
+            myParser.parse(domain + '/Content/AirViewLogs/' + currentClientPrefix + '/' + SelectedSiteCode + '/route-' + RouteId + '.kml');
+        }
+
+
+
+
+    });
+
+
+    $(document).on('hover', '#map2', function () {
+
+        $(this).css({
+            'cursor': 'pointer'
+        });
+
+    });
+
+
+    $(document).on('click', '.IsSelected', function () {
+        var IsSelected = false;
+        if ($(this).is(":checked")) {
+            IsSelected = true;
+        }
+        $.ajax({
+            url: '/Dashboard/ManageDriveRoute',
+            type: 'post',
+            data: { 'Filter': 'UpdateIsSelected', 'RouteId': $(this).attr('data-RouteId'), 'IsSelected': IsSelected },
+            success: function (res) {
+                //  //console.log(res);
+            }
+
+        });
+
+    });
+
+
+
+    ShowMapWindow('@ViewBag.filter', @ViewBag.Id,'@ViewBag.SelectedSiteCode',@ViewBag.Latitude,@ViewBag.Longitude, '@ViewBag.Scope', @ViewBag.SelectedScopeId, '@ViewBag.currentClientPrefix')
+    //$(".navbar-static-top").css({
+    //    "cursor": "wait",
+    //    "pointer-events": "none"
+    //});
+    //$(".sidebar").css({
+    //    "cursor": "wait",
+    //    "pointer-events": "none"
+    //});
+   // $(".sidebar").hide();
+//$(".main-sidebar").hide();
+</script>
+<script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script><!--kml-->
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script><!--Notification-->
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Process Group</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+
+<!-- Styles -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link rel="stylesheet" type="text/css" href="css/responsive.css" />
+
+</head>
+<body>
+		<div class="pg">
+			<div class="pg-rows-top">
+					<button class="custom-btn add-new">Add New</button>
+			</div>
+			<div class="pg-grids">
+				<div class="pg-row-wrap">
+					<div class="pg-row">
+							<span contenteditable="true">HR</span>
+							<span contenteditable="true">Human Resource</span>
+							<span contenteditable="true">Human Resource</span>
+							<span>
+								<div class="btn-group">
+									<button class="btn btn-xs btn-primary add-child"><i class="fa fa-plus-circle"></i> Add Child</button>
+									<button class="btn btn-xs btn-danger delete-node"><i class="fa fa-times"></i> Delete</button>
+								</div>
+							</span>
+					</div><!-- Pg Row -->
+
+
+				</div><!-- Pg Row Wrap -->
+			</div><!-- Pg Grids -->
+		</div><!-- Pg -->
+
+
+
+
+		<script src="js/jquery.min.js"></script>
+		<script>
+
+			var row = `<div class="pg-row-wrap"><div class="pg-row"> <span contenteditable="true">HR</span> <span contenteditable="true">Human Resource</span> <span contenteditable="true">Human Resource</span><span> <div class="btn-group"> <button class="btn btn-xs btn-primary add-child"><i class="fa fa-plus-circle"></i> Add Child</button> <button class="btn btn-xs btn-danger delete-node"><i class="fa fa-times"></i> Delete</button> </div> </span> </div></div>`;
+			$(".add-new").on("click",function(){
+				$(".pg-grids").append(row);
+			});
+			$("body").on("click",".add-child",function(){
+				$(this).parents('.pg-row-wrap').append(row);
+			});
+
+			$("body").on("click",".delete-node",function(){
+				console.log();
+				$(this).closest('.pg-row-wrap').remove();
+			});
+
+		</script>
+
+</body>
+</html>

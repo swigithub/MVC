@@ -1,0 +1,9 @@
+<div class="information-boxes" >
+        <div ng-click="get()"   ng-repeat="data in boxes" class="info-box {{data.class}}">
+                <div class="info-text"><strong>{{data.number}}</strong><span>{{data.title}}</span></div>
+                <div class="info-progress">
+                        <div cloader class="circularProgress" id="{{data.progressid}}"> <span></span> </div>
+                </div>
+        </div>
+</div>
+

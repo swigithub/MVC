@@ -1,0 +1,104 @@
+﻿@using Jmelosegui.Mvc.GoogleMap;
+@using SWI.Libraries.AirView.Entities;
+@using System.Drawing;
+@model IEnumerable<SitesVM>
+
+@{ string apikey = ViewBag.ApiMapKey;}
+
+@if (Model.Count() > 0)
+{
+    
+    Html.GoogleMap()
+        .Name("SiteLocations")
+        .Height(600)
+        .FitToMarkersBounds(true)
+        .ApiKey(apikey)
+        .Center(c => c.Latitude(Model.ToList()[0].Latitude)
+            .Longitude(Model.ToList()[0].Longitude))
+        .BindTo<SitesVM, Marker>
+        (Model, mappings => mappings.For<SitesVM>
+            (
+                binding => binding.ItemDataBound
+                    (
+                        (marker, regionInfo) =>
+                        {
+                            marker.Id = regionInfo.SiteId.ToString();
+                            marker.Latitude = regionInfo.Latitude;
+                            marker.Longitude = regionInfo.Longitude;
+                            // marker.Title = regionInfo.SiteCode;
+                            marker.Title = regionInfo.MarkerTitle;
+                            marker.ZIndex = regionInfo.ZIndex;
+                            marker.Icon = new MarkerImage(String.Format(regionInfo.MarkerImagePath)
+                                , new Size(50, 50)
+                                , new Point(0, 0)
+                                , new Point(0, 32));
+                            marker.Window = new InfoWindow(marker)
+                            {
+                                Template =
+                                {
+                                    Content = () => ViewContext.Writer.Write(regionInfo.InfoWindowContent)
+                                }
+                            };
+                        }
+                    )
+            )
+        )
+        .MarkerEvents(events =>
+                        events
+                            .OnMarkerMouseOver("SiteMapEvent")
+                            .OnMarkerClick("markerClick")
+                     ).ClientEvents(events => events
+                     .OnMapLoaded("onMapLoadHandler")
+                     .OnMouseOver("OnMouseOver")
+                      .OnZoomChanged("OnZoomChanged")
+                        .OnMapIdle("OnMapIdle")
+                     )
+        .Render();
+}
+else
+{
+    Html.GoogleMap()
+        .Name("SiteLocations")
+        .Height(600)
+        .ApiKey(apikey)
+        //.Center(c => c.Latitude(31.4777)
+        //.Longitude(74.281))
+        .BindTo<SitesVM, Marker>
+        (Model, mappings => mappings.For<SitesVM>
+            (
+                binding => binding.ItemDataBound
+                    (
+                        (marker, regionInfo) =>
+                        {
+                            marker.Latitude = regionInfo.Latitude;
+                            marker.Longitude = regionInfo.Longitude;
+                            marker.Title = regionInfo.SiteCode;
+                            marker.ZIndex = regionInfo.ZIndex;
+                            marker.Icon = new MarkerImage(String.Format(regionInfo.MarkerImagePath)
+                                , new Size(50, 50)
+                                , new Point(0, 0)
+                                , new Point(0, 0));
+                            marker.Window = new InfoWindow(marker)
+                            {
+                                Template =
+                                {
+                                    Content = () => ViewContext.Writer.Write(regionInfo.InfoWindowContent)
+                                }
+                            };
+                        }
+                    )
+            )
+        ).MarkerEvents(events =>
+                        events
+                            .OnMarkerMouseOver("SiteMapEvent")
+                            .OnMarkerClick("markerClick")
+                     ).ClientEvents(events => events
+                     .OnMapLoaded("onMapLoadHandler")
+                     .OnMouseOver("OnMouseOver")
+                      .OnZoomChanged("OnZoomChanged")
+                     )
+        .Render();
+}
+@(Html.GoogleMap().ScriptRegistrar())
+
+

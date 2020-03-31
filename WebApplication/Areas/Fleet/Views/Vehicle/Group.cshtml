@@ -1,0 +1,294 @@
+﻿@model AirView.DBLayer.Fleet.Model.FM_VehicleGroup
+@{
+    ViewBag.Title = "Vehicle Group";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<style>
+    .form-group select {
+        width: 100%;
+        height: 33px;
+    }
+
+    th.hideme input {
+        display: none;
+    }
+
+    .major-btns {
+        margin: -53px 0 10px;
+        float: right;
+    }
+
+    button.disabled {
+        pointer-events: none;
+    }
+
+    .form-horizontal p {
+        margin: 0;
+        padding-top: 7px;
+    }
+
+    .align-left {
+        text-align: left !important
+    }
+
+    .align-right {
+        text-align: right !important
+    }
+
+    div#table_fleet2_filter label {
+        font-weight: 600;
+    }
+
+    div.dataTables_filter input {
+        border: 1px solid #ddd;
+        height: 28px;
+        margin: 0 0 5px 10px;
+        background: #fff;
+    }
+.appendRow td input[type="checkbox"] {
+    vertical-align: middle;
+    margin: 0;
+}
+
+.appendRow td .btn {
+    font-size: 18px;
+    vertical-align: middle;
+}
+.panel-body.max-height {
+    max-height: calc(100vh - 270px);
+    overflow: auto;
+}
+</style>
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<section class="panel panel-default">
+    <header class="panel-heading font-bold">
+        @ViewBag.Title
+        @*<a href="/Fleet/Vehicle/list" class="btn btn-primary btn-flat pull-right">Back</a>
+        <button type="button" class="btn btn-primary btn-flat addRow pull-right">New Row</button>*@
+    </header>
+    <div class="panel-body max-height">
+    @using (Html.BeginForm("Group", "Vehicle", FormMethod.Post, new { id = "frm-User" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <table class="table table-bordered v-group">
+            <thead>
+                <tr>
+                    <th style="width:25%">Title *</th>
+                    <th style="width:50%">Description *</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="appendRow">
+                <tr>
+                    <td>
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @style = "color:red" })
+                        @Html.TextBoxFor(model => model.Title, new { @class = "form-control rowData", required = "required", autocomplete = "off" })
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @style = "color:red" })
+                        @Html.TextBoxFor(model => model.Description, new { @class = "form-control rowData", required = "required", autocomplete = "off" })
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(model => model.IsActive, new { @class = "rowData", @checked = true })
+                        <button type="button" class="btn btn-box-tool delete" title="Delete Group"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>       
+        <input type="submit" style="display:none" id="PostSubmit" />
+    }
+
+
+        @*<div class="form-group row">
+            <label class="col-sm-4 col-form-label">Title</label>
+            <label class="col-sm-4 col-form-label">Description</label>
+            <label class="col-sm-4 col-form-label">Action</label>
+        </div>
+        <div class="appendRow">
+            <div class="form-group row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4">
+                </div>
+            </div>
+        </div>*@
+        
+    </div>
+    <div class="box-footer">
+        <div>
+            @*<input type="submit" style="display:none" id="PostSubmit" />*@
+            <button type="Reset" style="display:none" id="Reset"></button>
+            <button type="button" class="btn btn-primary btn-flat addRow">New Row</button>
+            <button type="button" class="btn btn-info btn-flat pull-right SaveData">Save</button>
+            <button type="button" class="btn btn-default btn-flat pull-right Reset">Reset</button>
+            <a href="/Fleet/Vehicle/list" type="button" class="btn btn-danger btn-flat pull-right">Cancel</a>
+        </div>
+    </div>
+
+
+</section>
+<script>
+
+    function RenderHtmlForGroup(result) {
+        console.log(JSON.stringify(result));
+        $('.appendRow').empty();
+        var count = $(result).length;
+
+        for (x = 0; x < count; x++) {
+
+            var dom = '<tr>' +
+                '<td>' +
+                '<span class="field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true" style="color:red"></span>' +
+                '<input class="form-control rowData" id="Title" name="Title" required="required" type="text" value="' + result[x].Title + '">' +
+                '</td>' +
+                '<td>' +
+                '<span class="field-validation-valid" data-valmsg-for="Description" data-valmsg-replace="true" style="color:red"></span>' +
+                '<input class="form-control rowData" id="Title" name="Title" required="required" type="text" value="' + result[x].Description + '">' +
+                '</td>' +
+                '<td>';
+
+            dom = dom + '<input class="rowData" data-val="true" data-val-required="The IsActive field is required." id="IsActive" name="IsActive" type="checkbox" value="true"><input name="IsActive" type="hidden" value="false">' +
+                '<button type="button" class="btn btn-box-tool delete" title="Delete Group" value="' + result[x].VehicleGroupId + '"><i class="fa fa-trash"></i></button>' +
+                '</td>' +
+                '</tr>';
+            $('.appendRow').append(dom);
+            $(":checkbox").eq(x).prop('checked', result[x].IsActive);
+        }
+        for (x = 0; x < count; x++) {
+            if (result[x].IsAssign == true) {
+                $(":checkbox").eq(x).parent().hide();
+            }
+        }
+    }
+
+    $(document).ready(function () {
+
+        var InitializeRow = $('.appendRow').html();
+        var BindModel = [];
+
+        $.ajax({
+            url: "/Fleet/Vehicle/GetListVehicleGroup/",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+                RenderHtmlForGroup(result);
+                //console.log(JSON.stringify(result));
+                //$('.appendRow').empty();
+                //var count = $(result).length;
+
+                //for (x = 0; x < count; x++) {
+
+                //    var dom = '<tr>' +
+                //        '<td>' +
+                //        '<span class="field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true" style="color:red"></span>' +
+                //        '<input class="form-control rowData" id="Title" name="Title" required="required" type="text" value="' + result[x].Title + '">' +
+                //        '</td>' +
+                //        '<td>' +
+                //        '<span class="field-validation-valid" data-valmsg-for="Description" data-valmsg-replace="true" style="color:red"></span>' +
+                //        '<input class="form-control rowData" id="Title" name="Title" required="required" type="text" value="' + result[x].Description + '">' +
+                //        '</td>' +
+                //        '<td>';
+
+                //    dom = dom + '<input class="rowData" data-val="true" data-val-required="The IsActive field is required." id="IsActive" name="IsActive" type="checkbox" value="true"><input name="IsActive" type="hidden" value="false">' +
+                //        '<button type="button" class="btn btn-box-tool delete" title="Delete Group" value="' + result[x].VehicleGroupId + '"><i class="fa fa-trash"></i></button>' +
+                //        '</td>' +
+                //        '</tr>';                  
+                //    $('.appendRow').append(dom);
+                //    $(":checkbox").eq(x).prop('checked', result[x].IsActive);    
+                //}
+                //for (x = 0; x < count; x++) {
+                //    if (result[x].IsAssign == true) {
+                //        $(":checkbox").eq(x).parent().hide();
+                //    }
+                //}
+            }
+        });
+        
+
+        $(document).on('click', '.Reset', function () {
+            $('.rowData').val('');
+            $(":checkbox").prop('checked',false);
+        });
+
+        $(document).on('click', '.delete', function () {
+            var VehicleGroupId = $(this).val();
+            var CurrentNode = $(this);
+            if (VehicleGroupId != 0 && VehicleGroupId!=undefined) {
+                //$(this).parent().parent().remove();
+                $.ajax({
+                    url: "/Fleet/Vehicle/DeleteVehicleGroup/?id=" + VehicleGroupId,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        console.log('DeleteVehicleGroup' + result);
+                        if (result) {
+                            $.notify("Successfully Deleted", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                            //$(CurrentNode).parent().parent().hide();
+                            $(CurrentNode).parent().parent().remove();
+                        } else {
+                            $.notify("There is an error to delete group", { type: result.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }  
+                    }
+                });
+            } else {
+                $(CurrentNode).parent().parent().hide();
+            }
+            
+        });
+
+        $(document).on('click', '.addRow', function () {            
+            $('.appendRow').append(InitializeRow);
+        });
+        $(document).on('click', '.SaveData', function () {
+            var count = $('input.rowData').length;
+            BindModel = [];
+            for (x = 0, i = 0; x < count; x = x + 3, i++) {
+                var Title = $('input.rowData').eq(x).val();
+                var Description = $('input.rowData').eq(x + 1).val();
+                var IsActive = $('input.rowData').eq(x + 2).is(':checked');
+                var VehicleGroupId = $('.delete').eq(i).val();
+
+                var model = {
+                    Title: Title,
+                    Description: Description,
+                    IsActive: IsActive,
+                    VehicleGroupId: VehicleGroupId
+                };
+
+                BindModel.push(model);
+            }
+            
+            console.log('clicked');
+            $('#PostSubmit').click();
+        });
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "/Fleet/Vehicle/InsertListVehicleGroup/",
+                contentType: "application/json; charset=utf-8",
+                cache: false,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(BindModel),
+                datatype: JSON,
+                success: function (result) {
+                    RenderHtmlForGroup(result);
+                    $.notify("Successfully Created", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                },
+                error: function (result) {
+                    $.notify("There is an error to create group", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                }
+            });
+
+        });
+    });
+</script>

@@ -1,0 +1,717 @@
+<div class="row grid muuri page" ng-controller="grids" data-pagename="market-configuration">
+	<div class="col-xl-12 col-lg-12" data-position="1">
+		<div class="widget">
+			<div class="title-bar" style="background:{{titlebg}};">
+				<h3><i class="fa fa-exclamation-triangle"></i>
+					<span class="update-name">{{widgetname_01}}</span>
+					<span class="cache-value"></span>
+					<input ng-model="widgetname_01" ng-init="widgetname_01='Market Configuration'" type="text" />
+				</h3>
+
+				<div class="buttons-sets">
+					<a class="custom-btn icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+					<a class="custom-btn icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+					<a class="custom-btn icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+					<ul class="opt-dropdown" >
+						<li class="has-children"><a href="#" title="">Panel Size</a>
+							<ul class="column-size">
+								<li><a class="onesixth" href="#" title="">One Sixth <img src="images/onesixth.png" alt=""> </a></li>
+								<li><a class="onethird" href="#" title="">One Third <img src="images/onethird.png" alt=""> </a></li>
+								<li><a class="half" href="#" title="">Half <img src="images/half.png" alt=""></a></li>
+								<li><a class="twothird" href="#" title="">Two Thrid <img src="images/twothird.png" alt=""></a></li>
+								<li><a class="fivesixth" href="#" title="">Five Sixth <img src="images/fivesixth.png" alt=""> </a></li>
+								<li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+							</ul>
+						</li>
+						<li class="has-children"><a href="#" title="">Panel Color</a>
+							<ul class="panel-color">
+								<li>
+									<a href="#" title=""><input class="bgcolor"  type="text"  value="#fff" ng-model="titlebg"  ng-init="titlebg = '#fff'"  />
+									<div class="colorpickerwrapper style2"><div colorpicker></div></div></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="content-wrapper">
+				<form>
+					<div class="row">
+						<div class="col-lg-3 col-md-12">
+							<label>Markets</label>
+							<select>
+								<option value="">Tampa</option>
+								<option value="">Orlando</option>
+								<option value="">Mahwah</option>
+								<option value="">New Jersey</option>
+								<option value="">Birmingham</option>
+								<option value="">Atlanta</option>
+								<option value="">JacksonVille</option>
+								<option value="">Dallas</option>
+								<option value="">Memphis</option>
+								<option value="">Houston</option>
+								<option value="">Austin</option>
+								<option value="">Mobile</option>
+								<option value="">Chicago</option>
+								<option value="">Seattle</option>
+								<option value="">Detroit</option>
+								<option value="">Indianapolis</option>
+								<option value="">Cincinnati</option>
+								<option value="">Kansas</option>
+								<option value="">Oklahoma</option>
+								<option value="">Tulsa</option>
+								<option value="">Wichita</option>
+								<option value="">Omaha</option>
+								<option value="">Arkansas</option>
+								<option value="">St. Louis</option>
+								<option value="">Illinois/Wisconsin</option>
+								<option value="">Northern Plains</option>
+								<option value="">Greater Midwest</option>
+								<option value="">NY/NNJ</option>
+								<option value="">Michigan/Indiana</option>
+								<option value="">E. Pa/S. Nj/De</option>
+								<option value="">Ohio/Western Pennsylvania</option>
+								<option value="">Washington Dc-Baltimore</option>
+								<option value="">Desert Southwest</option>
+								<option value="">Pacific Northwest</option>
+								<option value="">San Diego/Las Vegas</option>
+								<option value="">Rocky Mountain Region</option>
+							</select>
+						</div>
+					</div>
+				</form>
+
+				<div class="mytab theme4">
+					<ul class="nav nav-tabs">
+						<li> <a class="nav-link active" data-toggle="tab" data-target="#tab1">Users</a> </li>
+						<li> <a class="nav-link" data-toggle="tab" data-target="#tab2">Test Settings & Configuration</a> </li>
+						<li> <a class="nav-link" data-toggle="tab" data-target="#tab3">Report Settings & Configuration</a> </li>
+					</ul><!-- Selectors -->
+
+					<div class="tab-content">
+						<div class="tab-pane fade show active" id="tab1">
+							<form>
+								<div class="row">
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox1" name="checkbox1"  type="checkbox" />
+										<label for="checkbox1">7uuu yuyu</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox2" name="checkbox2"  type="checkbox" />
+										<label for="checkbox2">abc def</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox3" name="checkbox3"  type="checkbox" />
+										<label for="checkbox3">Adnan ul Haq</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox4" name="checkbox4"  type="checkbox" />
+										<label for="checkbox4">Akash Dotel</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox5" name="checkbox5"  type="checkbox" />
+										<label for="checkbox5">Akhil Bollamony</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox6" name="checkbox6"  type="checkbox" />
+										<label for="checkbox6">Alfredo Lombres Jr</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox7" name="checkbox7"  type="checkbox" />
+										<label for="checkbox7">Ali Sheikh</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox8" name="checkbox8"  type="checkbox" />
+										<label for="checkbox8">Ali Raza</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox9" name="checkbox9"  type="checkbox" />
+										<label for="checkbox9">Ali Hammad</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox10" name="checkbox10"  type="checkbox" />
+										<label for="checkbox10">alpha bravo</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox11" name="checkbox11"  type="checkbox" />
+										<label for="checkbox11">Andrew Le</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox12" name="checkbox12"  type="checkbox" />
+										<label for="checkbox12">Anton Naratkin</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox13" name="checkbox13"  type="checkbox" />
+										<label for="checkbox13">Arslan Anwar</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox14" name="checkbox14"  type="checkbox" />
+										<label for="checkbox14">Atif</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox15" name="checkbox15"  type="checkbox" />
+										<label for="checkbox15">Ayo Oguntade</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox16" name="checkbox16"  type="checkbox" />
+										<label for="checkbox16">Clive Lewis</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox17" name="checkbox17"  type="checkbox" />
+										<label for="checkbox17">Cosmo Wikes</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox18" name="checkbox18"  type="checkbox" />
+										<label for="checkbox18">Daniel Macrae</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox19" name="checkbox19"  type="checkbox" />
+										<label for="checkbox19">Demo Tester</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox20" name="checkbox20"  type="checkbox" />
+										<label for="checkbox20">Demo Client</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox21" name="checkbox21"  type="checkbox" />
+										<label for="checkbox21">Doniz Abellana</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox22" name="checkbox22"  type="checkbox" />
+										<label for="checkbox22">Edward Legaspi</label>
+									</div>
+									<div class="col-lg-2 col-md-12">
+										<input id="checkbox23" name="checkbox23"  type="checkbox" />
+										<label for="checkbox23">Farrukh Ali</label>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="tab-pane fade" id="tab2">
+							<form>
+								<div class="row">
+									<div class="col-lg-3 col-md-12">
+										<label>Client</label>
+										<select>
+											<option value="">T-Mobile</option>
+											<option value="">ATT</option>
+											<option value="">Verizon</option>
+											<option value="">Sprint</option>
+											<option value="">C-Spire</option>
+										</select>
+									</div>
+									<div class="col-lg-3 col-md-12">
+										<label>Network Mode</label>
+										<select>
+											<option value="">- Select Network Mode -</option>
+											<option value="">WCDMA</option>
+											<option value="">LTE</option>
+											<option value="">NA</option>
+											<option value="">GSM</option>
+										</select>
+									</div>
+									<div class="col-lg-3 col-md-12">
+										<label>Band</label>
+										<select>
+											<option value="">- Band -</option>
+										</select>
+									</div>
+								</div>
+							</form>
+
+							<div class="toggle dark" toggle>
+								<div class="toggle-item">
+									<h2>RF THRESHOLD</h2>
+									<div class="content">
+										<div class="table-container big-headings">
+											<table>
+												<thead>
+													<tr>
+														<th>GSM</th>
+														<th>WCDMA</th>
+														<th>LTE</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr class="tablerow ">
+														<td>
+															<form action="">
+																<div class="row align-items-start">
+																	<div class="col-lg-4 col-md-12">
+																		<label>RSSI (dBm)</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-4 col-md-12">
+																		<label>RxQual</label>
+																		<input type="text" />
+																	</div>
+																</div>
+															</form>
+														</td>
+														<td>
+															<form action="">
+																<div class="row align-items-start">
+																	<div class="col-lg-4 col-md-12">
+																		<label>RSCP (dBm)</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-4 col-md-12">
+																		<label>Ec/lo</label>
+																		<input type="text" />
+																	</div>
+																</div>
+															</form>
+														</td>
+														<td>
+															<form action="">
+																<div class="row align-items-start">
+																	<div class="col-lg-4 col-md-12">
+																		<label>RSCP (dBm)</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-4 col-md-12">
+																		<label>RSRQ (dB)</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-4 col-md-12">
+																		<label>CINR (dB)</label>
+																		<input type="text" />
+																	</div>
+																</div>
+															</form>
+
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div><!-- Toggle Item -->
+								<div class="toggle-item">
+									<h2>TEST CONFIGURATION</h2>
+									<div class="content">
+										<div class="table-container big-headings equal-columns">
+											<table>
+												<thead>
+													<tr>
+														<th>Ping / Latency Test</th>
+														<th>Connection Setup</th>
+														<th>MO/MT</th>
+														<th>Throughput</th>
+														<th>VoLTE MO/MT</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr class="tablerow ">
+														<td>
+															<form action="">
+																<div class="row align-items-start">
+																	<div class="col-lg-12 col-md-12">
+																		<label>Ping Host</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-12 col-md-12">
+																		<label>Ping Rate</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-12 col-md-12">
+																		<label>Ping Itrations</label>
+																		<input type="text" />
+																	</div>
+																</div>
+															</form>
+														</td>
+														<td>
+															<form action="">
+																<div class="row align-items-start">
+																	<div class="col-lg-12 col-md-12">
+																		<label>Connection Setup Time</label>
+																		<input type="text" />
+																	</div>
+																</div>
+															</form>
+														</td>
+														<td>
+															<form action="">
+																<div class="row align-items-start">
+																	<div class="col-lg-12 col-md-12">
+																		<label>Call Number</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-12 col-md-12">
+																		<label>Call Duration</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-12 col-md-12">
+																		<label>Busy Timeout (sec)</label>
+																		<input type="text" />
+																	</div>
+																</div>
+															</form>
+														</td>
+														<td>
+															<form action="">
+																<div class="row align-items-start">
+																	<div class="col-lg-12 col-md-12">
+																		<label>Downlaod Rate</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-12 col-md-12">
+																		<label>Upload Rate</label>
+																		<input type="text" />
+																	</div>
+																</div>
+															</form>
+														</td>
+														<td>
+															<form action="">
+																<div class="row align-items-start">
+																	<div class="col-lg-12 col-md-12">
+																		<label>Call Number</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-12 col-md-12">
+																		<label>Call Duration</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-12 col-md-12">
+																		<label>Busy Timeout (sec)</label>
+																		<input type="text" />
+																	</div>
+																</div>
+															</form>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div><!-- Toggle Item -->
+								<div class="toggle-item">
+									<h2>FTP CONFIGURATION</h2>
+									<div class="content">
+										<div class="table-container big-headings">
+											<table>
+												<thead>
+													<tr>
+														<th>FTP Server Configuraton</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr class="tablerow ">
+														<td>
+															<form action="">
+																<div class="row align-items-start">
+																	<div class="col-lg-3 col-md-12">
+																		<label>IP Address</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-3 col-md-12">
+																		<label>Port</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-3 col-md-12">
+																		<label>User Name</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-3 col-md-12">
+																		<label>Password</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-3 col-md-12">
+																		<label>Folder Path</label>
+																		<input type="text" />
+																	</div>
+																	<div class="col-lg-3 col-md-12">
+																		<label>Downlaod Filename</label>
+																		<input type="text" />
+																	</div>
+																</div>
+															</form>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div><!-- Toggle Item -->
+							</div><!-- Toggle -->
+						</div>
+
+						<div class="tab-pane fade" id="tab3">
+							<form>
+								<div class="row">
+									<div class="col-lg-auto col-md-12">
+										<label>Report Type</label>
+										<select>
+											<option value="">-Report Types-</option>
+											<option value="">Test Log Report</option>
+											<option value="">Project Status Report</option>
+											<option value="">Tester  WO Report</option>
+											<option value="">Drive WO Report</option>
+											<option value="">Net Layer Report</option>
+											<option value="">Site Report</option>
+										</select>
+									</div>
+									<div class="col-lg-auto col-md-12">
+										<label>Client</label>
+										<select>
+											<option value="">T-Mobile</option>
+											<option value="">ATT</option>
+											<option value="">Verizon</option>
+											<option value="">Sprint</option>
+											<option value="">C-Spire</option>
+										</select>
+									</div>
+									<div class="col-lg-auto col-md-12">
+										<label>Scope</label>
+										<select>
+											<option value="">SSV</option>
+											<option value="">NI</option>
+											<option value="">CLS</option>
+											<option value="">TSS</option>
+											<option value="">IND</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="toggle dark" toggle>
+									<div class="toggle-item">
+										<h2>Headers & Footers</h2>
+										<div class="content">
+											<input id="checkbox1" name="checkbox1"  type="checkbox" />
+											<label for="checkbox1">Display SWI Logo</label>
+										</div>
+									</div><!-- Toggle Item -->
+									<div class="toggle-item">
+										<h2>Report & Page Titles</h2>
+										<div class="content">
+											<div class="row align-items-start">
+												<div class="col-lg-3 col-md-12">
+													<label>PROJECT_TITLE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<label>REPORT_TITLE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<label>SITE_DATA</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-3 col-md-12">
+													<label><input type="checkbox" /> FIELD_TEST</label>
+													<input type="text" />
+												</div>
+											</div>
+										</div>
+									</div><!-- Toggle Item -->
+									<div class="toggle-item">
+										<h2>Map Plots</h2>
+										<div class="content">
+											<div class="row align-items-center">
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  PCI_PLOT</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  CW_PLOT</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  CCW_PLOT</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  HANDOVER_PLOT</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  RSRP_PLOT</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  RSRQ_PLOT</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  CINR_PLOT</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input  type="checkbox" /> FIELD_TEST_DISPLAY</label>
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" /> CCW_PLOT_DISPLAY</label>
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" /> CW_PLOT_DISPLAY</label>
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  CH_PLOT</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label>Azimuth_Circle</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  FIELD_TEST_TYPE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  SITE_DATA_TYPE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label><input type="checkbox" />  CELL</label>
+													<input type="text" />
+												</div>
+											</div>
+										</div>
+									</div><!-- Toggle Item -->
+									<div class="toggle-item">
+										<h2>Status Options</h2>
+										<div class="content">
+										</div>
+									</div>
+									<div class="toggle-item">
+										<h2>Display Options</h2>
+										<div class="content">
+											<div class="row align-items-center">
+												<div class="col-lg-2 col-md-12">
+													<label> DL_STATUS_TRUE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> DL_STATUS_FALSE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> DL_STATUS_NULL</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> UL_STATUS_TRUE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> UL_STATUS_FALSE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> UDL_STATUS_NULL</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> PING_STATUS_TRUE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> PING_STATUS_FALSE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> PING_STATUS_NULL</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> INTRA_HO_STATUS_TRUE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> INTRA_HO_STATUS_FALSE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> INTRA_HO_STATUS_NULL</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> INTER_HO_STATUS_TRUE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> INTER_HO_STATUS_FALSE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> INTER_HO_STATUS_NULL</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> MO_MT_STATUS_TRUE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> MO_MT_STATUS_FALSE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> MO_MT_STATUS_NULL</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> SECTOR_IOTA</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> SECTOR_DIGAMMA</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> SECTOR_EPSILON</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> SECTOR_DELTA</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> SECTOR_GAMMA</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> SECTOR_BETA</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> SECTOR_ALPHA</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> CA_STATUS_TRUE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> CA_STATUS_FALSE</label>
+													<input type="text" />
+												</div>
+												<div class="col-lg-2 col-md-12">
+													<label> CA_STATUS_NULL</label>
+													<input type="text" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="toggle-item">
+										<h2>Master Configuration</h2>
+										<div class="content">
+										</div>
+									</div>
+								</div>
+							</form>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="form-footer align-right">
+					<a href="#" class="custom-btn color1 medium" title=""><i class="fa fa-save"></i> Save</a>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>

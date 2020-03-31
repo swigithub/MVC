@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[AV_MarketSites] (
+    [SrId]          NUMERIC (18)  IDENTITY (1, 1) NOT NULL,
+    [ClientId]      NUMERIC (18)  NULL,
+    [RegionId]      NUMERIC (18)  NULL,
+    [CityId]        NUMERIC (18)  NULL,
+    [SiteCode]      NVARCHAR (50) NULL,
+    [Latitude]      FLOAT (53)    NULL,
+    [Longitude]     FLOAT (53)    NULL,
+    [SectorCode]    NVARCHAR (50) NULL,
+    [NetworkModeId] NUMERIC (18)  NULL,
+    [BandId]        NUMERIC (18)  NULL,
+    [CarrierId]     NUMERIC (18)  NULL,
+    [Antenna]       NVARCHAR (50) NULL,
+    [BeamWidth]     FLOAT (53)    NULL,
+    [Azimuth]       FLOAT (53)    NULL,
+    [PCI]           INT           NULL,
+    [RFHeight]      INT           NULL,
+    [MTilt]         NVARCHAR (15) NULL,
+    [ETilt]         NVARCHAR (15) NULL,
+    [BandWidth]     INT           NULL,
+    [SectorColor]   NVARCHAR (50) NULL,
+    [CellId]        NVARCHAR (50) NULL,
+    CONSTRAINT [PK_AV_MarketSites] PRIMARY KEY CLUSTERED ([SrId] ASC)
+);
+

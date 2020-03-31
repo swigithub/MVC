@@ -1,0 +1,47 @@
+﻿@model IEnumerable< Library.SWI.Survey.Model.TSS_Section>
+    @{
+        int Count = 1;
+     }
+
+@if (Model != null && Model.Count() > 0)
+{
+    <div class="row">
+        <div class="col-sm-12">
+            <ul class="sortable">
+
+                @foreach (var item in Model)
+                {
+                    <li class="list-group-item" style="display: block;border:solid 1px;margin-top:10px;">
+                        <span class="pull-right">
+                            <a href="#" onclick="EditSection('@item.SectionId', '@item.SurveyId'); return false;"><i class="fa fa-pencil icon-muted fa-fw m-r-xs"></i></a>
+                            <a href="#"><i class="fa fa-bank icon-muted fa-fw"></i></a>
+                        </span> <span class="pull-left media-xs"><i class="fa fa-sort text-muted fa m-r-sm"></i> @Count</span>
+                        <div class="clear"  ng-click="clicka(@item)"> @item.SectionTitle </div>
+                    </li>
+                    Count++;
+                }
+            </ul>
+
+        </div>
+    </div>
+    <script src="~/Scale/js/sortable/jquery.sortable.js"></script>
+    <script>
+        $(".sortable").sortable({
+            // group: 'sortable',
+            // pullPlaceholder: false,
+            //items: "li:not(.unsortable)",
+            // handle: 'fa-minus',
+            onDrop: function (item, container, _super) {
+                console.log(item);
+                console.log('----');
+                console.log(container);
+                console.log('----');
+
+                console.log(_super);
+
+            }
+        });
+    </script>
+}
+
+

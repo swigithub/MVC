@@ -1,0 +1,739 @@
+﻿@using System.Data;
+@model List<SWI.Libraries.AirView.Entities.Workorder>
+@{
+    ViewBag.Title = "Project site";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+    var Entity = TempData["ProjectEntity"] as AirView.DBLayer.Security.Entities.Sec_UserProjects;
+
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Bands = jss.Serialize(ViewBag.Bands);
+    var Carriers = jss.Serialize(ViewBag.Carriers);
+    var Regions = jss.Serialize(ViewBag.Regions);
+    var Surveys = jss.Serialize(ViewBag.Surveys);
+    var Cities = jss.Serialize(ViewBag.Cities);
+    var SubCheckList = jss.Serialize(ViewBag.SubCheckList);
+    var Project = Convert.ToInt64(ViewBag.Id);
+}
+
+<style>
+    .form-control {
+        padding: 0px;
+        width: 110px;
+    }
+
+    .jarviswidget > header {
+        line-height: 36px;
+    }
+.table>thead>tr>th {
+    vertical-align: middle;
+    padding: 0 10px;
+}
+</style>
+
+
+<div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
+
+    <header role="heading">
+        <div class="jarviswidget-ctrls" role="menu">
+
+        </div>
+        <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+        <h2>New @Entity.Title </h2>
+
+
+        <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+        <div class="pull-right" style="margin-right: 1%;">
+            <a style="margin-top:4px" href="/ProjectSites/All?Id=@ViewBag.Id" class="btn btn-info btn-xs pull-right"><i class="fa  fa-list">&nbsp;</i>Return to @Entity.Title Lists</a>
+
+            @*@if (ViewBag.AllowUri("/ProjectSites/UploadFile"))
+            {
+                <input type="button" style="margin-left:2px;margin-right:2px;margin-top:4px" class="btn btn-info btn-xs pull-right" id="upload" value="Upload" />
+                <input type="file" style="margin-top:4px"  accept=".csv" class="pull-right btn btn-info btn-xs" id="fileUpload" />
+            }
+
+            <a href="~/Content/templates/ATT_PROJECT_SITES_IMPORT.csv" class="btn btn-xs btn-success pull-left" style="margin-right:5px;margin-top:4px;">
+                Download Template
+            </a>*@
+        </div>
+
+
+        <span id="UserId" data-UserId="@ViewBag.UserId" hidden></span>
+        <span id="ProjectId" data-ProjectId="@ViewBag.Id" hidden></span>
+
+    </header>
+    <div role="content" style="width:100%;">
+        @using (Html.BeginForm("New", "ProjectSites", FormMethod.Post, new { id = "frm-wo" }))
+        {
+            @Html.AntiForgeryToken();
+
+           
+
+            <div id="pan-SiteInfo" style="width:100%;overflow-x: scroll;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-hover" id="tbl-wo" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Project <span style="color: red">*</span></th>
+                                
+                                    @*<th class="hidden">Client</th>*@
+
+                                    <th>Market <span style="color: red">*</span></th>
+                                    <th>Scope</th>
+                                    <th class="hidden">Recieved On</th>
+
+                                    <th>Cluster Id <span style="color: red">*</span></th>
+                                    <th>@Entity.Title Id <span style="color: red">*</span></th>
+                                    <th>@Entity.Title Name <span style="color: red">*</span></th>
+                                    <th>Latitude <span style="color: red">*</span></th>
+                                    <th>Longitude <span style="color: red">*</span></th>
+                                    <th>@Entity.Title Type <span style="color: red">*</span></th>
+
+                                    <th>Color</th>
+
+                                    <th>Description</th>
+
+                                    <th>USID</th>
+                                    <th>Submarket</th>
+                                    <th>vMME</th>
+
+                                    <th>Controlled Intro</th>
+                                    <th>Super Bowl</th>
+                                    <th>DAS InBuild</th>
+
+                                    <th>FirstNetRAN</th>
+                                    <th>IPlanJob</th>
+                                    <th>PaceNo</th>
+
+                                    <th>IPlanIssueDate</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="TBody">
+                                <tr id="NewRow-r0">
+                                    <td>
+                                        <!----Project---->
+                                        <div class="form-group">
+                                            <select data-required="yes" data-inputName="Project" class="form-control select2 Row ProjectId" data-name="ProjectId" data-parsley-min="1" name="ProjectId" id="ProjectId-r0" data-required="yes" required tabindex="1">
+                                                <option value="0">--Project--</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                   
+                                    @*<td class="hidden">
+                                        <div class="form-group">
+                                            @Html.DropDownList("Client", ViewBag.Clients as List<SelectListItem>, new { @class = "form-control select Row Client ClusterRowFirst", dataPreValue0 = "", @id = "Client-r0", Required = "required", name = "Client", data_name = "Client", tabindex = "2", onchange = "" })
+                                        </div>
+                                    </td>*@
+                                    @*<td>
+                                            <!--State-->
+                                            <div class="form-group">
+                                                @Html.DropDownList("State", ViewBag.States as List<SelectListItem>, new { @class = "form-control select2 Row State", @dataPreValue2="", @id = "State-r0", required = "required", data-parsley_min = "1", name = "State", data-name = "State", onchange = "", tabindex = "1000" })
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <!--Region-->
+                                            <div class="form-group">
+                                                <select class="form-control select2 Row Region" dataPreValue3="" data-name="Region" data-parsley-min="1" name="Region" id="Region-r0" onchange="" required tabindex="1001">
+                                                    <option value="0">-Region-</option>
+                                                </select>
+                                            </div>
+                                        </td>*@
+                                   
+                                    <td>
+                                        <!--Market-->
+                                        <div class="form-group">
+                                            <select data-required="yes" data-inputName="Market" class="form-control select2 Row" dataPreValue0="" data-name="Market" data-parsley-min="1" name="Market" id="Market-r0" tabindex="3" required>
+                                                <option value="0">-Market-</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            @Html.DropDownList("Scope", ViewBag.Scopes as List<SelectListItem>, new { @class = "form-control Row select2 Scope", @data_inputName = "Scope", @id = "Scope-r0", @dataPreValue1 = "", @data_required = "no", @data_parsley_min = "1", @data_name = "Scope", onchange = "", tabindex = "2" })
+                                        </div>
+                                    </td>
+                                    <td class="hidden">
+                                        <!--Received On-->
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input data-required="no" type="text" @*dataPreValue5=""*@ value="@DateTime.Now.ToString("MM/dd/yyyy")" tabindex="4" class="form-control Row ReceivedOn UserLiveDate" style="width:100px;" id="ReceivedOn-r0" name="ReceivedOn" data-name="ReceivedOn" readonly>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <input dataPreValue2="" data-inputName="Cluster Id" data-required="yes"  maxlength="255" class="form-control Row clusterCode" id="clusterCode-r0" name="clusterCode" data-name="clusterCode" tabindex="5">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--site Code-->
+                                        <div class="form-group CLSHIDE">
+                                            <input dataPreValue3="" data-inputName="Site Id/FACode" type="text" data-required="yes"  maxlength="25" class="form-control siteCode Row" id="siteCode-r0" name="siteCode" data-name="siteCode" tabindex="6">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--Site Name-->
+                                        <div class="form-group CLSHIDE">
+                                            <input dataPreValue4="" data-required="yes" data-inputName="Site Name" maxlength="500" type="text" class="form-control Row SiteName AllowPaste" id="SiteName-r0" name="SiteName" data-name="SiteName" tabindex="7">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--siteLatitude-->
+                                        <div class="form-group CLSHIDE">
+                                            <input dataPreValue5="" data-required="yes"  maxlength="255" data-inputName="Latitude" type="number" step="any" class="form-control Row siteLatitude AllowPaste" id="siteLatitude-r0" name="siteLatitude" data-name="siteLatitude" tabindex="8">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--siteLongitude-->
+                                        <div class="form-group">
+                                            <input dataPreValue6="" data-required="yes"  maxlength="255" data-inputName="Longitude" type="number" step="any" class="form-control Row siteLongitude AllowPaste" id="siteLongitude-r0" name="siteLongitude" data-name="siteLongitude" tabindex="9">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--SiteTypeId-->
+                                        <div class="form-group">
+                                            @Html.DropDownList("SiteTypeId", ViewBag.SiteTypes as List<SelectListItem>, new { @class = "form-control select2 Row SiteTypeId", @data_inputName = "Site Type", data_required = "yes", id = "SiteTypeId-r0", dataPreValue7 = "", name = "SiteTypeId", data_name = "SiteTypeId", tabindex = "10" })
+                                        </div>
+                                    </td>
+                                    @*<td>
+                                            <div class="form-group">
+                                                @Html.DropDownList("SiteClassId", ViewBag.SiteClasses as List<SelectListItem>, new { @class = "form-control select2 Row SiteClassId",@id="SiteClassId-r0", @dataPreValue9="", required = "required", @data-name = "SiteClassId",@name = "SiteClassId", tabindex = "10" })
+                                            </div>
+
+                                        </td>*@
+                                    <td>
+                                        <input dataPreValue8="" type="color" id="Color-r0"  name="Color" data-name="Color" tabindex="11" />
+                                    </td>
+                                    @*<td>
+                                           <div class="form-group">
+                                                <input dataPreValue9="" data-required="no" class="form-control Row Address AllowPaste" id="SiteAddress-r0" name="SiteAddress" data-name="SiteAddress" tabindex="8">
+
+                                            </div>
+                                        </td>*@
+                                    <td>
+                                        <!--Description-->
+                                        <div class="form-group">
+                                            <input dataPreValue9=""  maxlength="500" data-required="no" class="form-control Row Description AllowPaste" id="Description-r0" name="Description" data-name="Description" tabindex="12">
+                                                                                      
+                                        </div>
+                                    </td>
+
+
+
+                                    <td>
+                                        <!--USID-->
+                                        <div class="form-group">
+                                            <input dataPreValue10=""  maxlength="25" data-required="no" type="text" step="any" class="form-control USID Row" data-name="USID" name="USID" id="USID-r0" tabindex="13">
+                                        </div>
+                                    </td>
+
+
+                                    <td>
+                                        <!--Submarket-->
+                                        <div class="form-group">
+                                            <input dataPreValue11="" data-required="no"  maxlength="18" class="form-control SubMarket Row" data-name="submarket" name="SubMarket" id="SubMarket-r0" tabindex="14">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--vMME-->
+                                        <div class="form-group">
+
+                                            <input dataPreValue12="" data-required="no" type="checkbox" class="IsActive" name="vMME" value="false" data-name="vMME" Id="vMME-r0" tabindex="15" />
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--ControlledIntro-->
+                                        <div class="form-group">
+                                            <input dataPreValue13="" data-required="no" type="checkbox" class="IsActive" name="ControlledIntro" value="false" data-name="ControlledIntro" id="ControlledIntro-r0" tabindex="16" />
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--SuperBowl-->
+                                        <div class="form-group">
+
+                                            <input dataPreValue14="" data-required="no" type="checkbox" class="IsActive" name="SuperBowl" value="false" data-name="SuperBowl" id="SuperBowl-r0" tabindex="17" />
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--DASInBuild-->
+                                        <div class="form-group">
+                                            <input dataPreValue15="" data-required="no"  maxlength="50" class="form-control isDASInBuild Row" data-name="isDASInBuild" name="isDASInBuild" id="isDASInBuild-r0" tabindex="18">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--FirstNetRAN-->
+                                        <div class="form-group">
+                                            <input dataPreValue16="" data-required="no" maxlength="50"  class="form-control FirstNetRAN Row" data-name="FirstNetRAN" name="FirstNetRAN" id="FirstNetRAN-r0" tabindex="19">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--FirstNetRAN-->
+                                        <div class="form-group">
+                                            <input dataPreValue17="" data-required="no" maxlength="50"  class="form-control IPlanJob Row" data-name="IPlanJob" name="IPlanJob" id="IPlanJob-r0" tabindex="20">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--PaceNo-->
+                                        <div class="form-group">
+                                            <input dataPreValue18="" data-required="no" maxlength="50"  class="form-control PaceNo Row" data-name="PaceNo" name="PaceNo" id="PaceNo-r0" tabindex="21">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--IPlanIssueDate-->
+                                        @*<div class="form-group">
+                                            <input dataPreValue19="" data-required="no" class="form-control IPlanIssueDate Row ProjectSitesRowLast" data-name="IPlanIssueDate" name="IPlanIssueDate" id="IPlanIssueDate-r0" tabindex="22">
+                                        </div>*@
+
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input data-required="no" type="text" maxlength="50"  dataPreValue19="" value="@DateTime.Now.ToString("MM/dd/yyyy")"  class="form-control Row IPlanIssueDate UserLiveDate ProjectSitesRowLast" style="width:100px;" id="IPlanIssueDate-r0" tabindex="22" name="IPlanIssueDate" data-name="IPlanIssueDate">
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+            
+                            </tbody>
+                        </table>
+
+
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+            <div id="pan-SiteInfo2" style="margin-top:15px;margin-bottom:10px; width:100%; float:right">
+                <div class="row">
+                    <div class="col-md-12 pull-right" style="width:inherit">
+                        @if (ViewBag.AllowUri("/ProjectSites/New"))
+                {
+                            <button type="reset" id="reset" class="btn btn-default"><i class="fa  fa-refresh"></i> Reset</button>
+                            <button type="submit" id="btn-submit" class="btn btn-success"><i class="fa  fa-save"></i> Save</button>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+
+
+
+</div>
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datepicker/js")
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+    <script src="~/AdminLTE/bootstrap/js/twitter-bootstrap.min-3.0.0.js"></script>
+
+    <script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            $("#network-node").multiselect(
+                {
+                    includeSelectAllOption: true
+                });
+
+        });
+
+        var NewDeviceRow = $('#NewDeviceRow').html();
+        var NewDeviceRowCLONE = NewDeviceRow;
+        var TssNewDeviceRow = $('#TssNewDeviceRow').html();
+        var TssNewDeviceRowCLONE = TssNewDeviceRow;
+        var ClusterNewDeviceRow = "";
+        var count = 1;
+        var TssCount = 1;
+        var RowCount = 1;
+        var Bands = JSON.parse('@Html.Raw(Bands)');
+        var Carriers = JSON.parse('@Html.Raw(Carriers)');
+        var Regions = JSON.parse('@Html.Raw(Regions)');
+        var Surveys = JSON.parse('@Html.Raw(Surveys)');
+        var Cities = JSON.parse('@Html.Raw(Cities)');
+        var SubCheckList = JSON.parse('@Html.Raw(SubCheckList)');
+        var SelectedState = 0;
+        var SelectedRegion = 0;
+        var SelectedMarket = 0;
+        var SelectedClient = 0;
+        var SelectednetworkMode = 0;
+        var SelectedScope = 0;
+        var SelectedBand = 0;
+        var SelectedCarrier = 0;
+        var SelectedSector = 0;
+        var SiteCode = 0;
+        var ShowSaveBtn = 0;
+        var btn_AddMarketSites = $('#btn-AddMarketSites');
+        var loading = $.loading();
+        ///project dropdown fill by Viewbag.projects
+        var ProjectId = $('#ProjectId').attr('data-ProjectId'); // '@ViewBag.Id';
+        var Projects =  @Html.Raw(Json.Encode(@ViewBag.Projects));
+        $('#ProjectId-r0').empty();
+        $('#ProjectId-r0').append(' <option  value="0">-Project-</option></select>');
+        $.each(Projects, function (i, item) {
+            // if (item.ProjectId.toString() == Id) {
+            $('#ProjectId-r0').append(' <option value=' + item.ProjectId + '>' + item.ProjectName +'</option></select>');
+            // }
+        });
+        ///select and disable project dropdown if value =0
+        if (ProjectId != 0) {
+            $('#ProjectId-r0').val(ProjectId);
+            //$('#ProjectId-r0').attr("disabled", true);
+        }
+        $('#ProjectId-r0').attr("disabled", true);
+        //market load
+        $('#Market-r0').empty();
+        $('#Market-r0').append(' <option  value="0">-Market-</option></select>');
+        $.each(Cities, function (i, v) {
+            // if (v.PDefinationId == value) {
+            $('#Market-r0').append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+            //  }
+        });
+        var ProjectSitesNewRowD = $("#NewRow-r0").html();
+        var ProjectSitesNewRowNew  =ProjectSitesNewRowD;
+
+    </script>
+    <script src="~/Content/js/ProjectSites-New.js"></script>
+
+    <script>
+
+        jQuery.fn.exists = function () { return this.length > 0; }
+
+        var Id = '@ViewBag.Id';
+        if (Id > 0) {
+            $.ajax({
+                url: '/workorder/SiteWithSectors?Id=' + Id,
+                success: function (result) {
+                    //  console.log(result);
+
+
+                    for (var i = 0; i < result.length; i++) {
+                        // //debugger
+                        var obj = result[i];
+                        delete obj.ReceivedOn;
+                        delete obj.SurveyId;
+                        delete obj.clusterId;
+                        delete obj.clusterName;
+                        delete obj.clusterFile;
+                        delete obj.networkModes;
+                        if (i > 0) {
+                            //NewRow();
+                            OnTabNewRow();
+                        }
+                        for (var key in obj) {
+                            var value = obj[key];
+
+
+
+
+
+                            if ('@ViewBag.FormType' == 'New' && key == 'SiteId') {
+                                value = '0';
+                            }
+
+                            if ($('#' + key).exists()) {
+                                $('#' + key).val(value);
+
+                            } else {
+
+                                $('#' + key + '-r' + i).val(value);
+                            }
+
+                            if (key == 'Scope') {
+                                ScopeChange();
+                            } else if (key == 'networkMode') {
+                                LoadBands('r' + i, value);
+                            }
+                            else if (key == 'Band') {
+                                LoadCarriers('r' + i, value);
+                            }
+                        }
+
+                    }
+                    //  console.log(result[0]);
+                }
+            });
+        }
+
+
+        //$('.mymultiselect').multiselect({
+        //    selectedClass: 'multiselect-selected',
+        //    allSelectedText: 'selected',
+        //    numberDisplayed: 1,
+        //    maxHeight: 400,
+        //    buttonWidth: '80%',
+        //   onDropdownHide: function (event) {
+
+        //    },
+
+        //});
+        ClusterNewDeviceRow = $('#ClusterNewDeviceRow').html();
+        var ClusterNewDeviceRowCLONE = ClusterNewDeviceRow;
+
+
+
+
+        $("input[type='checkbox']").change(function() {
+            debugger;
+            if(this.checked) {
+                $(this).val('true');
+            }
+            else{
+                $(this).val('false');
+            }
+        });
+
+    </script>
+
+}
+@section style{
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+
+    <link href="~/Content/box.css" rel="stylesheet" />
+
+    <link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    @Styles.Render("~/AdminLTE/plugins/datepicker/css")
+    <style>
+        .required {
+            border-color: red;
+        }
+
+        #tbl-wo .form-control {
+            /*width: 100px;*/
+        }
+
+        .SelectedRow {
+            background-color: #454de2 !important;
+            color: white;
+        }
+    </style>
+
+
+}
+<script>
+    $(function () {
+        $("#upload").bind("click", function () {
+            try{
+                $("body").append(`<div id="ajaxLoading" style="position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; margin: auto; padding: 8px; text-align: center; vertical-align: middle; width: 140px; height: 95px; z-index: 2000; border-radius: 4px; display: block;"><img src="/Content/Images/Application/Logo_Loading.gif" style="margin-bottom:8px;width:100px;height:100px"><p style="margin:0;font-size:15px;color:#fff;background:#88887B">Please Wait...</p></div>`);
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var table = $("<table />");
+                    var rows = e.target.result.split("\n");
+                    $("#TBody").html('');
+                    if(rows[0].split(',').length > 20 || rows[0].split(',').length < 20){
+                        $.notify("File Format is invalid.", { color: "#ffffff", background: "#1ced62", blur: 0.6, delay: 0, });
+                    }
+                    for (var i = 0; i < rows.length; i++) {
+                        if(i >0){
+                            var cells = rows[i].split(",");
+                            if(cells !=""){
+                                ProjectSitesFileRow(cells);
+
+                                $("#TBody select").each(function (j) {
+                                   var selected = $(this).attr('dataPreValue');
+
+                                    if (selected != undefined) {
+                                        selected=selected.toLowerCase();
+                                        var Id=$(this).attr("id");
+                                        //$(" option[text="+selected+"]",this).attr('selected', true);
+                                        $('#'+Id+' option').map(function () {
+                                            if ($(this).text().toLowerCase() == selected) return this;
+                                        }).attr('selected', 'selected');  // $(this).find('option:contains("'+selected+'")').attr('selected', 'selected');
+                                    }
+
+                                });
+                                $("#TBody input").each(function (j) {
+
+                                    var selected = $(this).attr('dataPreValue');
+
+                                    var abc = 'data-required="no"';
+                                    if (selected != undefined && selected != abc) {
+                                        $(this).val(selected);
+                                    }
+                                    else{
+                                        $(this).val("");
+                                    }
+
+
+                                    $("input[type='checkbox']").each(function (j) {
+                                        var name = $(this).attr('dataPreValue');
+                                        debugger;
+                                        //$(this).attr('name', '[' + i + '].' + name);
+                                        if (name=='TRUE') {
+                                            $(this).prop('checked', true);
+                                        }
+                                    });
+                                });
+                            }
+                        }
+
+                        //for (var j = 0; j < cells.length; j++) {
+                        //    //debugger
+                        //    var cell = $("<td />");
+                        //    cell.html(cells[j]);
+                        //    row.append(cell);
+                        //    console.log(cells[j].split("\n")[0]);
+                        //}
+                        // table.append(row);
+                    }
+                    if (ProjectId != 0) {
+                        $('.ProjectId').val(ProjectId);
+                        $('.ProjectId').attr("disabled", true);
+                    }
+                    $("#ajaxLoading").remove();
+                    // $("#TBody").html('');
+                    //$("#TBody").append(table);
+                }
+
+                reader.readAsText($("#fileUpload")[0].files[0]);
+
+
+                //var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+                //if (regex.test($("#fileUpload").val().toLowerCase())) {
+                //    if (typeof (FileReader) != "undefined") {
+                //        var reader = new FileReader();
+                //        reader.onload = function (e) {
+                //            var table = $("<table />");
+                //            var rows = e.target.result.split("\n");
+                //            for (var i = 0; i < rows.length; i++) {
+                //                var row = $("<tr />");
+                //                var cells = rows[i].split(",");
+                //                for (var j = 0; j < cells.length; j++) {
+                //                    var cell = $("<td />");
+                //                    cell.html(cells[j]);
+                //                    row.append(cell);
+                //                }
+                //                table.append(row);
+                //            }
+                //            $("#TBody").html('');
+                //            $("#TBody").append(table);
+                //        }
+                //        reader.readAsText($("#fileUpload")[0].files[0]);
+                //    } else {
+                //        alert("This browser does not support HTML5.");
+                //    }
+                //} else {
+                //    alert("Please upload a valid CSV file.");
+                //}
+          
+            }
+            catch(e){
+                $("#ajaxLoading").remove();
+            }
+            finally{
+                $("#ajaxLoading").remove();
+            }
+        });
+        function ProjectSitesFileRow(row) {
+
+            try{
+                ProjectSitesNewRowNew = ProjectSitesNewRowD;
+                // var cells = row[i].split(",");
+                RowCounter++;
+                var tempCount = parseInt(RowCount) - 1;
+                var NewRow = "";
+                var RowsFields = (ProjectSitesNewRowNew.match(new RegExp("r0", "g")) || []).length;
+                for (var i = 0; i < RowsFields; i++) {
+                    debugger //dataprevalue
+
+                    var lng=0;
+                    var spliter = 1;
+                    if(i<20){
+                        var spliter=row[i].split(" ");
+                        lng=spliter.length;
+                    }
+                    ProjectSitesNewRowNew = ProjectSitesNewRowNew.replace("r0" , "r" + RowCount + "");
+                    if(lng >1)
+                    {
+                        ProjectSitesNewRowNew = ProjectSitesNewRowNew.replace('dataprevalue'+i+'=""','dataprevalue="'+row[i]+'"');
+                    }
+                    else{
+                        if(row[i] == "" || i == 20)
+                        {
+                            ProjectSitesNewRowNew = ProjectSitesNewRowNew.replace('dataprevalue'+i+'=""','dataprevalue'+i+'=""');
+                        }else{
+                            ProjectSitesNewRowNew = ProjectSitesNewRowNew.replace('dataprevalue'+i,'dataprevalue='+row[i]);
+                        }
+                        //ProjectSitesNewRowNew = ProjectSitesNewRowNew.replace('dataprevalue'+i,'dataprevalue='+row[i]);
+                    }
+                    if(row[i] == "" || i == 20 || lng > 1)
+                    {
+                        ProjectSitesNewRowNew = ProjectSitesNewRowNew.replace('=""','=""');
+                        ProjectSitesNewRowNew = ProjectSitesNewRowNew.replace('=""','=""');
+                     
+                    }else{
+                        ProjectSitesNewRowNew = ProjectSitesNewRowNew.replace('=""','');
+                        ProjectSitesNewRowNew = ProjectSitesNewRowNew.replace('=""','');
+                    }
+                
+
+                }
+                $('#TBody').append('<tr>' + ProjectSitesNewRowNew + '</tr>');
+                $('.ClusterRowFirst').last().focus();
+                RowCount++;
+                ///////
+                //$('.mymultiselect').multiselect({
+                //    selectedClass: 'multiselect-selected',
+                //    allSelectedText: 'selected',
+                //    numberDisplayed: 1,
+                //    maxHeight: 400,
+                //    buttonWidth: '80%',
+                //    onDropdownHide: function (event) {
+
+                //    },
+
+                //});
+                //var nnnn = $("#networkmodefake-r" + tempCount).parent().parent().find(".btn-group");
+                //nnnn.remove();
+                $("#ajaxLoading").remove();
+            }
+            catch(e){
+
+            }
+            finally{
+                $("#ajaxLoading").remove();
+            }
+        }
+    });
+
+    $('#fileUpload').change(function(){
+        if($('#fileUpload').val()==''){
+            $('#upload').attr('disabled',true)
+        } 
+        else{
+            $('#upload').attr('disabled',false);
+        }
+    })
+    $('#upload').attr('disabled',true);
+</script>
+
+

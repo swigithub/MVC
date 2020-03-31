@@ -1,0 +1,849 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_SiteTestSummary>
+
+@functions{
+              public string GetSector(string sectorName) {
+					if (sectorName == "Alpha")
+                      return "1";
+					else if (sectorName == "Beta")
+                      return "2";
+					else if (sectorName == "Gamma")
+                      return "3";
+					else if (sectorName == "Delta")
+                      return "4";
+					else if (sectorName == "Epsilon")
+                      return "5";
+					else if (sectorName == "DiGamma")
+                      return "6";  
+					else if (sectorName == "Eta")
+                      return "7";  
+					else if (sectorName == "Theta")
+                      return "8";
+					else if (sectorName == "Iota")
+                      return "9";
+                  else
+                      return "";
+
+              } 
+			  
+			
+							
+			  
+			    public string GetBGPing(bool? status, double tpt) 
+    {
+		string tdstyle="";
+		
+        if (status==false && (tpt>75 && tpt<86.25))
+		{
+			tdstyle= "background-color:green;";
+		}
+		else if (status==true && tpt<=75)
+		{
+			tdstyle= "background-color:green;color:white";
+		}
+		else if (status==false)
+		{
+			tdstyle= "background-color:orange;color:black";
+		}
+		
+		return tdstyle;
+  }
+			
+  public string GetBGDLColor(bool? status, double tpt) 
+    {
+		string tdstyle="";
+		
+        if (status==false && (tpt>=86 && tpt<102))
+		{
+			tdstyle= "background-color:green;";
+		}
+		else if (status==true && tpt>=102)
+		{
+			tdstyle= "background-color:green;color:white";
+		}
+		else if (status==false)
+		{
+			tdstyle= "background-color:orange;color:black";
+		}
+		
+		return tdstyle;
+  }
+  
+  
+    public string GetBGULColor(bool? status, double tpt) 
+    {
+		string tdstyle="";
+		
+        if (status==false && (tpt>=6.8 && tpt<8))
+		{
+			tdstyle= "background-color:green;";
+		}
+		else if (status==true && tpt>=8)
+		{
+			tdstyle= "background-color:green;color:white";
+		}
+		else if (status==false)
+		{
+			tdstyle= "background-color:orange;color:black";
+		}
+		
+		return tdstyle;
+  }
+  
+  
+  			
+  public string GetBGConSetup(bool? status) 
+    {
+		string tdstyle="";
+		
+        if (status==true)
+		{
+			tdstyle= "background-color:green;color:white";
+		}
+		else if (status==false)
+		{
+			tdstyle= "background-color:orange;color:black";
+		}
+		
+		return tdstyle;
+  }
+  
+  
+   			
+  public string GetBGHO(bool? status) 
+    {
+		string tdstyle="";
+		
+        if (status==true)
+		{
+			tdstyle= "background-color:green;color:white";
+		}
+		else if (status==false)
+		{
+			tdstyle= "background-color:orange;color:black";
+		}
+		else
+		{
+			tdstyle= "background-color:white;color:white";
+		}
+		
+		return tdstyle;
+  }
+			  }
+			  
+			  
+<style>
+    .heading {
+        color: black;
+        text-align: center;
+    }
+
+    .wrap {
+        position: absolute;
+    }
+
+    .header {
+        position: absolute;
+        height: auto;
+        width: 100%;
+        top: 0;
+    }
+
+    .footer {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        bottom: 0;
+    }
+
+    .content {
+        height: 100%; /* What should this be?? */
+        position: relative;
+        padding: 20px 0; /* padding height of header/footer */
+    }
+
+    .bgcolor {
+        background: #004B99;
+    }
+
+    .breakhere {
+        page-break-after: always;
+    }
+
+    table td {
+        padding: 8px;
+    }
+
+    table th {
+        padding: 0px;
+    }
+
+
+    .tbl-heading {
+        background-color: #ffcc00;
+        color: black;
+    }
+
+    .tbl-data {
+        background-color: #dbdbdd;
+        color: #2332de;
+    }
+
+    .left {
+        float: left;
+    }
+
+    .right {
+        float: right;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .PageBorder {
+        border: dotted 1px;
+    }
+    .page{
+        margin: 0px;
+    }
+</style>
+
+
+
+
+
+<style>
+    .SprintTableHeading {
+        background-color: #ccccff;
+		
+    }
+
+    .SprintTableHeading2 {
+        background-color: #c8f9f9;
+		
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .SprintTableHeading3 {
+        background-color: #c8f9f9;
+		width:15px;
+        /*writing-mode: vertical-lr;
+                transform: rotate(90deg);*/
+    }
+	
+	.SprintTableHeading4 {
+        background-color: #c8f9f9;
+		width:15px;
+		height:490px;
+        /*writing-mode: vertical-lr;
+                transform: rotate(90deg);*/
+    }
+
+    #fieldtest tr td {
+        border: 0.5px solid silver;
+        text-align: center;
+    }
+
+    #fieldtest th {
+        border: 0.5px solid silver;
+    }
+
+.txtDirection span {
+    writing-mode: vertical-rl;
+    -webkit-transform: rotateZ(180deg);
+    -moz-transform: rotateZ(180deg);
+    transform: rotateZ(180deg);
+}
+</style>
+
+
+
+@if (Model.Count() > 0)
+{
+    Layout = null;
+    int count = 0;
+    int RowSpan = Model.Count() + 1;
+    var First = Model.FirstOrDefault();
+    string NetwordMode = Model.First().NetworkMode;
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+
+      <!--Sprint Format Report-->
+    <div class="page">
+
+        <div style="width:100%; margin-left:3px;">
+        
+            <table id="fieldtest" cellspacing="0" style="width:100%;height:825px;margin-left:-3px;">
+                <tr>
+                    <th class="SprintTableHeading3 txtDirection" rowspan="@((Model.Count()*3)+3)"><span>STATIONARY&nbsp;TEST</span></th>
+                    <th class="SprintTableHeading3 txtDirection" rowspan="@(Model.Count()+1)"><span>Peak Throughput</span></th>
+                    <th class="SprintTableHeading">Sector ID</th>
+                    <th class="SprintTableHeading">Peak PDSCH<br />DL Throughput<br />(>=@First.DownlinkRate Mbps)</th>
+                    <th class="SprintTableHeading" style="width: 106px;">Status</th>
+                    <th class="SprintTableHeading">Peak PUSCH<br />UL Throughput<br />(>=@First.UplinkRate Mbps)</th>
+                    <th class="SprintTableHeading" style="width: 106px;">Status</th>
+                    <th class="SprintTableHeading">Latitude</th>
+                    <th class="SprintTableHeading">Longitude</th>
+                    <th class="SprintTableHeading">RSRP</th>
+                    <th class="SprintTableHeading">CINR</th>
+                    <th class="SprintTableHeading" colspan="2">Comments</th>
+                </tr>
+                @foreach (var item in Model)
+                {
+				var obj1 = Model.First();
+                    var obj = obj1.Locations.Where(x => x.SectorId == item.SectorId && (x.TestType == "UDPDL" || x.TestType == "UDPUL")).FirstOrDefault();
+                    
+                    if (obj == null)
+                    {
+                        obj = new TestLocations();
+                    }
+                    <tr>
+                        <td class="SprintTableHeading2">
+                            Sector @GetSector(@item.Sector)
+                        </td>
+                        <td>
+                            @{
+                                if (item.PhyDLSpeedMax != 0)
+                                {
+                                    @item.PhyDLSpeedMax.ToString("0.00");
+                                }
+                            }
+                        </td>
+                        <td style="@GetBGDLColor(@item.PhyDLStatus,@item.PhyDLSpeedMax)">
+                            @if (item.PhyDLStatus == false && (@item.PhyDLSpeedMax>=86 && @item.PhyDLSpeedMax<102))
+                            {									
+								<span class="bold" style="color:white;" data-type="BOOLEAN,STRING,COLOR" id="">Cond. Pass</span>								
+								
+							}	
+							else if (item.PhyDLStatus == true && @item.PhyDLSpeedMax>=102)
+                            {	
+								<span class="bold" data-type="BOOLEAN,STRING,COLOR" id="" style="color:white;">Pass</span>
+							}												
+                            else if (item.PhyDLStatus == false)
+                            { <span id="bold " data-type="BOOLEAN,STRING,COLOR" style="color:white" class="bold">Fail</span> }
+                        </td>
+                        <td>
+                            @{
+                                if (item.PhyULSpeedMax != 0)
+                                { 
+								@item.PhyULSpeedMax.ToString("0.00");
+                                }
+                            }
+                        </td>
+                        <td style="@GetBGULColor(@item.PhyULStatus,@item.PhyULSpeedMax)">
+                            @if (item.PhyULStatus == false && (@item.PhyULSpeedMax>=6.8 && @item.PhyULSpeedMax<8))
+                            {									
+								<span class="bold" style="color:white" data-type="BOOLEAN,STRING,COLOR" id="">Cond. Pass</span>
+								
+							}	
+							else if (item.PhyULStatus == true && @item.PhyULSpeedMax>=8)
+                            {	
+								<span class="bold" data-type="BOOLEAN,STRING,COLOR" id="">Pass</span>
+							}												
+                            else if (item.PhyULStatus == false)
+                            { <span id="bold " data-type="BOOLEAN,STRING,COLOR" style="color:white" class="bold">Fail</span> }
+                        </td>
+                        <td>
+                          
+                                @{
+                                    if (obj.Latitude != 0)
+                                    {
+                                       @obj.Latitude
+
+                                    }
+                                }
+
+                          
+                        </td>
+                        <td>
+                            @{
+
+                                if (obj.Longitude != 0)
+                                {
+                                   @obj.Longitude
+
+                                }
+                            }
+                        </td>
+                        <td>
+                           
+                            @{
+                                if (obj.SignalStrength != 0)
+                                {
+                                    <span>
+
+                                        @obj.SignalStrength
+
+
+                                    </span>
+                                }}
+                         
+                        </td>
+                        <td>
+                            @{
+                                if (obj.SignalStrength != 0)
+                                {
+                                    <span>
+
+                                        @obj.SignalNoiseRatio.ToString("0.0")
+
+
+                                    </span>
+                                }}
+
+                              
+                           
+                        </td>
+                     
+                        <td style="width:430px;">
+                        @obj.TestComments
+                        </td>
+
+
+                        @*@if (item.DLSignalNoise != 0)
+                            {
+                                @item.DLSignalNoise.ToString("0.00");
+                            }*@
+
+                    </tr>
+				}
+                <tr>
+                    <td style="background-color:yellow" colspan="12"></td>
+                </tr>
+                <tr>
+                    <th class="SprintTableHeading3 txtDirection" rowspan="@((Model.Count()+1)*2)"><span>Latency</span></th>
+                    <th class="SprintTableHeading">Test</th>
+                    <th class="SprintTableHeading">Sector ID</th>
+                    <th class="SprintTableHeading">Expected</th>
+                    <th class="SprintTableHeading">Actual</th>
+                    <th class="SprintTableHeading">Status</th>
+                    <th class="SprintTableHeading">Latitude</th>
+                    <th class="SprintTableHeading">Longitude</th>
+                    <th class="SprintTableHeading">RSRP</th>
+                    <th class="SprintTableHeading">CINR</th>
+                    <th class="SprintTableHeading" colspan="2">Comments</th>
+                </tr>
+
+
+                @foreach (var item in Model)
+                {		
+					var obj1 = Model.First();
+                    var obj = obj1.Locations.Where(x => x.SectorId == item.SectorId && x.TestType == "CON_SETUP").FirstOrDefault();
+					
+                    if (obj == null)
+                    {
+                        obj = new TestLocations();
+                    }
+									
+                    count++;
+
+                    if (count > Model.Count())
+                    {
+                        count = 0;
+                    }
+                    <tr>
+                        @if (count == 1)
+                        {
+
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())">Connection Setup</td>
+                          
+                        }
+
+                        <td class="SprintTableHeading2">Sector @GetSector(@item.Sector)</td>
+                        @if (count == 1)
+                        {
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())"><= @First.ConnectionSetupTime sec</td>
+                        }
+                        <td>
+                            @{	
+						
+                                if (@item.AvgConSetupTime != 0)
+                                {
+                                    @item.AvgConSetupTime.ToString("0.000");
+                                }
+                            }
+                        </td>
+                        <td style="@GetBGConSetup(@item.ConnectionSetupStatus)">
+                            @if (item.ConnectionSetupStatus == true)
+                            {<span class="bold" data-type="BOOLEAN,STRING,COLOR" id="" style="color:white">Pass</span>}
+                            else if (item.ConnectionSetupStatus == false)
+                            {<span id="bold " data-type="BOOLEAN,STRING,COLOR" style="color:white" class="bold">Fail</span>}
+                        </td>
+                        <td>
+                            @{
+
+                                if (obj.Latitude != 0)
+                                {
+                                    @obj.Latitude;
+                                }
+                            }
+                            
+                        </td>
+                        <td>
+                            @{
+
+                                if (obj.Longitude != 0)
+                                {
+                                    @obj.Longitude;
+
+                                }
+                            }
+                        </td>
+
+                        <td>
+                          @{ 
+                              if(obj.SignalStrength != 0) { 
+                                    <span>
+
+                                       @obj.SignalStrength
+                                        
+
+                                    </span>
+                              }}
+                             
+                        </td>
+                        <td>
+                            @{
+                                if (obj.SignalStrength != 0)
+                                {
+                                    <span>
+
+                                        @obj.SignalNoiseRatio.ToString("0.0")
+
+
+                                    </span>
+                                }}
+
+                        </td>
+
+                        <td colspan="2"></td>
+                    </tr>
+
+
+                                }
+
+                @foreach (var item in Model)
+                {
+					var obj1 = Model.First();
+                    var obj = obj1.Locations.Where(x => x.SectorId == item.SectorId && x.TestType.ToUpper() == "PING").FirstOrDefault();
+                    if (obj == null)
+                    {
+                        obj = new TestLocations();
+                    }
+                    count++;
+
+                    if (count > Model.Count())
+                    {
+                        count = 0;
+                    }
+                    <tr>
+
+                        @if (count == 0)
+                        {
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())">RTT</td>
+                        }
+
+                        <td class="SprintTableHeading2">Sector @GetSector(@item.Sector)</td>
+                        @if (count == 0)
+                        {
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())"><= @First.LatencyRate ms</td>
+                        }
+                        <td>
+                            @{
+                                if (item.PingAverageResult != 0)
+                                {
+                                    @item.PingAverageResult.ToString("0.00")
+                                }
+                            }
+                        </td>
+                        <td style="@GetBGPing(@item.PingStatus,@item.PingAverageResult)">
+							@if (item.PingStatus == false && (@item.PingAverageResult>75 && @item.PingAverageResult<=86.25))
+                            {									
+								<span class="bold" style="color:white" data-type="BOOLEAN,STRING,COLOR" id="">Cond. Pass</span>
+								
+							}	
+							else if (item.PingStatus == true && @item.PingAverageResult<=75)
+                            {	
+								<span class="bold" data-type="BOOLEAN,STRING,COLOR" id="">Pass</span>
+							}												
+                            else if (item.PingStatus == false)
+                            { <span id="bold " data-type="BOOLEAN,STRING,COLOR" style="color:white" class="bold">Fail</span> }
+							
+							
+                           
+                        </td>
+                        <td>
+                            @{
+                                if (obj.Latitude != 0)
+                                {
+                                @obj.Latitude
+                                    }
+                                }
+                        </td>
+                        <td>
+                            @{
+                                if (obj.Longitude != 0)
+                                {
+                                @obj.Longitude
+                                    }
+                                }
+                        </td>
+
+                        <td>
+                            @{
+                                if (obj.SignalStrength != 0)
+                                {
+                                    <span>
+
+                                        @obj.SignalStrength
+
+
+                                    </span>
+                                }}
+
+                        </td>
+                        <td>
+                            @{
+                                if (obj.SignalStrength != 0)
+                                {
+                                    <span>
+
+                                        @obj.SignalNoiseRatio.ToString("0.0")
+
+
+                                    </span>
+                                }}
+
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+
+
+                                }
+                <tr><td style="background-color:yellow" colspan="13"></td></tr>
+                <tr>
+                    <th class="SprintTableHeading">Intra-Site HO</th>
+                    <th class="SprintTableHeading">Direction</th>
+                    <th class="SprintTableHeading">Test</th>
+                    <th class="SprintTableHeading" style="width: 122px;">PCI to PCI/<br />Sec to Sec</th>
+                    <th class="SprintTableHeading">Expected</th>
+                    <th class="SprintTableHeading">Actual (<100)</th>
+                    <th class="SprintTableHeading">Status</th>
+                    <th class="SprintTableHeading" colspan="8">Comments</th>
+                </tr>
+                @{
+                    var lst = Model.ToList();
+                    String[] secOrder = { "alpha", "beta", "gamma", "delta", "epsilon", "digamma", "iota" };
+                    List<string> Sectors = new List<string>();
+                    Sectors.AddRange(Model.OrderBy(m => m.Azimuth).Select(m => m.Sector).ToList());
+                }
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                    String fromSector = Sectors[i];
+                    String toSector = "";
+
+                    if (i + 1 == Model.Count())
+                    {
+                        toSector = Sectors[0];
+                    }
+                    else
+                    {
+                        toSector = Sectors[i + 1];
+                    }
+
+                    int fromSecIndex = Array.IndexOf(secOrder, fromSector.ToLower()) + 1;
+                    int toSecIndex = Array.IndexOf(secOrder, toSector.ToLower()) + 1;
+
+                    <tr>
+                        @if (i == 0)
+                        {
+                            <th class="SprintTableHeading3 txtDirection" rowspan="@((Model.Count()) * 2)" style="height:250px"><span>NON STATIONARY TEST</span></th>
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())">CW</td>
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())">HOSR</td>
+                        }
+
+
+
+                        <td>Sec @fromSecIndex to Sec @toSecIndex</td>
+                        @if (i == 0)
+                        {
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())">100%</td>
+                        }
+                        <td>
+						
+                            @{if (lst.Count >= fromSecIndex)
+                                {
+                                    if (lst[fromSecIndex - 1].HoInterruptionTime > 0)
+                                    {
+										//if (lst[fromSecIndex - 1].CwHandoverStatus==true)
+										//{
+                                        var obj=lst[fromSecIndex - 1].HoInterruptionTime;
+										@obj.ToString("0.0");
+										//}
+                                    }
+                                }
+                            }
+                        </td>
+                        <td style="@GetBGHO(lst[fromSecIndex - 1].CwHandoverStatus)">
+                            @{
+                                if (lst.Count >= fromSecIndex)
+                                {
+                                    if (lst[fromSecIndex - 1].CwHandoverStatus == true)
+                                    {<span class="bold" data-type="BOOLEAN,STRING,COLOR" style="color:white" id="">Pass</span>}
+                                    else if (lst[fromSecIndex - 1].CwHandoverStatus == false)
+                                    {<span class="bold" data-type="BOOLEAN,STRING,COLOR" style="color:white" id="">Missing</span>}
+                                    else
+                                    {<span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span>}
+                                } }
+                        </td>
+                        <td colspan="8">
+							@{if (lst.Count >= fromSecIndex)
+                                {
+                                    if (lst[fromSecIndex - 1].Sector == "Alpha" && lst[fromSecIndex - 1].Site=="NY05XC507")
+                                    {
+                                        var obj = "Intra HO, Carrier/PCI: 41490/2";
+										@obj;
+                                    }
+									else if (lst[fromSecIndex - 1].Sector == "Gamma" && lst[fromSecIndex - 1].Site=="NY05XC507")
+                                    {
+                                        var obj = "Inter HO, Carrier/PCI: 41490/301";
+										@obj;
+                                    }
+                                }
+                            }
+						</td>
+                    </tr>
+                                }
+
+                @for (int i = Model.Count() - 1; i >= 0; i--)
+                {
+
+                    String fromSector = Sectors[i];
+                    String toSector = "";
+
+                    if (i == 0)
+                    {
+                        toSector = Sectors[Model.Count() - 1];
+                    }
+                    else
+                    {
+                        toSector = Sectors[i - 1];
+                    }
+
+                    int fromSecIndex = Array.IndexOf(secOrder, fromSector.ToLower()) + 1;
+                    int toSecIndex = Array.IndexOf(secOrder, toSector.ToLower()) + 1;
+                    <tr>
+                        @if (i == Model.Count() - 1)
+                        {
+
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())">CCW</td>
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())">HOSR</td>
+                        }
+
+
+
+                        <td>Sec @fromSecIndex to Sec @toSecIndex</td>
+                        @if (i == Model.Count() - 1)
+                        {
+                            <td class="SprintTableHeading2" rowspan="@(Model.Count())">100%</td>
+                        }
+                        <td>
+                            @{
+                                if (lst.Count >= fromSecIndex)
+                                {
+                                    if (lst[fromSecIndex - 1].HoInterruptionTime != 0)
+                                    {
+										//if (lst[fromSecIndex - 1].Ccwhandoverstatus==true)
+										//{
+                                       var obj=lst[fromSecIndex - 1].CCWHoInterruptionTime;
+										@obj.ToString("0.0");
+										//}
+                                    }
+                                }
+                            }
+							
+							
+                        </td>
+                        <td style="@GetBGHO(lst[fromSecIndex - 1].Ccwhandoverstatus)">
+                            @{
+                                if (lst.Count >= fromSecIndex)
+                                {
+                                    if (lst[fromSecIndex - 1].Ccwhandoverstatus == true)
+                                    {<span class="bold" data-type="BOOLEAN,STRING,COLOR" style="color:white" id="">Pass</span>}
+                                    else if (lst[fromSecIndex - 1].Ccwhandoverstatus == false)
+                                    {
+                                        {<span class="bold" data-type="BOOLEAN,STRING,COLOR" style="color:white" id="">Missing</span> }
+                                    }
+                                    else
+                                    {<span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span>}
+                                }
+                            }
+                        </td>
+                        <td colspan="8">
+						@{if (lst.Count >= fromSecIndex)
+                                {
+								
+                                    if (lst[fromSecIndex - 1].Sector == "Beta" && lst[fromSecIndex - 1].Site=="NY05XC507")
+                                    {
+                                        var obj = "Inter HO, Carrier/PCI: 41490/327";
+										@obj;
+                                    }
+                                }
+                            }
+						</td>
+                    </tr>
+                                }
+            </table>
+
+        </div>
+        @*<div class="footer" style="margin-top: 78px">
+            <div class="footer-heading"></div>
+            <div class="footer-text CopyRights"></div>
+        </div>*@
+    </div>
+
+    <script>
+        var ReportConfiguration = JSON.parse('@Html.Raw(ReportConfiguration)');
+        function Configurations(keyCode, dataType, value, IsActive) {
+            // console.log(keyCode + '-' + dataType + '-' + value + '-' + IsActive);
+            if (dataType == 'BOOLEAN') {
+                if (IsActive == true) {
+                    $('#' + keyCode).show();
+                    $('.' + keyCode).show();
+                    $('#pan-' + keyCode).show();
+                } else {
+                    $('#' + keyCode).hide();
+                    $('.' + keyCode).hide();
+                    $('#pan-' + keyCode).hide();
+                }
+            }
+
+            //if (dataType == 'BGCOLOR') {
+            //    $('.' + c.KeyCode).css({
+            //        'background': c.value
+            //    });
+            //}
+
+            if (dataType == 'STRING') {
+                if (value != null || value != '') {
+                    var preValue = $('#' + keyCode).attr('data-preValue');
+                    if (preValue != undefined) {
+                        $('#' + keyCode).text(preValue + ' ' + value);
+                    } else {
+                        $('#' + keyCode).text(value);
+                    }
+
+                    $('.' + keyCode).text(value);
+                }
+            }
+        }
+
+    </script>
+                                }

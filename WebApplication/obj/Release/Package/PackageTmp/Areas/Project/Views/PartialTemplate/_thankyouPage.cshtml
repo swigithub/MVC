@@ -1,0 +1,137 @@
+﻿
+<style>
+    .bgcolor {
+        height: inherit;
+        width: auto;
+    }
+
+    .dvBody {
+        padding-top: 25px;
+        padding-bottom: 25px;
+        padding-left: 40px;
+        padding-right: 40px;
+        height: 100%;
+    }
+
+    .maxHeight {
+        height: inherit;
+    }
+   .verticalMiddle{
+            position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
+    text-align: center;
+    }
+</style>
+
+
+<div class="dvBody" id="PAGE_BACKGROUNDCOLOR">
+    <div class="row" style="height:100%">
+        <div class="col-md-12 verticalMiddle">
+            <h1 id="PAGE_THANKYOU_TEXT"></h1>
+            <img id="PAGE_CLIENT_LOGO" src="">
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        var WithView = '@Model.WithPartialView';
+        if (WithView == 'false' || WithView == 'False') {
+            return false;
+        }
+
+        $.ajax({
+            url: '/Project/Template/GetNodeWidgetData',
+            data: {
+                NodeId: @Model.NodeId,
+                BandId: @Model.BandId,
+                CareerId: @Model.CarrierId,
+                NetworkModeId: @Model.NetworkModeId,
+                ProjectId: @Model.ProjectId,
+                ScopeId: @Model.ScopeId,
+                SiteId: @Model.SiteId,
+                PlotId: 0,
+                UserId: 11,
+                ControlType: "PAGE",
+            },
+            type: "POST",
+            async: false,
+            success: function(result) {
+                LoadCompletePage(result);
+            }
+        });
+
+    });
+
+
+    function LoadCompletePage(data) {
+        var NodeId = @Model.NodeId;
+        var baseData = data.NodeSettingList;
+        var additionalData = data;
+
+        $(baseData).each(function(i) {
+
+            if (baseData[i].MappedId == "PAGE_BACKGROUNDCOLOR") {
+                $('#dv' + NodeId).find("#PAGE_BACKGROUNDCOLOR").css("background", baseData[i].Value, 'important');
+            }
+
+            if (baseData[i].MappedId == "PAGE_CLIENT_LOGO") {
+                $('#dv' + NodeId).find('#PAGE_CLIENT_LOGO').attr("src", baseData[i].Value);
+
+                if (baseData[i].Settings != null && baseData[i].Settings != "") {
+                    var settingsObj = JSON.parse(baseData[i].Settings);
+                    $('#dv' + NodeId).find('#PAGE_CLIENT_LOGO').height(settingsObj[0].height).width(settingsObj[0].width);
+
+                    if (settingsObj[0]["align"] == "left") {
+                        $('#dv' + NodeId).find('#PAGE_CLIENT_LOGO').css("float", "left");
+                    }
+                    if (settingsObj[0]["align"] == "right") {
+                        $('#dv' + NodeId).find('#PAGE_CLIENT_LOGO').css("float", "right");
+                    }
+                    if (settingsObj[0]["align"] == "center") {
+                        $('#dv' + NodeId).find('#PAGE_CLIENT_LOGO').addClass("center-block");
+                    }
+                }
+            }
+
+            if (baseData[i].MappedId == "PAGE_THANKYOU_TEXT") {
+                $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').html(baseData[i].Value);
+
+                if (baseData[i].Settings != null && baseData[i].Settings != "") {
+                    var settingsObj = JSON.parse(baseData[i].Settings);
+                    $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("font-family", settingsObj[0]["font-family"], 'important');
+                    $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("font-size", settingsObj[0]["font-size"], 'important');
+                    $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("font-style", settingsObj[0]["typography"]);
+                    $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("color", settingsObj[0]["font-color"]);
+
+                    if (settingsObj[0]["align"] == "left") {
+                        $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').addClass("text-left");
+                    }
+                    if (settingsObj[0]["align"] == "right") {
+                        $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').addClass("text-right");
+                    }
+                    if (settingsObj[0]["align"] == "center") {
+                        $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').addClass("text-center");
+                    }
+                    if (settingsObj[0]["typography"] == "bold") {
+                        $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("font-weight", "bold");
+                        $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("font-style", "normal");
+                    }
+                    if (settingsObj[0]["typography"] == "italic") {
+                        $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("font-style", "italic");
+                        $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("font-style", "normal");
+                    }
+                    if (settingsObj[0]["typography"] == "bold_italic") {
+                        $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("font-weight", "bold");
+                        $('#dv' + NodeId).find('#PAGE_THANKYOU_TEXT').css("font-style", "italic");
+                    }
+                }
+            }
+        });
+    }
+</script>

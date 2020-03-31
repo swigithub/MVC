@@ -1,0 +1,64 @@
+﻿
+@using SWI.Libraries.AirView.Entities
+
+@model IEnumerable<AV_SiteTestSummary>
+
+@if (Model != null && Model.Count() > 0)
+{
+    var First = Model.FirstOrDefault();
+    string TempNetworkMode = First.NetworkMode;
+    <table style="width:100%;text-align:center;border-bottom:solid 2px;border-top:solid 2px;" class="font">
+        <tr class="tbl-heading ">
+            <th style="width:10%">Site Id</th>
+            <th style="width:10%">Sector Id</th>
+            <th style="width:10%">Network Mode</th>
+            <th style="width:10%">Band</th>
+            <th style="width:10%">Carrier</th>
+            <th style="width:10%">Latitude</th>
+            <th style="width:10%">Longitude</th>
+            <th style="width:10%">Azimuth</th>
+            <th style="width:10%">
+                @if (TempNetworkMode == "LTE")
+                {
+                    <span>PCI</span>
+                }
+                @if (TempNetworkMode == "GSM")
+                {
+                    <span>BCCH</span>
+                }
+                @if (TempNetworkMode == "WCDMA")
+                {
+                    <span>PSC</span>
+                }
+            </th>
+
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Site</td>
+                <td data-type="STRING" class="SECTOR_@item.Sector.ToUpper()">@item.Sector</td>
+                <td>@item.NetworkMode</td>
+                <td>@item.Band</td>
+                <td>@item.Carrier</td>
+                <td>@item.Latitude</td>
+                <td>@item.Longitude</td>
+                <td>@item.Azimuth</td>
+                <td>@item.PciId</td>
+            </tr>
+        }
+
+
+    </table>
+
+
+
+    @*if ((((double)TempCount / 3) % 1) == 0)
+    {
+        PageBreak = true;
+        <P CLASS="breakhere" />
+    }*@
+}
+
+
+

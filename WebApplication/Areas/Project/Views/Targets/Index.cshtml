@@ -1,0 +1,507 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    // Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+@*<link rel="stylesheet" href="~/Areas/Project/Content/stylesR/vendor.css">*@
+<link rel="stylesheet" href="~/Areas/Project/Content/stylesR/daterangepicker.css">
+<link rel="stylesheet" href="~/Areas/Project/Content/stylesR/main.css">
+<link href="~/Areas/Project/Content/Drop-Down-Combo-Tree/style.css" rel="stylesheet" />
+<link href="~/AdminLTE/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminLTE/plugins/sweetalert/sweetalert.js"></script>
+@*<link href="~/Areas/Project/Content/Project/angular-block-ui.min.css" rel="stylesheet" />*@
+<style>
+        .sweet-alert {
+        background-color: #ffffff;
+        width: 478px;
+        padding: 17px;
+        border-radius: 5px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        margin-left: -256px;
+        margin-top: -200px;
+        overflow: hidden;
+        display: none;
+        z-index: 9999992000 !important;
+    }
+    /**/
+    label {
+        padding: 0px;
+    }
+    .comboTreeDropDownContainer{
+        z-index:1;
+    }
+
+    .divBox {
+        /*border: 1px solid gray;*/
+        padding: 5px;
+        width: 190px;
+    }
+
+    .jarviswidget > div {
+        padding: 0px;
+    }
+
+    .jarviswidget > header {
+        height: 42px;
+    }
+
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x- ng-cloak {
+        display: none !important;
+    }
+#mydiv {  
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:1000;
+    background-color:grey;
+    opacity: .8;
+ }
+
+.ajax-loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -32px; /* -1 * image width / 2 */
+    margin-top: -32px;  /* -1 * image height / 2 */
+    display: block;     
+}
+.ui-sortable .light-widget.jarviswidget-sortable>header {
+    box-shadow: none!important;
+    border: 1px solid #c2c2c2;
+    background: #fafafa;
+}
+.light-widget a.collapse-widget {
+    color: #4c4f53;
+}
+.light-widget a.collapse-widget {
+    color: #4c4f53;
+}
+
+.light-widget .widget-toolbar {
+    border: 0!important;
+}
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div ng-app="TargetsApp" ng-controller="TargetsCtrl" id="widget-grid" class="ng-cloak">
+
+    <span id="userid" data-UserId="@ViewBag.UserId"></span>
+    <span id="projectId" data-ProjectId="@ViewBag.Id"></span>
+
+    <div class="row">
+        @*<div class="col-lg-12 col-sm-12 col-xs-12 alert alert-success" ng-show="successMessagebool ">
+                <strong>{{successMessage }}</strong>
+            </div>*@
+
+
+        @*<img id="spinner" ng-src="~/Content/Images/Common/loader.gif" style="display:none;">*@
+
+        @*<div id="myLoader">
+            <img id="img1" style="display:none" class="test" src="~/Content/Images/Common/loader.gif" alt="Loading..." />
+        </div>*@
+
+
+
+
+
+        <div id="mydiv">
+            <img src="~/Content/Images/Common/loader.gif" class="ajax-loader" />
+        </div>
+
+    
+
+
+        @*<div block-ui="myBlockUI">
+            <p> ... I'm blockable ... </p>
+        </div>*@
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-1" role="widget" >
+                <header role="heading">
+                    
+                    <h2>Forecast Import</h2>
+                    <div class="pull-right" style="padding:9px 5px 2px 3px;">
+                        <a href="~/Content/templates/ATT_Targets_Import_Sample.csv" class="btn btn-xs btn-success pull-left" style="margin-right:5px;">
+                            Download Template
+                        </a>
+                        <div class="pull-left">
+
+
+                            @using (Html.BeginForm("FileUpload", "Targets", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-FileUpload" }))
+                            {
+                                <div class="pull-left">
+                                    <input type="file" name="Upload" accept=".csv,xlsx" id="file" class="pull-right btn btn-info btn-xs" style="height:22px;margin-right:5px;" />
+                                </div>
+
+                                <button type="submit" class="btn btn-xs btn-info pull-right" style="margin-right:5px;">
+                                    Upload
+                                </button>
+                            }
+                        </div>
+
+
+                        <a href="/Project/Dashboard/Index/@ViewBag.Id" class="btn btn-xs btn-success pull-right" style="margin-right:5px;">
+                            Return to Dashboard
+                        </a>
+
+                        @if (ViewBag.AllowUri("/Project/Targets/New"))
+                        {
+                            <button type="submit" ng-click="Save(TargetDates)" id="targetsave" class="btn btn-xs btn-info pull-right" style="margin-right:5px;">
+                                Save
+                            </button>
+                        }
+
+
+
+                    </div>
+                </header>
+
+                <div class="box box-solid">
+                       <div class="col-sm-2 col-md-2 col-lg-2" style="background-color: silver;height:70px;display:  none;">
+                        <div class="btn-group" style="padding-top:30px;" ng-repeat="r1 in radioList1" id="radio-{{targetCat.id}}">
+                            <label>
+                                <input style="border:1px solid red; width:30px;" type="radio" name="targetCat" ng-checked="r1.checked"
+                                       ng-click="targetTypeClick(r1.name)" ng-model="Tar.ProjectId" value="{{r1.id}}" />
+                                <span><strong>{{r1.name}}</strong></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-10 col-md-10 col-lg-10">
+                        <div class="divBox pull-left" ng-show="showHidemStone">
+                            <label>Tasks</label>
+                            <input type="text" placeholder="Select"  id="Task" class="form-control" ng-model="myTempVal" ng-required="true">
+                            @*<select ></select>*@
+
+                            @*<span id="mileStoneId" ></span>*@
+
+                        </div>
+
+                        @*<div class="divBox pull-left" ng-show="showHideStage">
+                            <label>Stage</label>
+                            <select class="form-control" ng-options="stage.StageId as stage.name for stage in radioList3" ng-model="Tar.StageId"></select>
+
+                            <span id="stageId" data-StageId="{{Tar.StageId}}"></span>
+
+                        </div>*@
+                        @*<div id="dtpic" class="divBox pull-left col-sm-3 col-md-3 col-lg-3">      
+                            <label>Test</label>                    
+                            <input type="text"  placeholder="Select" id="Task" data-mileStoneId=">
+
+
+                        </div>*@
+                        <div id="dtpic" class="divBox pull-left col-sm-3 col-md-3 col-lg-3">
+                            <label>Set Targets for</label>
+                            <input class="daterangepicker-field" title="Set Target Date(s)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    <div class="row">
+        <article class="col-sm-12 col-md-4 col-lg-4 box box-solid" style="margin-top:-20px; padding: 0px 0px 0px 13px;">
+            <!-- new widget -->
+            <div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-11" role="widget"  style="display:none">
+                <header role="heading">
+                    <h2>Forecast Detail</h2>
+                </header>
+                <div role="content">
+                    <table class="table table-bordered table-striped" id="inputU" style="width:100%">
+                        <thead>
+                            <tr style="font-family:'Source Sans Pro',sans-serif" style="width:100%">
+                                <th ng-if="TargetType=='day'" ng-show="showHideCol">Day</th>
+                                <th ng-if="TargetType=='week'">Week</th>
+                                <th ng-if="TargetType=='month'">Month</th>
+                                <th ng-if="TargetType=='quarter'">Quarter</th>
+                                <th ng-if="TargetType=='year'">Year</th>
+
+                                <th ng-if="TargetType=='day'">Date</th>
+                                <th ng-if="TargetType!='day'">Start Date</th>
+
+                                <th ng-show="showHideCol">End Date</th>
+                                <th>Site Count</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tr class="tableRow" ng-repeat="t in TargetDates | reverse">
+                            <td ng-show="showHideCol" class="details-control"> {{t.TargetValue}}</td>
+                            <td class="details-control"> {{t.StartDate | date:"MM/dd/yyyy"}}</td>
+                            <td ng-show="showHideCol" class="details-control"> {{t.EndDate | date:"MM/dd/yyyy"}}</td>
+                            <td>
+                            <input type="number" required min="0" max="100" style="width:65px" name="sCount"   ng-model="t.SiteCount" /></td>
+                        </tr>
+
+
+                    </table>
+                </div>
+            </div>
+        </article>
+
+        <article class="col-sm-12 col-md-8 col-lg-8 box box-solid" style="margin-top:-20px; padding-left:-10px">
+            <!-- new widget -->
+            <div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-12" role="widget" style="display:none">
+                <header role="heading">
+                    <h2>Forecast History</h2>
+                </header>
+                <div role="content">
+                    <div id="fchistory" style="height: 250px; width: 100%;"></div>
+                </div>
+            </div>
+        </article>
+    </div>
+
+
+    <!--  End Main section-->
+</div>
+
+    <script src="~/Content/js/Plugins/canvasjs/jquery.canvasjs.min.js"></script>
+    <script src="~/Content/js/Plugins/QueryBuilder/js/moment.min.js"></script>
+    <script src="~/Areas/Project/Content/ScriptR/vendor.js"></script>
+    <script src="~/Areas/Project/Content/ScriptR/daterangepicker.js"></script>
+    <script src="~/Areas/Project/Content/Drop-Down-Combo-Tree/comboTreePlugin.js"></script>
+    <script src="~/Areas/Project/Content/Project/TargetsScript.js"></script>
+<script>
+    var Period;
+    var sitecount=[];
+        var First_date ;
+        var Last_date ;
+    /// disable calendate date input fields
+    $(function () {
+        // list of All elements inside div
+        var $children = $('.custom-range-inputs').children();
+
+        $.each($children, function () {
+            $(this).attr('disabled', true);
+        });
+
+        $('.custom-range-inputs').children().attr('disabled', true)
+    });
+
+    // function that process data to display chart
+    function siteCount(items) {
+        if (items.length > 0) {
+            $('#wid-id-12').show();
+            var cnts = [];
+            for (i = 0; i < items.length; i++) {
+
+                var date = new Date(items[i].TargetValue);
+                cnts.push({
+                    y: items[i].SiteCount,
+                    label: ((date.getMonth() + 1) + '/' + date.getDate())
+                    //x: items[i].TargetValue,
+                });
+            }
+        var chart = new CanvasJS.Chart("fchistory", {
+            title: {
+                text: "",
+            },
+            axisX: {
+                interval: 1
+            },
+            data: [
+                    {
+                        type: "line",
+                        dataPoints: cnts
+                    }
+            ]
+        });
+        chart.render();
+    }
+    else {
+            $('#wid-id-12').hide();
+        }
+    }
+
+
+
+    function unflatten(arr) {
+        var tree = [],
+            mappedArr = {},
+            arrElem,
+            mappedElem;
+
+        // First map the nodes of the array to an object -> create a hash table.
+        for (var i = 0, len = arr.length; i < len; i++) {
+            arrElem = arr[i];
+            mappedArr[arrElem.TaskId] = arrElem;
+            mappedArr[arrElem.TaskId]['subs'] = [];
+        }
+
+
+        for (var id in mappedArr) {
+            if (mappedArr.hasOwnProperty(id)) {
+                mappedElem = mappedArr[id];
+                // If the element is not at the root level, add it to its parent array of children.
+                if (mappedElem.PTaskId) {
+                    mappedArr[mappedElem['PTaskId']]['subs'].push(mappedElem);
+                }
+                    // If the element is at the root level, add it to first level elements array.
+                else {
+                    tree.push(mappedElem);
+                }
+            }
+        }
+        return tree;
+    }
+    $(function () {
+        let tasksJsonData = [];
+        var PId= $('#projectId').attr('data-ProjectId');
+        $.ajax({
+            method: "POST",
+            url: '/Project/Task/getAllTask',
+            async: false,
+            data: { 'filter': "Get_Project_Tasks", ProjectId: PId },
+            success: function (result) {
+
+                tasksJsonData = [];
+                $.each(result, function (key, value) {
+                    let tasks = {
+                        id: value.TaskId,
+                        title: value.Task
+                    }
+                    let subs = getChilds(value.Tasks);
+                    if (subs.length > 0) {
+                        tasks.subs = subs;
+                    }
+                    tasksJsonData.push(tasks);
+                });
+            }
+
+        });
+
+        function getChilds(tasks) {
+            let subTasks = [];
+            $.each(tasks, function (key, value) {
+                let subs = {
+                    id: value.TaskId,
+                    title: value.Task
+                }
+                let sbs = getChilds(value.Tasks);
+                if (sbs.length > 0) {
+                    subs.subs = sbs;
+                    //  getChilds(value.Tasks);
+                }
+                subTasks.push(subs);
+            });
+            return subTasks;
+        }
+
+
+
+
+        window.tasksComboTree = $('#Task').comboTree({
+            source: tasksJsonData,
+            isMultiple: false,
+        });
+
+
+        //tasksComboTree.getSelectedItemsTitle();
+        //tasksComboTree.getSelectedItemsId();
+
+    });
+    var countt = 0;
+    //var taskComboTree;
+  
+    $(document).ready(function () {
+      
+        $(".daterangepicker-field").daterangepicker({
+            forceUpdate: true,
+            startDate: new Date(),
+            endDate: new Date(),
+            minDate: moment().add(-5, 'years'),
+            maxDate: moment().add(5, 'years'),
+            callback: function (startDate, endDate, period) {
+                var title = startDate.format('L') + '-' + endDate.format('L');
+                $(this).val(title);
+
+                var selectedDates = $(".daterangepicker-field").val();
+                var parts = selectedDates.split("-");
+
+                var first_date = parts[0];
+                var last_date = parts[1];
+
+                var datesReturned = '';
+                var targetType = period;
+                sitecount = [];
+                if (countt > 0) {
+                $('#wid-id-11').css({ 'display': "block" });
+                $('#wid-id-12').css({ 'display': "block" });
+                }
+                countt++;
+                angular.element('#widget-grid').scope().GetTargetDates(period, first_date, last_date);
+                //angular.element(document.getElementById('yourControllerElementID')).scope().$apply();.
+                Period = period;
+                First_date = first_date;
+                Last_date = last_date;
+
+            }
+        });
+
+    });
+
+    $('#targetsave').click(function () {
+        
+
+        setTimeout(function () { angular.element('#widget-grid').scope().GetTargetDates(Period, First_date, Last_date); }, 3000);
+
+    });
+
+    $.post("/Project/Defination/ToSingle", { Filter: 'ByProjectId', Value: parseInt(@ViewBag.Id) }).then(function (res) {
+        var s = res;
+        var EndDate = "Continue";
+        if (s.EstimateEndDate != null && s.EstimateEndDate != undefined) {
+            EndDate = moment(s.EstimateEndDate).format('DD MMM, YYYY');
+        }
+        var ProjectInfo = '<span style="font-size: 16px;font-family: inherit;color:#000;"><strong>Project: </strong>' + s.ProjectName + '</span>' +
+            '<span style="margin-left:1%;font-size: 16px;font-family: inherit;color:#000;">' +
+            '<strong style="margin-left:2%;color:#000;">Start Date: </strong><span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;;margin-right: 27px;">' + moment(s.EstimateStartDate).format('DD MMM, YYYY') + ' </span> <strong> Expected End Date: </strong> ' +
+            '<span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;">' + EndDate+ '</span>';
+        $('#ProjectInfo').html(ProjectInfo);
+    });
+    @if (TempData["msg_success"] != null) {
+        @:swal("Success", "File Uploaded successfully", "success");
+            TempData["msg_success"] = null;
+    }else if(TempData["msg_nothing"] != null)
+    {
+         @:swal("Error", "No record Inserted !", "error");
+    }
+    //if (TempData["msg_error"] != null) {
+    //    swal("Success", "File Uploaded successfully", "success");
+
+    //    TempData["msg_error"] = null;
+    //}
+   
+</script>
+
+
+
+
+

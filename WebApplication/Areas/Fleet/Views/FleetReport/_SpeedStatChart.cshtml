@@ -1,0 +1,124 @@
+﻿<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="title-speedstatchrt">Speed Report <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Speed Chart Report </header>
+    <div class="panel-body">
+        <div class="custom-filters">
+            <div class="filter-field">
+                <label>Device</label>
+                <input type="text" id="speedstatchartasset" class="assets" placeholder="" />
+            </div>
+
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="speedstatchardate-range">
+                </div>
+            </div>
+            <div class="filter-field button">
+                <button id="apply_filters3" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table">
+            <table id="speedstatchartreport" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Asset Name</th>
+                        <th>Time</th>
+                        <th>Speed(km/h)</th>
+
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#apply_filters3").click(function () {
+        debugger;
+
+        var assetname = $('#speedstatchartasset').val();
+        var daterange = $("#speedstatchardate-range").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var reportexporttitle = $("#title-speedstatchrt").text();
+        var exportfilename = $("#title-speedstatchrt").text();
+        var frcmodel = {
+            ReportFilter: "SpeedStatChart",
+            startDate: startdate,
+            endDate: enddate,
+            Device : assetname
+        }
+
+        var table = $('#speedstatchatreport').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_SpeedReports",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'AssetName', "name": "Asset Name"},
+               { data: 'Time', "name": "Time" },
+               { data: 'Speed', "name": "Speed(km/h)"},
+
+            ]
+            //,
+            //initComplete: function (settings, json) {
+            //    $("#detailtrip-custom-filters .top").remove();
+            //    $($("#detailtrip-table .top")).appendTo("#detailtrip-custom-filters");
+            //}
+
+
+        });
+        createIndex(table);
+
+
+    });
+</script>
+

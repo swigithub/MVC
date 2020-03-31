@@ -1,0 +1,548 @@
+﻿@model WebApplication.Areas.Project.View_Models.TemplateRDViewModel
+
+<style>
+    .dvBody {
+        padding-top: 5px;
+        padding-bottom: 25px;
+        padding-left: 40px;
+        padding-right: 40px;
+        height: 100%;
+    }
+
+    .legendBox {
+        position: absolute;
+        bottom: 100px;
+        background-color: white;
+        border: solid 2px;
+        width: 170px;
+        right: 5% !important;
+    }
+
+    .maxHeight {
+        height: inherit;
+    }
+
+
+    .heightWidth100 {
+        height: 100%;
+        width: 100%;
+        padding-bottom: 0%;
+    }
+
+    .lagendHeader {
+        text-align: center;
+        background-color: #056d7d;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .colorBox {
+        height: 22px;
+        width: 22px;
+        color: white;
+        border: solid 1px;
+        border-color: black;
+        margin-bottom: -7px;
+    }
+
+    .plot-count {
+        padding-left: 10px;
+    }
+
+    .borderless {
+        margin-bottom: 0px !important;
+   } 
+
+        .borderless td, .borderless th {
+            border: 0 !important;
+        }
+        .body-icon {
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    width: 100%;
+    left: 0;
+    font-size: 120px;
+    opacity: 0.1;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+            .tbl-heading {
+        background-color: #004B99;
+        text-align:center;
+        color: white;
+    }
+
+    .dvBody {
+        padding-top: 5px;
+        padding-bottom: 25px;
+        padding-left: 40px;
+        padding-right: 40px;
+        height: 100%;
+    }
+    .body-icon {
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    width: 100%;
+    left: 0;
+    font-size: 120px;
+    opacity: 0.1;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+    .uniqueId td {
+    padding: 10px 18px!important;
+}
+</style>
+<link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+@if (Model.TemplateType == "dashboard")
+{
+    <div id="MAP_LONGITUDE"></div>
+    <div id="MAP_LATITUDE"></div>
+    <div id="PLOT_COLOR"></div>
+    if (Model.TemplateType == "dashboard" && !HttpContext.Current.Request.Url.AbsoluteUri.Contains("Dashboard"))
+    {
+        <div class="body-icon"><i class="fa fa-table default-cell-icon"></i></div>
+        <input type="hidden" name="length" id="PAGE_SIZE" />
+        <span id="TABLE_BODY"></span>
+        <div id="MAP_PLOT_@Model.NodeId"></div>
+        <div class="" id="PAGE_BACKGROUNDCOLOR"></div>
+        <input type="hidden" name="IsPagingEnable" value="10" id="IS_PAGING_ENABLE" />
+        <h2 id="TABLE_TITLE" class="heading"></h2>
+    }
+    else
+    {
+        <div class="" id="PAGE_BACKGROUNDCOLOR">
+            <div class="body-icon"><i class="fa fa-table default-cell-icon"></i></div>
+            <div class="row table-row" style="height:30%">
+                <div class="col-md-12">
+                    <div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false">
+                        <header role="heading">
+                            <div class="jarviswidget-ctrls" role="menu">
+
+                            </div>
+                            <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                            <h2 id="TABLE_TITLE" class="heading"></h2>
+                        </header>
+                        <div>
+                            <div class="widget-body no-padding">
+                                <div id="dt_basic_wrapper" class="">
+                                    <input type="hidden" name="length" id="PAGE_SIZE" />
+                                    <input type="hidden" name="IsPagingEnable" value="10" id="IS_PAGING_ENABLE" />
+                                    <div class="table-responsive">
+                                        <table class="table uniqueId">
+                                            <thead>
+                                                <tr id="TABLE_BODY"></tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="MAP_PLOT_@Model.NodeId"></div>
+        <style>
+            #MAP_PLOT_@Model.NodeId {
+                height: 100%;
+            }
+        </style>
+
+        <script>
+
+        var locations = [];
+        var mapData = [];
+        var mapMarkerProperties = [];
+        var mapLatitude;
+        var mapLongitude;
+        try{
+            var NodeId = @Model.NodeId;
+            $.ajax({
+                url: '/Project/Template/GetNodeWidgetData',
+                data: {
+                    NodeId: '@Model.NodeId',
+                    BandId: '@Model.BandId',
+                    CareerId: '@Model.CarrierId',
+                    NetworkModeId: '@Model.NetworkModeId',
+                    ProjectId: '@Model.ProjectId',
+                    ScopeId: '@Model.ScopeId',
+                    SiteId: '@Model.SiteId',
+                    PlotId: 0,
+                    UserId: 11,
+                    ControlType: "MAP",
+                },
+                type: "POST",
+                async: false,
+                success: function(result) {
+                    debugger
+                    var nodeId = @Model.NodeId;
+                    var baseData = result.NodeSettingList;
+                    if(baseData != null && baseData != 'undefined'){
+                        for(var i = 0; i < baseData.length; i++){
+                            if (baseData[i].MappedId == "MAP_TITLE") {
+                                if (baseData[i].Settings != null && baseData[i].Settings != "") {
+                                    $('#dv' + nodeId).find('#MAP_TITLE').html(baseData[i].KeyName);
+                                    var settingsObj = JSON.parse(baseData[i].Settings);
+                                    $('#dv' + nodeId).find('#MAP_TITLE').css("font-family", settingsObj[0]["font-family"], 'important');
+                                    $('#dv' + nodeId).find('#MAP_TITLE').css("font-size", settingsObj[0]["font-size"], 'important');
+                                    $('#dv' + nodeId).find('#MAP_TITLE').css("font-style", settingsObj[0]["typography"]);
+                                    $('#dv' + nodeId).find('#MAP_TITLE').css("color", settingsObj[0]["font-color"]);
+
+                                    if (settingsObj[0]["align"] == "left") {
+                                        $('#dv' + nodeId).find('#MAP_TITLE').addClass("text-left");
+                                    }
+                                    if (settingsObj[0]["align"] == "right") {
+                                        $('#dv' + nodeId).find('#MAP_TITLE').addClass("text-right");
+                                    }
+                                    if (settingsObj[0]["align"] == "center") {
+                                        $('#dv' + nodeId).find('#MAP_TITLE').addClass("text-center");
+                                    }
+
+                                    if (settingsObj[0]["typography"] == "bold") {
+                                        $('#dv' + nodeId).find('#MAP_TITLE').css("font-weight", "bold");
+                                        $('#dv' + nodeId).find('#MAP_TITLE').css("font-style", "normal");
+                                    }
+                                    if (settingsObj[0]["typography"] == "italic") {
+                                        $('#dv' + nodeId).find('#MAP_TITLE').css("font-style", "italic");
+                                        $('#dv' + nodeId).find('#MAP_TITLE').css("font-style", "normal");
+                                    }
+                                    if (settingsObj[0]["typography"] == "bold_italic") {
+                                        $('#dv' + nodeId).find('#MAP_TITLE').css("font-weight", "bold");
+                                        $('#dv' + nodeId).find('#MAP_TITLE').css("font-style", "italic");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    mapData = JSON.parse(result.DashbardMapData);
+                    mapLatitude = result.Latitude;
+                    mapLongitude = result.Longitude;
+                    mapMarkerProperties = JSON.parse(result.MapMarkerData);
+                }
+            });
+            function initMapWithTable() {
+
+                var myLatLng = {lat:28.547206, lng: -81.719064};
+                //if(mapData != null && mapData != "undefined" && mapData != ""){
+                //    if(mapData.length > 0){
+                //        myLatLng = {lat: mapData[0][mapLatitude], lng: mapData[0][mapLongitude]};
+                //        console.log(mapData[0][mapLatitude] +" "+mapData[0].longCordinateValue);
+                //    }
+                    
+                //}
+                console.log(myLatLng);
+                var map = new google.maps.Map(document.getElementById('MAP_PLOT_@Model.NodeId'), {
+                    zoom: 2,
+                    center: myLatLng
+                });
+
+                var count=0;
+                var MarkerDetail = "";
+
+                if(mapData != null && mapData != "undefined" && mapData != ""){
+                    for (count = 0; count < mapData.length; count++) {
+                        MarkerDetail = "";
+                        for(var i = 0; i < mapMarkerProperties.length; i++){
+                            var propertyName = mapMarkerProperties[i];
+                            if(propertyName != "longCordinateValue" && propertyName != "latiCordinateValue")
+                                MarkerDetail += "<b>"+mapMarkerProperties[i]+": </b> " + mapData[count][propertyName]+ "<br />";
+                        }
+                        var markerContent =  MarkerDetail;
+                        var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(mapData[count][mapLatitude], mapData[count][mapLongitude]),
+                            map: map
+                        });
+
+                        marker.info = new google.maps.InfoWindow({
+                            content: markerContent
+                        });
+
+
+                        google.maps.event.addListener(marker, 'click', function() {
+                            var marker_map = this.getMap();
+                            this.info.open(marker_map, this);
+                        });
+                    }
+                }
+
+
+            }
+        }
+        catch(e){
+            console.log(e.message);
+        }
+        </script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCT11sJXZjs6UAa2A65ETGbpTx_hNCJv_o&callback=initMapWithTable">
+        </script>
+    }
+}
+else if (Model.TemplateType == "report")
+{
+    <div id="MAP_LONGITUDE"></div>
+    <div id="MAP_LATITUDE"></div>
+    <div id="PLOT_COLOR"></div>
+    <div class="dvBody" id="PAGE_BACKGROUNDCOLOR">
+        <div class="body-icon"><i class="fa fa-table default-cell-icon"></i></div>
+        <div class="row table-row" style="height:30%">
+            <div class="col-md-12">
+                <div class="row" style="height:30%">
+                    <div class="col-md-12">
+                        <h1 id="TABLE_TITLE" class="heading"></h1>
+                        <input type="hidden" name="length" id="PAGE_SIZE" />
+                        <input type="hidden" name="IsPagingEnable" value="10" id="IS_PAGING_ENABLE" />
+                        <div class="table-responsive">
+                            <table class="table uniqueId" style="">
+                                <thead>
+                                    <tr id="TABLE_BODY"></tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row" style="height: 60%;">
+            <div class="col-xs-12 col-md-12" style="height:100%">
+                <div class="pan-map googlemap center-block heightWidth100 MAP_Plot" id="MAP_PLOT_@Model.NodeId"></div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        var WithView = '@Model.WithPartialView';
+        if(WithView == 'false' || WithView == 'False'){
+            return false;
+        }
+        var columns = [];
+        var PageLength = 10;
+        var _Cols = [];
+        var IsTablePagingEnabled = false;
+        var ParsedJSON = [];
+        $.ajax({
+            url: "/Project/Template/GetDataTableProperties",
+            type: "POST",
+            async: false,
+            data: {
+                NodeId: @Model.NodeId
+            },
+            success: function (response) {
+                ParsedJSON = JSON.parse(response.dataTableColumns);
+                columns = ParsedJSON.QuerySetting.MetaData;
+                for(var i = 0; i < columns.length; i++){
+                    _Cols.push({'data': columns[i].Alias, 'autoWidth': false, 'mData': columns[i].Alias});
+                }
+                console.log(_Cols);
+                for(var i = 0; i < columns.length; i++){
+                    $("#dv" + @Model.NodeId).find("#TABLE_BODY").append("<th>" + columns[i].Alias + "</th>");
+                }
+                IsTablePagingEnabled = (response.IsPagingEnable == "true");
+                if(response.PageSize == null){
+                    PageLength = 10;
+                }else{
+                    PageLength = response.PageSize;
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        });
+        var parentNodeHeight = (parseInt($("#grid-stack-id-" + @Model.NodeId).height()) / 4) + "px";
+        var table = $("#dv" + @Model.NodeId).find("table").DataTable({
+            "processing": false,
+            "serverSide": true,
+            "filter": false,
+            "orderMulti": false,
+            "ordering": false,
+            "lengthChange": false,
+            "pageLength": PageLength,
+            "paging": IsTablePagingEnabled,
+            "bInfo" : IsTablePagingEnabled,
+            "autoWidth": true,
+            "scrollY": parentNodeHeight,
+            "scrollCollapse": true,
+            "ajax": {
+                "url": "/Project/Template/GetNodeWidgetData",
+                "type": "POST",
+                "async": "false",
+                "data": {
+                    NodeId: @Model.NodeId,
+                    BandId: @Model.BandId,
+                    CareerId: @Model.CarrierId,
+                    NetworkModeId: @Model.NetworkModeId,
+                    ProjectId: @Model.ProjectId,
+                    ScopeId: @Model.ScopeId,
+                    SiteId: @Model.SiteId,
+                    PlotId: 0,
+                    UserId: 11,
+                    ControlType: "TABLE_WITH_MAP",
+                    page: @Model.Page,
+                    StartIndex: 1,
+                    EndIndex: 10,
+                },dataSrc: function (json) {
+                    console.log(json);
+                    var baseData = json.data.NodeSettingList;
+                    var siteDataList = JSON.parse(json.data.SiteDataTableJSON);
+                    var azmuthData = JSON.parse(json.data.AzmuthDataJSON);
+                    var siteDataColums = json.data.SiteDataListColumns;
+                    var lati = json.data.Latitude;
+                    var longi = json.data.Longitude;
+
+                    var siteLat = 0; var siteLng = 0;
+                    if(siteDataList != null)
+                    {
+                        //siteLat = siteDataList[0]["Latitude"];
+                        //siteLng = siteDataList[0]["Longitude"];
+                        siteLat = siteDataList[0][lati];
+                        siteLng = siteDataList[0][longi];
+                    }
+
+                    var TemplateType = '@Model.TemplateType';
+                    // Initalize hybrid fan
+                    if(TemplateType == 'report')
+                    {
+                        initializeHybrid('MAP_PLOT_@Model.NodeId', siteLat, siteLng, 'Test', null, null, azmuthData, 100);
+                    }
+
+                    var NodeId = @Model.NodeId;
+                    $(baseData).each(function (i) {
+
+                        if (baseData[i].MappedId == "TABLE_BODY") {
+
+                            if (baseData[i].Settings != null && baseData[i].Settings != "") {
+                                var settingsObj = JSON.parse(baseData[i].Settings);
+                                $('#dv' + NodeId).find('#TABLE_BODY > th').css("font-family", settingsObj[0]["header-font-family"], 'important');
+                                $('#dv' + NodeId).find('#TABLE_BODY > th').css("font-size", settingsObj[0]["header-font-size"], 'important');
+                                $('#dv' + NodeId).find('#TABLE_BODY > th').css("color", settingsObj[0]["header-font-color"]);
+                                $('#dv' + NodeId).find('#TABLE_BODY > th').css("background-color", settingsObj[0]["header-background-color"]);
+
+                                $('#dv' + NodeId).find('tbody').css("font-family", settingsObj[0]["body-font-family"], 'important');
+                                $('#dv' + NodeId).find('tbody').css("font-size", settingsObj[0]["body-font-size"], 'important');
+                                $('#dv' + NodeId).find('tbody').css("color", settingsObj[0]["body-font-color"]);
+
+                                $('#dv' + NodeId).find('tbody , tr , td').css("border", settingsObj[0]["border-thickness"] + "px solid " + settingsObj[0]["border-color"]);
+                            }
+
+                        }
+
+                        if (baseData[i].MappedId == "TABLE_TITLE") {
+
+                            $('#dv'+NodeId).find("#TABLE_TITLE").html(siteDataList[0]["Site"]+" - "+baseData[i].Value);
+
+                            if (baseData[i].Settings != null && baseData[i].Settings != "") {
+                                var settingsObj = JSON.parse(baseData[i].Settings);
+                                $('#dv'+NodeId).find('#TABLE_TITLE').css("font-family", settingsObj[0]["font-family"], 'important');
+                                $('#dv'+NodeId).find('#TABLE_TITLE').css("font-size", settingsObj[0]["font-size"], 'important');
+                                $('#dv'+NodeId).find('#TABLE_TITLE').css("font-style", settingsObj[0]["typography"]);
+                                $('#dv'+NodeId).find('#TABLE_TITLE').css("color", settingsObj[0]["font-color"]);
+
+                                if(settingsObj[0]["align"] == "left"){
+                                    $('#dv'+NodeId).find('#TABLE_TITLE').addClass("text-left");
+                                }
+
+                                if(settingsObj[0]["align"] == "right"){
+                                    $('#dv'+NodeId).find('#TABLE_TITLE').addClass("text-right");
+                                }
+
+                                if(settingsObj[0]["align"] == "center"){
+                                    $('#dv'+NodeId).find('#TABLE_TITLE').addClass("text-center");
+                                }
+
+                                if(settingsObj[0]["typography"] == "bold"){
+                                    $('#dv'+NodeId).find('#TABLE_TITLE').css("font-weight", "bold");
+                                    $('#dv'+NodeId).find('#TABLE_TITLE').css("font-style", "normal");
+                                }
+
+                                if(settingsObj[0]["typography"] == "italic"){
+                                    $('#dv'+NodeId).find('#TABLE_TITLE').css("font-style", "italic");
+                                    $('#dv'+NodeId).find('#TABLE_TITLE').css("font-style", "normal");
+                                }
+
+                                if(settingsObj[0]["typography"] == "bold_italic"){
+                                    $('#dv'+NodeId).find('#TABLE_TITLE').css("font-weight", "bold");
+                                    $('#dv'+NodeId).find('#TABLE_TITLE').css("font-style", "italic");
+                                }
+                            }
+                        }
+                    });
+
+                    json = JSON.parse(json.data.SiteDataTableJSON);
+                    return json;
+                }
+            },
+            "columns": _Cols
+        });
+        table.on( 'xhr', function () {
+            var json = table.ajax.json();
+            var tableId = table.table().node().id;
+            $("body").append(`<style>div#`+tableId+`_paginate {
+                                background: -webkit-linear-gradient(top, #ffffff 0%,#efefef 100%);
+                                margin: 20px;
+                                padding: 0;
+                                border-radius:5px;
+                                border: 1px solid #AAA;
+                            }
+
+                            div#`+tableId+`_paginate a {
+                                padding: 4px 10px;
+                                margin: 0;
+                                border-right: 1px solid #AAA;
+                                margin-left: -1px;
+                                font-size:12px;
+                            }
+
+                            .dataTables_wrapper div#`+tableId+`_paginate a.paginate_button {
+                                color: #770D0B!important;
+                            }
+
+                            div#`+tableId+`_paginate a.next {
+                                border: 0;
+                            }
+
+                            div#`+tableId+`_paginate a.current {
+                                background: no-repeat;
+                                border-top: 0!important;
+                                border-left: 0!important;
+                                border-bottom: 0!important;
+                                background: -webkit-linear-gradient(top, #bbbbbb 0%,#efefef 100%);
+                                padding: 5px 10px;
+                                margin: -1px 0;
+                            }
+                            div#`+tableId+`_paginate a:hover {
+                                background: no-repeat;
+                                border-top: 0!important;
+                                border-left: 0!important;
+                                border-bottom: 0!important;
+                                background: -webkit-linear-gradient(top, #bbbbbb 0%,#efefef 100%);
+                                padding: 5px 10px;
+                                margin: -1px 0;
+                                color: #3276b1;
+                            }</style>`);
+        } );
+    });
+
+    $(document).ajaxStop(function() {
+        $("table").css("width","100%");
+        $(".dataTables_info").css("padding-left", "10px");
+        $(".dataTables_info").css("margin-top", "12px");
+        $(".dataTables_info").css("font-weight", "inherit !important");
+        $(".previous").html("Prev");
+        @*var height = (parseInt($("#grid-stack-id-" + @Model.NodeId).height()) / 2) + "px";
+        $("#MAP_PLOT_" + @Model.NodeId).css("height", height);*@
+        //$(".dataTables_scrollHeadInner").css("width","99%");
+    });
+    $(document).ajaxStop(function() {
+        $(".parent-class").css("background-color","white");
+    });
+</script>

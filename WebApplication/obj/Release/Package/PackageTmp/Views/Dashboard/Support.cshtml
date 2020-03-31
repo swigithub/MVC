@@ -1,0 +1,65 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    
+    <meta name="viewport" content="width=device-width" />
+    <title>Support</title>
+    <style type="text/css">
+        html, body {
+            margin:0 !important;
+            background-color: black;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div style="width:100%; background-color:aqua">
+
+    </div>
+    <div class="row">
+        <div class=col-md-12 col-sm-12 col-xs-12" style="color: white;background-color: #3c8dbc;height: 30px;font-size:x-large;padding-top: 4px;">
+            <strong><span id="SiteCode"></span></strong>
+        </div>
+        <div class=col-md-12 col-sm-12 col-xs-12" style="height: 30px;font-size: larger;padding-top: 4px;color:white; background-color:#4f5d65">
+            <strong>Pin Code: </strong><span id="secretNo"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div>
+                <canvas id="video-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="~/Content/js/Plugins/jsmpeg.min.js"></script>
+    <script type="text/javascript">
+ //	myFunction();
+ //	function myFunction() {
+  //  var person = prompt("Please enter your name", "Harry Potter");
+        //  if (person != null) {
+        var pathArray = window.location.pathname.split( '/' );
+        var canvas = document.getElementById('video-canvas');
+        canvas.width = 335;
+        this.canvas.height =525;
+        if(pathArray[3] != "")
+        {
+            var url = 'ws://192.168.3.188:8082/' + pathArray[3];
+          var params=  pathArray[3].split('-');
+            var player = new JSMpeg.Player(url, { canvas: canvas });
+            document.getElementById("secretNo").innerHTML = params[0].substring(0, 4);
+            document.getElementById("SiteCode").innerHTML = params[1];
+        }
+        else {
+            document.getElementById("secretNo").innerHTML = "Invalid Token";
+            document.getElementById("SiteCode").innerHTML = "Invalid Token";
+        }
+ //    }
+ //}
+
+    </script>
+</body>
+</html>

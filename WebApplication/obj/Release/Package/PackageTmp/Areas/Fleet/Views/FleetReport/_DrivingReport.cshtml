@@ -1,0 +1,167 @@
+﻿
+<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="drivingtime-title">Positioning Statement <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Driving Report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="drivingreport-custom-filters">
+            <div class="filter-field">
+                <label>Vehicle</label>
+                <input type="text" id="drivingrptasset" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="drivingrptdate-range">
+                </div>
+            </div>
+            <div class="filter-field">
+                <label>Parking time(Minute)</label>
+                <input type="text" id="prktime" placeholder="" style="width:50px" />
+            </div>
+            <div class="filter-field">
+                <label>Driving Time(Minute)</label>
+                <input type="text" id="drivingtime" placeholder="" style="width:50px" />
+            </div>
+            <div class="filter-field button">
+                <button id="drivingrptapply_filters" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="drivingreport-table">
+            <table id="drivingrptreport" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Vehicle</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Driving Time</th>
+                        <th>Start Address</th>
+                        <th>End Address</th>
+                        <th>Locate Number</th>
+                        <th>60-90 Number (km/h)</th>
+                        <th>90-130 Number (km/h)</th>
+                        <th>Over 130</th>
+                        <th>Max Speed</th>
+                        <th>Average Speed</th>
+                        <th>Start Mileage (km)</th>
+                        <th>End Mileage (km)</th>
+                        <th>Running Mileage (km)</th>
+                        <th>Start Latitude</th>
+                        <th>Start Longitude</th>
+                        <th>End Latitude</th>
+                        <th>End Longitude</th>
+                        
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#drivingrptapply_filters").click(function () {
+        debugger;
+
+        var assetname = $("#drivingrptasset").val();
+        var daterange = $("#drivingrptdate-range").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var parkgtime = $("#prktime").val();
+        var drivingtime = $("#drivingtime").val();
+        var reportexporttitle = $("#drivingtime-title").text();
+        var exportfilename = $("#drivingtime-title").text();
+        var frcmodel = {
+            ReportFilter: "DrivingReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname,
+            parkingTime: parkgtime,
+            drivingTime:drivingtime
+        }
+
+        var table = $('#drivingrptreport').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                  //'excel', 'pdf'
+                         {
+                             extend: 'excel',
+                             filename: exportfilename,
+                             title: reportexporttitle,
+                             exportOptions: {
+                                 columns: ':visible',
+                                 rows: ':visible'
+                             }
+                         },
+                         {
+                             extend: 'pdfHtml5',
+                             filename: exportfilename,
+                             title: reportexporttitle,
+                             orientation: 'landscape',
+                             pageSize: 'A3',
+                             exportOptions: {
+                                 columns: ':visible',
+                                 rows: ':visible'
+                             },
+                             customize: function (doc) {
+                                 doc.defaultStyle.alignment = 'center';
+                             }
+
+                         }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'AssetName', "name": "Vehicle" },
+               { data: 'StartTime', "name": "StartTime" },
+               { data: 'EndTime', "name": "End Time" },
+               { data: 'DrivingTime', "name": "Driving Time" },
+               { data: 'StartAddress', "name": "Start address" },
+               { data: 'EndAddress', "name": "End address" },
+               { data: 'LocateNumber', "name": "Locate number" },
+               { data: 'sixtytoninetyNumber', "name": "60-90 Number (km/h)" },
+               { data: 'ninetytoonethirtyNumber', "name": "90-130 Number (km/h)" },
+               { data: 'Overonethirty', "name": "Over 130" },
+               { data: 'StartMileage', "name": "Startmileage (km)" },
+               { data: 'maxSpeed', "name": "Max speed" },
+               { data: 'avgSpeed', "name": "Average speed" },
+               { data: 'EndMileage', "name": "End mileage" },
+               { data: 'RunningMileage', "name": "Running mileage( km)" },
+               { data: 'StartLatitude', "name": "Start Latitude" },
+               { data: 'StartLongitude', "name": "Start Longitude" },
+               { data: 'EndLatitude', "name": "End Latitude" },
+               { data: 'EndLongitude', "name": "End Longitude" }
+               
+            ],
+            initComplete: function (settings, json) {
+                $("#drivingreport-custom-filters .top").remove();
+                $($("#drivingreport-table .top")).appendTo("#drivingreport-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+
+    });
+</script>

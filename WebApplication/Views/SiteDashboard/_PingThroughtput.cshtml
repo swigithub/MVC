@@ -1,0 +1,76 @@
+﻿
+@using SWI.Libraries.AirView.Entities
+@model IEnumerable<SiteDashboardThroughtputChart>
+
+<div id="PingChart" style="height: 230px; width: 100%;"></div>
+
+<script>
+    var PingMax=[];
+    var PingMin=[];
+    var PingAvg=[];
+   
+    var type='@ViewBag.type';
+    @*new Date('@item.TimeStamp.Value.Month @item.TimeStamp.Value.Day, @item.TimeStamp.Value.Year @item.TimeStamp.Value.Hour:@item.TimeStamp.Value.Minute:@item.TimeStamp.Value.Second:@item.TimeStamp.Value.Millisecond')*@
+    @if (ViewBag.type == "Sector")
+    {
+       <text>
+    
+        var PingLineChartData = [
+              @foreach (var item in Model)
+              {
+
+              @:{ label: '@item.TimeStamp.Value.Hour:@item.TimeStamp.Value.Minute:@item.TimeStamp.Value.Second', y: @item.MaxResult },
+                }
+        ];
+       </text>
+    }
+    else {
+
+   <text>
+      @foreach (var item in Model)
+    {
+        @:PingMax.push({ label: "@item.Sector", y: @item.MaxResult });
+        @:PingMin.push({ label: "@item.Sector", y: @item.MinResult });
+        @:PingAvg.push({ label: "@item.Sector", y: @item.AvgResult });
+    }
+
+    var PingChartData=[
+                        {
+                            type: "stackedColumn",
+                            name: "Min",
+                            showInLegend: true,
+                            dataPoints: PingMin
+                        },
+                        {
+                            type: "stackedColumn",
+                            name: "Max",
+                            showInLegend: true,
+                            dataPoints: PingMax
+                        },
+                        {
+                            type: "stackedColumn",
+                            name: "Avg",
+                            showInLegend: true,
+                            dataPoints: PingAvg
+                        },
+    ]
+
+    $("#PingChart").CanvasJSChart({
+        nimationEnabled: true,
+        title: {
+            text: ""
+        },
+        axisY: {
+            title: ""
+        },
+        toolTip: {
+            content: "{label} <br/>{name} : {y} "
+        },
+        data: PingChartData
+    }); 
+    
+    </text>
+    }
+
+
+</script>

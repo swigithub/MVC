@@ -1,0 +1,170 @@
+﻿
+<form ng-submit="SubmitLogic()" id="frm-questionLogic">
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            <button style="border-radius:3px;margin-left:10px;" class="btn btn-default pull-right" type="button" ng-click="clearLogicFields()">Clear</button>
+            &nbsp;  &nbsp;  &nbsp; &nbsp;
+            <button class="btn btn-s-md btn-success pull-right" type="Submit">Create Logic</button>
+
+            <br /><br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            @*<div class="form-horizontal">*@
+                <div class="form-group">
+                    <label>IF<span style="color:red">*</span></label>
+                    @*<div class="col-sm-10">*@
+                        <!--   <select class="form-control" required ng-model="objQL.SectionId" ng-options="x.SectionId as x.SectionTitle for x in Sections" ng-change="LoadQuestions()"></select>-->
+                        <select class="form-control" ng-model="objQL.SectionId" required ng-change="LoadQuestions()">
+                            <option value="">-- Section --</option>
+                            <option ng-repeat="item in Sections" ng-value="{{item.SectionId}}">{{item.SectionTitle}}</option>
+                        </select>
+                    @*</div>*@
+                </div>
+            @*</div>*@
+        </div>
+
+        <div class="col-sm-3">
+            @*<div class="form-horizontal">*@
+                <div class="form-group">
+                    <label>AND<span style="color:red">*</span></label>
+                    @*<div class="col-sm-10">*@
+                        <!--  <select class="form-control" required ng-model="objQL.FromQuestionId" ng-options="x.QuestionId as x.Question for x in Questions" ng-change="LoadResponses()"></select>-->
+                        <select class="form-control" required ng-change="LoadResponses()" ng-model="objQL.FromQuestionId">
+                            <option value="">-- Question--</option>
+                            <option ng-repeat="item in Questions" ng-value="{{item.QuestionId}}">{{item.Question}}</option>
+                        </select>
+                    @*</div>*@
+                </div>
+            @*</div>*@
+        </div>
+
+        <div class="col-sm-3">
+            @*<div class="form-horizontal">*@
+                <div class="form-group">
+                    <label>IS<span style="color:red">*</span></label>
+                    @*<div class="col-sm-10">*@
+                        <!--  <select class="form-control" required ng-model="objQL.ConditionId" ng-options="x.DefinationId as x.DefinationName for x in Conditions"></select>-->
+                        <select class="form-control" required ng-model="objQL.ConditionId">
+                            <option value="">-- Condition --</option>
+                            <option ng-repeat="item in Conditions" ng-value="{{item.DefinationId}}">{{item.DefinationName}}</option>
+                        </select>
+                    @*</div>*@
+                </div>
+            @*</div>*@
+        </div>
+
+        <div class="col-sm-3">
+            @*<div class="form-horizontal">*@
+                <div class="form-group">
+                    <label>TO<span style="color:red">*</span></label>
+                    @*<div class="col-sm-10">*@
+                        <!-- <select class="form-control" required ng-model="objQL.ResponseId" ng-options="x.ResponseId as x.ResponseText for x in Responses" ></select>-->
+                        <select required class="form-control" ng-model="objQL.ResponseId">
+                            <option value="">-- Response --</option>
+                            <option ng-repeat="item in Responses" ng-value="{{item.ResponseId}}">{{item.ResponseText}}</option>
+                        </select>
+                    @*</div>*@
+                </div>
+            @*</div>*@
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3">
+
+            <div class="form-group">
+                <label>THEN<span style="color:red">*</span></label>
+                @*<div class="col-sm-10">*@
+                <!-- <select class="form-control" required ng-model="objQL.ActionId" ng-options="x.DefinationId as x.DefinationName for x in Actions"></select>-->
+                <select class="form-control" required ng-model="objQL.ActionId">
+                    <option value="">-- Action --</option>
+                    <option ng-repeat="item in Actions" ng-value="{{item.DefinationId}}">{{item.DefinationName}}</option>
+                </select>
+                @*</div>*@
+            </div>
+
+        </div>
+        <div class="col-sm-9" ng-hide="objQL.ActionId == '73300'">
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">&nbsp;</label>
+               
+                <multiselect name="NetworkMode" required ms-header="-Question-" multiple="true" showcheckuncheckall="false"
+                             ng-model="ToQuestionId" ng-init="null" template-url="~/Content/js/Plugins/angularmultislect/multiselect.tmpl.html" 
+                             options="c.QuestionId as c.Question for c in Questions">
+                </multiselect>
+                <label ng-show="ShowQuestionIsRequired" style="color:#B94A48;font-size:14px;font-weight:400;width:100px"><span style="font-size:22px">• </span><span> This value is required.</span></label>
+
+            </div>
+            
+        </div>
+    </div>
+
+
+    @*<div class="col-sm-6">
+            <div class="form-group">
+                <label>Section Title*</label>
+                <input type="text" ng-model="sec.SectionTitle" class="form-control" required />
+                <input type="hidden" ng-model="sec.SurveyId" />
+                <input type="hidden" ng-model="sec.SectionId" />
+            </div>
+        </div>*@
+
+
+
+
+</form>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+@*<div id="pan-logics"></div>*@
+
+
+@*<ul class="list-group gutter list-group-lg list-group-sp sortable">
+        <li class="list-group-item"  style="display: block;border:solid 1px" ng-repeat="item in QuestionLogics">
+            <span class="pull-right">
+                <a href="#" ng-click="EditLogic(item)"><i class="fa fa-pencil icon-muted fa-fw m-r-xs"></i></a>
+                <a href="#"  ng-click="Delete(item.LogicId)"><i class="fa fa-bank icon-muted fa-fw"></i></a>
+            </span>
+            <span class="pull-left media-xs"><i class="fa fa-sort text-muted fa m-r-sm"></i> {{$index}} &nbsp; </span>
+            <div class="clear">
+                <strong> If</strong>  {{item.FromQuestion}}
+
+                <strong>is</strong>  {{item.Condition}} <strong>to</strong>  {{item.Response}}.
+               <strong>Then</strong>  {{item.Action}} <strong>of</strong>  {{item.ToQuestion}}
+            </div>
+        </li>
+    </ul>*@
+
+
+@*<ul class="list-group gutter list-group-lg list-group-sp sortable">
+        <li class="list-group-item" style="display: block;border:solid 1px">
+            <span class="pull-right">
+                <a href="#" ng-click="EditLogic(item)"><i class="fa fa-pencil icon-muted fa-fw m-r-xs"></i></a>
+                <a href="#" ng-click="Delete(item.LogicId)"><i class="fa fa-bank icon-muted fa-fw"></i></a>
+            </span>
+            <div class="clear">
+                <strong>If</strong>  {{FromQuestion}} <strong>is</strong>  {{Condition}} <strong>to</strong>  {{Response}}.
+                <strong>Then</strong>  {{Action}} <strong>of:</strong>
+                <div ng-repeat="item in QuestionLogics">
+                    <span class="pull-left media-xs"><i class="fa fa-sort text-muted fa m-r-sm"></i> {{$index}} &nbsp; </span>
+                    {{item.ToQuestion}}
+                </div>
+            </div>
+        </li>
+    </ul>*@

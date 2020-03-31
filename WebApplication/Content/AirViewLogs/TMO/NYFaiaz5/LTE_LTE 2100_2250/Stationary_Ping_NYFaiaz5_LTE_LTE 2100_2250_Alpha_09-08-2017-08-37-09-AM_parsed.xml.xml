@@ -1,0 +1,276 @@
+<drive><test-cat>/home/airview1/ftp/files/airview-layer3/Stationary</test-cat><test-type>Ping</test-type><site>NYFaiaz5</site><net-mode>LTE</net-mode><band>LTE2100</band><carrier>2250</carrier><sector>Alpha</sector><time>09-08-2017-08-37-09-AM</time><message-body><time>1504874233534</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874233073</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874233684</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874233535</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504874234565</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874234512</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874234551</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874234591</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874234098</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874234097</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874235136</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874235426</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874235537</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874235560</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874235066</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874235268</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874236248</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874236066</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <csfbParametersResponseCDMA2000-r8>
+                        <rand>
+                            00000000001100110111000101101110
+                        </rand>
+                        <mobilityParameters></mobilityParameters>
+                    </csfbParametersResponseCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D62</hex></message-body><message-body><time>1504874236401</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874236215</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874236598</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874236221</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874236199</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body></drive>

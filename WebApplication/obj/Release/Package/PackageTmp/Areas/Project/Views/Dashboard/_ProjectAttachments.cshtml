@@ -1,0 +1,72 @@
+﻿@using (Html.BeginForm("", "", FormMethod.Post, new { name="attachform",enctype = "multipart/form-data", id = "frm-projectattachmentform" }))
+{
+<div class="modal-body">
+    <table class="table table-bordered" id="tbl-projectattachment">
+        <thead>
+            <tr>
+                <th>File <sup style="color:red">*</sup></th>
+                <th>Description <sup style="color:red">*</sup></th>
+                <th>Tag </th>
+                <th>Category <sup style="color:red">*</sup></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr ng-if="x.IsDeleted == false" ng-repeat="x in Attachments">
+
+                <td>
+                    <input name="SiteTaskId" class="SiteTaskId" value="" type="hidden" ng-model="x.SiteTaskId" />
+                    <input name="ProjectId" class="ProjectId" value="" type="hidden" ng-model="x.ProjectId" />
+                    <input required  ng-if="x.AttachmentId ==0"  type="file" @*id="file"*@ onchange="angular.element(this).scope().setFile(this,x)" class="btn btn-default" />
+                <label   ng-if="x.AttachmentId ==0" >Max file size 3mb.</label>  
+                    <a ng-if="x.AttachmentId >0" href="~/Content/SiteTaskAttachments/@ViewBag.ProjectId/{{x.file}}" download=""  >Download</a>
+                  @*<input type="hidden" name="file" ng-model="x.file" />*@
+                </td>
+                <td>
+                    <input required name="Description" type="text" ng-model="x.Description"/>
+
+                </td>
+                <td>
+                    <input ng-model="x.Tags" name="Tags" type="text"  />
+
+                </td>
+                <td>
+                    @*<input  name="CategoryId" type="text" />*@
+                    <select style="max-width:140px;height:26px"  required ng-model="x.CategoryId" ng-options="x.DefinationId as x.DefinationName for x in Categories">
+                        <option style="display:none" value="">--select--</option>
+                    </select>
+                </td>
+                <td>
+                    <a class="btn btn-default bg-color-red txt-color-white" ng-click="RemoveDiv(x,$event)"><span class="fa fa-trash-o"></span></a>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <div class="pull-left">
+        <button ng-click="AddNewDiv()" class="btn custom-btn3">Add New</button>
+    </div>
+    <div class="pull-right">
+        <a href="#" class="btn custom-btn2" data-dismiss="modal">
+            @*<span class="glyphicon glyphicon-remove"></span>*@ Cancel
+        </a>
+        <button ng-submit="attachform.$valid" type="submit" @*ng-click="SaveAttachment()"*@ class="btn custom-btn1"><span class="fa fa-calendar-check-o"></span>&nbsp;Save</button>
+    </div>
+</div>
+}
+
+
+
+<style>
+td input.btn {
+    padding: 1px;
+    margin: 0;
+    width: 100%;
+    min-width: 200px;
+}
+table#tbl-projectattachment td{vertical-align:top}
+#tbl-projectattachment td label{margin:0}
+</style>

@@ -1,0 +1,364 @@
+﻿@using SWI.Libraries.Security.Entities
+
+
+@model IEnumerable<Sec_User>
+
+@{
+    ViewBag.Title = "Users List";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    string style = "";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header" style="background-color:#3c8dbc" >
+            <header  style="color:white" role="heading">
+                <i class="fa fa-list"></i>&nbsp;
+                <h3 class="box-title">Users List</h3>
+            @if (ViewBag.Id != "")
+            {
+                <a href="@Url.Action("New","User",new { title="New",Id=ViewBag.Id })" class="btn btn-xs btn-info btn-flat pull-right">New User</a>
+            }
+                <a href="@Url.Action("hierarchy","User")" class="btn btn-xs btn-success btn-flat pull-right">Hierarchy Chart</a>
+            </header>    
+             </div>
+            <div class="box-body">
+                @if (ViewBag.View == "Mobile")
+                {
+                    style = "display: block;overflow-x: scroll;";
+                }
+
+                <table id="grid-data" style="@style"  class="table  table-bordered table-striped">
+                    <thead style="background-color:rgba(53, 124, 165, 0.89);color:white">
+                        <tr >
+                            <th data-formatter="image" data-column-id="image" >Image</th>
+                            <th data-column-id="Designation">Designation</th>
+                            <th data-column-id="FirstName">First Name</th>
+                            <th data-column-id="LastName" >Last Name</th>
+                            <th data-column-id="UserName">User Name</th>
+                            <th data-column-id="RoleName">Role Name</th>
+                            <th data-column-id="Email">Email</th>
+                            <th data-column-id="Contact" >Contact</th>
+                            <th data-column-id="RoleName">Role</th>
+                            <th data-column-id="ClientName">Company</th>
+                            <th data-formatter="Action" >Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+<script src="~/Content/js/Plugins/bootgrid/jquery.bootgrid.js"></script>
+<script src="~/Content/js/Plugins/ContextMenu/contextMenu.min.js"></script>
+
+    <script>
+
+        var NewDeviceRow = '';
+        var UserDeviceSelected = 0;
+        $(document).on('click', '.UsrDevices', function () {
+            UserDeviceSelected = $(this).attr('data-UserId');
+            UserDeviceData();
+        });
+
+
+        function UserDeviceData() {
+            $.ajax({
+                url: '/UserDevice/byUser/' + UserDeviceSelected,
+                //async: false,
+                success: function (res) {
+                    $('#av-modal-title').text('User Devices');
+                    $('#av-modal-body').html(res);
+                    $('#av-modal').modal('show');
+                    NewDeviceRow = $('#NewDeviceRow').html();
+                    $('#frm-userdev').parsley();
+                  //  $('#av-modal-footer').hide();
+                },
+                error: function (err) { }
+            });
+
+        }
+
+
+        function ManageStatus(value) {
+            $.ajax({
+                url: '/user/UpdateActiveStatus' + value,
+                success: function (res) {
+                    $("#grid-data").bootgrid('reload');
+                    console.log(res);
+                }
+            });
+        }
+      
+
+        // new row on TAB
+        $(document).on('keydown', '#txtMAC', function (e) {
+            var keyCode = e.keyCode || e.which;
+
+            if (keyCode == 9) {
+                e.preventDefault();
+                $('#tbl-UserDevices').append('<tr class="newrow">' + NewDeviceRow + '</tr>');
+                $('.txtManufacturer').last().focus();
+
+            }
+        });
+
+
+        // delete row on DELETE
+
+        $(document).on('keydown', '.devRow', function (e) {
+            var keyCode = e.keyCode || e.which;
+
+            if (e.keyCode == 46) {
+                e.preventDefault();
+                // $('.newrow').last().remove();
+                $(this).closest('tr').remove();
+                $('.txtManufacturer').last().focus();
+            }
+
+        });
+
+        // Save New Devices
+        $(document).on('click', '#frm-userdev-submit', function (e) {
+
+            e.preventDefault();
+            var form = $('#frm-userdev');
+            form.parsley().validate();
+
+            if (form.parsley().isValid()) {
+                var data = form.serialize();
+                $.ajax({
+                    url: '/UserDevice/new/',
+                    type: 'post',
+                    data: data,
+
+                    success: function (res) {
+                        UserDeviceData();
+                    },
+                    error: function (err) { alert(err.statusText); }
+                });
+
+            }
+
+            return false;
+
+        });
+
+        // Delete Device 
+        $(document).on('click', '.delete-device', function () {
+            var DeviceId = $(this).attr('data-DeviceId');
+            $.ajax({
+                url: '/UserDevice/Delete/' + DeviceId,
+                async: false,
+                success: function (res) {
+                    UserDeviceData();
+                },
+                error: function (err) {
+                }
+            });
+        });
+
+
+        // Delete Device 
+        $(document).on('click', '.dev-status', function () {
+            var DeviceId = $(this).attr('data-DeviceId');
+            var title = $('#dev-' + DeviceId).text();
+            console.log(title);
+            var status = false;
+            if (title == "Deactive") {
+                status = true;
+            } 
+            $.ajax({
+                url: '/UserDevice/Active/',
+                data: { DeviceId: DeviceId, Status: status },
+                async: false,
+                success: function (res) {
+                    UserDeviceData();
+                },
+                error: function (err) {
+                }
+            });
+        });
+
+        // Edit Device Row
+        $(document).on('click', '.edit-device', function () {
+            var DeviceId = $(this).attr('data-DeviceId');
+            var EditRow = ''
+
+            var $td;
+            var man;
+            $(this).closest('tr').each(function (i) {
+                 $tds = $(this).find('td'),
+                    Manufacturer = $tds.eq(0).text(),
+                    Model = $tds.eq(1).text(),
+                    IMEI = $tds.eq(2).text();
+                   MAC = $tds.eq(3).text();
+
+
+                   EditRow = '<td><input type="hidden" name="DeviceId" value="' + DeviceId  + '" class="devRow" /><input type="hidden" name="UserId" class="devRow" value="' + UserDeviceSelected + '" />' +
+                   '<input type="text" name="Manufacturer" value="' + Manufacturer + '" class="form-control devRow txtManufacturer" required placeholder="Manufacturer" /></td>' +
+                   '<td><input type="text" name="Model" value="' + Model + '" required class="form-control devRow " placeholder="Model" /></td>' +
+                   '<td><input type="text" name="IMEI" value="' + IMEI + '" required class="form-control devRow" placeholder="IMEI" /></td>' +
+                   '<td><input type="text" name="MAC" value="' + MAC + '" required id="txtMAC" class="form-control devRow" placeholder="MAC" /></td>';
+
+                 //console.log('Row ' + (i + 1) + ':\nManufacturer: ' + Manufacturer
+                 //     + '\nModel: ' + Model
+                 //     + '\nIMEI: ' + IMEI + 'MAC' + MAC);
+               
+             });
+           
+
+            //console.log(EditRow);
+
+            $('#tbl-UserDevices').append('<tr class="newrow">' + EditRow + '</tr>');
+            $('.txtManufacturer').last().focus();
+        });
+
+
+
+        $(function () {
+
+            var grid = $("#grid-data").bootgrid({
+                ajax: true,
+                sorting: false,
+                post: function () {
+                    return {
+                        //id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
+                    };
+                },
+                url: "/user/record",
+                searchSettings: {
+                    delay: 100,
+                    characters: 3
+                },
+                formatters: {
+                    "image": function (column, row) {
+                        return "<img data-id='" + row.UserId + "' data-status='" + row.ActiveStatus + "' src=\"" + row.Picture + "\" class=\"img-responsive\" height=\"32\" width=\"32\" />";
+                    },
+                    "Action": function (column, row) {
+                        if (row.ActiveStatus == true) {
+                            return '<a href="/User/Edit?Id=' + row.UserId + '"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a> &nbsp;   <a href="#" onclick="ManageStatus(\'?Id=' + row.UserId + '&status=false\')">Active</i></a><a style="margin-left:5px"; href="/User/Summary?Id=' + row.UserId + '"><i class="fa fa-calendar" aria-hidden="true"></i></a>'
+                        }
+                        else
+                        {
+                            return '<a href="/User/Edit?Id=' + row.UserId + '"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a> &nbsp;   <a href="#" onclick="ManageStatus(\'?Id=' + row.UserId + '&status=true\')">Deactive</i></a><a style="margin-left:5px"; href="/User/Summary?Id=' + row.UserId + '"><i class="fa fa-calendar" aria-hidden="true"></i></a>'
+                        }
+                    },
+                },
+              
+                });
+            $('.column-header-anchor').css('color', 'white');
+
+            $("#grid-data th").hover(function () {
+                $(this).css('background-color', 'rgba(53, 124, 165, 0.89)');
+            });
+
+            var Active = {
+                "edit": { name: "Edit", icon: "edit" },
+                "delete": { name: "Delete", icon: "delete" },
+                "profile": { name: "Profile", icon: 'user' },
+                "permission": { name: "Permissions", },
+                "dateRight": { name: "Date Rights", },
+                "Devices": { name: "Devices", },
+                "actice": { name: "Active", },
+            }
+            var Deactive = {
+                "edit": { name: "Edit", icon: "edit" },
+                "delete": { name: "Delete", icon: "delete" },
+                "profile": { name: "Profile", icon: 'user' },
+                "permission": { name: "Permissions", },
+                "dateRight": { name: "Date Rights", },
+                "deactive": { name: "Deactive", },
+            }
+            //console.log(Deactive);
+            function Events(key, value) {
+                if (key == 'edit') {
+                    window.location.href = "/user/edit/" + value;
+                } else if (key == 'delete') {
+                    var c = confirm('Do you want to delete...? ');
+                    if (c) {
+
+                        window.location.replace("/user/Delete/" + value);
+                    }
+                    else { return false }
+                }
+                else if (key == 'profile') {
+                    window.location.href = "/user/details/" + value;
+                }
+                else if (key == 'permission') {
+                    window.location.href = "/permission/byuser/" + value;
+                }
+                else if (key == 'dateRight') {
+                    window.location.href = "/dateright/new/" + value;
+                }
+                else if (key == 'Devices') {
+                    UserDeviceSelected = value;
+                    UserDeviceData();
+                }
+                else if (key == 'actice') {
+                    ManageStatus(value);
+
+                } else if (key == 'deactive') {
+                    ManageStatus(value);
+                }
+
+            }
+
+            $(".context-menu-one").contextMenu({
+                selector: 'td',
+                build: function ($trigger, e) {
+                    var id = $($trigger.context).closest('tr').find("img").attr("data-id");
+                    var status = $($trigger.context).closest('tr').find("img").attr("data-status");
+                    if (status == 'true') {
+                        return {
+
+                            callback: function (key, options) {
+                                if (key == 'actice') {
+                                    id = '?Id=' + id + '&status=false';
+                                }
+                                Events(key, id);
+                            },
+                            items: Active
+                        };
+                    } else {
+                        return {
+
+                            callback: function (key, options) {
+                                if (key == 'deactive') {
+                                    id = '?Id=' + id + '&status=true';
+                                }
+                                Events(key, id);
+                            },
+                            items: Deactive
+                        };
+                    }
+                }
+               
+            });
+            //setTimeout(function () {
+            if ('@ViewBag.Client' != '') {
+                var Client = '@ViewBag.Client';
+                $(".search-field").focus();
+                $(".search-field").val(Client);
+                $(".search-field").keyup();
+            }
+          //  }, 1000);
+          
+        });
+        
+    </script>
+ 
+
+}
+@section style{
+    @Styles.Render("~/AdminLTE/plugins/datatables/css")
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/bootgrid/jquery.bootgrid.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/ContextMenu/contextMenu.min.css" rel="stylesheet" />
+}

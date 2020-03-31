@@ -1,0 +1,146 @@
+﻿@using SWI.Libraries.AD.Entities
+
+@model AD_UserEquipment
+
+@{
+    ViewBag.Title = "New Equipment";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <a href="@Url.Action("Index","Equipment")" class="btn btn-sm btn-info btn-flat pull-right">Back</a>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        @using (Html.BeginForm("New", "Equipment", FormMethod.Post, new { Id = "frm-UserEquipment" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.UEId)
+
+
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="UE Type" class="control-label col-md-3">Equipment Type</label>
+                                    <div class="col-md-9">
+                                        @Html.DropDownListFor(m=>m.UETypeId, new SelectList(ViewBag.UETypes, "Value", "Text"), new { @class = "form-control", data_parsley_min = "1"})
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="UE Type" class="control-label col-md-3">Equipment Owner</label>
+                                    <div class="col-md-9">
+                                        @Html.DropDownListFor(m => m.UEOwnerId, new SelectList(ViewBag.UEOwner, "Value", "Text"), new { @class = "form-control", data_parsley_min = "1" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="UE Type" class="control-label col-md-3">Equipment RefNo.</label>
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(model => model.UERefNo, new { htmlAttributes = new { @class = "form-control", Required = "Required" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Manufacturer, htmlAttributes: new { @class = "control-label col-md-3" })
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(model => model.Manufacturer, new { htmlAttributes = new { @class = "form-control", Required = "Required" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Model", htmlAttributes: new { @class = "control-label col-md-3" })
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(model => model.Model, new { htmlAttributes = new { @class = "form-control", Required = "Required" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Serial No", htmlAttributes: new { @class = "control-label col-md-3" })
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(model => model.SerialNo, new { htmlAttributes = new { @class = "form-control", Required = "Required" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("MAC", htmlAttributes: new { @class = "control-label col-md-3" })
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(model => model.MAC, new { htmlAttributes = new { @class = "form-control", Required = "Required" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("UE Number", htmlAttributes: new { @class = "control-label col-md-3" })
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(model => model.UENumber, new { htmlAttributes = new { @class = "form-control", Required = "Required" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="reset" value="Reset" class="btn btn-default" />
+                                        <input type="submit" value="Save" class="btn btn-success" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+    <script>
+        $(function () {
+            $('#frm-UserEquipment').parsley();
+
+            $('#frm-UserEquipment').submit(function () {
+
+                $.ajax({
+                    url: '/Equipment/New',
+                    type: 'post',
+                    async: false,
+                    data: $(this).serialize(),
+                    success: function (res) {
+                        if (res != 'session expired') {
+                            if (res.Status == 'success') {
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                            } else {
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+                        } else {
+                            $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    },
+                    error: function (err) {
+                        $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+
+                    },
+
+                });
+
+                return false;
+            });
+        });
+    </script>
+}
+@section style{
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+
+}

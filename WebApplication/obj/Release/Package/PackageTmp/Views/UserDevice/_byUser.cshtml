@@ -1,0 +1,71 @@
+﻿@using SWI.Libraries.Security.Entities
+@model IEnumerable<Sec_UserDevices>
+
+
+
+
+    @if (Model.Count() > 0)
+    {
+        <div style="overflow:auto;max-height:400px;">
+
+            <table class="table table-striped">
+                <tr>
+                    <th>Manufacturer</th>
+                    <th>Model</th>
+                    <th>IMEI</th>
+                    <th>MAC</th>
+                    <th></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="DeviceData">@item.Manufacturer</td>
+                        <td class="DeviceData">@item.Model</td>
+                        <td class="DeviceData">@item.IMEI</td>
+                        <td class="DeviceData">@item.MAC</td>
+
+                        <td>
+                            <a href="#" class="dev-status" data-DeviceId="@item.DeviceId">
+                                @if (item.IsActive == true)
+                                {
+                                    <span id="dev-@item.DeviceId">Active</span>
+                                }
+                                else
+                                {  <span id="dev-@item.DeviceId">Deactive</span>}
+                            </a>|
+                            <a href="#" class="delete-device" data-DeviceId="@item.DeviceId">Delete</a> |
+                            <a href="#" class="edit-device" data-DeviceId="@item.DeviceId">Edit</a>
+                        </td>
+                    </tr>
+                }
+
+            </table>
+
+        </div>
+    }
+
+
+
+            <form id="frm-userdev" action="#" method="post">
+                <table class="table table-striped" id="tbl-UserDevices">
+                    <tr id="NewDeviceRow" class="newrow">
+                        <td>
+                            <input type="hidden" name="DeviceId" value="0" class="devRow" />
+                            <input type="hidden" name="UserId" class="devRow" value="@ViewBag.UserId" />
+                            <input type="text" name="Manufacturer" class="form-control devRow txtManufacturer" required placeholder="Manufacturer" />
+                        </td>
+                        <td><input type="text" name="Model" required class="form-control devRow " placeholder="Model" /></td>
+                        <td><input type="text" name="IMEI" required class="form-control devRow" placeholder="IMEI" /></td>
+                        <td><input type="text" name="MAC" required id="txtMAC" class="form-control devRow" placeholder="MAC" /></td>
+                    </tr>
+                </table>
+                <div class="form-group pull-right">
+                    <div class="">
+                        <input type="reset" value="Reset" class="btn btn-default" />
+                        <input type="submit" value="Save" id="frm-userdev-submit" class="btn btn-success" />
+                    </div>
+                </div>
+
+            </form>
+
+

@@ -1,0 +1,111 @@
+﻿
+@using SWI.Libraries.Security.Entities
+@model IEnumerable<Sec_Role>
+
+@{
+    ViewBag.Title = "Role List";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Role List</h3>
+                <a href="@Url.Action("New","Role")" class="btn btn-sm btn-info btn-flat pull-right">New</a>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <table class="table">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            Default Url
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Description)
+                        </th>
+
+
+                        <th>Action</th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DefaultUrl)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.RoleId }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.RoleId }, new { @class = "delete" })|
+                                @if (item.IsActive == true)
+                                {
+                                    <a class="ActiveStatus" id="user-@item.RoleId" data-id="@item.RoleId" href="@Url.Action("UpdateActiveStatus", "Role", new { Id = item.RoleId, status = false })">Deactive</a>
+                                }
+                                else
+                                {
+                                    <a class="ActiveStatus" id="user-@item.RoleId" data-id="@item.RoleId" href="@Url.Action("UpdateActiveStatus", "Role", new { Id = item.RoleId, status = true })">Active</a>
+                                }
+
+                                |  <a href="@Url.Action("ByRole", "Permission", new { Id = item.RoleId })">Permissions</a>
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script>
+
+        $(document).on('click', '.delete', function () {
+            var c = confirm('Do you want to delete...? ');
+            if (c) { }
+            else { return false }
+        });
+
+        //For Active Deactive
+        $(document).on('click', '.ActiveStatus', function () {
+            var Selector = $(this).attr('id');
+            var title = $(this).text();
+            var status = true;
+            var Id = $(this).attr('data-id');
+            if (title == "Deactive") {
+                status = false;
+                title = 'Active';
+            } else {
+                title = 'Deactive';
+            }
+
+            $.ajax({
+                url: '/Role/UpdateActiveStatus?Id=' + Id + '&status=' + status,
+                success: function (res) {
+                    if (res == 'True') {
+
+                        $('#' + Selector).text(title);
+                    }
+                }
+            });
+
+            return false;
+        });
+    </script>
+
+}

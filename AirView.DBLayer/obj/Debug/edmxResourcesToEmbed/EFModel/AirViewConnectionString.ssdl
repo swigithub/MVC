@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="AirViewModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="AV_LogsInfo">
+    <Key>
+      <PropertyRef Name="fileID" />
+    </Key>
+    <Property Name="fileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fileName" Type="nvarchar" MaxLength="100" />
+    <Property Name="createDate" Type="datetime" />
+    <Property Name="pathFile" Type="nvarchar" MaxLength="200" />
+    <Property Name="siteID" Type="int" />
+    <Property Name="sectorID" Type="int" />
+    <Property Name="networkModeID" Type="int" />
+    <Property Name="bandID" Type="int" />
+    <Property Name="carrierID" Type="int" />
+    <Property Name="scopeID" Type="int" />
+    <Property Name="fileType" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="AV_NemoSiteLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Time" Type="nvarchar" MaxLength="50" />
+    <Property Name="Current_System" Type="nvarchar" MaxLength="50" />
+    <Property Name="Longitude" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="Latitude" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="fileID_Fk" Type="int" Nullable="false" />
+    <Property Name="Cell" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN" Type="bigint" />
+    <Property Name="RSSI_dBm" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cell1" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band1" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel1" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN1" Type="bigint" />
+    <Property Name="RSSI_dBm1" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db1" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm1" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cell2" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band2" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel2" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN2" Type="bigint" />
+    <Property Name="RSSI_dBm2" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db2" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm2" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cell3" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band3" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel3" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN3" Type="bigint" />
+    <Property Name="RSSI_dBm3" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db3" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm3" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cell4" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band4" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel4" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN4" Type="bigint" />
+    <Property Name="RSSI_dBm4" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db4" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm4" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cell5" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band5" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel5" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN5" Type="bigint" />
+    <Property Name="RSSI_dBm5" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db5" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm5" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cell6" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band6" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel6" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN6" Type="bigint" />
+    <Property Name="RSSI_dBm6" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db6" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm6" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cell7" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band7" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel7" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN7" Type="bigint" />
+    <Property Name="RSSI_dBm7" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db7" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm7" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cell8" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band8" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel8" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN8" Type="bigint" />
+    <Property Name="RSSI_dBm8" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db8" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm8" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cell9" Type="nvarchar" MaxLength="50" />
+    <Property Name="Band9" Type="nvarchar" MaxLength="50" />
+    <Property Name="Channel9" Type="nvarchar" MaxLength="50" />
+    <Property Name="PCI_PN9" Type="bigint" />
+    <Property Name="RSSI_dBm9" Type="decimal" Precision="18" Scale="5" />
+    <Property Name="RSRQ_Ec_I0_db9" Type="nvarchar" MaxLength="50" />
+    <Property Name="RSRP_RSCP_dBm9" Type="nvarchar" MaxLength="50" />
+    <Property Name="HO_Type" Type="nvarchar" MaxLength="50" />
+    <Property Name="Current_Channel" Type="nvarchar" MaxLength="50" />
+    <Property Name="Current_Band" Type="nvarchar" MaxLength="50" />
+    <Property Name="Attempted_System" Type="nvarchar" MaxLength="50" />
+    <Property Name="Attempted_PCI" Type="nvarchar" MaxLength="50" />
+    <Property Name="Attempted_Band" Type="nvarchar" MaxLength="50" />
+    <Property Name="HO_Duration_ms" Type="nvarchar" MaxLength="50" />
+    <Property Name="HO_Uplane_interruption_ms" Type="nvarchar" MaxLength="50" />
+    <Property Name="Event" Type="nvarchar" MaxLength="250" />
+    <Property Name="Call_Type" Type="nvarchar" MaxLength="50" />
+    <Property Name="Call_Direction" Type="nvarchar" MaxLength="50" />
+    <Property Name="MO_MTPhone_Number" Type="nvarchar" MaxLength="50" />
+    <Property Name="Call_Connection_Status" Type="nvarchar" MaxLength="50" />
+    <Property Name="Ping_Size_bytes" Type="nvarchar" MaxLength="50" />
+    <Property Name="RTT_ms" Type="nvarchar" MaxLength="50" />
+    <Property Name="Connection_Setup_Time_ms" Type="nvarchar" MaxLength="50" />
+    <Property Name="Current_PCI" Type="nvarchar" MaxLength="50" />
+    <Property Name="Attempted_Channel" Type="nvarchar" MaxLength="50" />
+    <Property Name="PDSCH_DL_Throughput_bits" Type="nvarchar" MaxLength="50" />
+    <Property Name="PUSCH_UL_Throughput_bits" Type="nvarchar" MaxLength="50" />
+    <Property Name="Direction" Type="nvarchar" MaxLength="50" />
+    <Property Name="EventFields" Type="nvarchar" MaxLength="250" />
+    <Property Name="SNR" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="SNR1" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="SNR2" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="SNR3" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="SNR4" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="SNR5" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="SNR6" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="SNR7" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="SNR8" Type="decimal" Precision="18" Scale="0" />
+  </EntityType>
+  <Association Name="FK_tsvFileInformation_flieInformation">
+    <End Role="AV_LogsInfo" Type="Self.AV_LogsInfo" Multiplicity="1" />
+    <End Role="AV_NemoSiteLogs" Type="Self.AV_NemoSiteLogs" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AV_LogsInfo">
+        <PropertyRef Name="fileID" />
+      </Principal>
+      <Dependent Role="AV_NemoSiteLogs">
+        <PropertyRef Name="fileID_Fk" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="AV_ProcessNemoLogs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FileID" Type="int" Mode="In" />
+  </Function>
+  <EntityContainer Name="AirViewModelStoreContainer">
+    <EntitySet Name="AV_LogsInfo" EntityType="Self.AV_LogsInfo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AV_NemoSiteLogs" EntityType="Self.AV_NemoSiteLogs" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_tsvFileInformation_flieInformation" Association="Self.FK_tsvFileInformation_flieInformation">
+      <End Role="AV_LogsInfo" EntitySet="AV_LogsInfo" />
+      <End Role="AV_NemoSiteLogs" EntitySet="AV_NemoSiteLogs" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

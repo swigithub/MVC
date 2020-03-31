@@ -1,0 +1,43 @@
+﻿<div id="addnew-panel" class="popup-box">
+    <form name=vm.dashboardAndReportInitialInfo ng-submit=vm.saveETLName() novalidate>
+        <div class="widget-title">
+            <div class="title-text">Transaction Table Name</div>
+            <a class="close-popup" ng-click="vm.cancel()" href="#" title=""><i class="fa fa-times"></i></a>
+        </div><!-- Popup Title -->
+
+        <div class="popup-content">
+
+            <div class="row align-items-start">
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <label>Enter Transaction Name<span class="spanForMandatory">*</span></label>
+                    <div class="form-group" ng-class="{ 'has-error': vm.dashboardAndReportInitialInfo.ETLTitle.$touched && vm.dashboardAndReportInitialInfo.ETLTitle.$invalid}">
+                        <input placeholder="Enter Transaction Name" ng-model="vm.dashbaordInfo.ETLTitle" ng-trim="true" type="text" name="ETLTitle" ng-minlength="5"
+                               ng-maxlength="50" ng-keydown="$event.keyCode != 32 ? $event:$event.preventDefault()" required>
+                        <div class="help-block with-errors" ng-messages="vm.dashboardAndReportInitialInfo.ETLTitle.$error" ng-if="vm.dashboardAndReportInitialInfo.ETLTitle.$touched">
+                            <div ng-message-exp="['minlength', 'maxlength']">
+                                Minimum 5 characters required
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="help-block with-errors" ng-show="vm.dashboardAndReportInitialInfo.$submitted ||vm.dashboardAndReportInitialInfo.ETLTitle.$touched">
+                        <div ng-show="vm.dashboardAndReportInitialInfo.ETLTitle.$error.required">Mandatory fields<span>*</span></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="popup-footer align-right">
+            <button type="submit" class="custom-btn medium color1">Save</button>
+            <button type="button" class="custom-btn medium color11" ng-click="vm.cancel()">Cancel</button>
+        </div>
+    </form>
+</div>
+
+
+

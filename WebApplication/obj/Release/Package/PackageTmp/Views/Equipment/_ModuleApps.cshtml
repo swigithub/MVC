@@ -1,0 +1,166 @@
+﻿@using SWI.Libraries.AD.Entities
+@model IEnumerable<AD_Defination>
+
+@{
+    Layout = "";
+}
+
+
+@helper GetTreeView(List<AD_Defination> app1, Int64 PDefinationId)
+{
+foreach (var item in app1.Where(m => m.PDefinationId.Equals(PDefinationId)))
+{
+    var subItems = app1.Where(m => m.PDefinationId.Equals(item.DefinationId)).Count();
+        <li Id="@item.DefinationId" class="control">
+            @item.DefinationName
+            @if (subItems > 0)
+            {
+                <ul>
+                    @GetTreeView(app1, item.DefinationId)
+                </ul>
+            }
+        </li>
+}
+}
+
+
+<form ng-submit="Save()" class="smart-form">
+    <fieldset>
+        <div class="box-body">
+            <div class="row">
+                @*<h4>Module Permissions</h4>*@
+                <div>
+                    @if (ViewBag.Apps != null)
+                    {
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <div id="treeview-container">
+                                    <ul>
+                                        @if (Model != null && Model.Count() > 0)
+                                        {
+                                            @GetTreeView(Model.ToList(), Model.FirstOrDefault().PDefinationId)
+                                        }
+                                    </ul>
+                                    <input type="text" style="visibility:hidden" id="txt-selected" />
+                                </div>
+                                <br />
+                                <input type="button" id="btn-save" value="Save" class="btn btn-primary pull-right" />
+                            </div>
+                        </div>
+                    }
+
+                    @*@if (ViewBag.Apps != null)
+                        {
+                            <table id="mytable" style="width:100%" class="table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ap in ViewBag.Apps)
+                                    {
+                                        <tr>
+                                            <td align="center"><input id="chk-@ap.DefinationId" class="chk-module" type="checkbox" name="moduleIds" value="@ap.DefinationId" /> </td>
+                                            <td><label name="moduleName" value="@ap.DefinationName">@ap.DefinationName</label></td>
+                                            <td><input type="hidden" value="@ap.PDefinationId" /></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }*@
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    @*<footer>
+               <button type="submit" onclick="submitForm()" class="btn btn-primary">
+                   Save
+               </button>
+        </footer>*@
+</form>
+
+
+
+<script>
+    $(function () {
+        var arr;
+        $("#treeview-container").dynatree({
+            checkbox: true,
+            // selectMode: 3,
+            onClick: function (node, event) {
+            },
+            onActivate: function (node) {
+                console.log(node.data.key);
+            },
+            onSelect: function (flag, node) {
+                var selectedNodes = node.tree.getSelectedNodes();
+                var selectedKeys = $.map(selectedNodes, function (node) {
+                    return node.data.key;
+                });
+                arr = selectedKeys;
+            }
+        });
+
+        //var sApp = $('#appIds').val().split(',');
+        //var i;
+
+        //for (i = 0; i < sApp.length; ++i) {
+        //    $("#treeview-container").dynatree("getTree").selectKey(sApp[i]);
+        //}
+
+        $('#btn-save').click(function () {
+            $.ajax({
+                url: "/Equipment/UserApps",
+                data: { checkedValues: arr, UserId: myUserId, UEId: myUEId },
+                type: 'post',
+                success: function () {
+                    window.location.reload();
+                }
+            });
+        });
+    });
+
+
+    //function submitForm() {
+    //    var checkedValues = [];
+    //    $.each($("input[name='moduleIds']:checked"), function () {
+    //        checkedValues.push($(this).val());
+    //    });
+
+    //    ///alert("My checkedValues  are: " + checkedValues.join(", "));
+
+    //    //var tableControl = document.getElementById('mytable');
+    //    //var arrayOfValues = [];
+
+    //    //$('input:checkbox:checked', tableControl).each(function () {
+    //    //    arrayOfValues.push($(this).closest('tr').find('td:last').text());
+    //    //}).get();
+
+    //    //alert(arrayOfValues);
+    //    var TypeId = $('input[type=hidden]').val();
+
+    //    $.ajax({
+    //        url: "/Equipment/UserApps",
+    //        data: { checkedValues: checkedValues, UserId: myUserId, UEId: myUEId, TypeId: TypeId },
+    //        type: 'post',
+    //        success: function () {
+    //            //window.location.reload();
+    //        }
+    //    });
+    //}
+
+</script>
+<style>
+    .smart-form {
+        padding-left: 10px !important;
+    }
+
+        .smart-form .btn {
+            padding: 3px 10px 3px 10px !important;
+        }
+        .modal-content{
+            width:500px;
+        }
+</style>

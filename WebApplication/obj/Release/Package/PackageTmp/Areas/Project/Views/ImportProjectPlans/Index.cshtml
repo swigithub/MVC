@@ -1,0 +1,1006 @@
+﻿@using AirView.DBLayer.Project.Model
+
+@model IEnumerable<AirView.DBLayer.Project.Model.PM_ImportProjectPlans>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+
+<link href="~/Scale/js/datepicker/datepicker.css" rel="stylesheet" />
+<link href="~/AdminLTE/plugins/datatables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<style>
+    .jarviswidget {
+        margin-bottom: 5px;
+    }
+
+    select#ImportsData {
+        margin: 0 0 20px;
+        width: 190px;
+        height: 24px;
+        font-size: 13px;
+        padding: 0 10px;
+        margin-left: 5px;
+    }
+
+        select#ImportsData option {
+            border: 0;
+        }
+
+    button#btnPlans {
+        margin-left: 10px;
+    }
+
+    div#returnedData {
+        float: left;
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .make-selection {
+        float: left;
+        margin-right: 20px;
+    }
+
+    .upload-btn {
+        height: 24px;
+        line-height: 1;
+    }
+
+
+    .red {
+        background-color: #f0bbbe;
+    }
+    body table td._changed {
+        background-color: yellow;
+    }
+    body table td._notfound {
+        background-color: #fbe8e9;
+    }
+     body table tr.notfound {
+        background-color: #fbe8e9;
+    }
+   body table tr._new {
+        background-color:#c1e7bf; /*#cfead8;*/
+    }
+    body table tr._update {
+        background-color:#efefef;
+    }
+
+
+
+.ui-sortable .light-widget.jarviswidget-sortable>header {
+    box-shadow: none!important;
+    border: 1px solid #c2c2c2;
+    background: #fafafa;
+}
+.light-widget a.collapse-widget {
+    color: #4c4f53;
+}
+.light-widget a.collapse-widget {
+    color: #4c4f53;
+}
+
+.light-widget .widget-toolbar {
+    border: 0!important;
+}
+.light-widget .selected-filters i{color:#333}
+.custom-table{
+    float:left;
+    width:100%
+}
+</style>
+
+<div id="toast" class="alert alert-danger hidden" role="alert">
+    Select valid file type (.csv) for import!
+</div>
+
+
+<script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+<script src="~/AdminLTE/plugins/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var loading = $.loading();
+        loading.ajax(true);
+    });
+
+</script>
+
+
+<div class="row">
+
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-2" role="widget" style="">
+            <header role="heading">
+                <div class="btn-group" role="menu" style="float:left; line-height:30px;">
+                    <label style="font-weight:bold;">&nbsp;&nbsp;Import Data</label>
+                </div>
+
+                <a href="/Project/Dashboard/Index/@ViewBag.Project" class="btn btn-xs btn-success pull-right" style="margin-right:5px;margin-top:5px;">
+                    Return to Dashboard
+                </a>
+            </header>
+
+            <div class="box box-solid">
+                
+                <div class="make-selection">
+                    &nbsp;<label><strong>Select Template: </strong></label>
+                    <select id="ImportsData" name="ImportsData">
+                        <option name="abc" selected="selected" value="0">-- Select --</option>
+@if (ViewBag.AllowUri("/Project/ImportProjectPlans/UploadProjectPlan"))
+{
+                        <option name="p_masrer" value="1">Project Plan</option>
+}   @if (ViewBag.AllowUri("/Project/ImportProjectPlans/UploadIssuesLog"))
+{
+                        <option name="p_wrEx" value="2">Issues Log</option>
+}   @if (ViewBag.AllowUri("/Project/ImportProjectPlans/UploadSiteLog"))
+{
+                        <option name="p_wrFail" value="3">Site Dispositions</option>
+}
+                    </select>
+                </div>
+                <div id="SelectType" class="make-selection">
+                    @*&nbsp;<label><strong>Select Type: </strong></label>*@
+                    <select id="ProjectPlanType">
+                        <option selected value="Default">Default</option>
+                        <option value="Custom">Custom</option>
+                    </select>
+                </div>
+                <!---------part 1: Project Plan---------->
+                <div id="plans" class="" style="padding:0 5px 20px;">
+                    <div class="pull-left">
+                        <input type="file" name="uploadMasterEx" accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                               id="fileplans" class="pull-right btn btn-info btn-xs" style="height:24px;min-width: 272px;" />
+                    </div>
+                    <button type="button" id="btnPlans" class="btn btn-xs btn-info upload-btn upload-btn" style="margin-left:5px;">
+                        Upload
+                    </button>
+                    <button type="button" id="btnReset" class="btn btn-xs btn-info upload-btn" style="margin-left:5px; float:right;">
+                        Reset
+                    </button>
+                    <a id="Custom_Template" download href="~/Content/templates/Import_Plan_Custom.csv" class="btn btn-xs btn-success" style="margin-left:2px; height:24px;">
+                        Download Template
+                    </a>
+                    <a id="Default_Template" download href="~/Content/templates/Import_Plan_Default.csv" class="btn btn-xs btn-success" style="margin-left:2px; height:24px;">
+                        Download Template
+                    </a>
+                    <a id="_Revision"  class="btn btn-xs btn-primary" style="margin-left:2px; height:24px;">
+                        Revision
+                    </a>
+                       <select id="_RevisionDropDown"  class="" style="margin-left:2px;margin-top:1px" >
+                            <option selected value="0">-Select-</option>
+                        </select>
+                   
+                    <br />
+                    @*<div class="row" id="returnedData" style="overflow:hidden;overflow-x: scroll;"></div>*@
+
+
+                    
+
+                    
+                    <br />
+                </div>
+
+
+                <!---------part 2: WR Issues Log---------->
+                <div id="IssuesLog" class="pull-left" style="padding:0 5px 20px;">
+                    @*@using (Html.BeginForm("UploadIssuesLog", "ImportProjectPlans", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-UploadWREx" }))
+                        {*@
+                    <div class="pull-left">
+                        <input type="file" name="uploadWRIssues" accept=".csv,xlsx" id="fileWrIssues" required class="pull-right btn btn-info btn-xs" style="height:24px;min-width: 272px;" />
+                    </div>
+                    @*<button type="submit" id="btnWRIssues" class="btn btn-xs btn-info upload-btn hidden" style="margin-left:5px;">
+                            Upload
+                        </button>*@
+                    <button type="button" id="btnWRIssuesClient" class="btn btn-xs btn-info upload-btn" style="margin-left:5px;">
+                        Upload
+                    </button>
+                    <a href="~/Content/templates/WR_LOG_ISSUES.csv" class="btn btn-xs btn-success" style="margin-left:2px; height:24px;">
+                        Download Template
+                    </a>
+                    <br />
+                    @*}*@
+                </div>
+
+
+                <!---------part 3: WR Site Log---------->
+                <div id="SiteLog" class="" style="padding:0 5px 20px;">
+                    @*@using (Html.BeginForm("UploadSiteLog", "ImportProjectPlans", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-UploadWRFail" }))
+                        {*@
+                    <div class="pull-left">
+                        <input type="file" name="uploadWRSiteLog" accept=".csv,xlsx" id="fileWrSiteLog" required class="pull-right btn btn-info btn-xs" style="height:24px;min-width: 272px;" />
+                    </div>
+                    @*<button type="submit" id="btnWRSiteLog" class="btn btn-xs btn-info upload-btn hidden" style="margin-left:5px;">
+                            Upload
+                        </button>*@
+                    <button type="button" id="btnWRSiteLogClient" class="btn btn-xs btn-info upload-btn" style="margin-left:5px;">
+                        Upload
+                    </button>
+                    <a href="~/Content/templates/WR_LOG_SITES.csv" class="btn btn-xs btn-success" style="margin-left:2px; height:24px;">
+                        Download Template
+                    </a>
+                    <br />
+                    @*}*@
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/Scale/js/datepicker/bootstrap-datepicker.js"></script>
+<link href="~/AdminLTE/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminLTE/plugins/sweetalert/sweetalert.js"></script>
+
+<script src="~/Content/js/Plugins/QueryBuilder/js/moment.min.js"></script>
+<script>
+    $(function () {
+        $('#plans').hide();
+        $('#IssuesLog').hide();
+        $('#SiteLog').hide();
+        $('#tblReturnedData thead tr').toggle();
+        $('#btnReset').toggle();
+        $('#ImportsData').change(function () {
+            $("#fileplans").val("")
+            $("#tblReturnedData_wrapper").remove();
+            $("#_RevisionDropDown").hide();
+            $("#_RevisionDropDown").val(0);
+            $("#Custom_Template").hide();
+            $("#Default_Template").hide();
+            if ($('#ImportsData').val() == '1') {
+                $('#plans').show();
+                $('#IssuesLog').hide();
+                $('#SiteLog').hide();
+                $("#SelectType").show();
+                $("#Default_Template").show()
+
+            } else if ($('#ImportsData').val() == '2') {
+                $('#plans').hide();
+                $('#IssuesLog').show();
+                $('#SiteLog').hide();
+                $('#returnedData').empty();
+                $("#SelectType").hide();
+            }
+            else if ($('#ImportsData').val() == '3') {
+                $('#plans').hide();
+                $('#IssuesLog').hide();
+                $('#SiteLog').show();
+                $('#returnedData').empty();
+                $("#SelectType").hide();
+            }
+            else {
+                $('#plans').hide();
+                $('#IssuesLog').hide();
+                $('#SiteLog').hide();
+                $("#SelectType").hide();
+            }
+        });
+
+    });
+
+    //--------------------------------------------------------------
+    function showtoast() {
+        // Get the snackbar DIV
+        var x = document.getElementById("toast")
+        // Add the "show" class to DIV
+        x.className = "alert alert-danger show";
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { x.className = x.className.replace("alert alert-danger show", "alert alert-danger hidden"); }, 3000);
+    }
+
+    //--------------------------------------------------------------
+    $("#Custom_Template").hide();
+    $("#Default_Template").hide()
+    $("#SelectType").hide();
+    $("#ProjectPlanType").change(function () {
+       var ImportType = $("#ProjectPlanType").val();
+        if (ImportType == "Default") {
+            $("#Custom_Template").hide()
+            $("#Default_Template").show()
+        }
+        else {
+            $("#Default_Template").hide()
+            $("#Custom_Template").show()
+        }
+    });
+    $("#fileplans").change(function () {
+        var fileExtension = ['csv', 'CSV'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            showtoast();
+        }
+    });
+
+    //  project plan
+    $('#btnPlans').click(function () {
+      var file = $('#fileplans').get(0).files;
+        var formdata = new FormData();
+        formdata.append('uploadMasterEx', file[0]);
+        formdata.append('asdf', "dsdsdsdsdsd");
+        var returnedData = '';
+        if (file.length > 0) {
+            swal({
+                title: "Confirm!",
+                text: "Do you want to upload Project Plan",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Upload",
+                closeOnConfirm: false
+            },
+        function () {
+            swal.close();
+            var Url = '/ImportProjectPlans/UploadProjectPlan';
+            var ImportType = $("#ProjectPlanType").val();
+            if(ImportType == "Default")
+                 Url = '/ImportProjectPlans/UploadProjectPlan';
+            else
+                Url = '/ImportProjectPlans/UploadProjectPlanCustom';
+
+            //return false;
+           $.ajax({
+                url: Url,
+                type: 'POST',
+                data: formdata,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                   $("#fileplans").val("")
+                   GetRevisions();
+                   if (data.key == true) {
+                       $('#btnReset').show();
+
+                       if (data.res.length > 0 && Url == '/ImportProjectPlans/UploadProjectPlan') {
+                            $('#tblReturnedData thead tr').toggle();
+                            $("#tblReturnedData_wrapper").remove();
+                        }
+                        else {
+                           $('#tblReturnedData').remove();
+                           $("#tblReturnedData_wrapper").remove();
+                        }
+
+                        $('#tblReturnedData tbody').empty();
+                        if (data.res.length > 0 && Url == '/ImportProjectPlans/UploadProjectPlan') {
+                            $('#tblReturnedData').remove();
+                            $("#plans").append(`<div class="custom-table"><div class="table-responsive"><table class="table table-bordered" id="tblReturnedData">
+                        <thead>
+                            <tr style="font-family:'Source Sans Pro',sans-serif">
+                                <th>FA Code</th>
+                                <th>Site name</th>
+                                <th>Site type</th>
+                                <th>Task</th>
+                                <th>Plan</th>
+                                <th>Forecast start</th>
+                                <th>Forecast end</th>
+                                <th>Target</th>
+                                <th>Actual start</th>
+                                <th>Actual end</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Completion</th>
+
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+
+                    </table></div></div>`)
+                     var Table = $('#tblReturnedData').DataTable({
+                                "ordering": false,
+                                "info": false,
+                                "searching": false,
+                                "lengthMenu": false,
+                                "pageLength": 10
+                            });
+                     Table.destroy();
+                     var _lastSite = '';
+                            for (var i = 0; i < data.res.length; i++) {
+                               // var stDate = new Date(moment.utc(res[i].StartDate));
+                                //   if (data.res[i].Status == "New") {
+                                //if (data.res[i]._difference != "" && data.res[i]._difference != null) {
+                                //    data.res[i]._difference = data.res[i]._difference.split(",");
+                                //    console.log("_difference",data.res[i]._difference);
+                                //}
+
+                                let className = '';
+                                if (data.res[i].Value28 == "new") {
+                                    className = "_new";
+                                    _lastSite = "new";
+                                }
+                                else if (data.res[i].Value28 == "update")
+                                    {
+                                    className = "_update"
+                                    _lastSite = "update";
+                                }
+                                else if ((data.res[i].Value29 == "new" && _lastSite == "new") || (data.res[i].Value29 == "update" && _lastSite == "new"))
+                                    className = "_new"
+                                else if (data.res[i].Value29 == "update" && _lastSite == "update")
+                                    className = "_update"
+                                else //if (data.res[i].Value28 == "update")
+                                    className = "notfound"
+                                returnedData = '';
+
+                            //    if (className != "_notfound") {
+                                    returnedData += '<tr class=' + className + '>' +
+                                                        '<td>' + data.res[i].Value1 + '</td>' +
+                                                        '<td>' + data.res[i].Value15 + '</td>' +
+                                                        '<td>' + data.res[i].Value16 + '</td>';
+                                    if (data.res[i].Value29 == "task not exist") {
+                                        returnedData += '<td class="_notfound" >' + data.res[i].Value2 + '</td>' +
+
+                                                            '<td class="_notfound" >' + data.res[i].Value3 + '</td>' +
+                                                            '<td class="_notfound" >' + data.res[i].Value4 + '</td>' +
+                                                            '<td class="_notfound" >' + data.res[i].Value5 + '</td>' +
+                                                            '<td class="_notfound" >' + data.res[i].Value6 + '</td>' +
+
+                                                            '<td class="_notfound" >' + data.res[i].Value7 + '</td>' +
+                                                            '<td class="_notfound" >' + data.res[i].Value8 + '</td>' +
+                                                            '<td class="_notfound" >' + data.res[i].Value9 + '</td>' +
+
+
+                                                             '<td class="_notfound" >' + data.res[i].Value21 + '</td>' +
+                                                            '<td class="_notfound" >' + data.res[i].Value22 + '</td>' +
+                                                         '</tr>';
+                                    }
+                                    else {
+                                        let _className3, _className4, _className5, _className6, _className7, _className8, _className9, _className21, _className22;
+                                        _className3 = _className4 = _className5 = _className6 = _className7 = _className8 = _className9 = _className22 = '';
+
+                                        if (data.res[i].Value3.split("*?^*").length > 1) {
+                                            _className3 = '_changed';
+                                        }
+                                        if (data.res[i].Value4.split("*?^*").length > 1) {
+                                            _className4 = '_changed';
+                                        }
+                                        if (data.res[i].Value5.split("*?^*").length > 1) {
+                                            _className5 = '_changed';
+                                        }
+                                        if (data.res[i].Value6.split("*?^*").length > 1) {
+                                            _className6 = '_changed';
+                                        }
+                                        if (data.res[i].Value7.split("*?^*").length > 1) {
+                                            _className7 = '_changed';
+                                        }
+                                        if (data.res[i].Value8.split("*?^*").length > 1) {
+                                            _className8 = '_changed';
+                                        }
+                                        if (data.res[i].Value9.split("*?^*").length > 1) {
+                                            _className9 = '_changed';
+                                        }
+                                        if (data.res[i].Value21.split("*?^*").length > 1) {
+                                            _className21 = '_changed';
+                                        }
+                                        if (data.res[i].Value22.split("*?^*").length > 1) {
+                                            _className22 = '_changed';
+                                        }
+                                        returnedData += '<td>' + data.res[i].Value2.split("*?^*")[0] + '</td>' +
+
+                                                            '<td class=' + _className3+ ' >' + data.res[i].Value3.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                            '<td class=' + _className4 + ' >' + data.res[i].Value4.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                            '<td class=' + _className5 + ' >' + data.res[i].Value5.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                            '<td class=' + _className6 + ' >' + data.res[i].Value6.split("*?^*")[0].split(" ")[0] + '</td>' +
+
+                                                            '<td class=' + _className7 + ' >' + data.res[i].Value7.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                            '<td class=' + _className8 + ' >' + data.res[i].Value8.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                            '<td class=' + _className9 + ' >' + data.res[i].Value9.split("*?^*")[0] + '</td>' +
+
+
+                                                             '<td class=' + _className21 + ' >' + data.res[i].Value21.split("*?^*")[0] + '</td>' +
+                                                            '<td class=' + _className22 + ' >' + data.res[i].Value22.split("*?^*")[0] + '</td>' +
+                                                         '</tr>';
+                                    }
+                              //  }
+                                debugger
+                                    $('#tblReturnedData').append(returnedData);
+                             //   }
+                                //else if (data.res[i].Status == "Delete") {
+                                //    returnedData += '<tr class=red>' +
+                                //                      '<td>' + data.res[i].FACode + '</td>' +
+                                //                      '<td>' + data.res[i].MARKET + '</td>' +
+                                //                      '<td>' + data.res[i].TSSPlan + '</td>' +
+                                //                      '<td>' + data.res[i].TSSForecast + '</td>' +
+
+                                //                      '<td>' + data.res[i].TSSSubmitted + '</td>' +
+                                //                      '<td>' + data.res[i].SiteSpecificMaterialAvailableForecast + '</td>' +
+                                //                      '<td>' + data.res[i].SiteSpecificMaterialAvailableActual + '</td>' +
+                                //                      '<td>' + data.res[i].PreInstallPlanned + '</td>' +
+
+                                //                      '<td>' + data.res[i].PreInstallFcst + '</td>' +
+                                //                      '<td>' + data.res[i].PreInstallActual + '</td>' +
+                                //                      '<td>' + data.res[i].MigDatePlanned + '</td>' +
+                                //                      '<td>' + data.res[i].MigDateForecast + '</td>' +
+
+                                //                      '<td>' + data.res[i].MigrationDate + '</td>' +
+                                //                   '</tr>';
+                                //    $('#tblReturnedData').append(returnedData);
+                                //}
+                            }
+                            $('#tblReturnedData').DataTable({
+                                "ordering": false,
+                                "info": false,
+                                "searching": false,
+                                "lengthMenu": false,
+                                "pageLength": 10
+                            });
+                            $(".dataTables_length").remove();
+                        }
+                        $('.datePicker').datepicker({
+                            format: 'mm/dd/yyyy'
+                        });
+
+                        swal("Information!", data.msg, "success");
+                    }
+                    else {
+                       $("#tblReturnedData_wrapper").remove();
+                        swal("Information!", data.msg, "error");
+                    }
+                     GetRevisions();
+                },
+                error: function (data) {
+                    $("#tblReturnedData_wrapper").remove();
+                    $("#fileplans").val("")
+                    GetRevisions();
+                    swal("Error !","Error Occured !","error")
+                }
+            });
+        });
+        }
+        else {
+          swal("Error !","No file selected !","error");
+         //   return false;
+        }
+    });
+
+    //--------------------------------------------------------------
+    // save project plan (sheet) to data base (Not in use)
+    function SavePlan() {
+        swal({
+            title: "Confirm!",
+            text: "Do you want to upload project plan?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Upload",
+            closeOnConfirm: false
+        },
+          function () {
+              var formdata = $('#frm-script').serialize();
+              $.ajax({
+                  url: '/ImportProjectPlans/SaveUploadxxxxxxx',
+                  type: 'post',
+                  data: formdata,
+                  success: function (res) {
+                      swal("Information!", "Project Plan Successfully Updated!", "success");
+                      $('#returnedData').empty();
+                      $('#ImportsData').val(0);
+                      $("#fileplans").val("");
+                      $('#plans').hide();
+                  }
+              });
+          });
+    }
+
+    //--------------------------------------------------------------
+    ////upload WR Issues Log
+    //$("#btnWRIssuesClient").click(function () {
+    //    debugger;
+    //    var file = $('#fileWrIssues').get(0).files;
+    //    if (file.length > 0) {
+    //        swal({
+    //            title: "Confirm!",
+    //            text: "Do you want to upload WR Issues?",
+    //            type: "warning",
+    //            showCancelButton: true,
+    //            confirmButtonClass: "btn-danger",
+    //            confirmButtonText: "Upload",
+    //            closeOnConfirm: false
+    //        },
+    //        function () {
+    //            $("#btnWRIssues").trigger("click");
+    //            swal("Information!", "WR Issues Successfully Uploaded!", "success");
+    //            $('#ImportsData').val(0);
+    //            $("#fileWrEx").val("");
+    //            $('#WREx').hide();
+    //        });
+    //    }
+    //    else {
+    //        showtoast();
+    //        return false;
+    //    }
+    //});
+
+
+    $("#fileWrIssues").change(function () {
+        var fileExtension = ['csv', 'CSV'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            showtoast();
+        }
+    });
+
+    $('#btnWRIssuesClient').click(function () {
+        var file = $('#fileWrIssues').get(0).files;
+        var formdata = new FormData();
+        formdata.append('uploadWRIssues', file[0]);
+        if (file.length > 0) {
+            swal({
+                title: "Confirm!",
+                text: "Do you want to upload Issues Log",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Upload",
+                closeOnConfirm: false
+            },
+            function () {
+                swal.close();
+                $.ajax({
+                    url: '/ImportProjectPlans/UploadIssuesLog',
+                    type: 'POST',
+                    data: formdata,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+
+                        if (data.key == true) {
+                            swal("Information!", "Issues Successfully Uploaded!", "success");
+                            $('#ImportsData').val(0);
+                            $("#fileWrIssues").val("");
+                            $('#IssuesLog').hide();
+                        }
+                        if (data.key == false) {
+                            swal("Information!", "Error!", "error");
+                        } if (data.key != false && data.key != true) {
+                            swal({
+                                title: "File not uploaded due to errors in the file.",
+                                //text: "You will not be able to recover this imaginary file!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-danger",
+                                confirmButtonText: "Download error file",
+                                cancelButtonText: "Cancel",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            },
+   function (isConfirm) {
+       if (isConfirm) {
+
+           window.location = '/Project/ImportProjectPlans/Download?fileGuid=' + data.FileGuid
+                                                + '&filename=' + data.FileName;
+       } else {
+           swal("Cancelled", "", "error");
+       }
+   });
+                        }
+                    }
+                });
+            });
+        }
+        else {
+            showtoast();
+            return false;
+        }
+    });
+
+
+    //--------------------------------------------------------------
+    ////upload SWI_WR_Failure_Log_Export file
+    //$("#btnWRSiteLogClient").click(function () {
+    //    debugger;
+    //    var file = $('#fileWrSiteLog').get(0).files;
+    //    if (file.length > 0) {
+    //        swal({
+    //            title: "Confirm!",
+    //            text: "Do you want to upload WR Site Log",
+    //            type: "warning",
+    //            showCancelButton: true,
+    //            confirmButtonClass: "btn-danger",
+    //            confirmButtonText: "Upload",
+    //            closeOnConfirm: false
+    //        },
+    //        function () {
+    //            $("#btnWRSiteLog").trigger("click");
+    //            swal("Information!", "WR Site Log Successfully uploaded!", "success");
+    //            $('#ImportsData').val(0);
+    //            $("#fileWrSiteLog").val("");
+    //            $('#WRFail').hide();
+    //        });
+    //    }
+    //    else {
+    //        showtoast();
+    //        return false;
+    //    }
+    //});
+
+    $("#fileWrSiteLog").change(function () {
+        var fileExtension = ['csv', 'CSV'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            showtoast();
+        }
+    });
+
+    $('#btnWRSiteLogClient').click(function () {
+        var file = $('#fileWrSiteLog').get(0).files;
+        var formdata = new FormData();
+        formdata.append('uploadWRSiteLog', file[0]);
+
+        if (file.length > 0) {
+            swal({
+                title: "Confirm!",
+                text: "Do you want to upload Site Logs",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Upload",
+                closeOnConfirm: false
+            },
+            function () {
+                swal.close();
+                $.ajax({
+                    url: '/ImportProjectPlans/UploadSiteLog',
+                    type: 'POST',
+                    data: formdata,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                       if (data.key == true) {
+                            swal("Information!", "Site Logs Successfully Uploaded!", "success");
+                            $('#ImportsData').val(0);
+                            $("#fileWrSiteLog").val("");
+                            $('#SiteLog').hide();
+                        }
+                        if (data.key == false) {
+                            swal("Information!", "Error!", "error");
+                        }
+                        if (data.key != false && data.key != true) {
+                            swal({
+                                title: "File not uploaded due to errors in the file.",
+                                //text: "You will not be able to recover this imaginary file!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-danger",
+                                confirmButtonText: "Download error file",
+                                cancelButtonText: "Cancel",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            },
+function (isConfirm) {
+    if (isConfirm) {
+
+        window.location = '/Project/ImportProjectPlans/Download?fileGuid=' + data.FileGuid
+                                             + '&filename=' + data.FileName;
+    } else {
+        swal("Cancelled", "", "error");
+    }
+});
+
+                        }
+                    }
+                });
+            });
+        }
+        else {
+            showtoast();
+            return false;
+        }
+    });
+
+
+
+    $('#btnReset').click(function () {
+       // $('#tblReturnedData').empty();
+        $('#ImportsData').val(0);
+        $("#fileplans").val("");
+        $('#btnReset').toggle();
+        $("#Custom_Template").hide();
+        $("#Default_Template").hide()
+        $("#SelectType").hide();
+        $('#plans').hide();
+        $('#tblReturnedData tbody').empty();
+        $("#tblReturnedData_wrapper").remove();
+    });
+
+    $.post("/Project/Defination/ToSingle", { Filter: 'ByProjectId', Value: parseInt(@ViewBag.Project) }).then(function (res) {
+        var s = res;
+        var EndDate = "Continue";
+       if (s.EstimateEndDate != null && s.EstimateEndDate != undefined) {
+            EndDate = moment(s.EstimateEndDate).format('DD MMM, YYYY');
+        }
+        var ProjectInfo = '<span style="font-size: 16px;font-family: inherit;color:#000;"><strong>Project: </strong>' + s.ProjectName + '</span>' +
+            '<span style="margin-left:1%;font-size: 16px;font-family: inherit;color:#000;">' +
+            '<strong style="margin-left:2%;color:#000;">Start Date: </strong><span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;;margin-right: 27px;">' + moment(s.EstimateStartDate).format('DD MMM, YYYY') + ' </span> <strong> Expected End Date: </strong> ' +
+            '<span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;">' + EndDate + '</span>';
+        $('#ProjectInfo').html(ProjectInfo);
+    });
+
+    // #region Revision
+    $("#_RevisionDropDown").hide()
+    $('#_Revision').click(function () {
+        $("#_RevisionDropDown").show()
+    });
+    var GetRevisionsDetails = function (_revisionId) {
+        $.ajax({
+            url: '/Project/ImportProjectPlans/GetRevisionsDetails?ProjectId=' + parseInt(@ViewBag.Project)+'&RevisionId='+_revisionId,
+            type: 'GET',
+            async: false,
+            success: function (data) {
+             $('#btnReset').show();
+                if (data.key == true) {
+
+                  $("#tblReturnedData_wrapper").remove();
+
+                    if (data.res.length > 0) {
+                        $('#tblReturnedData').remove();
+                        $("#plans").append(`<div class="custom-table"><div class="table-responsive"><table class="table table-bordered" id="tblReturnedData">
+                        <thead>
+                            <tr style="font-family:'Source Sans Pro',sans-serif">
+                                <th>FA Code</th>
+                                <th>Site name</th>
+                                <th>Site type</th>
+                                <th>Task</th>
+                                <th>Plan</th>
+                                <th>Forecast start</th>
+                                <th>Forecast end</th>
+                                <th>Target</th>
+                                <th>Actual start</th>
+                                <th>Actual end</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Completion</th>
+
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+
+                    </table></div></div>`)
+                        var _lastSite = '';
+                        for (var i = 0; i < data.res.length; i++) {
+                            let className = '';
+                            if (data.res[i].SiteRevisionType == "new") {
+                                className = "_new";
+                                _lastSite = "new";
+                            }
+                            else if (data.res[i].SiteRevisionType == "update") {
+                                className = "_update"
+                                _lastSite = "update";
+                            }
+                            else if ((data.res[i].TaskRevisionType == "new" && _lastSite == "new") || (data.res[i].TaskRevisionType == "update" && _lastSite == "new"))
+                                className = "_new"
+                            else if (data.res[i].TaskRevisionType == "update" && _lastSite == "update")
+                                className = "_update"
+                            else //if (data.res[i].Value28 == "update")
+                                className = "notfound"
+                            returnedData = '';
+
+                            //    if (className != "_notfound") {
+                            returnedData += '<tr class=' + className + '>' +
+                                                '<td>' + data.res[i].FACode + '</td>' +
+                                                '<td>' + data.res[i].SiteName + '</td>' +
+                                                '<td>' + data.res[i].SiteType + '</td>';
+                            if (data.res[i].TaskRevisionType == "task not exist") {
+                                returnedData +=     '<td  ></td>' +
+                                                    '<td  ></td>' +
+                                                    '<td  ></td>' +
+                                                    '<td  ></td>' +
+                                                    '<td  ></td>' +
+                                                    '<td  ></td>' +
+                                                    '<td  ></td>' +
+                                                    '<td  ></td>' +
+                                                    '<td  ></td>' +
+                                                    '<td  ></td>' +
+                                                 '</tr>';
+                            }
+                            else {
+                                let _classNamePlanDate, _classNameEstimatedStartDate, _classNameEstimatedEndDate, _classNameTargetDate, _classNameActualStartDate, _classNameActualEndDate, _classNameStatus, _classNamePriority, _classNameCompletion;
+                                _classNamePlanDate = _classNameEstimatedStartDate = _classNameEstimatedEndDate = _classNameTargetDate = _classNameActualStartDate = _classNameActualEndDate = _classNameStatus = _classNameCompletion = '';
+
+                                if (data.res[i].PlanDate.split("*?^*").length > 1) {
+                                    _classNamePlanDate = '_changed';
+                                }
+                                if (data.res[i].ForecastStartDate.split("*?^*").length > 1) {
+                                    _classNameEstimatedStartDate = '_changed';
+                                }
+                                if (data.res[i].ForecastEndDate.split("*?^*").length > 1) {
+                                    _classNameEstimatedEndDate = '_changed';
+                                }
+                                if (data.res[i].TargetDate.split("*?^*").length > 1) {
+                                    _classNameTargetDate = '_changed';
+                                }
+                                if (data.res[i].ActualStartDate.split("*?^*").length > 1) {
+                                    _classNameActualStartDate = '_changed';
+                                }
+                                if (data.res[i].ActualEndDate.split("*?^*").length > 1) {
+                                    _classNameActualEndDate = '_changed';
+                                }
+                                if (data.res[i].Status.split("*?^*").length > 1) {
+                                    _classNameStatus = '_changed';
+                                }
+                                if (data.res[i].Priority.split("*?^*").length > 1) {
+                                    _classNamePriority = '_changed';
+                                }
+                                if (data.res[i].Completion.split("*?^*").length > 1) {
+                                    _classNameCompletion = '_changed';
+                                }
+
+                                returnedData += '<td>' + data.res[i].Task.split("*?^*")[0] + '</td>' +
+
+                                                     '<td class=' + _classNamePlanDate + ' >' + data.res[i].PlanDate.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                     '<td class=' + _classNameEstimatedStartDate + ' >' + data.res[i].EstimatedStartDate.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                     '<td class=' + _classNameEstimatedEndDate + ' >' + data.res[i].EstimatedEndDate.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                     '<td class=' + _classNameTargetDate + ' >' + data.res[i].TargetDate.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                     '<td class=' + _classNameActualStartDate + ' >' + data.res[i].ActualStartDate.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                     '<td class=' + _classNameActualEndDate + ' >' + data.res[i].ActualEndDate.split("*?^*")[0].split(" ")[0] + '</td>' +
+                                                     '<td class=' + _classNameStatus + ' >' + data.res[i].Status.split("*?^*")[0] + '</td>' +
+                                                     '<td class=' + _classNamePriority + ' >' + data.res[i].Priority.split("*?^*")[0] + '</td>' +
+                                                     '<td class=' + _classNameCompletion + ' >' + data.res[i].Completion.split("*?^*")[0] + '</td>' +
+                                                 '</tr>';
+                            }
+                            //  }
+
+                            $('#tblReturnedData').append(returnedData);
+
+                        }
+                        $('#tblReturnedData').DataTable({
+                            "ordering": false,
+                            "info": false,
+                            "searching":true,
+                            "lengthMenu":false,
+                            "pageLength":10
+                        });
+                        $(".dataTables_length").remove();
+                    }
+                    else {
+                        $("#tblReturnedData_wrapper").remove();
+                    }
+                }
+                else {
+                    $("#tblReturnedData_wrapper").remove();
+                    swal("Error !", data.msg, "error");
+                }
+
+            },
+            error: function (data) {
+                $("#tblReturnedData_wrapper").remove();
+                swal("Error !", "Error Occured !", "error")
+            }
+        });
+    }
+    var GetRevisions = function () {
+        $.ajax({
+            url: '/Project/ImportProjectPlans/GetRevisions?ProjectId='+parseInt(@ViewBag.Project),
+            type: 'GET',
+            async: true,
+            success: function (data) {
+                $("#_RevisionDropDown").empty();
+                $("#_RevisionDropDown").append("<option  value='0'>-Select-</option>")
+                if (data.key == true) {
+                    for(let i=0;i<data.res.length ;i++){
+                              $("#_RevisionDropDown").append(`<option  value='${data.res[i].RevisionId}'>${i+1}</option>`)
+                    }
+                }
+                else {
+                    swal("Error !", data.msg, "error");
+                }
+
+            },
+            error: function (data) {
+                $("#_RevisionDropDown").empty();
+                $("#_RevisionDropDown").append("<option  value='0'>-Select-</option>")
+                swal("Error !", "Error Occured !", "error")
+            }
+        });
+    }
+    GetRevisions();
+     $('#_RevisionDropDown').change(function () {
+    //debugger
+    GetRevisionsDetails(parseInt($('#_RevisionDropDown').val()))
+    });
+
+    // endregion Revision
+</script>
+
+

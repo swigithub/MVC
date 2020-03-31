@@ -1,0 +1,206 @@
+﻿@model IEnumerable<AirView.DBLayer.AirView.Entities.AD_Help>
+@{
+    ViewBag.Title = "ListHelp";
+    Layout = "~/Views/Shared/_LayoutHelp.cshtml";
+
+}
+
+
+<script>
+
+        $(document).ready(function () {
+            $('#save').click(function () {
+                $('#Description').val($('.note-editable').html());
+                console.log($('.note-editable').html());
+                $(':submit').click();
+            });
+            $('#edit').click(function () {
+                $('#display').html($('.note-editable').html());
+            });
+
+            var table = $('#table_id').DataTable({
+                searching: false,
+                lengthChange: false,
+                ordering: false,
+                "ajax": {
+                    "url": "http://localhost:18460/Dashboard/ListHelpJson/1",
+                    "dataSrc": ""
+                },
+                "columns": [
+                    { "data": "HelpId" },
+                    { "data": "ComponentName" },
+                    { "data": "ModuleName" },
+                    { "data": "FeatureName" },
+                    { "data": "Title" },
+                    { "data": "IsActive" },
+                    { "data": "IsActive" }
+                ]
+            });
+
+
+            table.on('draw', function () {
+                var countRows = $('tbody').children('tr').length;
+                for (var x = 0; x < countRows; x++) {
+                    var featureId = $('tbody').children('tr:eq(' + x + ')').children('td:eq(0)').text();
+                    $('tbody').children('tr:eq(' + x + ')').children('td:eq(5)').html('<a href="/dashboard/edithelp/' + featureId + '">Edit</a> | <a href="/dashboard/ReadHelp/' + featureId + '">Read</a>');
+                    if ($('#filter').html() == "False") {
+                        $('tbody').children('tr:eq(' + x + ')').children('td:eq(6)').html('<button class="btn btn-danger status" >False</button>');
+                    }
+                    else {
+                        $('tbody').children('tr:eq(' + x + ')').children('td:eq(6)').html('<button class="btn btn-success status" >True</button>');
+                    }
+
+                }
+
+                $('.status').click(function (e) {
+                    var status = $(this).html();
+                    if (status == "False") {
+                        var featureId = $(this).parent().parent().children('td:eq(0)').html();
+                        $(this).text("True").toggleClass('btn-danger btn-success');
+
+
+                        $.ajax({
+                            url: "/dashboard/ListRow/?FeatureID=" + featureId + "&id=1",
+                            success: function (data) {
+                                //alert('Success!')
+                            },
+                            error: function (jqXHR, textStatus, err) {
+                                alert('text status ' + textStatus + ', err ' + err)
+                            }
+                        });
+
+
+                    }
+                    else {
+                        var featureId = $(this).parent().parent().children('td:eq(0)').html();
+                        $(this).text("False").toggleClass('btn-success btn-danger');
+
+
+                        $.ajax({
+                            url: "/dashboard/ListRow/?FeatureID=" + featureId + "&id=0",
+                            success: function (data) {
+                                //alert('Success!')
+                            },
+                            error: function (jqXHR, textStatus, err) {
+                                alert('text status ' + textStatus + ', err ' + err)
+                            }
+                        });
+
+                    }
+
+                });
+
+            });
+
+            $('#filter').click(function () {
+                if ($('#filter').text() == "True") {
+                    $('#filter').text("False").toggleClass('btn-success btn-danger');
+
+                        $('#table_id').DataTable().destroy();
+                        $('#table_id').DataTable({
+                            searching: false,
+                            lengthChange: false,
+                            ordering: false,
+                            "ajax": {
+                                "url": "http://localhost:18460/Dashboard/ListHelpJson/0",
+                                "dataSrc": ""
+                            },
+                            "columns": [
+                                { "data": "HelpId" },
+                                { "data": "ComponentName" },
+                                { "data": "ModuleName" },
+                                { "data": "FeatureName" },
+                                { "data": "Title" },
+                                { "data": "IsActive" },
+                                { "data": "IsActive" }
+                            ]
+                        });
+
+
+                }
+                else {
+                    $('#filter').text("True").toggleClass('btn-danger btn-success');
+
+                    $('#table_id').DataTable().destroy();
+                    $('#table_id').DataTable({
+                        searching: false,
+                        lengthChange: false,
+                        ordering: false,
+                        "ajax": {
+                            "url": "http://localhost:18460/Dashboard/ListHelpJson/1",
+                            "dataSrc": ""
+                        },
+                        "columns": [
+                            { "data": "HelpId" },
+                            { "data": "ComponentName" },
+                            { "data": "ModuleName" },
+                            { "data": "FeatureName" },
+                            { "data": "Title" },
+                            { "data": "IsActive" },
+                            { "data": "IsActive" }
+                        ]
+                    });
+                }
+
+            });
+
+
+        });
+
+
+</script>
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Help Document</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div id="example1_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <div class="row">
+                
+            
+                <div class="col-sm-12">
+                    <a class="btn btn-primary" href="/dashboard/createhelp">Add New Help</a>
+                    <button class="btn btn-success" style="float:right" id="filter">True</button>
+                    <table id="table_id" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Component</th>
+                                <th>Module</th>
+                                <th>Feature</th>
+                                <th>Title</th>
+                                <th>Option</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+<!--
+<div>
+    <a class="btn btn-primary" href="/dashboard/createhelp">Add New Help</a>
+    <button class="btn btn-success" style="float:right" id="filter">True</button></div>
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Module</th>
+            <th>Feature</th>
+            <th>Title</th>
+            <th>Option</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+-->

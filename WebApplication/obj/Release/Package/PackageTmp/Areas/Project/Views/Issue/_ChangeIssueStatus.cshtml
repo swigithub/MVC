@@ -1,0 +1,146 @@
+﻿@*
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#IssueHome">Status</a></li>
+        <li><a data-toggle="tab" href="#IssueHistory">History</a></li>
+
+    </ul>
+    <div class="tab-content">
+        <div id="IssueHome" class="tab-pane fade in active">
+
+            <div style="border:1px solid #e5e5e5;width:100%;"></div>
+            <form ng-submit="ChangeIssueStatus()" role="form">
+                <div class="form-row" style="margin-left:-11px">
+                    <div class="form-group col-md-6">
+                        <div><label>Status</label></div>
+                        <div class="btn-group" style="border:1px solid #f5f3f3;width:100%;">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="width:100%;text-align:left;border:0"> {{SelectedStatus}} <span class="fa fa-caret-down" style="font-size:16px;color:#000;float:right;"></span></a>
+                            <ul class="dropdown-menu pull-right js-status-update" style="width:100%;">
+                                <li ng-repeat="p in Status" ng-click="setSelected('status',p)" ng-class="{active: $index===selectedIndex}">
+                                    <a href="javascript:void(0);"><i class="fa fa-circle" style="color:{{ p.ColorCode}}"></i>{{ p.DefinationName}}</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <br />
+                <br />
+                <br />
+                <br />
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea type="text" rows="3" ng-disabled="isDisable" ng-model="IssueLog.Description" style="border:.5px solid #efefef;" placeholder="Description" class="form-control"></textarea>
+                </div>
+                <footer>
+                    <button class="btn btn-primary" ng-disabled="isDisable" style="float:right;">
+                        Save
+                    </button>
+                </footer>
+                <br />
+                <br />
+            </form>
+        </div>
+
+        <div id="IssueHistory" class="tab-pane fade">
+            <div class="IssueStatus">
+                <div class="direct-chat-messages" ng-repeat="x in LogIssueList">
+
+
+                    <div class="direct-chat-msg">
+                        <div class="direct-chat-info clearfix">
+                            <span class="direct-chat-name pull-left">{{x.UserName}}</span>
+                            <span class="direct-chat-timestamp pull-right">{{x.CreatedOn}}</span>
+                        </div>
+                        <img class="direct-chat-img" src="{{x.Picture}}"><!-- /.direct-chat-img -->
+                        <div class="direct-chat-text" style="">
+                            <label><b>Status: </b></label>{{x.Status}}
+                            <p>{{x.Description}}</p>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+        </div>
+*@
+<ul class="nav nav-tabs" >
+   
+    <li class="active"><a data-toggle="tab" href="#menu2">Issue Status</a></li>
+    <li><a data-toggle="tab" href="#menu3">Status History</a></li>
+</ul>
+
+<div class="tab-content">
+
+    <div id="menu2" class="tab-pane fade in active">
+        <form ng-submit="ChangeIssueStatus()" role="form">
+            <div class="form-row" style="margin-left:-11px">
+                <div class="form-group col-md-3">
+                    <div><label>Status</label></div>
+                    <div class="btn-group" style="border:1px solid #f5f3f3;width:100%;">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="width:100%;text-align:left;border:0"> {{SelectedStatus}} <span class="fa fa-caret-down" style="font-size:16px;color:#000;float:right;"></span></a>
+                        <ul class="dropdown-menu pull-right js-status-update" style="width:100%;">
+                            <li ng-repeat="p in Status" ng-click="setSelected('status',p)" ng-class="{active: $index===selectedIndex}">
+                                <a href="javascript:void(0);"><i class="fa fa-circle" style="color:{{ p.ColorCode}}"></i>{{ p.DefinationName}}</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <div class="form-group">
+                <label>Description</label>
+                <textarea type="text" rows="8"  ng-disabled="isDisable" ng-model="IssueLog.Description" style="border:.5px solid #efefef;" placeholder="Description" class="form-control"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn custom-btn1" ng-disabled="isDisable">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+    <div id="menu3" class="tab-pane fade">
+       
+            <div class="direct-chat-messages" ng-repeat="x in LogIssueList">
+
+
+                <div class="direct-chat-msg">
+                    <div class="direct-chat-info clearfix">
+                        <span class="direct-chat-name pull-left">{{x.UserName}}</span>
+                        <span class="direct-chat-timestamp pull-right">{{x.CreatedOn}}</span>
+                    </div>
+                    <img class="direct-chat-img" src="{{x.Picture}}"><!-- /.direct-chat-img -->
+                    <div class="direct-chat-text" style="">
+                        <label><b>Status: </b></label>{{x.Status}}
+                        <p>{{x.Description}}</p>
+                    </div>
+                </div>
+
+
+
+            </div>
+         
+        </div>
+</div>
+
+
+    <style>
+        .IssueStatus {
+            height: 280px;
+            overflow: auto;
+        }
+        #menu3{
+            max-height: 400px !important;
+    overflow: auto;
+        }
+    </style>

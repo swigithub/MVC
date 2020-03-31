@@ -1,0 +1,188 @@
+﻿@model IEnumerable<AirView.DBLayer.Project.Model.PM_ImportProjectPlans>
+
+<style>
+    .red {
+        background-color: #f0bbbe;
+    }
+
+    .green {
+        background-color: #cfead8;
+    }
+</style>
+
+@if (Model != null)
+{
+    if (Model.Count() > 0)
+    {
+        <table class="table table-bordered table-striped" style="width:100%;">
+            <tr>
+                <th>
+                    @Html.DisplayName("FA Code")
+                </th>
+                <th>
+                    @Html.DisplayName("Market")
+                </th>
+                <th>
+                    @Html.DisplayName("TSS Plan")
+                </th>
+                <th>
+                    @Html.DisplayName("TSS Forecast")
+                </th>
+                <th>
+                    @Html.DisplayName("TSS Actual")
+                </th>
+                <th>
+                    @Html.DisplayName("SSM Forecast")
+                </th>
+                <th>
+                    @Html.DisplayName("SSM Actual")
+                </th>
+                <th>
+                    @Html.DisplayName("PreInstall Plan")
+                </th>
+                <th>
+                    @Html.DisplayName("PreInstall Forecast")
+                </th>
+                <th>
+                    @Html.DisplayName("PreInstall Actual")
+                </th>
+                <th>
+                    @Html.DisplayName("Migration Plan")
+                </th>
+                <th>
+                    @Html.DisplayName("Migration Forecast")
+                </th>
+                <th>
+                    @Html.DisplayName("Migration Actual")
+                </th>
+
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                if (item.Status == "New")
+                {
+                    <tr class="green">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FACode)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MARKET)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TSSPlan)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TSSForecast)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TSSSubmitted)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SiteSpecificMaterialAvailableForecast)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SiteSpecificMaterialAvailableActual)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PreInstallPlanned)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PreInstallFcst)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PreInstallActual)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MigDatePlanned)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MigDateForecast)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MigrationDate)
+                        </td>
+                    </tr>
+                }
+                else if (item.Status == "Delete")
+                {
+                    <tr class="red">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FACode)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MARKET)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TSSPlan)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TSSForecast)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TSSSubmitted)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SiteSpecificMaterialAvailableForecast)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SiteSpecificMaterialAvailableActual)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PreInstallPlanned)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PreInstallFcst)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PreInstallActual)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MigDatePlanned)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MigDateForecast)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MigrationDate)
+                        </td>
+                    </tr>
+                }
+            }
+
+        </table>
+        <button type="button" id="btnReset" class="btn btn-xs btn-info upload-btn" style="margin-left:5px; float:right;">
+            Reset
+        </button>
+        <br />
+    }
+}
+
+<script>
+    $('#btnReset').click(function () {
+        $('#returnedData').empty();
+        $('#ImportsData').val(0);
+        $("#fileplans").val("");
+    });
+</script>

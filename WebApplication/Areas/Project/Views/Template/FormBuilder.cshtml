@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "Form Template";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+<form action="@Url.Action("FormBuilder", "Template")" method="post">
+    
+    @Html.Action("FormBuilderPartial", "Template", new { FormTypeId = ViewBag.FormId, definationId = ViewBag.DefinationId })
+
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#NodeTypeListSelectList').show();
+    });
+</script>

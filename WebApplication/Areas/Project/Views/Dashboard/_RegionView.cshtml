@@ -1,0 +1,300 @@
+﻿
+@using System.Data;
+
+<script src="~/Content/js/Project/canvasjs.min.js"></script>
+
+<div class="filterbuttons btn-group btn-toggle">
+    <button class="btn btn-xs btn-info btn-default" id="RbackButton" style="float: right;margin-left: 10px;width:40px;"><span class="fa fa-arrow-left"></span></button>
+    <button class="btn btn-xs btn-info datewise" onclick="FilterbyDateandTime('Daily','Get_DateWise_WO')">Daily</button>
+    <button class="btn btn-xs btn-info datewise" onclick="FilterbyDateandTime('Weekly','Get_DateWise_WO')">Weekly</button>
+    <button class="btn btn-xs btn-info datewise" onclick="FilterbyDateandTime('Monthly','Get_DateWise_WO')">Monthly</button>
+    <button class="btn btn-xs btn-info datewise" onclick="FilterbyDateandTime('Quaterly','Get_DateWise_WO')">Quaterly</button>
+    <button class="btn btn-xs btn-info datewise" style="float:right;" onclick="FilterbyDateandTime('Yearly','Get_DateWise_WO')">Yearly</button>
+</div>
+
+<div id="regionviewchart1" class="vector-map" style="overflow:hidden"></div>
+
+<script>
+    $(".datewise").hide();
+    $("#RbackButton").hide();
+    var TitleText = '';
+    var regionveiwdata = [];
+    var Forecast = [];
+    var Planned = [];
+    var Actual = [];
+    var Target = [];
+    var CumActual = [];
+    var CumForecast = [];
+    var CumTarget = [];
+    var RunRate = [];
+    var actularcolor, forecastcolor, plancolor, targetcolor, runratecolor, cumactualcolor, cumforecastcolor, cumtargetcolor;
+    var chart
+    setTimeout(function () { LoadRegionViewChart() }, 2000);
+    function LoadRegionViewChart() {
+
+        var url;
+        if (mmarketid != null) {
+       //     url = '/Project/Dashboard/GetDashboardCharts?filter=Get_RegionView_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + mtaskid
+       //+ '&LocationIds=' + mmarketid + '&FromDate=' + mfromdate + '&ToDate=' + mtodate + '&SearchFilter=Daily'
+
+            url = '/Project/Dashboard/GetDashboardCharts?filter=Get_RegionView_WO&ProjectId=@ViewBag.ProjectId&Value1=' + '' + '&TaskIds=' + $.cookie(CookiesIdentifier + 'MarketTasks')
+                              + '&LocationIds=' + $.cookie(CookiesIdentifier + "MarketMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + "MarketFromDate") + '&ToDate=' + $.cookie(CookiesIdentifier + "MarketToDate") + '&SearchFilter=Daily'
+
+        }
+        else {
+            //url = '/Project/Dashboard/GetDashboardCharts?filter=Get_RegionView_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie('ProjectTasks')
+            //      + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily'
+            url = '/Project/Dashboard/GetDashboardCharts?filter=Get_RegionView_WO&ProjectId=@ViewBag.ProjectId&Value1=' + '' + '&TaskIds=' + $.cookie(CookiesIdentifier + 'MarketTasks')
+                              + '&LocationIds=' + $.cookie(CookiesIdentifier + "MarketMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + "MarketFromDate") + '&ToDate=' + $.cookie(CookiesIdentifier + "MarketToDate") + '&SearchFilter=Daily'
+        }
+
+        $.ajax({
+            //url: '/Project/Dashboard/GetDashboardCharts?filter=Get_RegionView_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '&TaskIds=' + $.cookie('ProjectTasks')
+            //+'&LocationIds='+$.cookie("ProjectMarkets")+'&FromDate='+$.cookie("FromDate")+'&ToDate='+$.cookie("ToDate")+'&SearchFilter=',
+            url: url,
+            type: 'Get',
+            async: false,
+            success: function (data) {
+                
+                array = data;
+                var sd = {};
+                Forecast = [];
+                Planned = [];
+                Actual = [];
+                Target = [];
+                RunRate = [];
+                CumActual = [];
+                CumForecast = [];
+                CumTarget = [];
+                for (var i = 0; i < data.length ; i++) {
+                    if (data[i].DefinationName != null) {
+
+                        sd = { label: data[i].DefinationName, y: data[i].TotalSites, id: data[i].DefinationId };
+                        if (data[i].Type == 'Forecast') {
+                            forecastcolor = data[i].ColorCode;
+                            Forecast.push(sd);
+                        }
+                        else if (data[i].Type == 'CumForecast') {
+                            cumforecastcolor = data[i].ColorCode;
+                            CumForecast.push(sd);
+                        }
+                        else if (data[i].Type == 'Actual') {
+                            actularcolor = data[i].ColorCode;
+                            Actual.push(sd);
+                        }
+                        else if (data[i].Type == 'CumActual') {
+
+                            cumactualcolor = data[i].ColorCode;
+                            CumActual.push(sd);
+                        }
+                        else if (data[i].Type == 'Target') {
+                            targetcolor = data[i].ColorCode;
+                            Target.push(sd);
+                        }
+                        else if (data[i].Type == 'CumTarget') {
+                            cumtargetcolor = data[i].ColorCode;
+                            CumTarget.push(sd);
+                        }
+
+                        else if (data[i].WoType == 'RunRate') {
+                            runratecolor = data[i].ColorCode;
+                            RunRate.push(sd);
+                        }
+                    }
+                }
+
+            }
+        });
+        chart = new CanvasJS.Chart("regionviewchart1", {
+            animationEnabled: false,
+            exportEnabled: true,
+            theme: "light2",
+            height: "280",
+            title: {
+                text: "Regional View"
+            },
+            axisX: {
+                valueFormatString: "MMM"
+            },
+            //axisY: {
+            //    labelFormatter: addSymbols,
+            //    //interval: 50
+            //},
+            //axisY2: {
+            //    interval: 500
+            //},
+            toolTip: {
+                shared: true
+            },
+            legend: {
+                cursor: "pointer",
+                itemclick: toggleDataSeries1,
+                fontSize: 13
+            },
+            data: [
+            {
+                type: "column",
+                name: "Actual",
+                axisYType: "primary",
+                //color:"#0070c0",
+                color: actularcolor,
+                click: CallMarket1,
+                showInLegend: true,
+                dataPoints: Actual,
+
+            },
+            {
+                type: "line",
+                name: "Cum. Actual",
+                axisYType: "secondary",
+                color: cumactualcolor,
+                showInLegend: true,
+                markerBorderThickness: 2,
+                dataPoints: CumActual
+
+            },
+            {
+                type: "column",
+                axisYType: "primary",
+                axisYindex: 0,
+                exportEnabled: true,
+                name: "Forecast",
+                color: forecastcolor,
+                click: CallMarket1,
+                markerBorderColor: "white",
+                markerBorderThickness: 2,
+                showInLegend: true,
+
+                dataPoints: Forecast
+            },
+            {
+                type: "line",
+                axisYType: "secondary",
+                axisYindex: 1,
+                name: 'Cum. Forecast',
+                //color: "#70ad47",
+                color: cumforecastcolor,
+                markerBorderColor: "white",
+                markerBorderThickness: 2,
+                showInLegend: true,
+                yValueFormatString: "#,##0",
+                dataPoints: CumForecast
+            }, {
+                type: "column",
+                axisYType: "primary",
+                axisYindex: 0,
+                exportEnabled: true,
+                name: "Target",
+                click: CallMarket1,
+                //color: "#70ad47",
+                color: targetcolor,
+                markerBorderColor: "white",
+                markerBorderThickness: 2,
+                showInLegend: true,
+                yValueFormatString: "#,##0",
+                dataPoints: Target
+            },{
+                  type: "line",
+                  axisYType: "secondary",
+                  axisYindex: 1,
+                  //color: "#70ad47",
+                  color: cumtargetcolor,
+                  exportEnabled: true,
+                  name: "Cum. Target",
+                  showInLegend: true,
+                  yValueFormatString: "#,##0",
+                  dataPoints: CumTarget
+
+              },
+              {
+                  type: "line",
+                  axisYType: "primary",
+                  axisYindex: 1,
+                  //color: "#e51427",
+                  color: runratecolor,
+                  exportEnabled: true,
+                  name: "Run Rate",
+                  showInLegend: true,
+                  yValueFormatString: "#,##0",
+                  dataPoints: RunRate
+
+              }
+            ]
+        });
+        //showDefaultText(chart, "No Data Available");
+        chart.render();
+    }
+    function addSymbols(e) {
+        var suffixes = ["", "K", "M", "B"];
+        var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+
+        if (order > suffixes.length - 1)
+            order = suffixes.length - 1;
+
+        var suffix = suffixes[order];
+        return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+    }
+
+    function toggleDataSeries1(e) {
+        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+        } else {
+            e.dataSeries.visible = true;
+        }
+        e.chart.render();
+    }
+
+
+    function toolTipFormatter(e) {
+        var str = "";
+        var total = 0;
+        var str3;
+        var str2;
+        for (var i = 0; i < e.entries.length; i++) {
+            var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong> <br/>";
+            total = e.entries[i].dataPoint.y + total;
+            str = str.concat(str1);
+        }
+        str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br/>";
+        str3 = "<span style = \"color:Tomato\">Total: </span><strong>" + total + "</strong><br/>";
+        return (str2.concat(str)).concat(str3);
+    }
+
+    function toggleDataSeries1(e) {
+        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+        }
+        else {
+            e.dataSeries.visible = true;
+        }
+        chart.render();
+    }
+
+
+    function CallMarket1(e) {
+
+        TitleText1 = e.dataPoint.label + ' ' + 'Regional View';
+        RegionId = e.dataPoint.id;
+        $.ajax({
+            url: '/Project/Dashboard/GetMarkets?filter=' + 'Get_MarketView_WO' + '&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=' + e.dataPoint.id,
+            type: 'get',
+            async: false,
+            success: function (data) {
+
+                $('#region').hide()
+                $('#market').show()
+                $('#regionviewchart1').empty();
+                $('#regionviewchart1').html(data);
+                $('#regionviewchart1').show()
+            }
+        })
+    }
+
+
+    $(".apply-filter-btn").on("click", function () {
+        $(this).parents('.filters-dropdown').removeClass('active');
+    });
+
+
+
+</script>

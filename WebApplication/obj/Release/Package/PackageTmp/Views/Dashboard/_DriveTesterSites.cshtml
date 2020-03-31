@@ -1,0 +1,65 @@
+﻿@using SWI.Libraries.AirView.Entities;
+@model IEnumerable<RegionsVM>
+<div class="col-md-12">
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title" id="TesterTitle">Drive Tester View</h3>
+            <div class="box-tools pull-right">
+                <div class="btn-group">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="background-color:#337ab7;color:white;" aria-expanded="false">
+                        <span style="margin: 5px;" class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="TesterTitle" data-filter="Drive Tester View" data-value="1">Drive Tester View</a></li>
+                        <li><a class="TesterTitle" data-filter="ClientPOC View" data-value="2">Client POC View</a></li>
+                        <li><a class="TesterTitle" data-filter="SwiView View" data-value="3">SWI View</a></li>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body" style="overflow: auto;" id="pan-DriverTesterView">
+            <ul class="products-list product-list-in-box">
+                @foreach (var site in Model)
+                {
+
+                    //string Image = site.TesterImage.Replace("/u- ", "/thumb-");
+                    <li class="item">
+                        <div class="product-img">
+                            <img src="@site.TesterImage" alt="Tester Image" style="height:32px!important; width:32px!important;margin-top: 14px;margin-left: 10px;">
+                        </div>
+                        <div class="product-info">
+                            <a href="#" onclick="javascript: BtnFilterSitesGrid_Click('Panel2Value', '@site.ID',''); return false;" class="tester-val-txt">
+                                <label style="" class="product-title">
+                                    @site.RegionName
+                                </label>
+                            </a>
+                            <span class="product-description">
+
+                                <span class="label COMPLETED_COLOR">@site.CompletedSites</span><!-- label-success -->
+                                <span class="label REPORT_SUBMITTED_COLOR">@site.ReportSubmited</span><!-- label-success -->
+                                <span class="label PENDING_SCHEDULED_COLOR">@site.PendingSites</span><!--style="background-color:#1c7175 !important"-->
+                                <span class="label SCHEDULED_COLOR">@site.InProcessSites</span><!-- label-warning-->
+                                <span class="label IN_PROGRESS_COLOR">@site.InProgress</span><!-- label-warning-->
+                                <span class="label DRIVE_COMPLETED_COLOR">@site.DriveCompleted</span><!--style="background-color:#6468a8 !important"-->
+                                <span class="label PENDING_WITH_ISSUE_COLOR">@site.PendingWithIssues</span><!-- label-danger-->
+                                <span class="label TOTAL_SITES_COLOR">@site.TotalSites</span><!-- label-info-->
+                            </span>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#pan-DriverTesterView').slimScroll({
+            height: '400px'
+        });
+    });
+</script>
+

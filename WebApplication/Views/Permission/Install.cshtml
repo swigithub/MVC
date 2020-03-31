@@ -1,0 +1,218 @@
+﻿
+@{
+    ViewBag.Title = "Install";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    int ModuleId = 1;
+    int Id = 2;
+    int ChildtId = 3;
+}
+<div class="row">
+    <div class="col-sm-1"><label>Module</label> </div>
+    <div class="col-sm-1"><label>Id</label></div>
+    <div class="col-sm-1"><label>Parent Id</label></div>
+    <div class="col-sm-2"><label>Title</label></div>
+    <div class="col-sm-3"><label>URL</label></div>
+    <div class="col-sm-1"><label>Code</label></div>
+    <div class="col-sm-1"><label>Icon</label></div>
+    <div class="col-sm-1"><label>Is Menu Item</label></div>
+    <div class="col-sm-1"><label>No Use</label></div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        @using (Html.BeginForm("Install", "Permission", FormMethod.Post, new { id = "frm-permission" }))
+        {
+            <div class="panel-group" id="accordion">
+
+
+                @foreach (var module in ViewBag.Controllers)
+                {
+
+                    @Html.Hidden("Id", ModuleId)
+                    @Html.Hidden("ParentId", "0")
+                    @Html.Hidden("Title", null, new { Value = module })
+                    @Html.Hidden("URL", "#")
+                    @Html.Hidden("Code", null, new { Value = module.Substring(0, 3) })
+                    @Html.Hidden("Icon", null)
+
+                    <label>@module </label>
+
+                    foreach (var item in ViewBag.GetControllers("SWI." + module + ".Controllers"))
+                    {
+                        Id++;
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+
+                                    <div class="row">
+                                        <div class="col-sm-1">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#@item"> @item</a>
+                                        </div>
+                                        <!--Id-->
+                                        <div class="col-sm-1">
+                                            <div class="form-group">
+                                                @Html.TextBox("Id", Id, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <!--ParentId-->
+                                        <div class="col-sm-1">
+                                            <div class="form-group">
+                                                @Html.TextBox("ParentId", null, new { @class = "form-control", Value = ModuleId })
+                                            </div>
+                                        </div>
+                                        <!--Title-->
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                @Html.TextBox("Title", null, new { @class = "form-control", Value = item })
+                                            </div>
+                                        </div>
+                                        <!--URL-->
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                @Html.TextBox("URL", "#", new { @class = "form-control", })
+                                            </div>
+                                        </div>
+                                        <!--Code-->
+                                        <div class="col-sm-1">
+                                            <div class="form-group">
+                                                @Html.TextBox("Code", null, new { @class = "form-control", Value = item.Substring(0, 3) })
+                                            </div>
+                                        </div>
+                                        <!--Icon-->
+                                        <div class="col-sm-1">
+                                            <div class="form-group">
+                                                @Html.TextBox("Icon", null, new { @class = "form-control", })
+                                            </div>
+                                        </div>
+                                        <!--IsMenuItem-->
+                                        <div class="col-sm-1">
+                                            <div class="form-group">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="IsMenuItem" checked value="mnu-@Id">
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <!--No Use-->
+                                        <div class="col-sm-1">
+                                            <div class="form-group">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input name="IsUsed" type="checkbox" value="no-@Id">
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </h4>
+                            </div>
+                            <div id="@item" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    @{ChildtId = Id;}
+                                    @foreach (var act in ViewBag.Actions(item))
+                                    {
+                                        ChildtId++;
+
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                <a href="#">@act</a>
+                                            </div>
+                                            <!--Id-->
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    @Html.TextBox("Id", ChildtId, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <!--ParentId-->
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    @Html.TextBox("ParentId", Id, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <!--Title-->
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    @Html.TextBox("Title", null, new { @class = "form-control", Value = act })
+                                                </div>
+                                            </div>
+                                            <!--URL-->
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    @Html.TextBox("URL", null, new { @class = "form-control", Value = "/" + item + "/" + act })
+                                                </div>
+                                            </div>
+
+                                            <!--Code-->
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    @Html.TextBox("Code", null, new { @class = "form-control", Value = item.Substring(0, 3) + act.Substring(0, 3) })
+                                                </div>
+                                            </div>
+                                            <!--Icon-->
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    @Html.TextBox("Icon", null, new { @class = "form-control", })
+                                                </div>
+                                            </div>
+
+
+                                            <!--IsMenuItem-->
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" name="IsMenuItem" value="mnu-@ChildtId">
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <!--No Use-->
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input name="IsUsed" type="checkbox" value="no-@ChildtId">
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    }
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                                                Id = ChildtId;
+                                                Id += 2;
+                                            }
+                                            ModuleId = Id;
+                                            ModuleId++;
+                                            Id = ModuleId;
+                                            Id++;
+                                        }
+            </div>
+
+            <div class="form-group">
+                <div class="">
+                    <input type="submit" value="Save" class="btn btn-success pull-right" />
+
+                </div>
+            </div>
+                                        }
+
+
+
+    </div>
+</div>

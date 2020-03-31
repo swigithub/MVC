@@ -1,0 +1,149 @@
+﻿
+<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="fuel-title">Fuel Report <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Fuel Report</header>
+    <div class="panel-body">
+        <div class="custom-filters" id="fuel-custom-filters">
+            <div class="filter-field">
+                <label>Vehicle</label>
+                <input type="text" id="fuel-asset" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="date-range10">
+                </div>
+            </div>
+            <div class="filter-field button">
+                <button id="apply_filters9" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="fuel-table">
+            <table id="fuelreport" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Time</th>
+                        <th>Vehicle</th>
+                        <th>Tracker Id</th>
+                        <th>Longitude</th>
+                        <th>Latitude</th>
+                        <th>Fuel (%)</th>
+                        <th>Fuel (Ltr)</th>
+                        <th>Address</th>
+
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#apply_filters9").click(function () {
+        debugger;
+
+        var assetname = $("#fuel-asset").val();
+        var daterange = $("#date-range10").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var reportexporttitle = $("#fuel-title").text();
+        var exportfilename = $("#fuel-title").text();
+        var frcmodel = {
+            ReportFilter: "FuelReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname
+        }
+
+        var table = $('#fuelreport').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A5',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_FuelReport",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'Time', "name": "Time", "autoWidth": true },
+               { data: 'AssetName', "name": "Vehicle" },
+               { data: 'TrackerId', "name": "Tracker Id" },
+               { data: 'Longitude', "name": "Longitude", "autoWidth": true },
+               { data: 'Latitude', "name": "Latitude", "autoWidth": true },
+               { data: 'FuelPercent', "name": "Fuel (%)", "autoWidth": true },
+               { data: 'FuelLiter', "name": "Fuel (Ltr)", "autoWidth": true },
+               { data: 'Address', "name": "Address", "autoWidth": true }
+
+            ],
+            initComplete: function (settings, json) {
+                $("#fuel-custom-filters .top").remove();
+                $($("#fuel-table .top")).appendTo("#fuel-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+        //$.ajax({
+        //    url: window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+        //    type: "POST",
+        //    traditional: true,
+        //    data:JSON.stringify(frcmodel),
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    error: function (response) {
+        //        alert(response.responseText);
+        //    },
+
+        //    success: function (response) {
+        //        alert(response);
+        //    }
+        //});
+    });
+</script>
+
+

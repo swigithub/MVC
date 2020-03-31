@@ -1,0 +1,60 @@
+﻿@using SWI.Libraries.AirView.Entities;
+@model IEnumerable<RegionsVM>
+
+
+<div>
+    <div style="float:right;width:180px;border: solid 1px;border-color: #3c8dbc;">
+        <ul class="products-list product-list-in-box">
+
+            <li class="item">
+                <center> <h4><span id="TesterScheduled"></span> Testers Scheduled</h4></center>
+
+            </li>
+            @foreach (var site in Model.Where(m => m.DtWoCount > 0))
+            {
+
+                string param = site.ID + "|" + site.TesterImage;
+                string Image = site.TesterImage.Replace("u- ", "thumb-");
+
+                <li class="item TesterScheduled" data-TesterId="@site.ID" draggable="true" ondragstart="testerDragStart('@param')" ondragend="testerDragEnd()">
+                    <div class="product-img">
+                        <img src="@site.TesterImage" alt="Tester Image" class="img-circle" style="height:32px!important; width:32px!important;margin-left: 10px;">
+                    </div>
+                    <div class="product-info">
+                        <label style="font-weight:bold;padding-top: 7px;" class="product-title">
+                            @site.RegionName (@site.DtWoCount)
+                        </label>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div style="float:right;width:180px;border: solid 1px;border-color: #3c8dbc;">
+
+
+        <ul class="products-list product-list-in-box">
+            <li class="item">
+                <center>   <h4><span id="TesterAvailable"></span> Testers Available</h4></center>
+
+            </li>
+            @foreach (var site in Model.Where(m => m.DtWoCount == 0))
+            {
+
+                string param = site.ID + "|" + site.TesterImage;
+
+                <li class="item TesterAvailable" data-TesterId="@site.ID" draggable="true" ondragstart="testerDragStart('@param')" ondragend="testerDragEnd()">
+                    <div class="product-img">
+                        <img src="@site.TesterImage" alt="Tester Image" class="img-circle" style="height:32px!important; width:32px!important;margin-left: 10px;">
+                    </div>
+                    <div class="product-info">
+                        <label style="font-weight:bold;padding-top: 7px;" class="product-title">
+                            @site.RegionName
+                        </label>
+                    </div>
+                </li>
+            }
+        </ul>
+
+    </div>
+    <div style="clear:both"></div>
+</div>

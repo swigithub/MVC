@@ -1,0 +1,105 @@
+﻿@using SWI.Libraries.AirView.Entities
+
+@model IEnumerable<AD_ReportConfiguration>
+@{
+    ViewBag.Title = "Test Settings & Configuration";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border boxHeader">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="box-body boxBody">
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        @using (Html.BeginForm("New", "ReportConfigurations", FormMethod.Post, new { id = "frm-conf" }))
+                        {
+
+                        <div class="row ">
+                            <div class="col-sm-2" style="padding-left:30px;">
+                                <label for="ReportId">Report Type</label>
+                                @Html.DropDownList("ReportId", new SelectList(ViewBag.ReportTypes, "Value", "Text") , new { @class = "form-control select", style = "width:200px", required = "required" })
+
+
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="ClientId">Client</label>
+                                @Html.DropDownList("ClientId", new SelectList(ViewBag.UserClients, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="CityId">Cities</label>
+                                @Html.DropDownList("CityId", new SelectList(ViewBag.Cities, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+
+                            </div>
+
+                            <div class="col-sm-2">
+                                <label for="ScopeId">Scope</label>
+                                @Html.DropDownList("ScopeId", new SelectList(ViewBag.Scopes, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+
+                            </div>
+                        </div>
+                        <hr />
+
+                        @Html.Action("NewTemplate", "ReportConfigurations", new {id= ViewBag.SelectedReport });
+
+
+                        <div class="form-group">
+
+                            <button style="margin-left:20px" type="submit" class="btn btn-success pull-right">
+                                <i class="fa fa-save"></i> Save
+                            </button>
+
+                            <button type="reset" class="btn btn-danger pull-right">
+                                <i class="fa fa-undo"></i> Refresh
+                            </button>
+
+
+                        </div>
+                                                                                        }
+                    </div>
+
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script>
+        $(function () {
+            $('#frm-conf').parsley();
+            $('#ReportId').val('@ViewBag.SelectedReport');
+            $(document).on('change', '#ReportId', function () {
+                var value = $(this).val();
+                window.location.replace("/reportconfigurations/new/" + value);
+            });
+            $(document).on('change', '.checkboxcontroll', function () {
+                var id = $(this).attr('data-KeyId')
+                if ($(this).is(":checked")) {
+                   // console.log('true');
+                    $('#chvalue-' + id).val('true');
+                }
+                else if ($(this).is(":not(:checked)")) {
+                   // console.log('false');
+                    $('#chvalue-' + id).val('false');
+                }
+
+            });
+        });
+    </script>
+
+}
+@section style{
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <link href="~/Content/box.css" rel="stylesheet" />
+}

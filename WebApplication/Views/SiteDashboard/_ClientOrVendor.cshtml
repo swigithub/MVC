@@ -1,0 +1,71 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<SiteDashboardClientOrVendor>
+
+
+@if (Model != null && Model.Count() > 0)
+{
+
+    var Client = Model.Where(m=>m.ClientType== "Client").FirstOrDefault();
+    var Vendor = Model.Where(m => m.ClientType == "Vendor").FirstOrDefault();
+
+
+    <div class="box box-widget widget-user">
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+        <div class="widget-user-header bg-aqua-active">
+            <h3 class="widget-user-username">
+                @Client.ClientName
+                    @if (Vendor != null)
+                    {
+                        <span class="pull-right">@Vendor.ClientName</span>
+                     
+                    }
+         </h3>
+
+            <h5 class="widget-user-desc">@Client.ClientType
+            @if (Vendor != null)
+            {
+                <span class="pull-right">@Vendor.ClientType</span>
+
+            }
+            </h5>
+
+          
+        </div>
+       
+        <div class="widget-user-image">
+            <img class="img-circle" src="/Content/Images/Application/swi_logo_globe.png" alt="Vendor">
+        </div>
+        <div class="box-footer" style="background-color: #3a789c;">
+            <div class="row">
+                @*<div class="col-sm-4 border-right">
+                    <div class="description-block">
+                        <h5 class="description-header">Total</h5>
+                        <span class="description-text">Sites</span>
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                        <h5 class="description-header">13,000</h5>
+                        <span class="description-text">FOLLOWERS</span>
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4">
+                    <div class="description-block">
+                        <h5 class="description-header">35</h5>
+                        <span class="description-text">PRODUCTS</span>
+                    </div>
+                    <!-- /.description-block -->
+                </div>*@
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+
+}
+
+

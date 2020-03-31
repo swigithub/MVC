@@ -1,0 +1,461 @@
+﻿
+
+
+<div id="addnew-panel" class="popup-box">
+    <form name=vm.EltJob ng-submit="vm.EltJob.$valid && vm.addETL()" novalidate>
+        <div class="widget-title">
+            <div class="title-text">Add New ETL</div>
+            <a class="close-popup" ng-click="vm.cancel()" href="#" title=""><i class="fa fa-times"></i></a>
+        </div><!-- Popup Title -->
+        <div class="popup-content mback-color modal-height">
+            <div class="row hei">
+                <div class="col-lg-3">
+                    <label>ETL Name:</label>
+
+                </div>
+                <div class="col-lg-6 col-md-12 form-group  has-feedback">
+
+                    <div class="form-group has-error" ng-class="{ 'has-error': vm.EltJob.templateTitle.$touched && vm.EltJob.templateTitle.$invalid}" style="">
+                        <input placeholder="Enter ETL Name" class="form-control form-control-height max-width-none ng-pristine ng-invalid ng-invalid-required ng-valid-minlength ng-valid-maxlength ng-touched etlName" ng-model="vm.dashbaordInfo.templateTitle" id="etlReadonly" type="text" name="templateTitle" ng-minlength="5" ng-maxlength="50" ng-keydown="$event.keyCode != 32 ? $event:$event.preventDefault()" required="" style="" >
+                        <!-- ngIf: vm.EltJob.templateTitle.$touched --><div class="help-block with-errors ng-scope ng-inactive" ng-messages="vm.EltJob.templateTitle.$error" ng-if="vm.EltJob.templateTitle.$touched" style="">
+                            <!-- ngMessageExp: ['minlength', 'maxlength'] -->
+                                                                           @*ng-if="vm.isEtlModeType =='edit'"*@
+                        </div><!-- end ngIf: vm.EltJob.templateTitle.$touched -->
+
+
+                    </div>
+                    <div class="help-block with-errors" ng-show="vm.EltJob.$submitted ||vm.EltJob.templateTitle.$touched" style="">
+                        <div ng-show="vm.EltJob.templateTitle.$error.required" class="">Mandatory fields<span>*</span></div>
+                    </div>
+
+                </div>
+                <div class="col-lg-3">
+                    <div class="checkbox" style="margin-left: -17px;margin-top:5px;">
+
+                        <label><input placeholder="Enter ETL Name" ng-model="vm.dashbaordInfo.isPublic" type="checkbox" name="isPublic" ng-true-value="true" ng-false-value="false"  class="ng-pristine ng-untouched ng-invalid ng-invalid-required">Is public</label>
+                    </div>
+                    <div class="help-block with-errors" ng-show="vm.isPublic.$submitted ||vm.EltJob.isPublic.$touched" style="">
+                        <div ng-show="vm.EltJob.isPublic.$error.required" class="">Mandatory fields<span>*</span></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row hei" style="margin-top:5px;">
+                <div class="col-lg-3">
+                    <label>Schedule Type:</label>
+                </div>
+                <div class="col-lg-6">
+                    <select ng-model="vm.dashbaordInfo.scheduletype" id="Scheduletype" class="form-control form-control-height max-width-none no-border-radius otr">
+                        <option value="OneTime">One Time</option>
+                        <option value="Recurring">Recurring</option>
+                    </select>
+                </div>
+                <div class="col-lg-3">
+                    <div class="checkbox" style="margin-left: -17px;margin-top:5px;">
+
+                        <label><input ng-model="vm.dashbaordInfo.jobEnable" type="checkbox" ng-false-value="false" ng-true-value="true">Enable</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row hei">
+                <div class="col-lg-3" style="margin-right:-53px">
+                    <label class="disable">One Time Occurence</label>
+
+                </div>
+                <div class="col-lg-9">
+                    <div class="line" style="width:560px;"></div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="row inner-hei">
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="disable">Date:</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <div class="input-group date " id="datepicker">
+                                            <input type="text" id="once_date" class="form-control datepicker otrow ot-datepicker form-control-height no-border-radius recurring">
+                                            <span class="input-group-addon datetimepicker-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <label class="disable">Time:</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <div class="input-group date" id="timepicker">
+                                            <input type="text" id="once_time" class="form-control otrow ot-timepicker timepicker form-control-height no-border-radius recurring">
+                                            <span class="input-group-addon timepicker-addon">
+                                                <span class="glyphicon glyphicon-time"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            <p id="one-time-msg" style="background-color:#ffffe6; color:black;font-size:11px;"><span><i class="fa fa-info-circle" aria-hidden="true"></i></span> The one-time occurrence time must be greater than the current time when current date</p>
+
+
+            <div class="row">
+                <div class="col-lg-3" style="margin-right:-109px;">
+                    <label class="otdisable">Frequency</label>
+
+                </div>
+                <div class="col-lg-9">
+                    <div class="line" style="width:616px;"></div>
+                </div>
+
+            </div>
+
+            <div class="row" style="margin-top: -14px;">
+                <div class="col-lg-12">
+                    <div class="row hei">
+                        <div class="col-lg-3">
+                            <label class="otdisable">Occurs:</label>
+
+                        </div>
+                        <div class="col-lg-4">
+                            <select id="RecFreqIntervalType" ng-model="vm.dashbaordInfo.RecFreqIntervalType" class="form-control re form-control-height no-border-radius onetime">
+
+                                <option value="Daily">Daily</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Monthly">Monthly</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="row hei dailyrow" style="margin-top:5px;">
+                        <div class="col-lg-3">
+                            <label class="otdisable">Recurs Every:</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <input id="RecFreqInterval" ng-model="vm.dashbaordInfo.RecFreqInterval" type="number" class="form-control form-control-height no-border-radius onetime" name="points" step="1" min="1">
+                                </div>
+                                <div class="col-lg-3" style="margin-left:-14px;">
+                                    <label class="otdisable">day (s)</label>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="row weeklyrow" style="margin-top:5px;">
+                        <div class="col-lg-3">
+                            <label class="otdisable">Recurs Every:</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <input ng-model="vm.dashbaordInfo.RecFreqDayInterval" id="RecFreqDayInterval" type="number" class="form-control form-control-height no-border-radius onetime" name="points" step="1" min="1">
+                                </div>
+                                <div class="col-lg-3" style="margin-left:-14px;">
+                                    <label class="otdisable">weeks(s) on</label>
+                                </div>
+
+                            </div>
+                            <div class="row" style="padding-top: -4px;">
+                                <div class="col-lg-3">
+                                    <label><input  ng-model="vm.dashbaordInfo.weekDay[0]" class="onetime week_days" type="checkbox" ng-false-value="'false'" ng-true-value="'MON'">Monday</label>
+                                    <label><input class="onetime week_days" ng-model="vm.dashbaordInfo.weekDay[1]" type="checkbox" ng-false-value="'false'" ng-true-value="'TUE'">Tuesday</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label><input ng-model="vm.dashbaordInfo.weekDay[2]" class="onetime week_days" type="checkbox" ng-false-value="'false'" ng-true-value="'WED'">Wednesday</label>
+                                    <label><input ng-model="vm.dashbaordInfo.weekDay[3]" class="onetime week_days" type="checkbox" ng-false-value="'false'" ng-true-value="'THU'">Thursday</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label><input ng-model="vm.dashbaordInfo.weekDay[4]" class="onetime week_days" type="checkbox" ng-false-value="'false'" ng-true-value="'FRI'">Friday</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label><input ng-model="vm.dashbaordInfo.weekDay[5]" class="onetime week_days" type="checkbox" ng-false-value="'false'" ng-true-value="'SAT'">Saturday</label>
+                                    <label><input ng-model="vm.dashbaordInfo.weekDay[6]" class="onetime week_days" type="checkbox" ng-false-value="'false'" ng-true-value="'SUN'">Sunday</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row innner-hei monthlyrowday" style="margin-top: -5px;">
+                        <div class="col-lg-2">
+                            <div class="radio" style="margin-top: 13px;">
+                                <label class="radio-inline otdisable"><input id="mday" ng-model="vm.dashbaordInfo.RecFreqMonthCriteria" class="fm onetime" type="radio" name="MIntervalCriteria" value="Once" checked="">Day</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-10">
+                            <div class="row" style="margin-top: 14px;height: 12px;">
+                                <div class="col-lg-2">
+                                    <input type="number" ng-model="vm.dashbaordInfo.RecFreqMonthDayInterval" id="fodayday" class="form-control form-control-height mthe no-border-radius" name="points" step="1" min="1" max="31">
+                                </div>
+                                <div class="col-lg-2" style="margin-left:-20px;">
+                                    <label class="otdisable">of every</label>
+                                </div>
+                                <div class="col-lg-2" style="margin-left: -31px;">
+                                    <input id="fodaymonth" ng-model="vm.dashbaordInfo.RecFreqMonthMonthInterval" type="number" class="form-control form-control-height no-border-radius mthe" name="points" step="1" min="1">
+                                </div>
+                                <div class="col-lg-2" style="margin-left:-14px;">
+                                    <label class="otdisable">month(s)</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div class="row hei monthlyrowthe">
+                        <div class="col-lg-2">
+                            <div class="radio" style="margin-bottom: 0;">
+                                <label class="radio-inline otdisable"><input id="mthe" class="fm onetime" ng-model="vm.dashbaordInfo.RecFreqMonthCriteria" type="radio" name="MIntervalCriteria" value="Custom" checked="">The</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-10">
+
+                            <div class="row" style="padding-top:5px;/* height: 27px; */">
+                                <div class="col-lg-3">
+                                    <select ng-model="vm.dashbaordInfo.Recfreqweekinterval" id="Recfreqweekinterval" class="form-control form-control-height no-border-radius onetime mday">
+
+                                        <option value="1">first</option>
+                                        <option value="2">second</option>
+                                        <option value="3">third</option>
+                                        <option value="4">fourth</option>
+                                        <option value="5">last</option>
+                                    </select>
+
+                                </div>
+                                <div class="col-lg-3">
+                                    <select id="RecfreqfmonthDay" class="form-control form-control-height no-border-radius onetime mday">
+
+                                        <option value="Monday">Monday</option>
+                                        <option value="Tuesday">Tuesday</option>
+                                        <option value="Wednesday">Wednesday</option>
+                                        <option value="Thursday">Thursday</option>
+                                        <option value="Friday">Friday</option>
+                                        <option value="Saturday">Saturday</option>
+                                        <option value="Sunday">Sunday</option>
+                                        <option value="day">day</option>
+                                        <option value="weekday">week day</option>
+                                        <option value="weekendday">weekend day</option>
+                                    </select>
+
+                                </div>
+                                <div class="col-lg-2">
+                                    <label class="otdisable" style="margin-left: -14px;">of every</label>
+                                </div>
+                                <div class="col-lg-2">
+                                    <input ng-model="vm.dashbaordInfo.RecFreqMonthDayMonthInterval" id="frocthemh" type="number" class="form-control form-control-height no-border-radius onetime mday" name="points" step="1" style="margin-left: -48px;" min="1">
+                                </div>
+                                <div class="col-lg-2">
+                                    <label class="otdisable" style="margin-left: -62px;">month(s)</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+
+
+            <div class="row hei">
+                <div class="col-lg-3" style="margin-right:-83px">
+                    <label class="otdisable">Daily Frequency</label>
+
+                </div>
+                <div class="col-lg-9">
+                    <div class="line" style="width:592px;"></div>
+                </div>
+
+            </div>
+
+            <div class="row hei">
+                <div class="col-lg-3">
+                    <div class="radio" style="margin-bottom: 0;">
+                        <label class="radio-inline otdisable"><input id="dfOccurOnce" ng-model="vm.dashbaordInfo.DayFreqDayCriteria"  class="occur-once onetime" type="radio" name="IntervalCriteria" value="Once">Occurs once at:</label>
+                    </div>
+
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group" style="margin-bottom:2px">
+                        <div class="input-group date" id="timepicker2">
+                            <input type="text" id="occur-once-time" class="form-control timepicker2 form-control-height no-border-radius occurs-every ">
+                            <span class="input-group-addon timepicker2-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </span>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="row" style="height:54px;">
+                <div class="col-lg-3">
+                    <div class="radio" style="margin-top:4px;">
+                        <label class="radio-inline otdisable"><input id="dfoccurevery" ng-model="vm.dashbaordInfo.DayFreqDayCriteria" type="radio" class="occur-once onetime" name="IntervalCriteria" value="Custom" >Occurs every:</label>
+                    </div>
+
+
+                </div>
+                <div class="col-lg-8">
+                    <div class="row hei" style="margin-top: 5px;">
+                        <div class="col-lg-3">
+                            <input id="Dayfreqcusinterval" ng-model="vm.dashbaordInfo.Dayfreqcusinterval" type="number" class="form-control form-control-height no-border-radius  occurs-onced onetime" name="points" step="1" min="1">
+                        </div>
+                        <div class="col-lg-3">
+                            <select ng-model="vm.dashbaordInfo.Dayfreqcusintervaltype" class="form-control form-control-height no-border-radius occurs-onced onetime" id="Dayfreqcusintervaltype">
+                                <option value="hours">hours</option>
+                                <option value="minutes">Minutes</option>
+                                <option value="seconds">Seconds</option>
+
+                            </select>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row hei">
+                                <div class="col-lg-5">
+                                    <label class="otdisable">Starting at:</label>
+                                    <br>
+                                    <label class="otdisable" style="margin-top: -15px;">Ending at:</label>
+                                </div>
+                                <div class="col-lg-7">
+                                    <div class="form-group" style="margin-bottom:5px;">
+                                        <div class="input-group date" id="timepicker3">
+                                            <input type="text" id="df-start-time" class="form-control timepicker3 form-control-height no-border-radius occurs-onced onetime">
+                                            <span class="input-group-addon timepicker3-addon">
+                                                <span class="glyphicon glyphicon-time"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group date" id="timepicker4">
+                                            <input type="text" id="df-end-time" class="form-control timepicker4 form-control-height no-border-radius occurs-onced onetime ">
+                                            <span class="input-group-addon timepicker4-addon">
+                                                <span class="glyphicon glyphicon-time"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="row" style="height:16px;">
+                <div class="col-lg-3" style="margin-right:-121px">
+                    <label class="otdisable">Duration</label>
+
+                </div>
+                <div class="col-lg-9">
+                    <div class="line" style="width:629px;"></div>
+                </div>
+
+            </div>
+
+            <div class="row" style="height: 36px;">
+                <div class="col-lg-3">
+                    <label class="otdisable">Start Date:</label>
+
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <div class="input-group date" id="datepicker3">
+                            <input id="ds-date" type="text" class="form-control datepicker3 form-control-height no-border-radius onetime">
+                            <span class="input-group-addon datepicker3-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <div class="radio" style="padding-left:35px">
+                                <label class="radio-inline otdisable"><input ng-model="vm.dashbaordInfo.DurisContinous" value="false" class="discontinous onetime durationdates" type="radio" name="d-enddate" >End Date:</label>
+                            </div>
+                            <div class="radio" style="padding-left:35px">
+                                <label class="radio-inline otdisable"><input ng-model="vm.dashbaordInfo.DurisContinous" class="continous onetime durationdates" type="radio" name="d-enddate" value="true" >No End Date:</label>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="form-group">
+                                <div class="input-group date" id="datepicker2" style="margin-top: 9px;">
+                                    <input id="de-date" type="text" class="form-control datepicker2 form-control-height no-border-radius onetime noenddate">
+                                    <span class="input-group-addon datepicker2-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row" style="height: 19px;">
+                <div class="col-lg-3" style="margin-right:-114px;">
+                    <label>Summary</label>
+
+                </div>
+                <div class="col-lg-9">
+                    <div class="line" style="width:620px;"></div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <label>Description:</label>
+                </div>
+                <div class="col-lg-9">
+                    <textarea ng-model="vm.dashbaordInfo.description" id="sum_description" rows="5" class="form-control no-border-radius ng-pristine ng-valid ng-touched" style="font-size: 11px; width: 100%; max-width: 100%;"></textarea>
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+        <div class="popup-footer align-right">
+            <button type="submit" class="custom-btn medium color1">Save</button>
+            <button type="button" class="custom-btn medium color11" ng-click="vm.cancel()">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<link href="~/Areas/BusinessIntelligence/assets/css/scheduler.css" rel="stylesheet" />

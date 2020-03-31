@@ -1,0 +1,90 @@
+﻿@using SWI.Libraries.AirView.Entities
+
+@model IEnumerable<AD_Clients>
+@{
+    ViewBag.Title = "All";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Company List</h3>
+                <a href="@Url.Action("New","Company",new { title="New" })" class="btn btn-sm btn-info btn-flat pull-right">New Company</a>
+            </div>
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-bordered table-striped" id="tbl-user">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>
+                                Company Name
+                            </th>
+                            <th>
+                                Client Type
+                            </th>
+                            <th>
+                                PClient
+                            </th>
+                            <th>
+                                IsActive
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@item.Logo" class="img-responsive" height="50" width="60" />
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ClientName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ClientType)
+                                </td>
+                                <td >
+                                    @Html.DisplayFor(modelItem => item.PClient)
+                                </td>
+                                
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsActive)
+                                </td>
+                                <td>
+                                    <a href="/Company/Edit?Id=@item.ClientId" Client-Id="@item.ClientId"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script>
+        var loading = $.loading();
+
+        $(function () {
+           
+
+            $('#tbl-user').dataTable({
+                "scrollX": true,
+              
+            });
+        });
+</script>
+}
+@section style{
+    @Styles.Render("~/AdminLTE/plugins/datatables/css")
+
+}

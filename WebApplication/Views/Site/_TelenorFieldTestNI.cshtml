@@ -1,0 +1,583 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    Layout = null;
+}
+@if (Model != null && Model.Count() > 0)
+{
+
+    var First = Model.FirstOrDefault();
+    string NetworkMode = First.NetworkMode;
+    string City = First.City;
+
+    <style>
+        .StationaryTable{
+            width:100%;
+        }
+        .tbl-heading {
+            background-color: #004B99;
+            color: white;
+        }
+
+        .tbl-data {
+            /*background-color: #dbdbdd;*/
+          background-color:#ebebef;
+            color: #2332de;
+            text-align:center;
+        }
+    </style>
+  @functions{
+              public string GetStatus(bool? Status) {
+                  if (Status == true)
+                      return "Pass";
+                  else if (Status == false)
+                      return "Fail";
+                  else
+                      return "";
+
+              } 
+			   public string GetColor(bool? Status)
+      {
+          if (Status == true)
+              return "#008000";
+          else if (Status == false)
+              return "#FC0F0F";
+          else
+              return "";
+
+      }
+			  }
+    if (ViewBag.mail == "yes")
+    {
+        <div class="ForMail">
+            <br /><br /><br /><b>Dear Client,</b>
+            <br /><br /> Please find below quick summary of site @First.Site for @First.Band carrier @First.Carrier .<br /><br />
+        </div>
+    }
+
+    if (ViewBag.HeaderFooter == "yes")
+    {
+        <h1 id="FIELD_TEST" data-type="BOOLEAN,STRING" class="heading" data-preValue="@First.Site"></h1>
+
+    }
+
+
+    <table class="StationaryTable">
+
+        @{var lst = Model.ToList();
+      var Mode = "";}
+        @foreach (var item in Model.OrderBy(x => x.NetworkMode).OrderBy(x => x.Band).OrderBy(x=>x.Sector))
+        {
+			var layerBand = item.Band;
+            if (Mode != item.Band)
+            {
+                Mode = item.Band;
+                @*<tr>
+                    <th colspan="100%" style="width:100%;text-align:left; font-size:20px; color:#3b39e2;" >
+                     @item.NetworkMode &nbsp; Stationary &nbsp;  @item.Band _ @item.Carrier
+                    </th>
+                </tr>*@
+<tr>
+
+                    <th class="tbl-heading">Sector</th>
+					
+					@if (item.NetworkMode == "LTE")
+					{
+						<th class="tbl-heading">PCI</th>
+					}
+					else if(item.NetworkMode == "WCDMA")
+					{
+						<th class="tbl-heading">PSC</th>
+					}
+					else if(item.NetworkMode == "GSM")
+					{
+						<th class="tbl-heading">BCCH</th>
+						if(layerBand == "GSM 1800")
+						{
+							<th class="tbl-heading">TCH</th>
+						}
+						
+					}
+					
+                    @if (item.NetworkMode == "LTE" || item.NetworkMode == "WCDMA" || item.NetworkMode=="GSM")
+					{
+						if (layerBand == "GSM 900")
+						{
+                        <th class="tbl-heading">FTP DL (Kbps)</th>
+                        <th class="tbl-heading">Status</th>
+                        <th class="tbl-heading">FTP UL  (Kbps)</th>
+                        <th class="tbl-heading">Status</th>
+						}
+						else if (layerBand != "GSM 1800")
+						{
+						<th class="tbl-heading">FTP DL (Mbps)</th>
+                        <th class="tbl-heading">Status</th>
+                        <th class="tbl-heading">FTP UL  (Mbps)</th>
+                        <th class="tbl-heading">Status</th>
+						}
+                    }
+                    <th class="tbl-heading">MO Call</th>
+
+                    <th class="tbl-heading">MT Call</th>
+					
+					
+				
+					@if (layerBand != "GSM 1800")
+					{
+                    <th class="tbl-heading">SMS MO</th>
+                    <th class="tbl-heading">SMS MT</th>
+					}
+					@if (item.NetworkMode == "LTE")
+					{
+                    <th class="tbl-heading">Fast Return to LTE</th>
+					}
+                    @if (item.NetworkMode == "LTE" && item.Band == "LTE 1800")
+      {
+                        <th class="tbl-heading">L1800 to L850 Reselection</th>
+                    }
+                    else if (item.NetworkMode == "WCDMA" && item.Band == "UMTS 2100")
+                    {
+                        <th class="tbl-heading">U2100 to U850 Reselection</th>
+                    }
+                    else if (item.NetworkMode == "WCDMA" && item.Band == "UMTS 850")
+                    {
+                        <th class="tbl-heading">Idle to LTE Reselection</th>
+                    }
+                    else if (item.NetworkMode == "GSM" && item.Band == "GSM 900")
+                    {
+                        <th class="tbl-heading">Idle to 3G Reselection</th>
+                    }
+
+                    <th class="tbl-heading">Latitude</th>
+                    <th class="tbl-heading">Longitude</th>
+
+                    @if (item.NetworkMode == "LTE")
+      {
+                        <th class="tbl-heading">RSRP</th>
+                                                <th class="tbl-heading">CINR</th>
+                                                <th class="tbl-heading">RSRQ</th>
+
+                    }
+                    else if (item.NetworkMode == "WCDMA")
+                    {
+                        <th class="tbl-heading">RSCP</th>
+                        <th class="tbl-heading">Ec/Io</th>
+
+
+                    }
+                    else if (item.NetworkMode == "GSM")
+                    {
+                        <th class="tbl-heading">RxL</th>
+                        <th class="tbl-heading">RxQ</th>
+
+
+                    }
+                </tr>
+            }
+
+            <tr>
+
+                <td class="tbl-data">@item.Sector</td>
+				
+				<td class="tbl-data">@item.PciId</td>
+				@if(layerBand == "GSM 1800")
+				{
+					<td class="tbl-data">@item.TCH</td>
+				}
+                @if(item.NetworkMode == "LTE" || item.NetworkMode == "WCDMA" || item.NetworkMode == "GSM")
+				{
+					if(layerBand != "GSM 1800")
+					{
+                    <td class="tbl-data">
+					@if(item.DownlinkMaxResult!=0)
+					{
+						@item.DownlinkMaxResult.ToString("0.00")
+					}
+					
+					</td>
+                    <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.DownlinkStatus)">@GetStatus(item.DownlinkStatus)</td>
+                    <td class="tbl-data">
+					@if(item.UplinkMaxResult!=0)
+					{
+						@item.UplinkMaxResult.ToString("0.00")
+					}
+					
+					</td>
+                    <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.UplinkStatus)">@GetStatus(item.UplinkStatus) </td>
+					}
+				}
+                <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.MoStatus)">@GetStatus(item.MoStatus) </td>
+
+                <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.MtStatus)">@GetStatus(item.MtStatus) </td>
+								
+				@if (layerBand != "GSM 1800")
+				{
+                <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.SMoStatus)">@GetStatus(item.SMoStatus) </td>
+                <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.SMtStatus)">@GetStatus(item.SMtStatus) </td>
+				}
+				@if (item.NetworkMode == "LTE")
+				{
+                    <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.FastReturnStatus)">@GetStatus(item.FastReturnStatus) </td>
+				}
+                 @if(item.NetworkMode == "LTE" && item.Band == "LTE 1800")
+                        {
+                    <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.IRATHandover)">@GetStatus(item.IRATHandover) </td>
+                 }
+                 else if (item.NetworkMode == "WCDMA" && item.Band == "UMTS 2100")
+                 {
+                    <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.IRATHandover)">@GetStatus(item.IRATHandover) </td>
+                 }
+                 else if (item.NetworkMode == "WCDMA" && item.Band == "UMTS 850")
+                 {
+                    <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.IRATHandover)">@GetStatus(item.IRATHandover) </td>
+                 }
+                 else if (item.NetworkMode == "GSM" && item.Band == "GSM 900")
+                 {
+                    <td class="tbl-data" style="font-weight: bold;color:@GetColor(item.IRATHandover)">@GetStatus(item.IRATHandover) </td>
+                }
+
+                <td class="tbl-data">
+					@if(item.TestLatitude!=0)
+					{
+						@item.TestLatitude.ToString("0.000000")
+					}
+					
+				</td>
+                <td class="tbl-data">
+				@if(item.TestLongitude!=0)
+					{
+						@item.TestLongitude.ToString("0.000000")
+					}
+				</td>
+
+                @if(item.NetworkMode == "LTE")
+                    {
+                    <th class="tbl-data">
+					@if(item.LteRsrp!=0)
+					{
+						@item.LteRsrp.ToString("0")
+					}
+					
+					</th>
+                                                <th class="tbl-data">
+												@if(item.LteRsnr!=0)
+					{
+						@item.LteRsnr.ToString("0.0")
+					}
+												
+												</th>
+                                                <th class="tbl-data">
+												@if(item.LteRsrq!=0)
+												{
+													@item.LteRsrq.ToString("0")
+												}
+												
+												</th>
+
+                }
+                else if (item.NetworkMode == "WCDMA")
+                {
+                    <th class="tbl-data">
+					@if(item.WcdmaRscp!=0)
+					{
+						@item.WcdmaRscp.ToString("0")
+					}
+					
+					</th>
+                    <th class="tbl-data">
+					@if(item.WcdmaEcio!=0)
+					{
+						@item.WcdmaEcio.ToString("0")
+					}
+					
+					</th>
+
+
+                }
+                else if (item.NetworkMode == "GSM")
+                {
+                    <th class="tbl-data">
+					@if(item.GsmRssi!=0)
+					{
+						@item.GsmRssi.ToString("0")
+					}
+					
+					</th>
+                    <th class="tbl-data">
+					
+						@item.GsmRxQual.ToString("0")
+					
+					
+					</th>
+
+
+                }
+
+
+            </tr>
+
+
+        }
+
+    </table>
+
+
+    @*<table class="tbl-fieldTest font" id="tbl-fieldTest" style="font-family:Arial;text-align:left;width:100%;">
+            <tr class="">
+                @if (NetworkMode == "LTE")
+      {
+                    <th style="width: 40%!important;" class="tbl-heading">LTE Call Scope-Stationary @First.Band _ @First.Carrier</th>
+                }
+                else if (NetworkMode == "WCDMA")
+                {
+                    <th style="width: 40%!important;" class="tbl-heading">WCDMA Call Scope- Stationary @First.Band _ @First.Carrier</th>
+                }
+                else if (NetworkMode == "GSM")
+                {
+                    <th style="width: 40%!important;" class="tbl-heading">GSM Call Scope-Stationary @First.Band _ @First.Carrier</th>
+                }
+
+
+
+                @foreach (var item in Model.OrderBy(m=>m.Sector))
+                {
+                    <th style="width:100px" class="tbl-heading">@item.Sector</th>
+                }
+            </tr>
+            <tr>
+                <th class="tbl-heading2">FTP Downlink</th>
+                @foreach (var item in Model)
+      {
+                    <td class="tbl-data">
+                        @if (item.DownlinkStatus == true)
+      {
+                            <span class="bold DL_STATUS_TRUE" data-type="BOOLEAN,STRING" id="DL_STATUS_TRUE"></span>
+                        }
+                        else if (item.DownlinkStatus == false)
+                        {
+                            <span class="bold DL_STATUS_FALSE" data-type="BOOLEAN,STRING" id="DL_STATUS_FALSE"></span>
+                        }
+                    </td>
+                }
+
+            </tr>
+            <tr>
+                <th class="tbl-heading2">FTP Uplink</th>
+                @foreach (var item in Model)
+      {
+                    <td class="tbl-data">
+                        @if (item.UplinkStatus == true)
+      {
+                            <span class="bold DL_STATUS_TRUE" data-type="BOOLEAN,STRING" id="DL_STATUS_TRUE"></span>
+                        }
+                        else if (item.UplinkStatus == false)
+                        {
+                            <span class="bold DL_STATUS_FALSE" data-type="BOOLEAN,STRING" id="DL_STATUS_FALSE"></span>
+                        }
+                    </td>
+                }
+
+            </tr>
+            @if (City == "Houston")
+      {
+                    <tr>
+                        <th class="tbl-heading2">DL Speed (Mbps)</th>
+
+                        @foreach (var item in Model)
+      {
+                            <td class="tbl-data">
+                                    <span class="bold">@item.DownlinkMaxResult.ToString("0.00")</span>
+                            </td>
+                        }
+                    </tr>
+            }
+            <tr>
+                @if (NetworkMode == "LTE")
+      {
+                    <th class="tbl-heading2">VoLTE Mobile Originated</th>
+                }
+                else if (NetworkMode == "GSM" || NetworkMode == "WCDMA")
+                {
+                    <th class="tbl-heading2">Voice Call Mobile Originated</th>
+                }
+
+
+                @foreach (var item in Model)
+      {
+                    <td class="tbl-data">
+                        @if (NetworkMode == "LTE")
+      {
+          if (item.VMoStatus == true)
+          {
+                                <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                            }
+                            else if (item.VMoStatus == false)
+                            {
+                                <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                            }
+                        }
+                        else if (NetworkMode == "GSM" || NetworkMode == "WCDMA")
+                        {
+                            if (item.MoStatus == true)
+                            {
+                                <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                            }
+                            else if (item.MoStatus == false)
+                            {
+                                <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                            }
+                        }
+
+                    </td>
+                }
+            </tr>
+            <tr>
+                @if (NetworkMode == "LTE")
+      {
+                    <th class="tbl-heading2">VoLTE Mobile Terminated</th>
+                }
+                else if (NetworkMode == "GSM" || NetworkMode == "WCDMA")
+                {
+                    <th class="tbl-heading2">Voice Call Mobile Terminated</th>
+                }
+                @foreach (var item in Model)
+      {
+                    <td class="tbl-data">
+                        @if (NetworkMode == "LTE")
+      {
+          if (item.VMtStatus == true)
+          {
+                                <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                            }
+                            else if (item.VMtStatus == false)
+                            {
+                                <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                            }
+                        }
+                        else if (NetworkMode == "GSM" || NetworkMode == "WCDMA")
+                        {
+                            if (item.MtStatus == true)
+                            {
+                                <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                            }
+                            else if (item.MtStatus == false)
+                            {
+                                <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                            }
+                        }
+
+                    </td>
+                }
+            </tr>
+            @if (NetworkMode == "GSM" || NetworkMode== "WCDMA")
+      {
+                <tr>
+                    <th class="tbl-heading2">SMS Mobile Originated</th>
+                    @foreach (var item in Model)
+      {
+                        <td class="tbl-data">
+                            @if (item.SMoStatus == true)
+      {
+                                <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                            }
+                            else if (item.SMoStatus == false)
+                            {
+                                <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                            }
+
+                        </td>
+                    }
+                </tr>
+
+                <tr>
+                    <th class="tbl-heading2">SMS Mobile Terminated</th>
+                    @foreach (var item in Model)
+      {
+                        <td class="tbl-data">
+                            @if (item.SMtStatus == true)
+      {
+                                <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                            }
+                            else if (item.SMtStatus == false)
+                            {
+                                <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                            }
+
+                        </td>
+                    }
+                </tr>
+            }
+
+
+
+            @if (NetworkMode == "LTE")
+      {
+
+                <tr>
+                    <th class="tbl-heading2">CSFB Mobile Originated</th>
+                    @foreach (var item in Model)
+      {
+                        <td class="tbl-data">
+                            @if (item.MoStatus == true)
+      {
+                                <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                            }
+                            else if (item.MoStatus == false)
+                            {
+                                <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                            }
+                        </td>
+                    }
+
+                </tr>
+                <tr>
+                    <th class="tbl-heading2">CSFB Mobile Terminated</th>
+                    @foreach (var item in Model)
+      {
+                        <td class="tbl-data">
+                            @if (item.MtStatus == true)
+      {
+                                <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                            }
+                            else if (item.MtStatus == false)
+                            {
+                                <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+
+
+            <tr>
+                <th class="tbl-heading2">Band Reselection</th>
+                @foreach (var item in Model)
+      {
+                    <td class="tbl-data">
+                        @if (item.IRATHandover == true)
+      {
+                            <span class="bold DL_STATUS_TRUE" data-type="BOOLEAN,STRING" id="DL_STATUS_TRUE"></span>
+                        }
+                        else if (item.IRATHandover == false)
+                        {
+                            <span class="bold DL_STATUS_FALSE" data-type="BOOLEAN,STRING" id="DL_STATUS_FALSE"></span>
+                        }
+                    </td>
+                }
+            </tr>
+        </table>*@
+
+
+
+if (ViewBag.mail == "yes")
+{
+    <div class="ForMail">
+        For Detail Reoprt: <a target="_blank" href="@ViewBag.Domain/site/netlayerreport?SiteId=@First.SiteId&BandId=@First.BandId&Carrier=@First.CarrierId&NetworkMode=@First.NetworkModeId&CircleRadios=17&AzmuthRadius=200&Auto=0">Click Here</a>
+        <br /><br /><br /> Regards, <br /><br /><br />
+        <img src="http://airview.swius.com/Content/Images/Application/swi_logo.png" width="131" height="50" /><br />
+        <b>Sublime Wireless Inc.</b>
+        <br /><br />
+        <span style="color:#1F497D;font-size: 11.0pt;font-family:Calibri,sans-serif;text-align:justify;"> This electronic transmission and any documents which may accompany it, contain information from SWI, SWI's Entity and SWIs's Clients which is intended only for the use of the individual (s) or entity to which it is addressed, and which may contain information that is privileged, confidential, and/or otherwise exempt from disclosure under applicable law. If the reader of this message is not the intended recipient or the employee or agent responsible for delivering the message to the intended recipient, any disclosure, dissemination, distribution, copying or other use of this communication or its substance is prohibited. If you have received this communication in error, please immediately notify us by telephone to arrange for the destruction of the communication or its return to us at our expense. Thank you.</span>
+    </div>
+                            }
+                        }

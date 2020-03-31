@@ -1,0 +1,54 @@
+﻿
+@using SWI.Libraries.Security.Entities
+@model IEnumerable<Sec_Permission>
+
+@{
+    Layout = null;
+}
+
+
+@if (Model != null && Model.Count() > 0)
+{
+    @helper GetTreeView(List<Sec_Permission> Per, Int64 ParentId)
+    {
+
+foreach (var item in Per.Where(m => m.ParentId.Equals(ParentId) && m.IsMenuItem == true))
+{
+    var subItems = Per.Where(m => m.ParentId.Equals(item.Id) && m.IsMenuItem == true).Count();
+    if (subItems > 0)
+    {
+
+            <li  class="treeview">
+                <a href="#" class="auto"> <span class="pull-right text-muted"></span> <i class="fa @item.Icon"> </i> <span class="font-bold">@item.Title</span> </a>
+                <ul class="nav nav-main" data-ride="collapse">
+                    @GetTreeView(Per, item.Id)
+                </ul>
+            </li>
+    }
+    else
+    {
+            <li >
+                <a href="@item.URL" class="auto"> <i class="fa @item.Icon"></i> <span>@item.Title</span> </a>
+                
+            </li>
+
+    }
+
+}
+
+}
+
+    <nav class="nav-primary hidden-xs">
+        <div class="text-muted text-sm hidden-nav-xs padder m-t-sm m-b-sm">Start</div>
+        @*<li class="header">MAIN NAVIGATION</li>*@
+        <ul class="nav nav-main" data-ride="collapse">
+            @GetTreeView(Model.ToList(), Model.OrderBy(m => m.Id).FirstOrDefault().ParentId)
+            </ul>
+</nav>
+}
+
+
+
+
+
+

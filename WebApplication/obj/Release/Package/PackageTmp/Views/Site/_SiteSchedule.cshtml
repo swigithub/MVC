@@ -1,0 +1,128 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model SitesVM
+
+@{ 
+
+    List<AV_ScopeTests> Tests = ViewBag.ScopeTests as List<AV_ScopeTests>;
+    var SelectedLayers = ViewBag.SelectedLayer as List<AV_WoDevices>;
+}
+
+<div class="" id="schedule-model">
+
+    <form method="post" action="#" id="frm-SiteSchedule">
+        <div class="row">
+            <div class="col-sm-12" style="">
+                <span class="RouteInfo"></span>
+                <table class="" style="width:300px;">
+                    <tr>
+                        <td><label>Site Code: </label></td>
+                        <td>@Model.SiteCode</td>
+                    </tr>
+                    <tr>
+                        <td><label>Region: </label></td>
+                        <td>@Model.Region</td>
+                    </tr>
+                    <tr>
+                        <td><label>Market: </label></td>
+                        <td>@Model.Market</td>
+                    </tr>
+                </table>
+                <div class="">
+                    <div class="btn-group">
+                        <button type="button" data-value="@DateTime.Now.ToShortDateString()" class="btn btn-default dateSelection">@DateTime.Now.Day</button>
+                        @for (int i = 1; i < 7; i++)
+                        {
+                            <button type="button" data-value="@DateTime.Now.AddDays(i).ToShortDateString()" class="btn btn-default dateSelection">@DateTime.Now.AddDays(i).Day</button>
+
+                        }
+                        <button type="button" id="btn-PickDate" class="btn btn-default dateSelection">Pick Date</button>
+
+                    </div>
+                    <div class="input-group" id="pan-date" style="width: 305px;visibility:hidden;">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+
+                        <input type="text" required readonly class="form-control pull-right UserLiveDate" name="Date" placeholder="Pick Schedule" id="schduledate">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="background-color:rgba(85, 88, 86, 0.08);">
+                <table class="table table-bordered table-striped" style="width: 100%;">
+                    <tr>
+                        <th><input type="checkbox" id="selectall" /></th>
+                        <th>Network Mode</th>
+                        <th>Band</th>
+                        <th>Carrier</th>
+                        <th>WO Devices</th>
+                        <th>Test Types</th>
+
+                    </tr>
+                    @{ int count = 0; }
+                    @foreach (var item in ViewBag.SiteNetworkLayers)
+                    {
+                        Int64 DeviceId = 0;
+                        string layer = item.NetworkModeId + "_" + item.BandId + "_" + item.CarrierId;
+                        <tr>
+                            <td><input type="checkbox" class="SelectLayer" value="@layer" name="Layer" /></td>
+                            <td>
+                                @item.NetworkMode
+
+                                <input type="hidden" name="NetworkMode" value="@item.NetworkModeId" />
+                                <input type="hidden" name="Band" value="@item.BandId" />
+                                <input type="hidden" name="Carrier" value="@item.CarrierId" />
+
+                                <input type="hidden" name="TesterId" value="@ViewBag.TesterId" />
+                            </td>
+                            <td>@item.BandName</td>
+                            <td>@item.Carrier</td>
+
+                            <td>
+                                @Html.DropDownList("Devices", ViewBag.UserDevices as List<SelectListItem>, new { @class = "form-control select", data_Selected = DeviceId, data_row = count, style = "width:150px;" })
+
+                            </td>
+                            <td>
+                                <select class="form-control select" style="width:150px;" id="ddlTestType-@count" data-row="@count" onchange="ddlTestTypeChange('@count' ); return false" multiple>
+                                    @foreach (var tst in Tests.Where(m => m.NetworkModeId == item.NetworkModeId))
+                                    {
+                                        <option value="@tst.TestTypeId">@tst.Test</option>
+                                    }
+                                </select>
+                                <input type="hidden" name="TestTypes" id="TestTypes-@count" />
+                            </td>
+                            
+                        </tr>
+                        count++;   }
+                </table>
+                <input type="hidden" name="SiteId" value="@Model.SiteId" />
+            </div>
+        </div>
+
+        <div class="pull-right">
+            <button type="submit" class="btn btn-success btn-sm "><span class="fa fa-calendar-check-o"></span> Schedule</button>
+            <a href="#" class="btn btn-danger btn-sm " data-dismiss="modal">
+                <span class="glyphicon glyphicon-remove"></span> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+        $("select").each(function (j) {
+
+            var selected = $(this).attr('data-Selected');
+            var row = $(this).attr('data-row');
+            var id = $(this).attr('id');
+            $('#' + id).val(selected);
+        });
+        $("#selectall").change(function () {
+            var status = this.checked;
+            $('.SelectLayer').each(function () {
+                this.checked = status;
+            });
+        });
+    })
+</script>

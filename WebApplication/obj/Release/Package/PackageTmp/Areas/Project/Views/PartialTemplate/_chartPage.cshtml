@@ -1,0 +1,379 @@
+﻿@model WebApplication.Areas.Project.View_Models.TemplateRDViewModel
+
+<style>
+    .dvBody {
+        padding-top: 25px;
+        padding-bottom: 25px;
+        padding-left: 40px;
+        padding-right: 40px;
+        height: 100%;
+    }
+.body-icon {
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    width: 100%;
+    left: 0;
+    font-size: 120px;
+    opacity: 0.1;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+</style>
+
+
+@if (Model.TemplateType == "dashboard")
+{
+    <div id="X_AXIS"></div>
+        <div id="Y_AXIS"></div>
+    <div class="" id="PAGE_BACKGROUNDCOLOR">
+        <div class="body-icon"><i class="fa fa-bar-chart default-cell-icon"></i></div>
+        <div class="row table-row">
+            <div class="col-md-12">
+                <div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false">
+                    <header role="heading">
+                        <div class="jarviswidget-ctrls" role="menu">
+
+                        </div>
+                        <span class="widget-icon"><i class="fa fa-bar-chart"></i> </span>
+                        <h2 id="CHART_TITLE" class="heading"></h2>
+                        @*<input type="hidden" id="CHART_DATA" />*@
+                    </header>
+
+                    <!-- widget div-->
+                    <div style="border: white !important">
+                        <div class="widget-body no-padding">
+
+                            <div id="dt_basic_wrapper" class="">
+                                <div class="row" style="height: 100% important;">
+                                    <div class="col-xs-12 col-md-12">
+                                        <div id="CHART_TYPE_@Model.NodeId" style="height:calc(100% - 40px) !important; width: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (Model.TemplateType == "report")
+{
+    <div id="X_AXIS"></div>
+        <div id="Y_AXIS"></div>
+    <div class="dvBody" id="CHART_BACKGROUNDCOLOR">
+        <div class="body-icon"><i class="fa fa-bar-chart default-cell-icon"></i></div>
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <h1 id="CHART_TITLE"></h1>
+                        @*<input type="hidden" id="CHART_DATA" />*@
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <div id="CHART_TYPE_@Model.NodeId" style="height:calc(100% - 40px); width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script src="~/Content/js/Plugins/canvasjs/canvasjs.min.js"></script>
+<script src="~/Areas/Project/Content/moment/moment.js"></script>
+
+<script type="text/javascript">
+
+    /*
+        // Chart generate on document ready and won't riseze,
+        // it can be capture using (resizestop) function
+        // which calls on time of resizing node,
+        // call server function to generaete once again after resizing of node
+    */
+
+    $('.grid-stack').on('resizestop', function (event, ui) {
+        GenerateChart();
+    });
+
+    $(document).ready(function(){
+        GenerateChart();
+    });
+
+
+    function GenerateChart()
+    {
+        var NodeId = @Model.NodeId;
+
+        var WithView = '@Model.WithPartialView';
+        if(WithView == 'false' || WithView == 'False'){
+            return false;
+        }
+
+        $.ajax({
+            url: '/Project/Template/GetNodeWidgetData',
+            data: {
+                NodeId: '@Model.NodeId',
+                BandId : '@Model.BandId',
+                CareerId : '@Model.CarrierId',
+                NetworkModeId : '@Model.NetworkModeId',
+                ProjectId : '@Model.ProjectId',
+                ScopeId : '@Model.ScopeId',
+                SiteId : '@Model.SiteId',
+                PlotId: 0,
+                UserId: 11,
+                ControlType: "CHART"
+            },
+            type: "POST",
+            async: false,
+            success: function (result) {
+                console.log(result);
+                var dataPoint = [];
+                var DataTable = JSON.parse(result.SiteDataTableJSON)
+                var chartJSON = "";
+                var baseData = result.NodeSettingList;
+
+                $(baseData).each(function(i){
+
+                    if (baseData[i].MappedId == "CHART_TYPE_@Model.NodeId") {
+
+                        // LOGIC ABOUT BAR CHART
+                        if (baseData[i].Value == 'line chart') {
+
+                            $(DataTable).each(function (i){
+                                dataPoint.push({y: parseInt(DataTable[i]["y"]), label: DataTable[i]["x"]});
+                            });
+
+                            var chart = new CanvasJS.Chart("CHART_TYPE_@Model.NodeId", {
+                                zoomEnabled: true,
+
+                                data: [ {
+                                    type: 'line',
+                                    dataPoints: dataPoint
+                                } ]
+                            });
+                            chart.render();
+                        }
+
+                        // LOGIC ABOUT PIE CHART
+                        if (baseData[i].Value == 'pie chart') {
+
+                            $(DataTable).each(function (i){
+                                dataPoint.push({y: parseInt(DataTable[i]["y"]), indexLabel: DataTable[i]["x"]});
+                            });
+
+                            var chart = new CanvasJS.Chart("CHART_TYPE_@Model.NodeId", {
+
+                                data: [ {
+                                    type: 'pie',
+                                    showInLegend: true,
+                                    legendText: "{indexLabel}",
+                                    dataPoints: dataPoint
+                                } ]
+                            });
+                            chart.render();
+                        }
+
+                        // LOGIC ABOUT LINE CHART
+                        if (baseData[i].Value == 'bar chart') {
+
+                            $(DataTable).each(function (i){
+                                dataPoint.push({y: parseInt(DataTable[i]["y"]), label: DataTable[i]["x"]});
+                            });
+
+                            var chart = new CanvasJS.Chart("CHART_TYPE_@Model.NodeId", {
+                                zoomEnabled: true,
+
+                                data: [ {
+                                    type: 'bar',
+                                    dataPoints: dataPoint
+                                } ]
+                            });
+                            chart.render();
+                        }
+
+                        // LOGIC ABOUT AREA CHART
+                        if (baseData[i].Value == 'area chart') {
+
+                        }
+
+                        // LOGIC ABOUT COLUMN CHART
+                        if (baseData[i].Value == 'column chart') {
+
+                            $(DataTable).each(function (i){
+                                dataPoint.push({y: parseInt(DataTable[i]["y"]), label: DataTable[i]["x"]});
+                            });
+
+                            var chart = new CanvasJS.Chart("CHART_TYPE_@Model.NodeId", {
+                                zoomEnabled: true,
+
+                                data: [ {
+                                    dataPoints: dataPoint
+                                } ]
+                            });
+                            chart.render();
+                        }
+
+                        // LOGIC ABOUT STACK COLUMN CHART
+                        if (baseData[i].Value == 'stacked column') {
+                            var current = "";
+                            var previous = "";
+
+                            var chartData = [ ];
+
+                            $(DataTable).each(function (i){
+                                current = DataTable[i]["Type"];
+                                if(i > 0) {
+                                    previous = DataTable[i - 1]["Type"];
+                                }
+
+                                if(current != previous && previous != "")
+                                {
+                                    chartData.push({
+                                        type: "stackedColumn",
+                                        dataPoints: dataPoint
+                                    });
+                                    dataPoint = [];
+                                }
+                                dataPoint.push({label: DataTable[i]["x"], y: parseFloat(DataTable[i]["y"]), toolTipContent: DataTable[i]["Type"]+" : "+ parseFloat(DataTable[i]["y"]) });
+
+                            });
+
+                            if(dataPoint != [])
+                            {
+                                chartData.push({
+                                    type: "stackedColumn",
+                                    dataPoints: dataPoint
+                                });
+                                dataPoint = [];
+                            }
+
+                            var chart = new CanvasJS.Chart("CHART_TYPE_@Model.NodeId", {
+                                zoomEnabled: true,
+                                data: chartData
+                            });
+                            chart.render();
+                        }
+
+
+                        // LOGIC ABOUT STACK BAR CHART
+                        if (baseData[i].Value == 'stacked bar') {
+                            var current = "";
+                            var previous = "";
+
+                            var chartData = [ ];
+                            $(DataTable).each(function (i){
+                                current = DataTable[i]["Type"];
+                                if(i > 0) {
+                                    previous = DataTable[i - 1]["Type"];
+                                }
+                                if(current != previous && previous != "")
+                                {
+                                    chartData.push({
+                                        type: "stackedBar",
+                                        dataPoints: dataPoint
+                                    });
+                                    dataPoint = [];
+                                }
+                                dataPoint.push({label: DataTable[i]["x"], y: parseFloat(DataTable[i]["y"]), toolTipContent: DataTable[i]["Type"]+" : "+ parseFloat(DataTable[i]["y"]) });
+                            });
+
+                            if(dataPoint != [])
+                            {
+                                chartData.push({
+                                    type: "stackedBar",
+                                    dataPoints: dataPoint
+                                });
+                                dataPoint = [];
+                            }
+
+                            var chart = new CanvasJS.Chart("CHART_TYPE_@Model.NodeId", {
+                                zoomEnabled: true,
+                                data: chartData
+                            });
+                            chart.render();
+                        }
+
+                    }
+
+                    if (baseData[i].MappedId == "PAGE_BACKGROUNDCOLOR") {
+                        $('#dv'+NodeId).find("#PAGE_BACKGROUNDCOLOR").css("background", baseData[i].Value, 'important');
+                    }
+
+                    if (baseData[i].MappedId == "CHART_TITLE") {
+
+                        $('#dv'+NodeId).find('#CHART_TITLE').html(baseData[i].Value);
+
+                        if (baseData[i].Settings != null && baseData[i].Settings != "") {
+                            var settingsObj = JSON.parse(baseData[i].Settings);
+
+                            $('#dv'+NodeId).find('#CHART_TITLE').css("font-family", settingsObj[0]["font-family"], 'important');
+                            $('#dv'+NodeId).find('#CHART_TITLE').css("font-size", settingsObj[0]["font-size"], 'important');
+                            $('#dv'+NodeId).find('#CHART_TITLE').css("font-style", settingsObj[0]["typography"]);
+                            $('#dv'+NodeId).find('#CHART_TITLE').css("color", settingsObj[0]["font-color"]);
+
+                            if(settingsObj[0]["date-format"] != null){
+                                var date = new Date(baseData[i].Value);
+                                day = date.getDate();
+                                month = parseInt(date.getMonth()) + 1;
+                                year = date.getFullYear();
+
+                                var options = {
+                                    weekday: "long", year: "numeric", month: "short", day: "numeric"
+                                };
+
+                                if(settingsObj[0]["date-format"] == "short_date"){
+                                    $('#dv'+NodeId).find('#CHART_TITLE').text(date.toLocaleDateString("en-us"));
+                                }
+
+                                if(settingsObj[0]["date-format"] == "long_date"){
+                                    $('#dv'+NodeId).find('#CHART_TITLE').text(date.toLocaleDateString("en-us", options));
+                                }
+                            }
+
+                            if(settingsObj[0]["align"] == "left"){
+                                $('#dv'+NodeId).find('#CHART_TITLE').addClass("text-left");
+                            }
+                            if(settingsObj[0]["align"] == "right"){
+                                $('#dv'+NodeId).find('#CHART_TITLE').addClass("text-right");
+                            }
+                            if(settingsObj[0]["align"] == "center"){
+                                $('#dv'+NodeId).find('#CHART_TITLE').addClass("text-center");
+                            }
+                            if(settingsObj[0]["typography"] == "bold"){
+                                $('#dv'+NodeId).find('#CHART_TITLE').css("font-weight", "bold");
+                                $('#dv'+NodeId).find('#CHART_TITLE').css("font-style", "normal");
+                            }
+                            if(settingsObj[0]["typography"] == "italic"){
+                                $('#dv'+NodeId).find('#CHART_TITLE').css("font-style", "italic");
+                                $('#dv'+NodeId).find('#CHART_TITLE').css("font-style", "normal");
+                            }
+                            if(settingsObj[0]["typography"] == "bold_italic"){
+                                $('#dv'+NodeId).find('#CHART_TITLE').css("font-weight", "bold");
+                                $('#dv'+NodeId).find('#CHART_TITLE').css("font-style", "italic");
+                            }
+
+                        }
+
+                    }
+
+                });
+            }
+        });
+    }
+
+    $(document).ajaxStop(function (){
+        var a= $(".parent-class.grid-stack-item").height();
+        $(".canvasjs-chart-container").parent().css("height",a-50);
+        $(".canvasjs-chart-canvas").css("height",a-50);
+        $(".canvasjs-chart-canvas").css("width","100%");
+        
+    });
+
+</script>

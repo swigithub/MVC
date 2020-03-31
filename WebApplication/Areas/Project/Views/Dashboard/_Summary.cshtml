@@ -1,0 +1,207 @@
+﻿@using System.Data;
+@{
+    var Entity = TempData["ProjectEntity"] as AirView.DBLayer.Security.Entities.Sec_UserProjects;
+    TempData.Keep("ProjectEntity");
+}
+<div class="row">
+    <div class="col-md-4 col-sm-4 col-xs-4 " style="border-right:1px solid #ccc !important">
+        <div id="Site_Status_Pie" style="height:300px; margin: 0 auto;"></div>
+
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-4" style="border-right:1px solid #ccc">
+        <div id="Site_Status_Pie2" style="height:300px; margin: 0 auto;"></div>
+
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-4">
+
+        <div id="Site_Status_Pie3" style="height:300px; margin: 0 auto;"></div>
+    </div>
+</div>
+@*<header>
+        <h2 style="margin-left:12px;font-weight:bold;">Issue Distribution</h2>
+        Site Status on @DateTime.Now.ToString("MMM dd, yyyy")
+        <h2 style="margin-left:12px;font-weight:bold;">Issue Accountibility </h2>
+    </header>*@
+@*<style>
+        tbody{
+    font-size: 15px;
+    font-weight: normal;
+        }
+
+      .short-table td {
+        font-weight: bold;
+        font-size: 15px;
+        /*width: 171px !important;*/
+        display: inline-block;
+    }
+    </style>*@
+
+<script>
+    var picchartSiteStatus = [];
+    var picchartSiteStatus2 = [];
+    picchartSiteStatus3 = [];
+    function LoadCharts_Summary(id, height, data, color, lagendside, title) {
+        var chart = new CanvasJS.Chart(id, {
+            animationEnabled: false,
+            colorSet: color,
+            theme: "light2",
+            height: height,
+            exportEnabled: true,
+            title: {
+                text: title
+            },
+            width: "400",
+            legend: {
+                horizontalAlign: lagendside,// "right", // "center" , "right"
+                verticalAlign: "center",  // "top" , "bottom"
+                fontSize: 15
+            },
+            data: data
+        });
+
+        showDefaultText(chart, "No Data Available");
+        chart.render();
+
+    }
+    function LoadPieChartSiteStatus(mid, tid, fdate, todate) {
+        $.ajax({
+            url: '/Project/Dashboard/GetSummary?Filter=PROGRAM_SUMMARY&ProjectId=123&Value1=456&TaskIds=789&LocationIds=1011&FromDate=1213&ToDate=1415&SearchFilter=678&Request=JSON',
+            type: 'Get',
+            async: false,
+            success: function (data) {
+                //console.log(data);
+                //debugger
+                picchartSiteStatus = []
+                picchartSiteStatus2 = [];
+                picchartSiteStatus3 = [];
+                var sd = {};
+                var t1 = data.t1;
+                var t2 = data.t2;
+                var t3 = data.t3;
+
+                console.log(t2);
+
+                sd = {};
+                for (var i = 0; i < t1.length ; i++) {
+                    sd = { label: t1[i].StatusType, y: t1[i].SiteStatus, legendText: t1[i].StatusType, color: t1[i].ColorCode };
+                    picchartSiteStatus.push(sd);
+
+                }
+                sd = {};
+                var IssueDistributionColor = [];
+                for (var i = 0; i < t2.length ; i++) {
+                    sd = { label: t2[i].IssueType, y: t2[i].TotalIssues, legendText: t2[i].IssueType };
+                    picchartSiteStatus2.push(sd);
+
+                    IssueDistributionColor.push(t2[i].ColorCode);
+
+                }
+                /* == After Populating info add the colors == */
+                CanvasJS.addColorSet("Site_Status_Pie3_color", IssueDistributionColor);
+
+                sd = {};
+                var IssueAccountibilityColor = [];
+                for (var i = 0; i < t3.length ; i++) {
+                    sd = { label: t3[i].IssueOwner, y: t3[i].TotalIssues, legendText: t3[i].IssueOwner, color: t3[i].ColorCode };
+                    IssueAccountibilityColor.push(t3[i].ColorCode);
+                    picchartSiteStatus3.push(sd);
+
+                }
+                /* == After Populating info add the colors == */
+                CanvasJS.addColorSet("Site_Status_Pie2_color", IssueAccountibilityColor);
+                console.log(IssueAccountibilityColor);
+                $('#Site_Status_Pie').empty();
+                $('#Site_Status_Pie2').empty();
+                $('#Site_Status_Pie3').empty();
+            }
+           , error: function (e) {
+               //debugger
+               // console.log(e);
+           }
+        });
+        var sitestatus = [{
+            type: "pie",
+            height: 200,
+            //width:705,
+            showInLegend: true,
+            indexLabelPlacement: "inside",
+            indexLabelFontSize: 15,
+            indexLabelFontColor: '#fff',
+            indexLabel: "{y}",
+            yValueFormatString: "##\"\"",
+            title: {
+                text: "Chart Title"
+                // more attributes
+            },
+            legend: {
+                verticalAlign: "bottom",  // "top" , "bottom"
+                horizontalAlign: "center",  // "center" , "right"
+                fontSize: 5
+            },
+            dataPoints: picchartSiteStatus
+        }]
+        var issueaccount = [{
+            type: "pie",
+            height: 200,
+            //width:705,
+            showInLegend: true,
+            indexLabelPlacement: "inside",
+            indexLabelFontSize: 15,
+            indexLabelFontColor: '#fff',
+            indexLabel: "{y}",
+            yValueFormatString: "##\"\"",
+            title: {
+                text: "Chart Title"
+                // more attributes
+            },
+            legend: {
+                verticalAlign: "bottom",  // "top" , "bottom"
+                horizontalAlign: "center",  // "center" , "right"
+                fontSize: 5
+            },
+            dataPoints: picchartSiteStatus2
+        }]
+        var issuedistribute = [{
+            type: "pie",
+            height: 200,
+            //width:705,
+            showInLegend: true,
+            indexLabelPlacement: "inside",
+            indexLabelFontSize: 15,
+            indexLabelFontColor: '#fff',
+            indexLabel: "{y}",
+            yValueFormatString: "##\"\"",
+            title: {
+                text: "Chart Title"
+                // more attributes
+            },
+            legend: {
+                verticalAlign: "bottom",  // "top" , "bottom"
+                horizontalAlign: "center",  // "center" , "right"
+                fontSize: 5
+            },
+            dataPoints: picchartSiteStatus3
+        }]
+        CanvasJS.addColorSet("PieColor",
+                      [
+                      "#7cb5ec",
+                      "#5c5c61",
+                      "#90ed7d",
+                      "#f7a35c",
+                      "#d0d2f7",
+                      "#f15c80",
+                      "#2b908f",
+
+                      ]);
+
+        
+
+        
+
+        var Date = '@DateTime.Now.ToString("MMM dd, yyyy")';
+        LoadCharts_Summary("Site_Status_Pie", 290, sitestatus, "PieColor", "right", " @Entity.Title Status");
+        LoadCharts_Summary("Site_Status_Pie2", 290, issuedistribute, "Site_Status_Pie2_color", "right", "Issue Accountibility");
+        LoadCharts_Summary("Site_Status_Pie3", 290, issueaccount, "Site_Status_Pie3_color", "right", "Issue Distribution");
+    }
+    LoadPieChartSiteStatus();
+</script>

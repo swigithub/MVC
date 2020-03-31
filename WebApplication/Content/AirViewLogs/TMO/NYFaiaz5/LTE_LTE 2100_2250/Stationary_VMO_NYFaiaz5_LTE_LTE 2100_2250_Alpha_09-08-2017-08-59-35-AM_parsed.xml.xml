@@ -1,0 +1,930 @@
+<drive><test-cat>/home/airview1/ftp/files/airview-layer3/Stationary</test-cat><test-type>VMO</test-type><site>NYFaiaz5</site><net-mode>LTE</net-mode><band>LTE2100</band><carrier>2250</carrier><sector>Alpha</sector><time>09-08-2017-08-59-35-AM</time><message-body><time>1504875545066</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0000000000000000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            00
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875545376</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0000000000000000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            00
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875545164</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875549275</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875553096</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875553391</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0000000000000000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            00
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875553361</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <sidelinkUEInformation-r12>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </sidelinkUEInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875553361</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504875553450</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504875553009</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0000000000000000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            00
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875553117</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0000000000000000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            00
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875553364</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0000000000000000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            00
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875553017</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <sidelinkUEInformation-r12>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </sidelinkUEInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875553376</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0000000000000000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            00
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875556258</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875557706</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875557538</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875557052</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <sidelinkUEInformation-r12>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </sidelinkUEInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875557066</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504875557666</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <sidelinkUEInformation-r12>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </sidelinkUEInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875560150</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875560520</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875560570</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875560287</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504875560213</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875560546</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875560363</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875560661</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <etws-Indication><true/></etws-Indication>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504875560533</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875560207</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000000000000
+                            </c-RNTI>
+                            <physCellId>327</physCellId>
+                            <shortMAC-I>
+                                0000110100000010
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><handoverFailure/></reestablishmentCause>
+                        <spare>
+                            01
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875560333</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000100000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0011001111110011
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><spare1/></reestablishmentCause>
+                        <spare>
+                            11
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875560183</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875564437</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875564299</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504875564674</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875564111</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875564272</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875564650</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000010000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0000000000000000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            00
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504875564491</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875567290</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875567539</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875569668</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875569305</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875569294</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <scgFailureInformation-r12>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </scgFailureInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875569081</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishmentReject></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentReject>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentReject-r8>
+                    </rrcConnectionReestablishmentReject-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentReject>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875569487</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <sidelinkUEInformation-r12>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </sidelinkUEInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875572394</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <sidelinkUEInformation-r12>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </sidelinkUEInformation-r12>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875580625</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <mbmsInterestIndication-r11>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </mbmsInterestIndication-r11>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875580045</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <mbmsInterestIndication-r11>
+                    <criticalExtensions>
+                        <criticalExtensionsFuture>
+                        </criticalExtensionsFuture>
+                    </criticalExtensions>
+                </mbmsInterestIndication-r11>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875580492</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <etws-Indication><true/></etws-Indication>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504875580531</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504875580378</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <mbmsInterestIndication-r11>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </mbmsInterestIndication-r11>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875580275</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <etws-Indication><true/></etws-Indication>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504875580014</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504875580143</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <mbmsInterestIndication-r11>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </mbmsInterestIndication-r11>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875580518</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <mbmsInterestIndication-r11>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </mbmsInterestIndication-r11>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875580536</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishmentReject></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentReject>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentReject>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504875580261</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504875580337</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504875580353</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504875580220</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875581407</time><channel>UL-DCCH-Message</channel><event>c2></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <mbmsInterestIndication-r11>
+                    <criticalExtensions>
+                        <c1>
+                            <spare3></spare3>
+                        </c1>
+                    </criticalExtensions>
+                </mbmsInterestIndication-r11>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875581029</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504875581681</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body></drive>

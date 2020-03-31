@@ -1,0 +1,236 @@
+﻿@model IEnumerable<Library.SWI.Survey.Model.TSS_VM>
+
+@if (Model != null || Model.Count() > 0)
+{
+   
+    <table class="table table-striped" id="tbl_@ViewBag.SiteId" >
+        <thead>
+            <tr>
+                <th></th>
+                <th>TSS Type</th>
+                <th>Site Type</th>
+                <th>Client POC</th>
+                <th>Technician</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var SiteKpi = "";
+                var IssueTracker = "";
+                var NetLayerReport = "";
+                var EditNetLayerReport = "";
+                var observation = "";
+                var Redrive = "";
+                var PendingWithIssue = "";
+                var ReportSubmitOrApprove = "";
+                var Email = "";
+                var IsActive = "";
+                var LayerWoStatusName = "";
+                var Script = "";
+                var CheckList = "";
+                var SelectSurveySection = "";
+                var LoadAttendee = "";
+                var Export = "";
+                var SiteId = item.SiteId;
+                var KPI = "";
+                var SiteCode = item.SiteCode;
+                var view = "<a class='view'   data-siteid=" + SiteId + " title='View'><i class='white fa fa-eye fa-2x' aria-hidden='true' style='vertical-align:bottom'></i></a>";
+                if (item.StatusName != "Pending Schedule")
+                {
+
+                    //if (ViewBag.AllowUri("/site/netLayerReport"))
+                    //{
+
+                    //    // NetLayerReport = "<a class='Net LayerReport' title='Net Layer Report' target='_blank' href='/site/netlayerreport?SiteId= + @SiteId +"&BandId="+ @item.BandId +"&Carrier="+ @item.CarrierId +"&NetworkMode="+ @item.NetworkModeId +"&CircleRadios=17&AzmuthRadius=200&Auto=0'><span><img src='/Content/Images/Common/netlayer_x32.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+
+                    //    if (ViewBag.RoleName == "Client POC")
+                    //    {
+
+                    //    }
+                    //    else
+                    //    {
+                    //        NetLayerReport = "<a class='Net LayerReport' title='Net Layer Report' target='_blank'  href='/site/netlayerreport?SiteId=" + SiteId + "&BandId=" + item.BandId + "&Carrier=" + item.CarrierId + "&NetworkMode=" + item.NetworkModeId + "&CircleRadios=17&AzmuthRadius=200&Auto=0' <span><img src='/Content/Images/Common/netlayer_x32.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                    //    }
+
+                    //}
+                }
+                if (ViewBag.AllowUri("/SiteTrackerIssue/NetLayer"))
+                {
+                    IssueTracker = "<a href='#' title='Tracker' onclick='ActivityPopup(" + SiteId + "," + item.NetworkModeId + "," + item.CarrierId + "," + item.ScopeId + "," + item.BandId + "," + item.TesterId + "); return false;'><span><img src='/Content/Images/Common/activity_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+                // SiteKpi
+                //if (ViewBag.AllowUri("/TemplateSetting/Site"))
+                //{
+                //    if (item.StatusName == "Pending Schedule" || @item.StatusName == "Scheduled" || @item.StatusName == "In Progress")
+                //    {
+                //        SiteKpi = "<a title='Test Configuration & KPI' href='/TemplateSetting/site?SiteId=" + SiteId + "&NetworkModeId=" + item.NetworkModeId + " &BandId=" + item.BandId + "' target='_blank'><span><img src='/Content/Images/Common/kpi_x24.png' alt='Site Kpi' style='margin-right:20px;' /></span></a>";
+                //    }
+                //}
+
+                //  Report Submit Or Approve
+                if (ViewBag.AllowUri("/NetLayerStatus/SetStatus"))
+                {
+                    if (item.StatusName == "Drive Completed" || item.StatusName == "Pending With Issues")
+                    {
+                        ReportSubmitOrApprove = " <a href='#' title='Submit Report' onclick='ReportSubmitOrApprove(" + SiteId + ", " + item.NetworkModeId + " , " + item.CarrierId + "," + item.ScopeId + " ," + item.BandId + ",\"REPORT_SUBMITTED\")'><span><img src='/Content/Images/Common/reportsubmitted_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                    }
+                    if (item.StatusName == "Report Submitted")
+                    {
+                        ReportSubmitOrApprove = "<a title='Approve Report' href='#' onclick='ReportSubmitOrApprove(" + SiteId + ", " + item.NetworkModeId + " , " + item.CarrierId + "," + item.ScopeId + " ," + item.BandId + ",\"COMPLETED\")'><span><img src='/Content/Images/Common/reportapproved_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                    }
+                }
+                //console.log(item);
+
+                //if (ViewBag.AllowUri("/Site/Mail"))
+                //{
+                //    if (item.StatusName == "Approved" || @item.StatusName == "Report Submitted")
+                //    {
+                //        Email = "";
+                //    }
+                //}
+                //  EditNetLayerReport
+                //if (ViewBag.AllowUri("/site/EditNetLayerReport"))
+                //{
+
+                //    if (item.StatusName == "Drive Completed")
+                //    {
+                //        EditNetLayerReport = "<a target='_blank' title='Edit Net Layer Report' href='/site/EditNetLayerReport?SiteId=" + SiteId + "&BandId=" + item.BandId + "&Carrier=&NetworkMode='><span><img src='/Content/Images/Common/update_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                //    }
+
+                //}
+
+                //  observation
+                //if (ViewBag.AllowUri("/NetLayerStatus/NewObservation"))
+                //{
+
+                //    if (item.StatusName == "Drive Completed")
+                //    {
+                //        observation = "<a href='#' title='Report Observations' onclick='ObservationPopup(" + SiteId + ", " + item.NetworkModeId + "," + item.CarrierId + " ," + item.ScopeId + " ," + item.BandId + "); return false;'><span><img src='/Content/Images/Common/observe_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                //    }
+
+                //}
+
+                //  Redrive
+                //if (ViewBag.AllowUri("/ReDrive/NewRequest"))
+                //{
+
+                //    if (item.StatusName == "Pending With Issues")
+                //    {
+                //        Redrive = "<a href='#' title='Re-Drive Request' onclick='RedrivePopup("+ @SiteId +", "+ @item.NetworkModeId +", "+ @item.CarrierId +", "+ @item.ScopeId +","+ @item.BandId +"); return false;' data-NetworkModeId='"+ @item.NetworkModeId +"' data-TesterId='"+ @item.TesterId +"' data-BandId='"+ @item.BandId +"' data-CarrierId='"+ @item.CarrierId +"' data-ScopeId='"+ @item.ScopeId +"' data-SiteId='"+ @SiteId +"'><span><img src='/Content/Images/Common/redrive_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                //    }
+
+                //}
+
+
+                //  PendingWithIssue
+                //if (ViewBag.AllowUri("/NetLayerStatus/NewPendingIssue"))
+                //{
+
+                //    if (item.StatusName == "Scheduled" || item.StatusName == "In Progress" || item.StatusName == "Drive Completed" || item.StatusName == "Report Submitted" || item.StatusName == "Pending With Issues")
+                //    {
+                //        PendingWithIssue = "<a href='#' title='Pending with Issue' title='Site Issues' onclick='PendingIssuesPopup(" + SiteId + "," + item.NetworkModeId + "," + item.CarrierId + "," + item.ScopeId + "," + item.BandId + "); return false;'><span><img src='/Content/Images/Common/issuetracker_x32.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                //    }
+
+                //}
+
+
+
+                //if (ViewBag.AllowUri("/SiteTestLog/Export"))
+                //{
+
+                //    Export = "<a title='Export Logs' href='/SiteTestLog/Export?SiteId="+ SiteId +"&NetworkmodeId="+ item.NetworkModeId +"&BandId="+ item.BandId +"&CarrierId="+ item.CarrierId +"&ScopeId="+ item.ScopeId +"'><span><img src='/Content/Images/Common/testlogs_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+
+                //}
+
+
+                //  LayerWoStatusName
+                //if (ViewBag.AllowUri("/NetLayerStatus/WoStatus"))
+                //{
+
+                //    if (item.StatusName != "Pending Schedule")
+                //    {
+                //        LayerWoStatusName = "<a href='#' title='Change Layer Status' onclick='LayerWoStatus("+ item.SiteSurveyId +"); return false;' title='Layer StatusName'><span><img src='/Content/Images/Common/moveStatus_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                //    }
+
+                //}
+
+
+                //if (ViewBag.AllowUri("/NetLayerStatus/Script"))
+                //{
+                //    //onclick='Script("+ item.SiteSurveyId +","+ SiteId +","+ item.NetworkModeId +","+ item.BandId +","+ item.CarrierId +","+ item.ScopeId +"); return false;'
+                //    Script = "<a target = '_blank' href = '/NetLayerStatus/Script?LayerId="+ item.SiteSurveyId +"&SiteId="+ SiteId +"&NetworkModeId="+ item.NetworkModeId +"&BandId="+ item.BandId+"&CarrierId=" + item.CarrierId+"&Scope=TSS' title = 'Script' ><span><img src = '/Content/Images/Common/script_x24.png' height = '24' width = '24' style = 'margin-right:20px;' /></ span></a>";
+                //}
+                CheckList  = "<a target = '_blank' href = '/Survey/Document/CheckList?id=" + item.SiteSurveyId + "&siteId=" + SiteId + "' title = 'Survey' ><span><img src = '/Content/Images/Common/survey icon 24x24.png' height = '24' width = '24' style = 'margin-right:20px;' /></ span></a>";
+                //if (ViewBag.AllowUri("/NetLayerStatus/IsActive"))
+                //{
+
+                //    if (item.IsActive)
+                //    {
+                //        IsActive = "<a href='#' title='Disable Layer' onclick='LayerIsActive("+ item.SiteSurveyId +",false,0); return false;'><span><img src='/Content/Images/Common/disable_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                //    }
+                //    else
+                //    {
+                //        IsActive = "<a href='#' title='Enable Layer' onclick='LayerIsActive("+ item.SiteSurveyId +",truem,0); return false;'><span><img src='/Content/Images/Common/enable_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                //        IssueTracker = "";
+                //        observation = "";
+                //        NetLayerReport = "";
+
+                //        EditNetLayerReport = "";
+                //        PendingWithIssue = "";
+                //        Redrive = "";
+                //        SiteKpi = "";
+                //        ReportSubmitOrApprove = "";
+                //        Email = "";
+                //        Export = "";
+                //        LayerWoStatusName = "";
+                //    }
+
+                //}
+
+                SelectSurveySection = "<a title = 'Select Survey Sections' style='cursor:pointer;' onclick='loadSections(this)'  data-SiteSurveyId=" + item.SiteSurveyId + " data-SiteId=" + item.SiteId + " ><span><img src = '/Content/Images/Common/selectchecklisticon.png' height = '24' width = '24' style = 'margin-right:20px;' /></ span></a>";
+
+                LoadAttendee = "<a title = 'Attendee List' style='cursor:pointer;' onclick='loadAttendee(this)'  data-SiteSurveyId=" + item.SiteSurveyId + " data-SiteId=" + item.SiteId + " ><span><img src = '/Content/Images/Common/attendee-icon-24.png' height = '24' width = '24' style = 'margin-right:20px;' /></ span></a>";
+
+                if (@ViewBag.RequestFrom == "KPI")
+                {
+                    KPI = "<a class='KPI' title='' target='_blank'  href='/KPI/Monitoring/Add?Type=Carrier&Site=" + @ViewBag.SiteId + "&Carrier=" + item.CarrierId +"' > <span><img src='/Content/Images/Common/netlayer_x32.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+                string Icons = IssueTracker + observation + NetLayerReport + EditNetLayerReport + PendingWithIssue + Redrive + SiteKpi + ReportSubmitOrApprove + Email + IsActive + Export + LayerWoStatusName + Script+KPI+ CheckList + SelectSurveySection + LoadAttendee + view;
+
+                <tr data-NetLayer="@SiteCode" data-Scope="TSS">
+                    <td class="detail-control NoExport" data-SurveyId="@item.SiteSurveyId" ></td>
+                    <td>@item.SurveyTitle</td>
+                    <td>@item.SiteType</td>
+                    <td>@item.ClientPOC</td>
+                    <td>@item.TesterName</td>
+                    <td>
+                        <span class="label" style="background-color:@item.StatusColor;">@item.StatusName</span>
+                    </td>
+                    <td> @Html.Raw(Icons)</td>
+                </tr>
+            }
+        </tbody>
+</table>
+
+
+<script>
+  var tbl=  $("#tbl_@ViewBag.SiteId").DataTable({"paging": false,"ordering": false,"info": false,"searching": false,Filter: false});
+    $("#tbl_@ViewBag.SiteId").on("click", "td.detail-control", function () {
+        var tr = $(this).closest("tr");
+        debugger;
+        var row = tbl.row(tr);
+        if (row.child.isShown()) {
+           row.child.hide();
+            tr.removeClass("shownitem");
+            tr.removeClass("shown");
+        } else {
+            var temp;
+            temp = format($(this).attr("data-SurveyId"), $(this).attr("data-SiteId"), $(this).attr("data-NetworkModeId"), $(this).attr("data-ScopeId"), $(this).attr("data-CarrierId"), 'TSS');
+
+             row.child(temp).show();
+           tr.addClass("shownitem");}});
+</script>
+}

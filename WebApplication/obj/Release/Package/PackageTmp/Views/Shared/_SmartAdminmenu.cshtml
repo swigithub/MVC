@@ -1,0 +1,49 @@
+﻿
+@using SWI.Libraries.Security.Entities
+@model IEnumerable<Sec_Permission>
+
+@{ 
+    Layout = null;
+}
+
+
+@if (Model != null && Model.Count() > 0)
+{
+    @helper GetTreeView(List<Sec_Permission> Per, Int64 ParentId)
+    {
+
+foreach (var item in Per.Where(m => m.ParentId.Equals(ParentId) && m.IsMenuItem == true))
+{
+    var subItems = Per.Where(m => m.ParentId.Equals(item.Id) && m.IsMenuItem == true).Count();
+    if (subItems > 0)
+    {
+            <li>
+                <a href="#"><i class="fa fa-lg fa-fw @item.Icon"></i> <span class="menu-item-parent">@item.Title</span></a>
+                <ul>
+                    @GetTreeView(Per, item.Id)
+                </ul>
+            </li>
+                
+    }
+    else
+    {
+            <li>
+                <a href="@item.URL" title="@item.Title"><i class="fa fa-lg fa-fw @item.Icon"></i> <span class="menu-item-parent">@item.Title</span></a>
+            </li>
+               
+
+        }
+
+    }
+
+}
+
+    <ul class="">
+        @GetTreeView(Model.ToList(), Model.OrderBy(m=>m.Id).FirstOrDefault().ParentId)
+    </ul>
+}
+
+
+
+
+

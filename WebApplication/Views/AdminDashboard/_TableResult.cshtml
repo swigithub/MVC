@@ -1,0 +1,57 @@
+﻿@using  System.Data;
+
+<div id="grid" style="height: 450px"></div>
+
+
+<script>
+
+
+    var obj = {};
+    var rec = [];
+
+    var column = {};
+    var columns = [];
+
+    @{ int count = 1; }
+
+    @foreach(DataRow row in ViewBag.TableResult.Rows)
+    {
+         @: obj['recid'] = '@count';
+        foreach(DataColumn column in ViewBag.TableResult.Columns)
+        {
+
+            
+            //Console.WriteLine(row[column]);
+
+           @: obj['@column.Caption'] = '@row[column]';
+            }
+
+        @: rec.push(obj); obj = {};
+        count++;    }
+
+   
+    $('#grid').w2grid({
+        name: 'grid',
+        header: 'List of Names',
+        show: {
+            toolbar: true,
+            footer: true
+        },
+        columns: [
+            @foreach (DataColumn column in ViewBag.TableResult.Columns)
+            {
+             @:  { field: '@column.Caption', caption: '@column.Caption',size: '10%', sortable: true, attr: 'align=center' },
+            }
+        ],
+
+        searches: [
+            @foreach (DataColumn column in ViewBag.TableResult.Columns)
+            {
+                @:  { field: '@column.Caption', caption: '@column.Caption', type: 'text' },
+            }
+        ],
+        //sortData: [{ field: 'recid', direction: 'ASC' }],
+        records: rec
+        
+    });
+</script>

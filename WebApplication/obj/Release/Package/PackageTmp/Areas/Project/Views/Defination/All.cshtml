@@ -1,0 +1,412 @@
+﻿
+
+@{
+    ViewBag.Title = "All";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+
+}
+<style>
+    .pagination {
+  margin: 20px 0;
+}
+
+.pagination ul {
+  display: inline-block;
+  *display: inline;
+  margin-bottom: 0;
+  margin-left: 0;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  *zoom: 1;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.pagination ul > li {
+  display: inline;
+}
+
+.pagination ul > li > a,
+.pagination ul > li > span {
+  float: left;
+  padding: 4px 12px;
+  line-height: 20px;
+  text-decoration: none;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-left-width: 0;
+}
+
+.pagination ul > li > a:hover,
+.pagination ul > li > a:focus,
+.pagination ul > .active > a,
+.pagination ul > .active > span {
+  background-color: #f5f5f5;
+}
+
+.pagination ul > .active > a,
+.pagination ul > .active > span {
+  color: #999999;
+  cursor: default;
+}
+
+.pagination ul > .disabled > span,
+.pagination ul > .disabled > a,
+.pagination ul > .disabled > a:hover,
+.pagination ul > .disabled > a:focus {
+  color: #999999;
+  cursor: default;
+  background-color: transparent;
+}
+
+.pagination ul > li:first-child > a,
+.pagination ul > li:first-child > span {
+  border-left-width: 1px;
+  -webkit-border-bottom-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+  -webkit-border-top-left-radius: 4px;
+          border-top-left-radius: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  -moz-border-radius-topleft: 4px;
+}
+
+.pagination ul > li:last-child > a,
+.pagination ul > li:last-child > span {
+  -webkit-border-top-right-radius: 4px;
+          border-top-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+  -moz-border-radius-topright: 4px;
+  -moz-border-radius-bottomright: 4px;
+}
+
+.pagination-centered {
+  text-align: center;
+}
+
+.pagination-right {
+  text-align: right;
+}
+
+.pagination-large ul > li > a,
+.pagination-large ul > li > span {
+  padding: 11px 19px;
+  font-size: 17.5px;
+}
+
+.pagination-large ul > li:first-child > a,
+.pagination-large ul > li:first-child > span {
+  -webkit-border-bottom-left-radius: 6px;
+          border-bottom-left-radius: 6px;
+  -webkit-border-top-left-radius: 6px;
+          border-top-left-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -moz-border-radius-topleft: 6px;
+}
+
+.pagination-large ul > li:last-child > a,
+.pagination-large ul > li:last-child > span {
+  -webkit-border-top-right-radius: 6px;
+          border-top-right-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+          border-bottom-right-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -moz-border-radius-bottomright: 6px;
+}
+
+.pagination-mini ul > li:first-child > a,
+.pagination-small ul > li:first-child > a,
+.pagination-mini ul > li:first-child > span,
+.pagination-small ul > li:first-child > span {
+  -webkit-border-bottom-left-radius: 3px;
+          border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+          border-top-left-radius: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+}
+
+.pagination-mini ul > li:last-child > a,
+.pagination-small ul > li:last-child > a,
+.pagination-mini ul > li:last-child > span,
+.pagination-small ul > li:last-child > span {
+  -webkit-border-top-right-radius: 3px;
+          border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+}
+
+.pagination-small ul > li > a,
+.pagination-small ul > li > span {
+  padding: 2px 10px;
+  font-size: 11.9px;
+}
+
+.pagination-mini ul > li > a,
+.pagination-mini ul > li > span {
+  padding: 0 6px;
+  font-size: 10.5px;
+}
+
+.pager {
+  margin: 20px 0;
+  text-align: center;
+  list-style: none;
+  *zoom: 1;
+}
+
+.pager:before,
+.pager:after {
+  display: table;
+  line-height: 0;
+  content: "";
+}
+
+.pager:after {
+  clear: both;
+}
+
+.pager li {
+  display: inline;
+}
+
+.pager li > a,
+.pager li > span {
+  display: inline-block;
+  padding: 5px 14px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 15px;
+     -moz-border-radius: 15px;
+          border-radius: 15px;
+}
+.pagination{
+    padding-right: 25%;
+}
+.pager li > a:hover,
+.pager li > a:focus {
+  text-decoration: none;
+  background-color: #f5f5f5;
+}
+
+.pager .next > a,
+.pager .next > span {
+  float: right;
+}
+
+.pager .previous > a,
+.pager .previous > span {
+  float: left;
+}
+
+.pager .disabled > a,
+.pager .disabled > a:hover,
+.pager .disabled > a:focus,
+.pager .disabled > span {
+  color: #999999;
+  cursor: default;
+  background-color: #fff;
+}
+
+    /*@@import url('http://getbootstrap.com/2.3.2/assets/css/bootstrap.css');*/
+</style>
+<div ng-app="ProjectManagment" ng-controller="DefinationList">
+    <div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
+        <header role="heading">
+            <div class="jarviswidget-ctrls" role="menu">
+
+            </div>
+            <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+            <h2>Projects </h2>
+
+
+            <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+            <div class="widget-toolbar">
+@if (ViewBag.AllowUri("/project/defination/new"))
+{
+
+                <a href="/project/defination/new" class="btn btn-info btn-xs">Create New Project</a>
+}
+            </div>
+        </header>
+
+        <!-- widget div-->
+        <div role="content">
+            <div class="widget-body no-padding">
+                <div class="input-group" >
+                    <input ng-model="q" ng-keypress="paginator.firstPage();" id="search" class="form-control ng-pristine ng-valid ng-empty ng-touched" style="width: 22%;margin-top: 3px;margin-bottom: 3px;margin-right: 2px;margin-left: 77.5%;left: 0px;padding-top: 0px;padding-bottom: 0px;height: 29px;top: 3.5;top: 3.5;top: 4px;" placeholder="Search">
+                       <span class="input-group-btn">
+                        <div class="dropdown">
+
+                            <button class="btn btn-default dropdown-toggle" type="button" id="menu1" style="margin-top:5px;margin-bottom: 5px;margin-right: 5px;" data-toggle="dropdown">
+                               {{rowsPPage}}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                <li style="width: 50px;" ng-click="paginator.firstPage(); pagesizes(10);" role="presentation"><a style="width: 50px;" role="menuitem" tabindex="-1" href="#">10</a></li>
+                                <li style="width: 50px;" ng-click="paginator.firstPage(); pagesizes(25)" role="presentation"><a style="width: 50px;" role="menuitem" tabindex="-1" href="#">25</a></li>
+                                <li  style="width: 50px;" ng-click="paginator.firstPage(); pagesizes(50)" role="presentation"><a style="width: 50px;" role="menuitem" tabindex="-1" href="#">50</a></li>
+                                <li style="width: 50px;" ng-click="paginator.firstPage(); pagesizes(10000)" role="presentation"><a style="width: 50px;" role="menuitem" tabindex="-1" href="#">All</a></li>
+                            </ul>
+                        </div>
+                    </span>
+                </div>
+               
+           
+              
+                <div id="dt_basic_wrapper" class="">
+                    
+
+                    <table class="table table-responsive" style="margin-bottom: 5px;">
+                        <thead>
+                            <tr>
+                                <th></th>
+
+                                <th>Project</th>
+                                <th>Client</th>
+                                <th>End Client</th>
+                                <th>Actual Start</th>
+                                <th>Actual End</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Progress</th>
+                                <th>Action(s)</th>
+                                @*<th>Edit</th>
+                                <th>Template(s)</th>
+                                <th>Timeline</th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            <tr ng-repeat="p in testValues | filter:q | paginate:rowsPerPage">
+       
+
+                                <td><div style="height:20px;width:20px;background-color:{{p.Color }}"></div></td>
+
+                                <td><a href="/Project/Dashboard/Index?Id={{p.ProjectId}}">{{p.ProjectName}}</a> </td>
+                                <td>{{p.Client}}</td>
+                                <td>{{p.EndClient}}</td>
+                                <td>{{p.ActualStartDate.replace('/Date(','').replace(')/','') | date : "dd/MM/yyyy" }}</td>
+                                <td>{{p.ActualEndDate.replace('/Date(','').replace(')/','') | date : "dd/MM/yyyy" }}</td>
+                                <td>
+                                    <span class="label label-default" style="background-color:{{p.StatusColor}}">{{p.Status}}</span>
+                                </td>
+                                <td>
+                                    <span class="label label-default" style="background-color:{{p.Color}}">{{p.Priority}}</span></td>
+                                <td>
+                                    <span style="text-align:left">{{p.CompletionPercent}}%</span>
+                                    <div class="progress progress-micro">
+                                        <div class="progress-bar progress-bar-primary" role="progressbar" style="width: {{p.CompletionPercent}}%;background-color:{{p.Color}}"></div>
+                                    </div>
+                                </td>
+                                <td>
+@if (ViewBag.AllowUri("/project/defination/new"))
+{
+                                    <a class="btn btn-default txt-color-teal" href="/project/defination/new/{{p.ProjectId}}" title="Edit Project"><i class="fa fa-edit"></i></a>
+}   @if (ViewBag.AllowUri("/Project/Template/list"))
+{
+                                    <a class="btn btn-default txt-color-blueLight" href="/Project/Template/list?ProjectId={{p.ProjectId}}"  title="Project Templates"><i class="fa fa-list-alt"></i></a>
+}   @if (ViewBag.AllowUri("/Project/Defination/Details"))
+{
+                                    <a class="btn btn-default txt-color-green" href="/Project/Defination/Details/{{p.ProjectId}}" title="Project Timeline"> <i class="fa fa-calendar"></i></a>
+}
+                                </td>
+                                @*<td>
+                                    <a href="/project/defination/new/{{p.ProjectId}}"><i class="fa fa-edit"></i></a>
+                                </td>
+                                <td>
+                                    <a href="/Project/Template/list?ProjectId={{p.ProjectId}}"><i class="fa fa-list-alt"></i></a>
+                                </td>
+                                <td>
+                                    <a href="/Project/Defination/Details/{{p.ProjectId}}"><i class="fa fa-calendar"></i></a>
+                                </td>*@
+
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            @*<tr>
+                                <td>
+                                    <div class="control-group">
+                                        <label class="control-label" for="rows-per-page">Rows per page</label>
+                                        <div class="controls">
+                                            <select id="rows-per-page"  ng-model="rowsPerPage" class="input-xlarge">
+                                                <option>50</option>
+                                                <option>100</option>
+                                                <option>200</option>
+                                                <option>500</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>*@
+                            <tr>
+                                <td style="border:none">
+                                    <paginator></paginator>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+                <div class="pagination text-center col-sm-6" style="margin-top: 0px;margin-bottom: 5px;border-bottom-width: 5px;" >
+
+                    <ul style="padding-left: 20px;">
+                        <li ng-click="paginator.firstPage();FirstPage();" ng-class="paginator.isFirstPage() && 'disabled'">
+                            <a href="">
+                                <i class="fa fa-angle-double-left" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+                            </a>
+                        </li>
+                        <li ng-click="paginator.perviousPage();PriousPages();" ng-class="paginator.isFirstPage() && 'disabled'">
+                            <a href="">
+                                <i class="fa fa-angle-left" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+                            </a>
+                        </li>
+                        <li ng-click="paginator.setPage(i);AnyPage(i); " ng-repeat="i in [] | forLoop:paginator.lowerLimit():paginator.pageCount() | limitTo : paginator.limitPerPage" ng-class="paginator.page==i && 'active'">
+                            <a href="">
+                                <i> {{i+1}}</i>
+                            </a>
+                        </li>
+                        <li ng-click="paginator.nextPage();NextPages();" ng-class="paginator.isLastPage() && 'disabled'">
+                            <a href="">
+                                <i class="fa fa-angle-right" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+                            </a>
+                        </li>
+                        <li ng-click="paginator.lastPage();lastPages();" ng-class="paginator.isLastPage() && 'disabled'">
+                            <a href="">
+                                <i class="fa fa-angle-double-right" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+                            </a>
+                        </li>
+                    </ul>
+
+
+                </div>   
+                <div class="col-sm-6 infoBar"><div class="infos" style="margin-left: 70%;">Showing {{ShowEntries+1}} to {{showeentries((testValues | filter: q).length);}} of {{ (testValues | filter: q).length }} entries</div></div>            
+                </div>
+            </div>
+        </div>
+
+    </div>
+  
+</div>
+@section scripts{
+
+    <script src="~/Areas/Project/Content/DefinationList.js"></script>
+
+}
+@section style{
+    <style>
+        .table > tbody > tr > td {
+            padding: 1px 10px;
+        }
+    </style>
+    <style>
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            vertical-align: middle;
+        }
+    </style>
+}

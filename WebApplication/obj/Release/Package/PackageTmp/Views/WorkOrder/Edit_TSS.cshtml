@@ -1,0 +1,110 @@
+﻿@*@model List<SWI.Libraries.AirView.Entities.AV_Sector>*@
+@model WebApplication.Models.WorkorderEdit 
+<div class="box-header with-border boxHeader">
+    <h3 class="box-title">Survey Information</h3>
+</div>
+<div class="box-body boxBody">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="row">
+                <table class="" style="margin-left:15px; border-spacing: 10px;border-collapse: separate;" id="tbl-tss">
+                    <thead>
+                        <tr>
+                            @*<th style="max-width: 130px;">Check List Type</th>
+                                <th style="max-width:130px;">Check List</th>
+                                <th style="max-width:130px;">Check Count</th>
+                                <th style="max-width:550px;">Description</th>*@
+                            <th style="max-width:130px">Survey</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="TssNewDeviceRow">
+                            <td>
+                                @*<select value='' class="form-control select Row TssRowFirst  TssRowLast Survey" id="SurveyId-r0" required="required" data-name="SurveyId" name="SurveyId">
+                                    <option value="0">-Survey Id-</option>
+                                </select>*@
+                                @{ 
+                                    List<string> surveys = new List<string>();
+                                    List<string> Sitesurveys = new List<string>();
+                                    foreach (var item in Model.Sectors)
+                                    {
+                                        surveys.Add(item.SurveyId.ToString());
+                                        Sitesurveys.Add(item.SiteSurveyId.ToString());
+                                    }
+                                    var SSId = string.Join(",", Sitesurveys);
+                                    var IdValues = string.Join(",", surveys);
+                                }
+                                <input type="hidden" value="@SSId" name="SurveyId" id="hfSurveyId" data-name="SurveyId" />
+                                <input type="hidden" value="@IdValues" name="SId" id="hfSId" data-name="SId" />
+                                <select class="form-control select Row TssRowFirst  TssRowLast Survey" id="SurveyId-r0" onchange="AssignValues()" required="required" @*data-name="SurveyId" name="SurveyId"*@>
+                                    <option value="0">-Survey Id-</option>
+                                </select>
+
+                                @*<input type="hidden" value="@IdValues" class="form-control Row blur" id="SiteSurveyId" name="SiteSurveyId" data-name="SiteSurveyId" />*@
+                                
+                                @*@Html.DropDownList("SurveyId", new SelectList(Model.Surveys.Where(x=>x.ClientId==Model.Site.ClientId).ToList(), "SurveyId", "SurveyTitle", Model.Sectors[0].SurveyId), new { @class="form-control select Row TssRowFirst  TssRowLast Survey", @id="SurveyId-r0" ,@required="required", @data_name="SurveyId", @name="SurveyId" })*@
+                                @*<script>
+                                    $('.Survey option').filter(function () {
+                                        return ($(this).val() == @Model.Sectors[0].SurveyId); //To select Blue
+                                    }).prop('selected', true);
+
+                                </script>*@
+                            </td>
+                            @*<td>
+                                    @Html.DropDownList("CheckListTypeId", ViewBag.CheckList as List<SelectListItem>, new { @class = "form-control select Row TssRowFirst CheckListTypeId TssRowLast", id = "SurveyId-r0", required = "required", data_name = "SurveyId", data_row = "r0", style = "width:130px;", onchange = "SurveyIdChange(\'r0\'); return false;" })
+                                </td>*@
+
+                            @*<td>
+                                    <select class="form-control select Row CheckListPId" data-name="CheckListPId" data-parsley-min="1" name="CheckListPId" id="CheckListPId-r0" data-row="r0" style="width:130px;" required>
+                                        <option>-Check List-</option>
+                                    </select>
+
+                                </td>
+                                <td><input type="number" min="0" value="0" class="form-control Row" id="CheckCount-r0" style="width:100px" name="CheckCount" data-name="CheckCount" /></td>
+                                <td><input type="text" class="form-control Row TssRowLast" id="Description-r0" name="Description" data-name="Description" /></td>*@
+
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div id="listOfSurveys">
+                                    <p>
+
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>
+<style>
+    .SurveyList{
+                   padding: 8px;
+    background-color: #d4d4d4;
+    color: black;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 40px;
+    width: 100%;
+        }
+        #listOfSurveys{
+                /* text-align: center; */
+    background-color: white;
+    padding: 16px;
+    border-radius: 5px;
+    height: 145px;
+    width: 246px;
+    /* overflow-x: scroll; */
+    border: 1px solid lightgray;
+    overflow-y: scroll;
+        }
+</style>

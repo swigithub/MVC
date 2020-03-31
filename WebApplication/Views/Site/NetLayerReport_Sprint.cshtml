@@ -1,0 +1,1036 @@
+﻿@using System.Web.Mvc.Html
+@using SWI.Libraries.Common
+@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.AD.Entities
+
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    int count = 0;
+    int error = 0;
+    Layout = null;
+    int RowSpan = Model.Count() + 1;
+    DirectoryHandler dh = new DirectoryHandler();
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var NetLayerReport = jss.Serialize(ViewBag.NetLayerReport);
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+    var ReportConfigurationList = ViewBag.ReportConfiguration as List<AD_ReportConfiguration>;
+    string Contant = "";
+    string a = "";
+    List<string> PDSCHLatlng=new List<string>();
+    List<string> PUSCHLatlng = new List<string>(); ;
+}
+
+@functions{
+              public string GetSector(string sectorName) {
+					if (sectorName == "Alpha")
+                      return "1";
+					else if (sectorName == "Beta")
+                      return "2";
+					else if (sectorName == "Gamma")
+                      return "3";
+					else if (sectorName == "Delta")
+                      return "4";
+					else if (sectorName == "Epsilon")
+                      return "5";
+					else if (sectorName == "DiGamma")
+                      return "6";  
+					else if (sectorName == "Eta")
+                      return "7";  
+					else if (sectorName == "Theta")
+                      return "8";
+					else if (sectorName == "Iota")
+                      return "9";
+                  else
+                      return "";
+
+              } 
+			  }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Layer Report</title>
+
+    <link href="~/Content/js/Plugins/DateTimePicker/dtpicker.css" rel="stylesheet" />
+    <link href="~/Content/NetLayreReport3.css" rel="stylesheet" />
+    @Scripts.Render("~/AdminLTE/plugins/jquery/js")
+    <style>
+	.googlemap{
+         z-index: +1;
+    }
+     .myContainer{
+      zoom: 0.6;
+	  position: absolute;
+     -moz-transform: scale(0.6);
+}
+
+ .myContainer2{
+      zoom: 0.6;	  
+	  position: absolute;	 
+     -moz-transform: scale(0.6);
+}
+        .FTtableHeading {
+            background-color: #FFD966;
+        }
+
+        th {
+            background-color: #ccccff;
+            color: black;
+        }
+		
+		.tblca {
+            background-color: #0070c0;
+            color: white;
+        }
+
+        .tbl-heading {
+            background-color: #ccccff;
+            color: black;
+        }
+
+        /*.footer {
+            background-color: black;
+            height: 8%;
+            position: relative !important;
+            bottom: 0px;
+            width: 100%;
+        }*/
+
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 10px;
+            width: 100%;
+            background-color: black;
+        }
+
+        .footer-heading {
+            color: #ffcc00;
+            padding-left: 10px;
+            font-weight: bold;
+			
+            margin-top: 4px;
+            position: relative !important;
+        }
+
+        .footer-text {
+            color: white;
+            padding-left: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            position: relative !important;
+        }
+
+        #cw tr td {
+            border: 0.5px solid silver;
+            text-align: center;
+			    padding: 5px;
+        }
+
+        #ccw tr td {
+            border: 0.5px solid silver;
+            text-align: center;
+			    padding: 5px;
+        } 
+        #cae tr td {
+            border: 0.5px solid silver;
+            text-align: center;
+			    padding: 5px;
+        }
+        
+
+
+        .googlemap {
+        }
+        /*.page{
+            height:auto !important
+        }*/
+    </style>
+</head>
+
+<body>
+    @if (Model != null && Model.Count() > 0)
+    {
+
+        var Pcis = (ViewBag.PciDisLagend as List<AV_NetLayerReportPlot>);
+        var CwPcis = Pcis.Where(m => m.TestType == "CW").ToList();
+        var CcwPcis = Pcis.Where(m => m.TestType == "CCW").ToList();
+
+        @functions{
+
+            public string SectorColor(string key)
+            {
+                try
+                {
+                    var LagentPCI = ViewBag.Sectors as ICollection<AD_Defination>;
+                    return LagentPCI.Where(m => m.DefinationName == key).FirstOrDefault().ColorCode;
+                }
+                catch
+                {
+                    return null;
+                }
+
+            }
+
+        }
+
+        var First = Model.FirstOrDefault();
+        int TotalRecord = Model.Count();
+        string NetworkMode = First.NetworkMode;
+        // var rptConfig = ViewBag.ReportConfiguration as ICollection<AD_ReportConfiguration>;
+        ViewBag.ClientLogo = First.ClientLogo;
+        ViewBag.VendorLogo = First.VendorLogo;
+
+        <div class="container" id="pdf" style="width:1400px;margin: auto;padding:2px;">
+            <a href="#" style="float:right; position: fixed; right: 100px" class="print clear" onclick="SaveObservation()" >
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+
+            <div id="print" class="clear">
+                <div class="page">
+                    <div style="background-color:#ffcc00;height:8%;width:100%">
+                        <div style="background-color:black;width:100%;height:15%">
+                            <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 9px;float: right;margin-right: 3%;" />
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div style="width:100%">
+                        <center style="color:black;font-size:28pt;margin-top:10%">
+                            <b>
+							<br /><br />
+                                <span><i>@First.NetworkMode Site mMIMO ATP Report: @First.Site _ @First.Carrier _ @First.Band</i></span><br />
+                                <!--<span> @First.Site</span><br />-->
+                                <span><i>ATP Date: @First.SiteScheduleDate.Value.ToString("MMM dd, yyy")</i></span>
+								<span></span>
+                            </b>
+                            <br /><br /><br /><br /><br />
+                            <span>NOKIA RF Team</span>
+                        </center>
+                    </div>
+
+                    <div class="footer">
+                        <div class="footer-heading" id="footer-heading"><i>Privileged & Confidential Information</i></div>
+                        <div class="footer-text" id="CopyRights">
+                            This information is subject to Sprint Policies regarding use and is the property of Sprint and/or its relevant affiliates and may contain restricted, confidential or privileged materials intended for the sole use of the intended recipient. Any reviews, use, distribution or disclosure is prohibited without authorization.
+                        </div>
+                    </div>
+                </div>
+
+                <!--Site Data-->
+                <div class="page">
+                    <div style="background-color:#ffcc00;height:8%;width:100%">
+                        <div style="background-color:black;width:100%;height:15%">
+                            <span style="float: left;margin-top: 2%;margin-left: 2%;font-size: 24pt;font-weight: bold;"><i>Site Level ATP template</i></span>
+                            <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 9px;float: right;margin-right: 3%;" />
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div class="" style="width:100%;margin-top:1%">
+                            @Html.Partial("~/views/site/_ntlSiteData3.cshtml", Model)
+                        </div>
+                        <!--<br /><br />-->
+                        <div class="googlemap myContainer2" id="site_data_map" style=" width: 2327px;height:750px"></div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="footer">
+                        <div class="footer-heading"></div>
+                        <div class="footer-text CopyRights"></div>
+                    </div>
+                </div>
+
+
+                <!--Sprint Format Report-->
+                <div class="page">
+                    <div style="background-color:#ffcc00;height:8%;width:100%">
+                        <div style="background-color:black;width:100%;height:15%">
+                            <span style="float: left;margin-top: 2%;margin-left: 2%;font-size: 24pt;font-weight: bold;"><i>Site Level ATP template</i></span>
+                            <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 9px;float: right;margin-right: 3%;" />
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div style="width:100%;">
+                        @Html.Partial("~/views/site/_sprintFieldTest.cshtml", Model)
+                    </div>
+                    <div class="footer">
+                        <div class="footer-heading"></div>
+                        <div class="footer-text CopyRights"></div>
+                    </div>
+                </div>
+
+
+
+                <!--TMO Format Report-->
+                @*<div class="page">
+                        <div style="background-color:#ffcc00;height:8%;width:100%">
+                            <div style="background-color:black;width:100%;height:15%">
+                                <span style="float: left;margin-top: 2%;margin-left: 2%;font-size: 24pt;font-weight: bold;">Site Level ATP template</span>
+                                <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 8px;float: right;margin-right: 3%;" />
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+
+                        <div style="width:100%">
+                            @Html.Partial("~/views/site/_ntlFieldTest3.cshtml", Model)
+                        </div>
+                        <div class="footer">
+                            <div class="footer-heading"></div>
+                            <div class="footer-text CopyRights"></div>
+                        </div>
+                    </div>*@
+                @*</div>*@
+
+                <!--Throughput  Chart-->
+                <div class="page">
+                    <div style="background-color:#ffcc00;height:8%;width:100%">
+                        <div style="background-color:black;width:100%;height:15%">
+                            <span style="float: left;margin-top: 2%;margin-left: 2%;font-size: 24pt;font-weight: bold;"><i>Throughput  Chart</i></span>
+                            <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 9px;float: right;margin-right: 3%;" />
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div id="DLULChart" style="height: 400px; width: 50%;"></div>
+                        <br />
+                        <div>
+                            <div class="left" style="width:50%">
+                                <div id="RTTChart" style="height: 400px; width: 100%;"></div>
+                            </div>
+                            <div class="right" style="width:50%">
+                                <div id="ConnectionChart" style="height: 400px; width: 100%;"></div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <div class="footer-heading"></div>
+                        <div class="footer-text CopyRights"></div>
+                    </div>
+                </div>                
+                <!-- PDSCH-->
+                <div class="page">
+                    <div style="background-color:#ffcc00;height:8%;width:100%">
+                        <div style="background-color:black;width:100%;height:15%">
+                            <span style="float: left;margin-top: 2%;margin-left: 2%;font-size: 24pt;font-weight: bold;"><i>PDSCH Low Throughput Justification</i></span>
+                            <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 9px;float: right;margin-right: 3%;" />
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    <div style="width:100%">
+
+                        <table id="PDSCH" style="width:100%;font-size:13px;color:black" cellspacing="0" border="1">
+
+                            <tr style="height:60px">
+                                <th class="tblca">Sector Id</th>
+                                <th class="tblca">Location</th>
+                                <th class="tblca">Peak PDSCH <br/>(>=102Mbps)</th>
+                                <th class="tblca">CA enabled <br/>PDSCH Peak</th>
+                                <th class="tblca">Status</th>
+                                <th class="tblca">Time</th>
+                                <th class="tblca">Lat</th>
+                                <th class="tblca">Lon</th>
+                                <th class="tblca">RSRP</th>
+                                <th class="tblca">RSRQ</th>
+                                <th class="tblca">CINR</th>
+                                <th class="tblca">PRB Util %</th>
+                                <th class="tblca">MCS</th>
+                                <th class="tblca">RBs</th>
+                                <th class="tblca">Modulation</th>
+                                <th class="tblca">Modulation Utilization %</th>
+
+
+                            </tr>
+                            @foreach (var Pltp in Model.ToList()[0].Locations)
+                            {
+                                if (Pltp.TestType == "UDPDL" || Pltp.TestType == "CAUDPDL")
+                                {
+                                    var latlng = Pltp.Latitude + "," + Pltp.Longitude;
+                                    PDSCHLatlng.Add(latlng);
+                                <tr>
+                                    <td>Sector @Pltp.SectorId</td>
+                                    <td>@Pltp.TestLocationId</td>
+                                    <td>@Pltp.PDSCH</td>
+                                    <td>@Pltp.CAPU</td>
+                                    <td>@Pltp.TestStatus</td>
+                                    <td>@Pltp.TestDate.ToShortTimeString()</td>
+                                    <td>@Pltp.Latitude</td>
+                                    <td>@Pltp.Longitude</td>
+                                    <td>@Pltp.SignalStrength</td>
+                                    <td>@Pltp.SignalQuality</td>
+                                    <td>@Pltp.SignalNoiseRatio</td>
+                                    <td>@Pltp.PRBPercent</td>
+                                    <td>@Pltp.MCS</td>
+                                    <td>@Pltp.RB</td>
+                                    <td>@Pltp.Modulation</td>
+                                    <td>@Pltp.ModPercent</td>
+                                </tr>
+                                }
+                            }
+                        </table>
+                        <input id="PDSCHLatLng" type="hidden" value="@string.Join("|",PDSCHLatlng)" />
+                        <div style="height:500px;border:1px solid black" id="PDSCH_map"></div>
+                        <div>
+                            <h4 style="background-color:#0070C0;border:1px solid black;width:90px;margin-top:-1px">Comments</h4>
+                            <textarea id="PDSCHComments" style="width:99.7%;resize:none;margin-top:-21px" rows="3" >@{if (Model.ToList()[0].Observations.Count > 0)
+                                { @Model.ToList()[0].Observations[0].PDSCHComments } }</textarea>
+                        </div>
+                        <div class="footer">
+                            <div class="footer-heading"></div>
+                            <div class="footer-text CopyRights"></div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                </div>
+                <!-- PUSCH-->
+                <div class="page" style="width:100%;margin:auto">
+                    <div style="background-color:#ffcc00;height:8%;width:100%">
+                        <div style="background-color:black;width:100%;height:15%">
+                            <span style="float: left;margin-top: 2%;margin-left: 2%;font-size: 24pt;font-weight: bold;"><i>PUSCH Low Throughput Justification</i></span>
+                            <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 9px;float: right;margin-right: 3%;" />
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    <div style="width:100%">
+
+                        <table id="PDSCH" style="width:100%;font-size:13px;color:black" cellspacing="0" border="1">
+
+                            <tr style="height:60px">
+                                <th class="tblca">Sector Id</th>
+                                <th class="tblca">Location</th>
+                                <th class="tblca">Peak PUSCH <br />(>=8.5Mbps)</th>
+                                <th class="tblca">CA enabled <br />PUSCH Peak</th>
+                                <th class="tblca">Status</th>
+                                <th class="tblca">Time</th>
+                                <th class="tblca">Lat</th>
+                                <th class="tblca">Lon</th>
+                                <th class="tblca">RSRP</th>
+                                <th class="tblca">RSRQ</th>
+                                <th class="tblca">CINR</th>
+                                <th class="tblca">PRB Util %</th>
+                                <th class="tblca">MCS</th>
+                                <th class="tblca">RBs</th>
+                                <th class="tblca">Modulation</th>
+                                <th class="tblca">Modulation Utilization %</th>
+
+
+                            </tr>
+                            @foreach (var ltp in Model.ToList()[0].Locations)
+                            {
+                                if (ltp.TestType == "UDPUL" || ltp.TestType == "CAUDPUL")
+                                {
+                                    var latlng = ltp.Latitude + "," + ltp.Longitude;
+                                    PUSCHLatlng.Add(latlng);
+                            <tr>
+                                <td>Sector @ltp.SectorId</td>
+                                <td>@ltp.TestLocationId</td>
+                                <td>@ltp.PUSCH</td>
+                                <td>@ltp.CAPU</td>
+                                <td>@ltp.TestStatus</td>
+                                <td>@ltp.TestDate.ToShortTimeString()</td>
+                                <td>@ltp.Latitude</td>
+                                <td>@ltp.Longitude</td>
+                                <td>@ltp.SignalStrength</td>
+                                <td>@ltp.SignalQuality</td>
+                                <td>@ltp.SignalNoiseRatio</td>
+                                <td>@ltp.PRBPercent</td>
+                                <td>@ltp.MCS</td>
+                                <td>@ltp.RB</td>
+                                <td>@ltp.Modulation</td>
+                                <td>@ltp.ModPercent</td>
+                            </tr>
+                                }
+                            }
+                        </table>
+                        <input id="PUSCHLatLng" type="hidden" value="@string.Join("|",PUSCHLatlng)" />
+
+                        <div style="height:500px;border:1px solid black" id="PUSCH_map" >map</div>
+                        <div>
+                            <h4 style="background-color:#0070C0;border:1px solid black;width:90px;margin-top:-1px">Comments</h4>
+                            <textarea id="PUSCHComments" style="width:99.7%;resize:none;margin-top:-21px" rows="3">@{if (Model.ToList()[0].Observations.Count > 0) { @Model.ToList()[0].Observations[0].PUSCHComments } }</textarea>
+                        </div>
+                        <div class="footer">
+                            <div class="footer-heading"></div>
+                            <div class="footer-text CopyRights"></div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                </div>
+                <!--CW_PLOT-->
+                <div class="page">
+                    <div style="background-color:#ffcc00;height:8%;width:100%">
+                        <div style="background-color:black;width:100%;height:15%">
+                            <span style="float: left;margin-top: 2%;margin-left: 2%;font-size: 24pt;font-weight: bold;"><i>CW HO & PCI Plot</i></span>
+                            <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 9px;float: right;margin-right: 3%;" />
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div id="pan-CW_PLOT" data-type="BOOLEAN">
+
+                            <div id="frm-cw">
+                                <table>
+                                    <tr>
+                                        <td> Circle Radius</td>
+                                        <td><input type="number" value="17" id="cw-Radius" /> </td>
+                                        <td> Azimuth Radius</td>
+                                        <td><input type="number" value="20" id="cw-Azmuth" /> </td>
+                                        <td><input type="button" value="Load" id="btn-cw" /> </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <table id="cw" style="width:100%" cellspacing="0">
+
+                                <tr>
+                                    <th class="tblca">Time</th>                                   
+                                    <th class="tblca">Longitude</th>
+									<th class="tblca">Latitude</th>
+                                    <th class="tblca">Intra HO DL.Source<br \>CellId</th>
+                                    <th class="tblca">Intra HO DL.Target<br \>CellId</th>
+                                    <th class="tblca">Intra HO DL.U-Plane HO<br \>Interruption Time (ms)</th>
+                                </tr>
+                                @foreach (var cw in Model.ToList()[0].Locations)
+                                {
+                                    if (cw.TestType == "CW")
+                                    {
+                                        <tr>
+                                            <td>@cw.TestDate</td>
+                                            
+                                            <td>@cw.Longitude</td>
+											<td>@cw.Latitude</td>
+                                            <td>@cw.SourceCell</td>
+                                            <td>@cw.TargetCell</td>
+                                            <td>@cw.TestResult</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                            
+							<div class="myContainer2">
+                           <div class="pan-map" style="position: relative;overflow: hidden;height: 1159px;width: 2330px;" id="HO_Plot"></div>
+                                   
+						   
+
+                           <div class="PciLegend googlemap" style="left: 0px; margin-top: -300px;">
+
+                                <div class="lagendHeader">
+                                    <span>  CW HO Plot</span>
+                                </div>
+
+                                <table>
+                                    @{
+                                        int PcisCount = CwPcis.Count;
+                                        if (ViewBag.AfterDate == false || First.City == "Chicago")
+                                        {
+                                            foreach (var item in Model)
+                                            {
+                                                <tr>
+
+                                                    <td>
+                                                        <div class="colorBox" style="background-color:@item.SectorColor;"></div>
+                                                    </td>
+                                                    <td><span class="pci-count">@item.PciId</span></td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            
+                                            for (int i = 0; i < PcisCount; i++)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="colorBox" style="background-color:@CwPcis[i].Color;"></div>
+                                                    </td>
+                                                    <td><span>@CwPcis[i].PCI</span></td>
+
+                                                    @*@if (i + 1 < PcisCount)
+                                                    {
+                                                        <td>
+                                                            <div class="colorBox" style="background-color:@CwPcis[i + 1].Color;"></div>
+                                                        </td>
+                                                        <td><span>@CwPcis[i + 1].PCI</span></td>
+                                                    }*@
+													
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </table>
+                            </div>
+							</div>
+                            <div style="position: absolute;width: 100%;height: auto;bottom: 77px;">
+                                <h4 style="background-color:#0070C0;border:1px solid black;width:90px;margin-top:-1px">Comments</h4>
+                                <textarea id="CWComments" style="width:99.7%;resize:none;margin-top:-21px;" rows="3">@{if (Model.ToList()[0].Observations.Count > 0) { @Model.ToList()[0].Observations[0].CWComments } }</textarea>
+                            </div>
+                            <div class="footer">
+                                <div class="footer-heading"></div>
+                                <div class="footer-text CopyRights"></div>
+                            </div>
+                            <div class="clear"></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!--CCW_PLOT-->
+                <div class="page">
+                    <div style="background-color:#ffcc00;height:8%;width:100%;">
+                        <div style="background-color:black;width:100%;height:15%">
+                            <span style="float: left;margin-top: 2%;margin-left: 2%;font-size: 24pt;font-weight: bold;"><i>CCW HO & PCI Plot</i></span>
+                            <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 9px;float: right;margin-right: 3%;" />
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div id="pan-CCW_PLOT" data-type="BOOLEAN">
+                            <div id="frm-ccw">
+                                <table>
+                                    <tr>
+                                        <td> Circle Radius</td>
+                                        <td><input type="number" value="17" id="ccw-Radius" /> </td>
+                                        <td> Azimuth Radius</td>
+                                        <td><input type="number" value="20" id="ccw-Azmuth" /> </td>
+                                        <td><input type="button" value="Load" id="btn-ccw" /> </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <table id="ccw" style="width:100%;" cellspacing="0">
+                                 <tr>
+                                    <th class="tblca">Time</th>                                   
+                                    <th class="tblca">Longitude</th>
+									<th class="tblca">Latitude</th>
+                                    <th class="tblca">Intra HO DL.Source<br \>CellId</th>
+                                    <th class="tblca">Intra HO DL.Target<br \>CellId</th>
+                                    <th class="tblca">Intra HO DL.U-Plane HO<br \>Interruption Time (ms)</th>
+                                </tr>
+                                
+                                @foreach (var cw in Model.ToList()[0].Locations)
+                                {
+                                    if (cw.TestType == "CCW")
+                                    {
+                                        <tr>
+                                            <td>@cw.TestDate</td>
+											<td>@cw.Longitude</td>
+                                            <td>@cw.Latitude</td>                                            
+                                            <td>@cw.SourceCell</td>
+                                            <td>@cw.TargetCell</td>
+                                            <td>@cw.TestResult</td>
+                                        </tr>
+                                    }
+
+                                }
+                            </table>
+                            
+							<div class="myContainer2">
+                            <div class="pan-map" style="height: 1115px;width: 2330px;" id="HO_Plot_CCW">
+                               
+
+                            </div>
+                            <div class="PciLegend googlemap" style="left: 0px; margin-top: -200px;">
+
+                                <div class="lagendHeader">
+                                    <span>CCW HO Plot</span>
+                                </div>
+                                <table>
+                                    @{
+
+                                        PcisCount = CcwPcis.Count;
+                                        if (ViewBag.AfterDate == false || First.City == "Chicago")
+                                        {
+                                            foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>
+
+                                                        <div class="colorBox" style="background-color:@item.SectorColor;"></div>
+                                                    </td>
+                                                    <td><span class="pci-count">@item.PciId</span></td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            for (int i = 0; i < PcisCount; i++)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="colorBox" style="background-color:@CcwPcis[i].Color;"></div>
+                                                    </td>
+                                                    <td><span>@CcwPcis[i].PCI</span></td>
+
+                                                    
+													
+													
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </table>
+                            </div>
+</div>
+                            <div style="position: absolute;width: 100%;height: auto;bottom: 77px;">
+                                <h4 style="background-color:#0070C0;border:1px solid black;width:90px;margin-top:-1px">Comments</h4>
+                                <textarea id="CCWComments" style="width:99.7%;resize:none;margin-top:-21px;" rows="3">@{if (Model.ToList()[0].Observations.Count > 0) { @Model.ToList()[0].Observations[0].CCWComments } }</textarea>
+                            </div>
+                            <div class="footer">
+                                <div class="footer-heading"></div>
+                                <div class="footer-text CopyRights"></div>
+                            </div>
+
+                            <div class="clear"></div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+				@{
+				foreach (var item in Model)
+                    {
+                        if (item.OoklaTestFilePath != "")
+						{
+							count++;
+						}
+                    }
+				}
+                <div class="page" style="display:@(@count>0?"":"none")">
+                    <div style="background-color:#ffcc00;height:8%;width:100%">
+                        <div style="background-color:black;width:100%;height:15%">
+                            <span style="float: left;margin-top: 2%;margin-left: 2%;font-size: 24pt;font-weight: bold;"><i>Ookla Speed Test</i></span>
+                            <img src="~/Content/Images/ClientLogo/spiral.PNG" style="margin-top: 9px;float: right;margin-right: 3%;" />
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+                    <div style="width:100%; padding-top:130px">
+                        <div id="pan-OOKLA_PLOT" data-type="BOOLEAN">
+
+                            @{ var ImageStatus = false;
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.OoklaTestFilePath)) || dh.FileExist(Server.MapPath(item.SpeedTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                        else if (dh.FileExist(Server.MapPath(item.SpeedTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                }
+				
+		  @if (ImageStatus)
+                {
+                    count = 0;
+                    Contant = "";
+                    Contant = "<div class=\"imgesss\"><br/>";
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.OoklaTestFilePath)) || dh.FileExist(Server.MapPath(item.SpeedTestFilePath)))
+                        {
+                            if (item.OoklaTestFilePath == "")
+                            {
+                                item.OoklaTestFilePath = "/images/NullImages.PNG";
+                            }
+                            else if (item.SpeedTestFilePath == "")
+                            {
+                                item.SpeedTestFilePath = "/images/NullImages.PNG";
+                            }
+                            if (count % 8 == 0 && count != 0)
+                            {
+                                Contant = Contant + a;
+                                Contant = Contant + "</div>";
+
+                                a = "";
+
+                                <center>
+                                    @Html.Raw(Contant)
+
+                                </center>
+                                    
+                                     <P CLASS="breakhere" />
+
+                            }
+                            if (count % 8 != 0 || count == 0)
+                            {
+                                if (count % 6 == 0 && count != 0)
+                                {
+                                    a = a + "<br />";
+                                }
+                                a = a + " <img  src=\"" + item.OoklaTestFilePath + "\" class=\"ooklaImages\" style=\"margin-right:20px;width: 275px;height: 500px;\" />";
+
+                                count++;
+                                //a = a + " <img  src=\"" + item.SpeedTestFilePath + "\" class=\"ooklaImages\" style=\"margin-right:20px;width: 275px;height: 500px;\" />";
+
+
+                                count++;
+                            }
+                            else
+                            {
+
+                                <center>
+                                    <div class="imgesss">
+                                        
+
+                                        @if (count % 6 == 0 && count != 0)
+                                        {
+                                            <br />
+
+                                        }
+                                        <img  src="@item.OoklaTestFilePath" class="ooklaImages" style="margin-right:20px;width: 275px;height: 500px;" />
+
+
+                                        @{ count++; }
+                                        <img src="@item.SpeedTestFilePath" class="ooklaImages" style="margin-right:20px;width: 275px;height: 500px;" />
+
+                                        @{count++; }
+
+
+                                                        @{ count++;
+                                                        }
+
+
+
+
+
+
+                                    </div>
+                                </center>
+                                        
+                                            
+                                                    <P CLASS="breakhere" />
+
+                                                    }
+                                                }
+
+
+                                            }
+                                            if (count <= 8)
+                                            {
+                                                Contant = Contant + a;
+                                                Contant = Contant + "</div>";
+
+                                                a = "";
+
+                                                <center>
+                                                    @Html.Raw(Contant)
+
+                                                </center>
+                                                      
+                                                         <P CLASS="breakhere" />
+
+                                                }
+
+
+                                            }
+
+                           
+                          
+                          
+							</div>
+                            <div class="footer">
+                                <div class="footer-heading"></div>
+                                <div class="footer-text CopyRights"></div>
+                            </div>
+                            <div class="clear"></div>
+
+                        </div>
+
+                    </div>
+
+               
+				
+				
+
+        
+            </div>
+
+
+
+            <a href="" style="float:right;" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+            </div>
+                    <div style="display:none" id="Azimuth_Circle">0</div>
+
+                        <script src="~/Content/js/Plugins/DateTimePicker/dtpicker.js"></script>
+                        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.ApiMapKey)&sensor=false&libraries=geometry&bogusParam=.js"></script>
+                        <script src="~/Content/js/MapLabel.js"></script>
+                        @*<script src="/Content/js/Plugins/kml/js/geoxml3.js"></script>
+                            <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>*@
+
+                        <script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+                        <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+
+                        <script src="~/Content/js/GoogleMapsNTL.js"></script>
+                        <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+                        <script src="~/Content/js/Plugins/canvasjs/jquery.canvasjs.min.js"></script>
+
+                        <script>
+
+                            function SaveObservation(){
+                                debugger;
+                                var d = { "SiteId": "@First.SiteId", "CWComments": $("#CWComments").val(), "CCWComments": $("#CCWComments").val(), "PDSCHComments": $("#PDSCHComments").val(), "PUSCHComments": $("#PUSCHComments").val() };
+                                $.ajax({
+                                    url: "/Site/SaveObservation/",
+                                    type: "GET",
+                                    data: d,
+                                    success: function (data) {
+                                        debugger;
+                                        console.log(data);
+
+                                    },
+                                    error: function (err) {
+                                        console.log(err);
+                                    }
+                                });
+
+                            }
+
+
+						//var Pcis = '@Html.Raw(Json.Encode(ViewBag.PciDisLagend as List<AV_NetLayerReportPlot>))';
+						//console.log('Pcis:'+Pcis);
+        //var CwPcis = Pcis.Where(m => m.TestType == "CW").Select(m => m).ToList();
+        //var CcwPcis = Pcis.Where(m => m.TestType == "CCW").ToList();
+
+
+                            var NetLayerReport = JSON.parse('@Html.Raw(NetLayerReport)');
+                            var SiteId = '@First.SiteId';
+                            var NetworkModeId = '@First.NetworkModeId';
+                            var BandId = '@First.BandId';
+                            var CarrierId = '@First.CarrierId';
+                            var ScopeId = '@First.ScopeId';
+                            @{
+                                            string NetLayer = First.ActualSiteCode + "/" + First.NetworkMode + "_" + First.Band + "_" + First.Carrier;
+                                            int Count = 1;
+                                            }
+                            debugger;
+                            var SiteLatitude = '@First.Latitude';
+                            var SiteLongitude = '@First.Longitude';
+                            var SiteCode = '@First.Site _ @First.Band';
+                            var NetLayer = '@NetLayer';
+                            var AfterDate = '@ViewBag.AfterDate';
+                            var domain = '@ViewBag.domain';
+                            var AzmuthRadius = '50';
+                            var ClientPrefix = '@First.ClientPrefix';
+                            // console.log(NetLayerReport);
+                            $('.CopyRights').text($('#CopyRights').text());
+                            $('.footer-heading').text($('#footer-heading').text());
+                        </script>
+
+                        <script type="text/javascript">
+                            $("#DLULChart").CanvasJSChart({
+                                title: {
+                                    text: "Peak DL/UL Throughput(Mbps)",
+
+                                },
+                                dataPointWidth: 50,
+                                data: [
+                                {
+                                    showInLegend: true,
+                                    legendText: "Peak Uplink Throughput",
+                                    indexLabel: "{y}",
+                                    indexLabelFontColor: "black",
+                                    indexLabelFontWeight: "bold",
+                                    //indexLabelFontSize: 20,
+                                    dataPoints: [
+                                        @foreach (var item in Model)
+                                            {
+                                            @: { x: @Count, y: @item.PhyULSpeedMax.ToString("0.00"), label: "@item.Sector" },
+                                                Count++;
+                                            }
+                                    ]
+                                },
+                                @{Count = 1; }
+                            {
+                                showInLegend: true,
+                                legendText: "Peak Downlink Throughput",
+                                indexLabel: "{y}",
+								indexLabelFontColor: "black",
+                                    indexLabelFontWeight: "bold",
+                                dataPoints: [
+                                    @foreach (var item in Model)
+                                        {
+                                        @: { x: @Count, y: @item.PhyDLSpeedMax.ToString("0.00"), label: "@item.Sector" },
+                                                            Count++;
+                                        }
+                                ]
+                            }
+                                ]
+                            });
+                            //----------------------------------------------------------------------
+
+                            $("#RTTChart").CanvasJSChart({
+                                title: {
+                                    text: "RTT(ms)"
+                                },
+                                dataPointWidth: 50,
+                                data: [
+                                {
+                                    showInLegend: false,
+                                    indexLabel: "{y}",
+                                    indexLabelFontColor: "black",
+                                    indexLabelFontWeight: "bold",
+                                    //indexLabelFontSize: 20,
+
+                                    dataPoints: [
+                                        @foreach (var item in Model)
+                                        {
+
+                                         @: { x: @Count, y: @item.PingAverageResult.ToString("0.00"), label: "@item.Sector"  },
+                                           Count++;
+                                         }
+                                    ]
+                                }
+                                ]
+                            });
+                            //---------------------------------------------------------
+
+                            $("#ConnectionChart").CanvasJSChart( {
+                                title: {
+                                    text: "Connection Setup Time(sec)"
+                                },
+                                dataPointWidth: 50,
+                                data: [
+                                {
+                                    indexLabel: "{y}",
+                                    indexLabelFontColor: "black",
+                                    indexLabelFontWeight: "bold",
+                                    //indexLabelFontSize: 20,
+                                    dataPoints: [
+                                        @foreach (var item in Model)
+                                        {
+                                        @: { x: @Count, y: @item.AvgConSetupTime.ToString("0.000"), label: "@item.Sector" },
+                                           Count++;
+                                        }
+                                    ]
+                                }
+                                ]
+                            });
+                        </script>
+                        <script src="/Content/js/NetLayerReport.js"></script>
+    }
+</body>
+</html>

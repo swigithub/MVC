@@ -1,0 +1,18 @@
+﻿@model Swi.Airview.Xcelerate.DataTransferObject.Modules.DashboradNReport.GenericTemplateParams
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Areas/BusinessIntelligence/Views/Shared/_Layout.cshtml";
+
+}
+@section TopSection
+{
+
+   <div class="ml-auto" ng-include="'dsrpt/DashboardNReport/getPartialPage/TopSections/TopSection_DashboardAndReport.cshtml'"></div>
+}
+<div ng-include="'dsrpt/DashboardNReport/getPartialPage/DashboardAndReport/design-dashboard-and-report.cshtml'"></div>
+@*@Html.Action("GetPartialForEntity1")*@
+<script src="~/Theme/AirViewX/assets/js/jquery.min.js"></script>
+<script>
+    var userIDByX1 = JSON.parse(@ViewBag.UserId)
+    var moduleInformation = @Html.Raw(Json.Encode(Model));
+</script>

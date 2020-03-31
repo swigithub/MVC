@@ -1,0 +1,71 @@
+﻿@*<table class="table">
+    
+        <tr>
+            <th>Status</th>
+            <th>User Name</th>
+            <th>Description</th>
+            <th></th>
+        </tr>
+    
+    
+    <tbody>
+        <tr ng-repeat="x in LogIssueList">
+            <td>{{x.Status}}</td>
+            <td>{{x.UserName}}</td>
+            <td>{{x.Description}}</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>*@
+<div class="direct-chat-messages" ng-repeat="x in LogIssueList">
+ 
+       
+        <div class="direct-chat-msg">
+            <div class="direct-chat-info clearfix">
+                <span class="direct-chat-name pull-left">{{x.UserName}}</span>
+                <span class="direct-chat-timestamp pull-right">{{x.CreatedOn}}</span>
+            </div>
+            <img class="direct-chat-img" src="{{x.Picture}}"><!-- /.direct-chat-img -->
+            <div class="direct-chat-text" style="">
+                <label><b>Status: </b></label>{{x.Status}}
+                <p>{{x.Description}}</p>
+            </div>
+        </div>
+    
+
+
+</div>
+<div style="border:1px solid #e5e5e5;width:100%;"></div>
+<form ng-submit="ChangeIssueStatus()" role="form">
+    <div class="form-row" style="margin-left:-11px">
+        <div class="form-group col-md-6">
+            <div><label >Status</label></div>
+            <div class="btn-group" style="border:1px solid #f5f3f3;width:100%;" >
+                <a class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="width:100%;text-align:left;border:0"> {{SelectedStatus}} <span class="fa fa-caret-down" style="font-size:16px;color:#000;float:right;"></span></a>
+                <ul class="dropdown-menu pull-right js-status-update" style="width:100%;">
+                    <li ng-repeat="p in Status" ng-click="setSelected('status',p)" ng-class="{active: $index===selectedIndex}">
+                        <a href="javascript:void(0);"><i class="fa fa-circle" style="color:{{ p.ColorCode}}"></i>{{ p.DefinationName}}</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+     
+      
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <div class="form-group">
+        <label>Description</label>
+        <textarea type="text" rows="3" ng-disabled="isDisable" ng-model="IssueLog.Description" style="border:.5px solid #efefef;" placeholder="Description" class="form-control"></textarea>
+    </div>
+    <footer>
+        <button class="btn btn-primary" ng-disabled="isDisable" style="float:right;">
+            Save
+        </button>
+    </footer>
+    <br />
+    <br />
+    </form>

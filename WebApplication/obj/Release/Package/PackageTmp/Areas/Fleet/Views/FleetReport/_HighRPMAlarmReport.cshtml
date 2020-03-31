@@ -1,0 +1,160 @@
+﻿
+<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="highrpmalarm-title">Detailed Alarms Report <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> HighRPM Alarm Report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="highrpmalarm-custom-filters">
+            <div class="filter-field">
+                <label>Device</label>
+                <input type="text" id="highrpmalarm-asset" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="highrpmalarm-date-range">
+                </div>
+            </div>
+            <div class="filter-field button">
+                <button id="highrpmalarm-apply_filters" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="highrpmalarm-table">
+            <table id="highrpmalarm-report" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Time</th>
+                        <th>Vehicle</th>
+                        <th>Tracker Id</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Speed (km/h)</th>
+                        <th>Direction</th>
+                        <th>Rotation</th>
+                        <th>Current Trip Mileage</th>
+                        <th>GPS Signal</th>
+                        <th>GSM Signal</th>
+                        <th>Mileage</th>
+                        <th>Address</th>
+                        <th>Alarm State</th>
+                        <th>Device State</th>
+                        <th>Engine</th>
+                        <th>Extend State</th>
+                        <th>Fuel (%)</th>
+                        <th>Fuel (Ltr)</th>
+                        <th>Temperature</th>
+                        <th>Alarm Threshold</th>
+                        <th>Alarm Current value</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#highrpmalarm-apply_filters").click(function () {
+        debugger;
+
+        var assetname = $("#highrpmalarm-asset").val();
+        var daterange = $("#highrpmalarm-date-range").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var reportexporttitle = $("#highrpmalarm-title").text();
+        var exportfilename = $("#highrpmalarm-title").text();
+        var frcmodel = {
+            ReportFilter: "HighRPMAlarmReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname
+        }
+
+        var table = $('#highrpmalarm-report').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_DetailedAlarmReport",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'Time', "name": "Time", "autoWidth": true },
+               { data: 'AssetName', "name": "Vehicle" },
+               { data: 'TrackerId', "name": "Tracker Id" },
+               { data: 'Latitude', "name": "Latitude", "autoWidth": true },
+               { data: 'Longitude', "name": "Longitude", "autoWidth": true },
+               { data: 'Speed', "name": "Speed (km/h)", "autoWidth": true },
+               { data: 'Direction', "name": "Direction", "autoWidth": true },
+               { data: 'Rotation', "name": "Rotation", "autoWidth": true },
+               { data: 'CurrentTripMileage', "name": "Current Trip Mileage", "autoWidth": true },
+               { data: 'GPSSignalStatus', "name": "GPS Signal", "autoWidth": true },
+               { data: 'GSMSignal', "name": "GSM Signal", "autoWidth": true },
+               { data: 'Mileage', "name": "Mileage", "autoWidth": true },
+               { data: 'Address', "name": "Address", "autoWidth": true },
+               { data: 'AlarmState', "name": "Alarm State", "autoWidth": true },
+               { data: 'DeviceState', "name": "Device State", "autoWidth": true },
+               { data: 'AssetStatus', "name": "Engine", "autoWidth": true },
+               { data: 'ExtendState', "name": "Extend State", "autoWidth": true },
+               { data: 'FuelPercent', "name": "Feul (%)", "autoWidth": true },
+               { data: 'FuelLiter', "name": "Feul (Ltr)", "autoWidth": true },
+               { data: 'Temperature', "name": "Temperature", "autoWidth": true },
+               { data: 'AlarmThresholdVal', "name": "Alarm Threshold", "autoWidth": true },
+               { data: 'AlarmCurrentVal', "name": "Alarm Current value", "autoWidth": true }
+            ],
+            initComplete: function (settings, json) {
+                $("#highrpmalarm-custom-filters .top").remove();
+                $($("#highrpmalarm-table .top")).appendTo("#highrpmalarm-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+    });
+</script>
+
+

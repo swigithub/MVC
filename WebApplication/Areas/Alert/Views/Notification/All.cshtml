@@ -1,0 +1,155 @@
+﻿
+@{
+    ViewBag.Title = "All";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <section class="panel panel-default">
+            <header class="panel-heading font-bold flex"> All Notifications </header>
+
+            <div class="panel-body no-padding">
+                <div class="all-notifications">
+                    <div class="notification-content">
+                        <h4 class="av-smart-title">Your Notifications</h4>
+                        <div class="notifications-timeline">
+                            <div class="timeline-slot av-notifications ">
+                                <h3>Today</h3>
+                                <ul>
+                                    <li>
+                                        <div class="av-not">
+                                            <div class="not-img"> <i class="fa fa-signal"></i> </div>
+                                            <div class="not-detail"><h5><a href="#" title="">Support Team</a> Updated Their Status...  <i>3 mins ago</i></h5></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="av-not">
+                                            <div class="not-img"><img src="http://placehold.it/60x60" /></div>
+                                            <div class="not-detail"><h5><a href="#" title="">Raviu Mishra</a> Commented on a photo of you...  <i>45 mins ago</i></h5></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div><!-- Timeline Slot -->
+                        </div><!-- Notification Timeline -->
+                    </div><!-- Notification Content -->
+                    <div class="filter-notifications">
+                        <h4 class="av-smart-title">Filter Notifications</h4>
+                        <div class="filter-notification-body">
+                            <div class="form-group" id="NotificationFilter">
+                                <div class="checkbox">
+                                    <label> <input type="checkbox"> Project Management</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- Filter Notifications -->
+                </div><!-- All Notifications -->
+            </div>
+        </section>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var jsonOut = {};
+        var SelectionList = [];
+        $(document).on('click','[type="checkbox"]', function(){
+            var CheckBoxValue = $(this).attr('value');
+            if($(this).prop('checked')){
+              
+                SelectionList.push(CheckBoxValue);
+                RenderNotification(jsonOut, SelectionList);
+
+            }else{
+                console.log(SelectionList);
+                if(SelectionList!=""){
+                    
+                    SelectionList.remove(CheckBoxValue);
+                    RenderNotification(jsonOut, SelectionList);
+
+                }else{
+
+                    for(var i=0;i<$('[type="checkbox"]').length; i++){
+                        if($('[type="checkbox"]').eq(i).prop('checked')){
+                            SelectionList.push($('[type="checkbox"]').eq(i).attr('value'));
+                        }
+                    }
+                    RenderNotification(jsonOut, SelectionList);
+
+                }
+                
+
+            }
+            
+        });
+
+        $.ajax({
+            url: "/swi/NotificationBell",
+            type: "POST",
+            data: JSON.stringify({"AlertRecieverId": @ViewBag.UserId}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+                /* = Render Object by Date = */
+                var GetJson = JSON.stringify(result);
+
+                var SelectionJson = {};
+                
+                result.forEach(function (e, i) {
+
+                    jsonOut[GetDate(e.CreatedOn)] = jsonOut[GetDate(e.CreatedOn)] || [];
+                    jsonOut[GetDate(e.CreatedOn)].push(e);
+
+                    SelectionJson[e.ParentName] = SelectionJson[e.ParentName] || [];
+                    SelectionJson[e.ParentName].push(e);
+                    
+                });
+
+                var Parentkeys = Object.keys(SelectionJson);
+
+                $('.notifications-timeline').empty();
+                $('#NotificationFilter').empty();
+
+                var NotificationFilterNode = "";
+                $.each(Parentkeys, function (index, value) {
+                    NotificationFilterNode+='<div class="checkbox">'+'<label> <input type="checkbox" value="'+SelectionJson[value][0].AlertCategoryId+'" checked>'+ value +'</label>'+'</div>';
+                });
+                $('#NotificationFilter').append(NotificationFilterNode);
+
+                $.each(jsonOut, function (index, value) {
+
+                    var NotifyAreaNodeBodyLi = "";
+
+                    var TempDate = "";
+                    var CreatedOnDate = "";
+                    for(var x=0; x<value.length; x++){
+
+                        TempDate = new Date(value[x].CreatedOn);
+                        CreatedOnDate = value[x].CreatedOn;
+
+                        /* Notification Area with Icon */
+                        NotifyAreaNodeBodyLi += '<li>'+
+                                             '<div class="av-not">'+
+                                                 '<div class="not-img"><img src="'+value[x].Picture+'" /></div>'+
+                                                 '<div class="not-detail"><h5><a href="#" title="">'+value[x].UserName+'</a> '+value[x].Notification+' <i>'+timeSince(TempDate)+'</i></h5></div>'+
+                                             '</div>'+
+                                         '</li>';
+                    }
+
+                    var NotifyAreaNodeBody = '<ul>'+NotifyAreaNodeBodyLi+'</ul>';
+                    var NotifyAreaNode = '<div class="timeline-slot av-notifications ">'+
+                                     '<h3>'+CompareDate(CreatedOnDate)+'</h3>'+
+                                     NotifyAreaNodeBody +
+                                 '</div>';
+                    $('.notifications-timeline').append(NotifyAreaNode);
+
+                });
+
+                
+            }
+        });
+
+        
+
+    });
+</script>

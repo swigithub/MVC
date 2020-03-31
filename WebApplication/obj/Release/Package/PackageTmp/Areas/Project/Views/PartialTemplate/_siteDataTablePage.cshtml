@@ -1,0 +1,321 @@
+﻿@model WebApplication.Areas.Project.View_Models.TemplateRDViewModel
+
+<style>
+    .tbl-heading {
+        background-color: #004B99;
+        text-align:center;
+        color: white;
+    }
+
+    .dvBody {
+        padding-top: 5px;
+        padding-bottom: 25px;
+        padding-left: 40px;
+        padding-right: 40px;
+        height: 100%;
+    }
+    .body-icon {
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    width: 100%;
+    left: 0;
+    font-size: 120px;
+    opacity: 0.1;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+    .uniqueId td {
+    padding: 10px 18px!important;
+}
+</style>
+<link  href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+
+@if (Model.TemplateType == "dashboard")
+{
+    <div class="" id="PAGE_BACKGROUNDCOLOR">
+        <div class="body-icon"><i class="fa fa-table default-cell-icon"></i></div>
+        <div class="row table-row">
+            <div class="col-md-12">
+                <div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false">
+                    <header role="heading">
+                        <div class="jarviswidget-ctrls" role="menu">
+
+                        </div>
+                        <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                        <h2 id="TABLE_TITLE" class="heading"></h2>
+                    </header>
+
+                    <!-- widget div-->
+                    <div>
+                        <div class="widget-body no-padding">
+
+                            <div id="dt_basic_wrapper" class="">
+                                <div class="table-container" style="width:100%; margin:0 auto;">
+                                    <input type="hidden" name="length" id="PAGE_SIZE" />
+                                    <input type="hidden" name="IsPagingEnable" value="10" id="IS_PAGING_ENABLE" />
+                                    <div class="table-responsive">
+                                        <table class="table table-striped uniqueId" style="">
+                                            <thead>
+                                                <tr id="TABLE_BODY"></tr>
+                                            </thead>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (Model.TemplateType == "report")
+{
+    <div class="dvBody" id="PAGE_BACKGROUNDCOLOR">
+        <div class="body-icon"><i class="fa fa-table default-cell-icon"></i></div>
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 id="TABLE_TITLE" class="heading"></h1>
+                    </div>
+                </div>
+
+                <div class="row" style="width:100%;">
+                    <div class="col-md-12">
+                        <input type="hidden" name="length" id="PAGE_SIZE" />
+                        <input type="hidden" name="IsPagingEnable" id="IS_PAGING_ENABLE" />
+                       <div class="table-responsive">
+                           <table class="table table-striped display uniqueId">
+                               <thead>
+                                   <tr id="TABLE_BODY"></tr>
+                               </thead>
+
+                           </table>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    try
+    {
+        $(document).ready(function() {
+            var WithView = '@Model.WithPartialView';
+            if(WithView == 'false' || WithView == 'False'){
+                return false;
+            }
+            var columns = [];
+            var PageLength = 10;
+            var _Cols = [];
+            var IsTablePagingEnabled = false;
+            var ParsedJSON = [];
+            $.ajax({
+                url: "/Project/Template/GetDataTableProperties",
+                type: "POST",
+                async: false,
+                data: {
+                    NodeId: @Model.NodeId,
+                },
+                success: function (response) {
+                    ParsedJSON = JSON.parse(response.dataTableColumns);
+                    columns = ParsedJSON.QuerySetting.MetaData;
+                    for(var i = 0; i < columns.length; i++){
+                        _Cols.push({'data': columns[i].Alias, 'autoWidth': false, 'mData': columns[i].Alias});
+                    }
+                    console.log(_Cols);
+                    for(var i = 0; i < columns.length; i++){
+                        $("#dv" + @Model.NodeId).find("#TABLE_BODY").append("<th>" + columns[i].Alias + "</th>");
+                    }
+                    IsTablePagingEnabled = (response.IsPagingEnable == "true");
+                    if(response.PageSize == null){
+                        PageLength = 10;
+                    }else{
+                        PageLength = response.PageSize;
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            });
+
+            var parentNodeHeight = (parseInt($("#grid-stack-id-" + @Model.NodeId).height()) - 130) + "px";
+            var table = $("#dv" + @Model.NodeId).find("table").DataTable({
+                "processing": false,
+                "serverSide": true,
+                "filter": false,
+                "orderMulti": false,
+                "ordering": false,
+                "lengthChange": false,
+                "pageLength": PageLength,
+                "paging": IsTablePagingEnabled,
+                "bInfo" : IsTablePagingEnabled,
+                "autoWidth": true,
+                "scrollY": parentNodeHeight,
+                "scrollCollapse": true,
+                "ajax": {
+                    "url": "/Project/Template/GetNodeWidgetData",
+                    "type": "POST",
+                    "async": "false",
+                    "data": {
+                        NodeId: @Model.NodeId,
+                        BandId: @Model.BandId,
+                        CareerId: @Model.CarrierId,
+                        NetworkModeId: @Model.NetworkModeId,
+                        ProjectId: @Model.ProjectId,
+                        ScopeId: @Model.ScopeId,
+                        SiteId: @Model.SiteId,
+                        PlotId: 0,
+                        UserId: 11,
+                        ControlType: "TABLE",
+                        page: @Model.Page,
+                        StartIndex: 1,
+                        EndIndex: 10,
+                    },dataSrc: function (json) {
+                        console.log(json);
+                        var baseData = json.data.NodeSettingList;
+                        var siteDataList = JSON.parse(json.data.SiteDataTableJSON)
+                        var siteDataColums = json.data.SiteDataListColumns;
+                        LoadCompletePage(baseData, siteDataList, siteDataColums, @Model.NodeId);
+                        var Data = JSON.parse(json.data.SiteDataTableJSON);
+                        console.log(json.data.SiteDataTableJSON);
+                       // json = Data != null ? Data : [];
+                        return Data;
+                    }
+                },
+                "columns": _Cols
+            });
+            table.on( 'xhr', function () {
+                var json = table.ajax.json();
+                var tableId = table.table().node().id;
+                $("body").append(`<style>div#`+tableId+`_paginate {
+                                background: -webkit-linear-gradient(top, #ffffff 0%,#efefef 100%);
+                                margin: 20px;
+                                padding: 0;
+                                border-radius:5px;
+                                border: 1px solid #AAA;
+                            }
+
+                            div#`+tableId+`_paginate a {
+                                padding: 4px 10px;
+                                margin: 0;
+                                border-right: 1px solid #AAA;
+                                margin-left: -1px;
+                                font-size:12px;
+                            }
+
+                            .dataTables_wrapper div#`+tableId+`_paginate a.paginate_button {
+                                color: #770D0B!important;
+                            }
+
+                            div#`+tableId+`_paginate a.next {
+                                border: 0;
+                            }
+
+                            div#`+tableId+`_paginate a.current {
+                                background: no-repeat;
+                                border-top: 0!important;
+                                border-left: 0!important;
+                                border-bottom: 0!important;
+                                background: -webkit-linear-gradient(top, #bbbbbb 0%,#efefef 100%);
+                                padding: 5px 10px;
+                                margin: -1px 0;
+                            }
+                            div#`+tableId+`_paginate a:hover {
+                                background: no-repeat;
+                                border-top: 0!important;
+                                border-left: 0!important;
+                                border-bottom: 0!important;
+                                background: -webkit-linear-gradient(top, #bbbbbb 0%,#efefef 100%);
+                                padding: 5px 10px;
+                                margin: -1px 0;
+                                color: #3276b1;
+                            }</style>`);
+            } );
+        });
+    }
+    catch (e) {
+        console.log(e.message);
+    }
+    function LoadCompletePage(baseData, siteDataList, siteDataColums, nodeid) {
+        var NodeId = nodeid;
+
+        $(baseData).each(function(i) {
+            if (baseData[i].MappedId == "TABLE_BODY") {
+                if (baseData[i].Settings != null && baseData[i].Settings != "") {
+                    var settingsObj = JSON.parse(baseData[i].Settings);
+                    console.log(settingsObj);
+                    $('#dv' + NodeId).find('#TABLE_BODY > th').css("font-family", settingsObj[0]["header-font-family"], 'important');
+                    $('#dv' + NodeId).find('#TABLE_BODY > th').css("font-size", settingsObj[0]["header-font-size"], 'important');
+                    $('#dv' + NodeId).find('#TABLE_BODY > th').css("color", settingsObj[0]["header-font-color"]);
+                    $('#dv' + NodeId).find('#TABLE_BODY > th').css("background-color", settingsObj[0]["header-background-color"]);
+
+                    $('#dv' + NodeId).find('tbody').css("font-family", settingsObj[0]["body-font-family"], 'important');
+                    $('#dv' + NodeId).find('tbody').css("font-size", settingsObj[0]["body-font-size"], 'important');
+                    $('#dv' + NodeId).find('tbody').css("color", settingsObj[0]["body-font-color"]);
+
+                    $('#dv' + NodeId).find('tbody , tr , td').css("border", settingsObj[0]["border-thickness"] + "px solid " + settingsObj[0]["border-color"]);
+                }
+            }
+
+            if (baseData[i].MappedId == "TABLE_TITLE") {
+                console.log(siteDataList);
+                if(siteDataList != null) {
+                    if(siteDataList[0]["Site"] != null && siteDataList[0]["Site"] != "undefined"){
+                            $('#dv' + NodeId).find("#TABLE_TITLE").html(siteDataList[0]["Site"] + " - " + baseData[i].Value);
+                    }else{
+                        $('#dv' + NodeId).find("#TABLE_TITLE").html(baseData[i].Value);
+                    }
+                }     
+              
+
+                if (baseData[i].Settings != null && baseData[i].Settings != "") {
+                    var settingsObj = JSON.parse(baseData[i].Settings);
+                    $('#dv' + NodeId).find('#TABLE_TITLE').css("font-family", settingsObj[0]["font-family"], 'important');
+                    $('#dv' + NodeId).find('#TABLE_TITLE').css("font-size", settingsObj[0]["font-size"], 'important');
+                    $('#dv' + NodeId).find('#TABLE_TITLE').css("font-style", settingsObj[0]["typography"]);
+                    $('#dv' + NodeId).find('#TABLE_TITLE').css("color", settingsObj[0]["font-color"]);
+
+                    if (settingsObj[0]["align"] == "left") {
+                        $('#dv' + NodeId).find('#TABLE_TITLE').addClass("text-left");
+                    }
+                    if (settingsObj[0]["align"] == "right") {
+                        $('#dv' + NodeId).find('#TABLE_TITLE').addClass("text-right");
+                    }
+                    if (settingsObj[0]["align"] == "center") {
+                        $('#dv' + NodeId).find('#TABLE_TITLE').addClass("text-center");
+                    }
+
+                    if (settingsObj[0]["typography"] == "bold") {
+                        $('#dv' + NodeId).find('#TABLE_TITLE').css("font-weight", "bold");
+                        $('#dv' + NodeId).find('#TABLE_TITLE').css("font-style", "normal");
+                    }
+                    if (settingsObj[0]["typography"] == "italic") {
+                        $('#dv' + NodeId).find('#TABLE_TITLE').css("font-style", "italic");
+                        $('#dv' + NodeId).find('#TABLE_TITLE').css("font-style", "normal");
+                    }
+                    if (settingsObj[0]["typography"] == "bold_italic") {
+                        $('#dv' + NodeId).find('#TABLE_TITLE').css("font-weight", "bold");
+                        $('#dv' + NodeId).find('#TABLE_TITLE').css("font-style", "italic");
+                    }
+                }
+            }
+        });
+    }
+
+    $(document).ajaxStop(function() {
+        $("table").css("width","100%");
+        $(".dataTables_info").css("padding-left", "10px");
+        $(".dataTables_info").css("margin-top", "12px");
+        $(".dataTables_info").css("font-weight", "inherit !important");
+        $(".previous").html("Prev");
+    });
+
+</script>

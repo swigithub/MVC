@@ -1,0 +1,531 @@
+﻿@using System.Data;
+@model WebApplication.Models.WorkorderEdit
+@{
+    ViewBag.Title = "NewWordOrder";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Bands = jss.Serialize(Model.Bands);
+    var Carriers = jss.Serialize(Model.Carriers);
+    var Regions = jss.Serialize(Model.Regions);
+    var Surveys = jss.Serialize(Model.Surveys);
+    var Cities = jss.Serialize(Model.Cities);
+    var SubCheckList = jss.Serialize(Model.SubCheckList);
+    var SelectedRegion = new SelectList(Model.Regions.Where(x => x.PDefinationId == Model.Site.State).ToList(), "DefinationId", "DefinationName", Model.Site.RegionId.ToString());
+    var SelectedCities = new SelectList(Model.Cities.Where(x => x.PDefinationId == Convert.ToInt64(Model.Site.Region)).ToList(), "DefinationId", "DefinationName", Model.Site.MarketId);
+    var SelectedClient = Model.Scopes.Where(x => x.Value == Convert.ToString(Model.Site.ScopeId)).FirstOrDefault();
+    int[] NetworkModes = new int[10];
+    if (SelectedClient.Text == "CLS" && Model.Sectors[0].NetworkId != "")
+    {
+        NetworkModes = Model.Sectors[0].NetworkId.Split(',').Select(int.Parse).ToArray();
+    }
+
+}
+
+<div class="box box-solid">
+    <div class="box-header with-border boxHeader">
+        <h3 class="box-title">Edit Workorder</h3>
+
+    </div>
+    <div class="box-body">
+        @using (Html.BeginForm("New", "WorkOrder", FormMethod.Post, new { id = "frm-wo" }))
+        {
+            @Html.AntiForgeryToken();
+
+            <div class="box box-solid">
+                <div class="box-header with-border boxHeader">
+                    <h3 class="box-title">Site Information</h3>
+
+                </div>
+                <div class="box-body boxBody" id="pan-SiteInfo">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <!--Client-->
+                            <input type="hidden" name="Clonetype" value="Clone" data-required="no" id="Clonetype-r0" />
+                            <div class="form-group">
+                                <label for="Client">Client</label>
+                                @Html.DropDownList("Client", Model.Clients.Where(x => x.Value == Convert.ToString(Model.Site.ClientId)).ToList() as List<SelectListItem>, htmlAttributes: new { @class = "form-control select Row Client", required = "required", data_name = "Client", tabindex = "1", onchange = "ClientChange();" })
+                            </div>
+
+
+                            <!--State-->
+                            <div class="form-group">
+                                <label for="State">State</label>
+                                @Html.DropDownList("State", new SelectList(Model.States, "Value", "Text", Model.Site.StateId), htmlAttributes: new { @class = "form-control select2 Row State", @required = "required", @data_parsley_min = "1", @id = "State", @data_name = "State", @onchange = "StateChange(); return false;", @tabindex = "5" })
+                            </div>
+                            <!--SiteTypeId-->
+                            <div class="form-group CLSHIDE">
+                                @if (SelectedClient.Text != "CLS")
+                                {
+                                    <label for="SiteTypeId">Site Type</label>
+                                    @Html.DropDownList("SiteTypeIds", new SelectList(Model.SiteTypes, "Value", "Text", Model.Site.SiteType), htmlAttributes: new { @class = "form-control select2 Row SiteTypeId", data_name = "SiteTypeId", tabindex = "9" })
+                                }
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <!--Scope-->
+                            <div class="form-group">
+                                <label for="Scope">Scope</label>
+                                @Html.DropDownList("Scope", Model.Scopes.Where(x => x.Value == Convert.ToString(Model.Site.ScopeId)).ToList() as List<SelectListItem>, htmlAttributes: new { @class = "form-control Row select2 Scope", data_parsley_min = "1", data_name = "Scope", onchange = "ScopeChange(); return false;", tabindex = "2" })
+                            </div>
+
+                            <!--Region-->
+                            <div class="form-group">
+                                <label for="Region">Region</label>
+
+                                @Html.DropDownList("Region", SelectedRegion, htmlAttributes: new { @class = "form-control select2 Row Region", @data_name = "Region", @data_parsley_min = "1", @name = "Region", @id = "Region", @onchange = "RegionChange(); return false;", @required = "required", @tabindex = "6" })
+
+
+
+                            </div>
+                            <!--Site Class-->
+                            <div class="form-group CLSHIDE">
+                                <label for="SiteClassId">Site Class</label>
+
+                                @if (SelectedClient.Text != "CLS")
+                                {
+
+                                    @Html.DropDownList("SiteClassIds", new SelectList(Model.SiteClasses, "Value", "Text", Model.Site.SiteClass.ToString()), htmlAttributes: new { @class = "form-control select2 Row SiteClassId", required = "required", data_name = "SiteClassId", tabindex = "10" })
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <!--clusterCode-->
+                            <div class="form-group">
+                                <label for="clusterCode">Cluster Id</label>
+                                @if (SelectedClient.Text != "CLS")
+                                {
+                                    <input value="@Model.Site.ClusterCode" data-required="yes" class="form-control Row clusterCode" id="clusterCode" name="clusterCode" data-name="clusterCode" tabindex="3">
+                                }
+                                else
+                                {
+                                    <input data-required="yes" class="form-control Row clusterCode" id="clusterCode" name="clusterCode" data-name="clusterCode" tabindex="3">
+                                }
+                            </div>
+
+                            <!--Market-->
+                            <div class="form-group">
+                                <label for="Market">Market</label>
+                                @*<select class="form-control select2 Row" data-name="Market" data-parsley-min="1" name="Market" id="Market" tabindex="7" required>
+                                        <option value="0">-Market-</option>
+                                    </select>*@
+
+                                @Html.DropDownList("Market", SelectedCities, htmlAttributes: new
+                           {
+                               @class = "form-control select2 Row",
+                               @data_name = "Market",
+                               @data_parsley_min = "1",
+                               @name = "Market",
+                               @id = "Market",
+                               @tabindex = "7",
+                               @required = "required"
+                           })
+
+                            </div>
+                            <!--site Code-->
+                            <div class="form-group CLSHIDE">
+                                <label for="siteCode">Site Id</label>
+                                <input data-required="no" class="form-control siteCode Row" id="siteCode" name="siteCode" data-name="siteCode" value="@Model.Site.SiteCode" tabindex="11" >
+                                <label id="lblSiteCode"></label>
+                              </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <!----Project---->
+                                    <div class="form-group">
+                                        <label for="ProjectId">Project</label>
+                                        @*<select class="form-control select2 Row ProjectId" data-name="Project" data-parsley-min="1" name="ProjectId" id="ProjectId" onchange="" data-required="yes" required tabindex="6">@ViewBag.Projects
+                                                <option value="0">-Project-</option>
+                                            </select>*@
+
+                                        @Html.DropDownList("ProjectIds", new SelectList(Model.Projects, "ProjectId", "ProjectName", Model.Site.ProjectId), htmlAttributes: new
+                                   {
+                                       @class = "form-control select2 Row ProjectId",
+                                       @data_name = "Project",
+                                       @data_parsley_min = "1",
+                                       @name = "ProjectId",
+                                       @id = "ProjectId",
+                                       @onchange = "",
+                                       @data_required = "yes",
+                                       @required = "required",
+                                       tabindex = "6"
+                                   })
+
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <!--Received On-->
+                                    <div class="form-group">
+                                        <label for="ReceivedOn">Received On</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input dirname="@Model.ReceivedOn" data-required="no" type="text" value="@Model.Site.ReceivedOn.ToString("MM/dd/yyyy")" tabindex="4" class="form-control Row ReceivedOn UserLiveDate" style="width:150px;" id="ReceivedOn" name="ReceivedOn" data-name="ReceivedOn" readonly>
+                                            <label style="margin-left:100px;">
+                                                <input name="" data-required="no" id="SectorLatLng" type="checkbox">
+                                                Sector Lat/Long same as Site
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <!--Address-->
+                            <div class="form-group">
+                                <label for="siteLongitude">Address</label>
+                                <input value="@Model.Site.SiteAddress" data-required="no" class="form-control Row Address AllowPaste" id="SiteAddress" data-required="no" name="SiteAddress" data-name="SiteAddress" tabindex="8">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <!--Site Name-->
+                                    <div class="form-group CLSHIDE">
+                                        <label for="SiteName">Site Name</label>
+                                        <input value="@Model.Site.SiteName" data-required="no" type="text" class="form-control Row SiteName AllowPaste" id="SiteName" name="SiteName" data-name="SiteName" tabindex="12">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <!--siteLatitude-->
+                                    <div class="form-group CLSHIDE">
+                                        <label for="siteLatitude">Latitude</label>
+                                        <input data-required="no" type="text" value="@Model.Site.Latitude" class="form-control Row siteLatitude AllowPaste" id="siteLatitude" name="siteLatitude" data-name="siteLatitude" tabindex="13">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 CLSHIDE">
+                                    <!--siteLongitude-->
+                                    <div class="form-group">
+                                        <label for="siteLongitude">Longitude</label>
+                                        <input value="@Model.Site.Longitude" data-required="no" type="text" class="form-control Row siteLongitude AllowPaste" id="siteLongitude" name="siteLongitude" data-name="siteLongitude" tabindex="14">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="Row">
+                            <div class="col-sm-12">
+                                <!--Description-->
+                                <div class="form-group">
+                                    <label for="Description">Description</label>
+                                    <input value="@Model.Site.Description" data-required="no" class="form-control Row Description AllowPaste" id="Description" name="Description" data-name="Description" tabindex="15">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            if (SelectedClient.Text != "TSS" && SelectedClient.Text != "CLS")
+            {
+                <div class="box box-solid" id="pan-sector">
+                    @Html.Partial("Edit_Sector", @Model.Sectors)
+                </div>
+            }
+            else if (SelectedClient.Text == "TSS")
+            {
+                <div class="box box-solid" id="pan-TSS">
+                    @Html.Partial("Edit_TSS", @Model)
+                </div>
+            }
+            else if (SelectedClient.Text == "CLS")
+            {
+
+                <div class="box box-solid" id="pan-Cluster">
+                    @*@Html.Partial("Edit_CLS", @Model.Sectors)*@
+                    <div class="box-header with-border boxHeader">
+                        <h3 class="box-title">Cluster Information</h3>
+                    </div>
+                    <div class="box-body boxBody">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <table class="" style="margin-left:15px; border-spacing: 10px;border-collapse: separate;" id="tbl-cluster">
+                                        <thead>
+                                            <tr>
+                                                <th style="max-width: 130px;">Cluster Id</th>
+                                                <th style="max-width:130px;">Cluster Name</th>
+                                                <th style="max-width:150px;">Network Mode</th>
+                                                <th style="max-width:130px">Cluster Site File</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="ClusterNewDeviceRow" class="ClusterNewDeviceRow">
+
+
+
+                                                <td>
+                                                    <input type="hidden" value="@Model.Sectors[0].SiteClusterId" class="form-control Row blur" id="SiteClusterId" name="SiteClusterId" data-name="SiteClusterId" />
+
+                                                    <input value="@Model.Sectors[0].ClusterId" data-required="yes" type="text" class="form-control Row ClusterRowFirst" id="clusterid-r0" name="clusterid" data-name="clusterid" />
+                                                </td>
+                                                <td><input data-required="yes" type="text" value="@Model.Sectors[0].ClusterName" class="form-control Row" id="clustername-r0" name="clustername" data-name="clustername" /></td>
+
+                                                <td class="opendropdown" style="width:200px !important">
+                                                    <input data-required="no" type="hidden" id="networkmode-r0" data-name="networkmode" name="networkmode" class="form-control">
+                                                    <input data-required="no" type="hidden" id="networkmodename-r0" data-name="networkmodename" name="networkmodename" class="form-control">
+                                                    <select data-required="yes" id="networkmodefake-r0" data-name="networkmodefake" name="networkmodefake" style="width:100% !important" class="form-control Row mymultiselect networkmodefake" multiple>
+                                                        @foreach (var item in Model.NetworkModesm)
+                                                        {
+                                                            var Exist = NetworkModes.Where(x => x == item.DefinationId).FirstOrDefault();
+                                                            if (Exist != 0)
+                                                            {
+                                                                <option selected class="abc" value="@item.DefinationId">@item.DefinationName</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option class="abc" value="@item.DefinationId">@item.DefinationName</option>
+                                                            }
+                                                        }
+                                                    </select>
+
+                                                    @*@Html.DropDownList("Value",(MultiSelectList)(ViewBag.NetworkModesm), new { @class = "form-control select Row networkMode ClusterRowLast ", @multiple = "multiple", id = "network-node", data_parsley_min = "1", data_name = "networkMode", data_row = "r0", style = "width:100px;" })*@
+                                                </td>
+                                                <td>
+                                                    @*@using (Html.BeginForm("", "", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "frmuploadfile" }))
+                                                        {*@
+                                                    <input data-required="no" type="hidden" id="filename-r0" name="filename" data-name="filename" />
+                                                    <input data-required="no" type="file" id="clusterfile-r0" class="file filer ClusterRowLast " data-name="clusterfile" name="clusterfile" accept=".csv">
+
+                                                    @*}*@
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            }
+            <div class="form-group pull-right">
+                <div class="">
+                    <button type="reset" id="reset" class="btn btn-default"><i class="fa  fa-refresh"></i> Reset</button>
+                    <button type="submit" id="btn-submit" class="btn btn-success"><i class="fa  fa-save"></i> Save</button>
+
+                </div>
+            </div>
+
+        }
+
+    </div>
+</div>
+
+
+
+<div id="pan-upload" style="display:none">
+    <div class="row">
+        <div class="col-sm-12">
+            @using (Html.BeginForm("FileUpload", "WorkOrder", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-FileUpload" }))
+            {
+                <div class="form-group">
+                    <input type="file" name="Upload" accept=".csv" id="file" class="btn file" />
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success pull-right" />
+                </div>
+            }
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datepicker/js")
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+    <script src="~/AdminLTE/bootstrap/js/twitter-bootstrap.min-3.0.0.js"></script>
+
+    <script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+    <script>
+        $(document).ready(function () {
+       
+            $("#network-node").multiselect(
+                {
+                    includeSelectAllOption: true
+                });
+       
+            //CheckSiteCode();
+            SiteCode = $("#siteCode").val();
+       SiteExistOrNot(SiteCode,0,0,0,0)
+
+        });
+   
+
+        var NewDeviceRow = $('#NewDeviceRow').html();
+        var NewDeviceRowCLONE = NewDeviceRow;
+        var TssNewDeviceRow = $('#TssNewDeviceRow').html();
+        var TssNewDeviceRowCLONE = TssNewDeviceRow;
+        var ClusterNewDeviceRow = "";
+        var count = 1;
+        var TssCount = 1;
+        var ClusterCount = 1;
+        var Bands = JSON.parse('@Html.Raw(Bands)');
+        var Carriers = JSON.parse('@Html.Raw(Carriers)');
+        var Regions = JSON.parse('@Html.Raw(Regions)');
+        var Surveys = JSON.parse('@Html.Raw(Surveys)');
+        var Cities = JSON.parse('@Html.Raw(Cities)');
+        var SubCheckList = JSON.parse('@Html.Raw(SubCheckList)');
+        var SelectedState = 0;
+        var SelectedRegion = 0;
+        var SelectedMarket = 0;
+        var SelectedClient = 0;
+        var SelectednetworkMode = 0;
+        var SelectedScope = 0;
+        var SelectedBand = 0;
+        var SelectedCarrier = 0;
+        var SelectedSector = 0;
+        var SiteCode = 0;
+        var ShowSaveBtn = 0;
+        var btn_AddMarketSites = $('#btn-AddMarketSites');
+        var loading = $.loading();
+        ///project dropdown fill by Viewbag.projects
+        @*var ProjectId = '@Model.ProjectId';
+        var Projects =  @Html.Raw(Json.Encode(@Model.Projects));
+        $('#ProjectId').empty();
+        $('#ProjectId').append(' <option  value="0">-Project-</option></select>');
+        $.each(Projects, function (i, item) {
+           // if (item.ProjectId.toString() == Id) {
+                $('#ProjectId').append(' <option value=' + item.ProjectId + '>' + item.ProjectName +'</option></select>');
+           // }
+        });
+
+        ///select and disable project dropdown if value =0
+        if (ProjectId != 0) {
+            $('#ProjectId').val(ProjectId);
+            $('#ProjectId').attr("disabled", true);
+        }*@
+  
+       
+    </script>
+    <script src="~/Content/js/WorkOrderEdit.js"></script>
+
+    <script>
+
+        jQuery.fn.exists = function () { return this.length > 0; }
+        $(document).ready(function () {
+            ScopeChange();
+       
+        });
+
+        var Id = '@ViewBag.Id';
+        if (Id == 00000) {
+
+            $.ajax({
+                url: '/workorder/SiteWithSectors?Id=' + Id,
+                success: function (result) {
+                    //  console.log(result);
+
+
+                    for (var i = 0; i < result.length; i++) {
+                        // debugger
+                        var obj = result[i];
+                        delete obj.ReceivedOn;
+                        delete obj.SurveyId;
+                        delete obj.clusterId;
+                        delete obj.clusterName;
+                        delete obj.clusterFile;
+                        delete obj.networkModes;
+                        if (i > 0) {
+                            //NewRow();
+                            OnTabNewRow();
+                        }
+                        for (var key in obj) {
+                            var value = obj[key];
+
+
+
+
+
+                            if ('@ViewBag.FormType' == 'New' && key == 'SiteId') {
+                                value = '0';
+                            }
+
+                            if ($('#' + key).exists()) {
+                                $('#' + key).val(value);
+
+                            } else {
+
+                                $('#' + key + '-r' + i).val(value);
+                            }
+
+                            if (key == 'Scope') {
+                                ScopeChange();
+                            } else if (key == 'networkMode') {
+                                LoadBands('r' + i, value);
+                            }
+                            else if (key == 'Band') {
+                                LoadCarriers('r' + i, value);
+                            }
+                        }
+
+                    }
+                    //  console.log(result[0]);
+                }
+            });
+        }
+
+
+        //$('.mymultiselect').multiselect({
+        //    selectedClass: 'multiselect-selected',
+        //    allSelectedText: 'selected',
+        //    numberDisplayed: 1,
+        //    maxHeight: 400,
+        //    buttonWidth: '80%',
+        //   onDropdownHide: function (event) {
+
+        //    },
+
+        //});
+        ClusterNewDeviceRow = $('#ClusterNewDeviceRow').html();
+        var ClusterNewDeviceRowCLONE = ClusterNewDeviceRow;
+    </script>
+
+}
+@section style{
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="~/Content/box.css" rel="stylesheet" />
+
+    <link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    @Styles.Render("~/AdminLTE/plugins/datepicker/css")
+    <style>
+        .required {
+            border-color: red;
+        }
+
+        #tbl-wo .form-control {
+            width: 100px;
+        }
+
+        .SelectedRow {
+            background-color: #454de2 !important;
+            color: white;
+        }
+    </style>
+
+
+}

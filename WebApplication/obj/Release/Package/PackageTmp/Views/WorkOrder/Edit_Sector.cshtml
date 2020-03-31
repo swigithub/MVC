@@ -1,0 +1,101 @@
+﻿@model List<SWI.Libraries.AirView.Entities.AV_Sector>
+@*@model WebApplication.Models.WorkorderEdit*@ 
+<div class="box-header with-border boxHeader">
+    <h3 class="box-title">Sector Information</h3>
+    <button type="button" class="btn btn-sm btn-success pull-right" id="btn-NewRow" style="margin-left:10px"><i class="fa fa-list"></i> New Row</button>
+</div>
+<div class="box-body boxBody" style="overflow-x:auto;overflow-y:hidden">
+    <div class="row">
+      @if (Model.Count > 0)
+      {
+         
+        <div class="col-sm-12">
+            <div class="row">
+                <table class="table table-hover" id="tbl-wo">
+                    <thead>
+                        <tr>
+                            <th>Sector</th>
+                            <th>Network Mode</th>
+                            <th>Band</th>
+                            <th>Carrier</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                            <th>Bandwidth</th>
+                            <th>Antenna</th>
+                            <th>HBeamWidth</th>
+                            <th>VBeamWidth</th>
+                            <th>Azimuth</th>
+                            <th>PCI/PSC/BCCH</th>
+                            <th>MRBTS</th>
+                            <th>RF Height</th>
+                            <th>M-Tilt</th>
+                            <th>E-Tilt</th>
+                            <th>Cell Id</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var j = 0; j < Model.Count(); j++)
+                        {
+                        var abc = "r"+j;
+                        <tr id="NewDeviceRow" class="SectorNewDeviceRow" >
+                            <td>
+                                <input type="hidden" value="@Model[j].SectorId" class="form-control Row blur" id="SectorId-@abc" name="SectorId" data-name="SectorId" />
+
+                                @Html.DropDownList("sectorCode", new SelectList(ViewBag.Sectors, "Value", "Text", Model[j].SectorCode), new { @class = "form-control select Row RowFirst sectorCode", id = "sectorCode-"+abc, data_name = "sectorCode",@name= "sectorCode", data_row =abc, style = "width:100px;" })
+                            </td>
+                            <td> @Html.DropDownList("networkMode", new SelectList(ViewBag.NetworkModes, "Value", "Text",Model[j].NetworkModeId), new { @class = "form-control select Row networkMode", id = "networkMode-"+abc, data_parsley_min = "1", data_name = "networkMode", data_row =abc, style = "width:100px;" })</td>
+
+                            
+
+                            <td>
+                                @Html.DropDownList("Band", new SelectList(Model[0].Bands.Where(x => x.PDefinationId == Model[j].NetworkModeId).ToList(), "DefinationId", "DefinationName", Model[j].BandId), new {@class="form-control select Row Band", @data_name="Band" ,@data_parsley_min="1", @name="Band", @id="Band-"+abc, @data_row= abc, @style="width:100px;", @required="required"
+                           })
+
+                                @*<select class="form-control select Row Band" data-name="Band" data-parsley-min="1" name="Band" id="Band-r0" data-row="r0" style="width:100px;" required>
+                                    <option>-Band-</option>
+                                </select>*@
+                            </td>
+                            <td>
+                                @Html.DropDownList("Carrier", new SelectList(Model[0].Carriers.Where(x => x.PDefinationId == Model[j].BandId).ToList(), "DefinationId", "DefinationName", Model[j].CarrierId), new { @class="form-control select Row Carrier", @data_name="Carrier", @data_parsley_min="1", @name="Carrier" ,@id="Carrier-"+abc, @data_row=abc, @style="width:100px;", @required="required"
+                           })
+                                @*<select class="form-control select Row Carrier" data-name="Carrier" data-parsley-min="1" name="Carrier" id="Carrier-r0" data-row="r0" style="width:100px;" required>
+                                    <option>-Carrier-</option>
+                                </select>*@
+                            </td>
+                            <td><input type="text" value="@Model[j].Latitude" class="form-control Row blur" id="SectorLatitude-@abc" name="SectorLatitude" data-name="SectorLatitude" /></td>
+                            <td><input value="@Model[j].Longitude" type="text" class="form-control Row blur" id="SectorLongitude-@abc" name="SectorLongitude" data-name="SectorLongitude" /></td>
+                            <td><input  type="text" value="@Model[j].BandWidth" class="form-control Row" id="BandWidth-@abc"  name="BandWidth" data-name="BandWidth" /></td>
+
+                            <td><input value="@Model[j].Antenna" type="text" class="form-control Row" id="Antenna-@abc" name="Antenna" data-name="Antenna" /></td>
+                            <td><input value="@Model[j].BeamWidth" type="text" class="form-control Row" id="BeamWidth-@abc" name="BeamWidth" data-name="BeamWidth" /></td>
+                            <td><input value="@Model[j].VerticalBeamWidth" type="text" class="form-control Row" id="VerticalBeamWidth-@abc" name="VerticalBeamWidth" data-name="VerticalBeamWidth" /></td>
+                            <td><input value="@Model[j].Azimuth" type="text" class="form-control Row" id="Azimuth-@abc" name="Azimuth" data-name="Azimuth" /></td>
+                            <td><input value="@Model[j].PCI" type="text" class="form-control Row" id="PCI-@abc" name="PCI" data-name="PCI" /></td>
+
+                            <td><input type="text" value="@Model[j].MRBTS" class="form-control Row" id="MRBTS-@abc" name="MRBTS" data-required="no" data-name="MRBTS" /></td>
+
+                            <td><input value="@Model[j].RFHeight" type="text" class="form-control Row" id="RFHeight-@abc" data-required="no"  name="RFHeight" data-name="RFHeight" /></td>
+
+                            <td><input value="@Model[j].MTilt" type="text" class="form-control Row" id="MTilt-@abc" data-required="no"  name="MTilt" data-name="MTilt" /></td>
+                            <td><input value="@Model[j].ETilt" name="ETilt" type="text" class="form-control Row" id="ETilt-@abc" data-required="no"   data-name="ETilt" /></td>
+                            <td><input value="@Model[j].CellId" name="CellId" type="text" class="form-control Row RowLast" id="CellId-@abc" data-required="no"   data-name="CellId" /></td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+
+
+        </div>
+                 
+              }
+              else
+              {
+        
+      }
+    </div>
+
+
+</div>

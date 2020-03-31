@@ -1,0 +1,48 @@
+﻿@using SWI.Libraries.AD.Entities
+@model IEnumerable<AD_Defination>
+
+<!-- /.box-header -->
+<div class="box-body boxBody">
+    <table id="tbl-definations" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Defination Type</th>
+                <th>Defination Name</th>
+                <th style="display:none">DefinationId</th>
+                <th>Parent Defination</th>
+                <th>Key Code</th>
+                <th>Display Type</th>
+                <th>Color</th>
+                <th>Input Type</th>
+                <th>Max Length</th>
+                <th>Sort Order</th>
+                <th>Display Text</th>
+                <th>IsActive</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="rows">
+                    <td data-DefinationId="@item.DefinationId"  data-Value="@item.DefinationTypeId" data-FieldId="DefinationTypeId-r0" data-FieldName="@item.DefinationType" class="nr">@item.DefinationType</td>
+                    <td data-FieldId="DefinationName" class="nr">@item.DefinationName</td>
+                    <td data-FieldId="DefinationId" class="nr" style="display:none">@item.DefinationId</td>
+                    <td data-Value="@item.PDefinationId" data-FieldId="PDefinationId-r0" class="nr">@item.PDefinationName</td>
+                    <td data-FieldId="KeyCode" class="nr">@item.KeyCode</td>
+                    <td data-FieldId="DisplayType" class="nr">@item.DisplayType</td>
+                    <td data-FieldId="ColorCode" class="nr">@item.ColorCode</td>
+                    <td data-FieldId="InputType" class="nr">@item.InputType</td>
+                    <td data-FieldId="MaxLength" class="nr">@item.MaxLength</td>
+                    <td data-FieldId="SortOrder" class="nr">@item.SortOrder</td>
+                    <td data-FieldId="DisplayText" class="nr">@item.DisplayText</td>
+                    <td data-FieldId="IsActive-r0" class="nr">@item.IsActive</td>
+                    
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+</div>
+
+

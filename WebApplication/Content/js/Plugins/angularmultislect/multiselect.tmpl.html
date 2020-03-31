@@ -1,0 +1,53 @@
+﻿<div class="dropdown">
+    <!--<button class="btn" ng-click="toggleSelect()" ng-disabled="disabled" ng-class="{'error': !valid()}">
+        <span class="pull-left">{{header}}</span>
+        <span class="caret pull-right"></span>
+    </button>-->
+    <button type="button" class="btn btn-default dropdown-toggle" style="text-align: left;width: 100%;border-radius: 0;" 
+            ng-click="toggleSelect()" ng-disabled="disabled" ng-class="{'error': !valid()}">
+        {{header}} <span class="caret"></span>
+    </button>
+
+    <ul class="dropdown-menu" style="width:100%; list-style-type: none;max-height:210px;">
+        <li style="display:none">
+            <input class="input-block-level" type="text" ng-model="searchText.label" autofocus="autofocus" placeholder="Filter" />
+        </li>
+        <!--<li ng-show="multiple">
+            <button class="btn-link btn-small" ng-click="checkAll()"><i class="icon-ok"></i> Check all</button>
+            <button class="btn-link btn-small" ng-click="uncheckAll()"><i class="icon-remove"></i> Uncheck all</button>
+        </li>-->
+        <li ng-repeat="i in items | filter:searchText">
+            <a ng-click="select(i); focus()" >
+                <!--<i ng-class="{'icon-ok': i.checked, 'icon-empty': !i.checked}"></i>{{i.label}}-->
+                <i class='glyphicon' ng-class="{'glyphicon-ok': i.checked, 'glyphicon-unchecked': !i.checked}"></i> {{i.label}}
+                
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+<!--<div class="btn-group" style="width:100%;">
+    <button type="button" class="btn btn-default dropdown-toggle" style="text-align: left;width: 100%;border-radius: 0;" ng-click="toggleSelect()" ng-disabled="disabled" ng-class="{'error': !valid()}">
+        {{header}} <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" style="width:100%; list-style-type: none;" >
+        <li>
+            <input class="form-control input-sm" type="text" ng-model="searchText.label" placeholder="Filter" />
+        </li>
+        <li ng-show="multiple && showCheckUncheckAll" role="presentation" class="">
+            <button class="btn btn-link btn-xs" ng-click="checkAll()" type="button"><i class="glyphicon glyphicon-ok"></i> Check all</button>
+            <button class="btn btn-link btn-xs" ng-click="uncheckAll()" type="button"><i class="glyphicon glyphicon-remove"></i> Uncheck all</button>
+        </li>
+        
+            
+                <li ng-repeat="i in items | filter:searchText">
+                    <a ng-click="select(i); focus()" title="{{i.label}}">
+                        <i class='glyphicon' ng-class="{'glyphicon-ok': i.checked, 'glyphicon-unchecked': !i.checked}"></i> {{i.label}} 
+                    </a>
+                </li>
+                <li ng-hide="(items | filter:searchText).length > 0" class="text-muted" style="padding:4px 0 4px 20px;"><em>No match</em></li>
+            
+        
+    </ul>
+</div>-->

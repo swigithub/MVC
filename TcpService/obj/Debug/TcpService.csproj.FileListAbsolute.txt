@@ -1,0 +1,16 @@
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\TcpService.exe.config
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\TcpService.exe
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\TcpService.pdb
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\AirViewTracker.DBLayer.dll
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\Newtonsoft.Json.dll
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\System.Net.Http.Extensions.dll
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\System.Net.Http.Formatting.dll
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\System.Net.Http.Primitives.dll
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\AirViewTracker.DBLayer.pdb
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\bin\Debug\Newtonsoft.Json.xml
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\obj\Debug\TcpService.csprojResolveAssemblyReference.cache
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\obj\Debug\TcpService.csproj.TcpService.exe.config
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\obj\Debug\TcpService.ProjectInstaller.resources
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\obj\Debug\TcpService.csproj.GenerateResource.Cache
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\obj\Debug\TcpService.exe
+D:\TFS_Codes\AIrView1\AV_DEV\TcpService\obj\Debug\TcpService.pdb

@@ -1,0 +1,81 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirView", "WebApplication\AirView.csproj", "{2AD3ACB9-AE01-4AA2-8B82-A06137109700}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirView.DBLayer", "AirView.DBLayer\AirView.DBLayer.csproj", "{36A4BD59-C505-4062-9471-BDE94EAA2123}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirView.test", "AirView.test\AirView.test.csproj", "{D33C9565-D39F-4FCF-9467-6A0ADA66ECC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpService", "TcpService\TcpService.csproj", "{79556618-B880-4A44-BBF2-7F2354C27250}"
+	ProjectSection(ProjectDependencies) = postProject
+		{79F389C4-233A-4CCB-9D53-876408EDAE08} = {79F389C4-233A-4CCB-9D53-876408EDAE08}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirViewTracker.DBLayer", "AirViewTracker.DBLayer\AirViewTracker.DBLayer.csproj", "{79F389C4-233A-4CCB-9D53-876408EDAE08}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "AirViewDatabase", "AirViewDatabase\AirViewDatabase.sqlproj", "{1FD3B64A-7D75-4EE8-B757-168B1BF48BE9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2AD3ACB9-AE01-4AA2-8B82-A06137109700}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AD3ACB9-AE01-4AA2-8B82-A06137109700}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AD3ACB9-AE01-4AA2-8B82-A06137109700}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AD3ACB9-AE01-4AA2-8B82-A06137109700}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36A4BD59-C505-4062-9471-BDE94EAA2123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36A4BD59-C505-4062-9471-BDE94EAA2123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36A4BD59-C505-4062-9471-BDE94EAA2123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36A4BD59-C505-4062-9471-BDE94EAA2123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D33C9565-D39F-4FCF-9467-6A0ADA66ECC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D33C9565-D39F-4FCF-9467-6A0ADA66ECC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D33C9565-D39F-4FCF-9467-6A0ADA66ECC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D33C9565-D39F-4FCF-9467-6A0ADA66ECC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79556618-B880-4A44-BBF2-7F2354C27250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79556618-B880-4A44-BBF2-7F2354C27250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79556618-B880-4A44-BBF2-7F2354C27250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79556618-B880-4A44-BBF2-7F2354C27250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79F389C4-233A-4CCB-9D53-876408EDAE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79F389C4-233A-4CCB-9D53-876408EDAE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79F389C4-233A-4CCB-9D53-876408EDAE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79F389C4-233A-4CCB-9D53-876408EDAE08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FD3B64A-7D75-4EE8-B757-168B1BF48BE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FD3B64A-7D75-4EE8-B757-168B1BF48BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FD3B64A-7D75-4EE8-B757-168B1BF48BE9}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1FD3B64A-7D75-4EE8-B757-168B1BF48BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FD3B64A-7D75-4EE8-B757-168B1BF48BE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FD3B64A-7D75-4EE8-B757-168B1BF48BE9}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://tfs-dev:8080/tfs/airviewproducts
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = AirView.DBLayer\\AirView.DBLayer.csproj
+		SccProjectName1 = AirView.DBLayer
+		SccLocalPath1 = AirView.DBLayer
+		SccProjectUniqueName2 = AirView.test\\AirView.test.csproj
+		SccProjectName2 = AirView.test
+		SccLocalPath2 = AirView.test
+		SccProjectUniqueName3 = AirViewTracker.DBLayer\\AirViewTracker.DBLayer.csproj
+		SccProjectName3 = AirViewTracker.DBLayer
+		SccLocalPath3 = AirViewTracker.DBLayer
+		SccProjectUniqueName4 = TcpService\\TcpService.csproj
+		SccProjectName4 = TcpService
+		SccLocalPath4 = TcpService
+		SccProjectUniqueName5 = WebApplication\\AirView.csproj
+		SccProjectName5 = WebApplication
+		SccLocalPath5 = WebApplication
+		SccProjectUniqueName6 = AirViewDatabase\\AirViewDatabase.sqlproj
+		SccProjectName6 = AirViewDatabase
+		SccLocalPath6 = AirViewDatabase
+	EndGlobalSection
+EndGlobal

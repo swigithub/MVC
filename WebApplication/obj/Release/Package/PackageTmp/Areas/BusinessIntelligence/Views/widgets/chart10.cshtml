@@ -1,0 +1,41 @@
+<div class="widget">
+        <div class="title-bar" style="background:{{titlebg}};">
+                <h3><img src="images/title-icon1.png" alt="" />
+                        <span class="update-name">{{widgetname_01}}</span>
+					<span class="cache-value"></span>
+                        <input ng-model="widgetname_01" ng-init="widgetname_01='Multiple Axis'" type="text" />
+                </h3>
+                <div class="buttons-sets">
+                        <a class="custom-btn icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+                        <a class="custom-btn icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+                        <a class="custom-btn icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+                        <ul class="opt-dropdown" >
+                                <li class="has-children"><a href="#" title="">Panel Size</a>
+                                        <ul class="column-size">
+                                                <li><a class="onesixth" href="#" title="">One Sixth <img src="images/onesixth.png" alt=""> </a></li>
+                                                <li><a class="onethird" href="#" title="">One Third <img src="images/onethird.png" alt=""> </a></li>
+                                                <li><a class="half" href="#" title="">Half <img src="images/half.png" alt=""></a></li>
+                                                <li><a class="twothird" href="#" title="">Two Thrid <img src="images/twothird.png" alt=""></a></li>
+                                                <li><a class="fivesixth" href="#" title="">Five Sixth <img src="images/fivesixth.png" alt=""> </a></li>
+                                                <li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+                                        </ul>
+
+                                </li>
+                                <li class="has-children"><a href="#" title="">Panel Color</a>
+                                        <ul class="panel-color">
+                                                <li>
+                                                        <a href="#" title=""><input class="bgcolor"  type="text"  value="#fff" ng-model="titlebg"  ng-init="titlebg = '#fff'"  />
+                                                        <div class="colorpickerwrapper style2"><div colorpicker></div></div></a>
+                                                </li>
+                                        </ul>
+                                </li>
+                        </ul>
+
+                </div>
+
+        </div>
+
+        <div class="content-wrapper">
+                <div highcharts id="multiple-axis"></div>
+        </div>
+</div>

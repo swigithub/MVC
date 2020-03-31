@@ -1,0 +1,1959 @@
+<drive><test-cat>/home/airview1/ftp/files/airview-layer3/Stationary</test-cat><test-type>DL</test-type><site>NYFaiaz4</site><net-mode>LTE</net-mode><band>LTE2100</band><carrier>2250</carrier><sector>Gamma</sector><time>08-31-2017-11-49-08-PM</time><message-body><time>1504237697621</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237698401</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishmentReject></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentReject>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentReject-r8>
+                    </rrcConnectionReestablishmentReject-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentReject>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504237698229</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237698330</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237699644</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237699246</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformation></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformation>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </systemInformation>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504237699644</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237700230</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237700074</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237700228</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237700493</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504237700318</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237701080</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237701486</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237701121</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237701438</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishmentReject></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentReject>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentReject>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504237702330</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237702347</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237703280</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237703006</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237703279</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237748616</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <c1>
+                        <measurementReport-r8>
+                            <measResults>
+                                <measId>15</measId>
+                                <measResultPCell>
+                                    <rsrpResult>32</rsrpResult>
+                                    <rsrqResult>26</rsrqResult>
+                                </measResultPCell>
+                            </measResults>
+                        </measurementReport-r8>
+                    </c1>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504237748426</time><channel>PCCH-Message</channel><event>/messageClassExtension></event><PCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237749327</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000011011
+                                </mmegi>
+                                <mmec>
+                                    01100010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 5D 04 48 00 80 04 48 00 80 64 97 5D 70 C1 
+                                65 17 76 DD 05 34 A0 01 00 00 09 00 07 00 3B 00 
+                                33 00 02 00 00 00 CC 46 0E 00 BA 62 0C 00 3C 6D 
+                                02 00 5E 1E 00 00 27 16 00 00 5D 9F 02 00 2B A8 
+                                7E 22 20 14 1B 62 77 11 00 5D 04 48 00 80 04 48 
+                                00 80 64 97 5D 70 C1 65 17 76 DD 05 34 A0 01 00 
+                                00 09 00 07 00 3B 00 33 00 02 00 00 00 CC 46 0E 
+                                00 BA 62 0C 00 3C 6D
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034</hex></message-body><message-body><time>1504237749478</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <c1>
+                        <measurementReport-r8>
+                            <measResults>
+                                <measId>15</measId>
+                                <measResultPCell>
+                                    <rsrpResult>32</rsrpResult>
+                                    <rsrqResult>26</rsrqResult>
+                                </measResultPCell>
+                            </measResults>
+                        </measurementReport-r8>
+                    </c1>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504237749096</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000011100
+                                </mmegi>
+                                <mmec>
+                                    10000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                00 60 24 48 00 82 24 48 00 82 B4 D7 5E 77 DD B5 
+                                17 7B D5 65 33 9B 01 00 00 09 00 07 00 3B 00 33 
+                                00 02 00 00 00 50 49 25 00 06 53 20 00 66 BF 02 
+                                00 86 34 00 00 40 2E 00 00 75 DF 02 00 63 D4 7E 
+                                22 20 14 1C 82 83 11 00 60 24 48 00 82 24 48 00 
+                                82 B4 D7 5E 77 DD B5 17 7B D5 65 33 9B 01 00 00 
+                                09 00 07 00 3B 00 33 00 02 00 00 00 50 49 25 00 
+                                06 53 20 00 66 BF 02 00 86 34 00 00 40 2E 00 00 
+                                75 DF 02 00 63 D4 7E 22 20 14 1C 82 83 11 00 60 
+                                24 48 00 82 24 48 00 82 B4 D7 5E 77 DD B5 17 7B 
+                                D5 65 33 9B 01 00 00 09 00 07 00 3B 00 33 00 02 
+                                00 00 00 50 49 25 00 06 53 20 00 66 BF 02 00 86 
+                                34 00 00 40 2E 00 00 75 DF 02 00 63 D4 7E 22 20 
+                                14 1C 82 83 11 00 60 24 48 00 82 24 48 00 82 B4 
+                                D7 5E 77 DD B5 17 7B D5 65 33 9B 01 00 00 09 00 
+                                07 00 3B 00 33 00 02 00 00 00 50 49 25 00 06 53 
+                                20 00 66 BF 02 00 86 34 00 00 40 2E 00 00 75 DF 
+                                02 00 63 D4 7E 22 20 14 1C 82 83 11 00 60 24 48 
+                                00 82 24 48 00 82 B4 D7 5E 77 DD B5 17 7B D5 65 
+                                33 9B 01 00 00 09 00 07 00 3B 00 33 00 02 00 00 
+                                00 50 49 25 00 06 53 20 00 66 BF 02 00 86 34 00 
+                                00 40 2E 00 00 75 DF 02 00 63 D4 7E 22 20 14 1C 
+                                82 83 11 00 60 24 48 00 82 24 48 00 82 B4 D7 5E 
+                                77 DD B5 17 7B D5 65 33 9B 01 00 00 09 00 07 00 
+                                3B 00 33 00 02 00 00 00 50 49 25 00 06 53 20 00 
+                                66 BF 02 00 86 34 00 00 40 2E 00 00 75 DF 02 00 
+                                63 D4 7E 22 20 14 1C 82 83 11 00 60 24 48 00 82 
+                                24 48 00 82 B4 D7 5E 77 DD B5 17 7B D5 65 33 9B 
+                                01 00 00 09 00 07 00 3B 00 33 00 02 00 00 00 50 
+                                49 25 00 06 53 20 00 66 BF 02 00 86 34 00 00 40 
+                                2E 00 00 75 DF 02 00 63 D4 7E 22 20 14 1C 82 83 
+                                11 00 60 24 48 00 82 24 48 00 82 B4 D7 5E 77 DD 
+                                B5 17 7B D5 65 33 9B 01 00 00 09 00 07 00 3B 00 
+                                33 00 02 00 00 00 50 49 25 00 06 53 20 00 66 BF 
+                                02 00 86 34 00 00 40 2E 00 00 75 DF 02 00 63 D4 
+                                7E 22 20 14 1C 82 83 11 00 60 24 48 00 82 24 48 
+                                00 82 B4 D7 5E 77 DD B5 17 7B D5 65 33 9B 01 00 
+                                00 09 00 07 00 3B 00 33 00 02 00 00 00 50 49 25 
+                                00 06 53 20 00 66 BF 02 00 86 34 00 00 40 2E 00 
+                                00 75 DF 02 00 63 D4 7E 22 20 14 1C 82 83 11 00 
+                                60 24 48 00 82 24 48 00 82 B4 D7 5E 77 DD B5 17 
+                                7B D5 65 33 9B 01 00 00 09 00 07 00 3B 00 33 00 
+                                02 00 00 00 50 49 25 00 06 53 20 00 66 BF 02 00 
+                                86 34 00 00 40 2E 00 00 75 DF 02 00 63 D4 7E 22 
+                                20 14 1C 82 83 11 00 60 24 48 00 82 24 48 00 82 
+                                B4 D7 5E 77 DD B5 17 7B D5 65 33 9B 01 00 00 09 
+                                00 07 00 3B 00 33 00 02 00 00 00 50 49 25 00 06 
+                                53 20 00 66 BF 02 00 86 34 00 00 40 2E 00 00 75 
+                                DF 02 00 63 D4 7E 22 20 14 1C 82 83 11 00 60 24 
+                                48
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343233373734393039363C2F74696D653E3C6368616E6E656C3E554C2D444343482D4D6573736167653C2F6368616E6E656C</hex></message-body><message-body><time>1504237749679</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237749647</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000011101
+                                </mmegi>
+                                <mmec>
+                                    10100010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 59 D4 47 00 7D 5D D4 47 00 7D 5D A4 97 5E 
+                                77 DD A5 17 7A BD C5 32 96 01 00 00 0A 00 07 00 
+                                3B 00 33 00 02 00 00 00 58 4E 20 00 43 D0 1A 00 
+                                5F AF 02 00 AA 3E 00 00 AD 33 00 00 7C E9 02 00 
+                                80 02 7E 24 20 14 1D A2 67 11 00 59 D4 47 00 7D 
+                                5D D4 47 00 7D 5D A4 97 5E 77 DD A5 17 7A BD C5 
+                                32 96 01 00 00 0A 00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530</hex></message-body><message-body><time>1504237750218</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504237750504</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <c1>
+                        <measurementReport-r8>
+                            <measResults>
+                                <measId>15</measId>
+                                <measResultPCell>
+                                    <rsrpResult>32</rsrpResult>
+                                    <rsrqResult>27</rsrqResult>
+                                </measResultPCell>
+                            </measResults>
+                        </measurementReport-r8>
+                    </c1>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504237750382</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000011110
+                                </mmegi>
+                                <mmec>
+                                    11000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 5C E4 47 00 7D 5E E4 47 00 7D 5E D4 57 5F 
+                                76 D9 D5 17 7D 5D BD 25 33 99 01 00 00 0A 00 07 
+                                00 3B 00 33 00 02 00 00 00 03 C7 25 00 FB CD 21 
+                                00 66 C3 02 00 89 45 00 00 04 3D 00 00 81 F7 02 
+                                00 28 BF 7E 22 20 14 1E C2 73 11 00 5C E4 47 00 
+                                7D 5E E4 47 00 7D 5E D4 57 5F 76 D9 D5 17 7D 5D 
+                                BD 25 33 99 01 00 00 0A 00 07 00 3B 00 33 00 02 
+                                00 00 00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034</hex></message-body><message-body><time>1504237750039</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237750245</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000011111
+                                </mmegi>
+                                <mmec>
+                                    11100010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 5C A4 47 00 7A A4 47 00 7A 44 17 5D 74 D1 
+                                45 17 74 E1 C5 32 96 01 00 00 0A 00 08 00 3B 00 
+                                33 00 02 00 00 00 49 C9 11 00 14 E3 0E 00 46 7D 
+                                5D 02 00 E6 2E 00 00 37 1F 00 00 70 BD 02 00 EC 
+                                7D 5E 7E 20 20 14 1F E2 73 11 00 5C A4 47 00 7A 
+                                A4 47 00 7A 44 17 5D 74 D1 45 17 74 E1 C5 32 96 
+                                01 00 00 0A 00 08 00 3B 00 33 00 02 00 00 00 49 
+                                C9 11 00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034</hex></message-body><message-body><time>1504237750093</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    01101000
+                                </mmec>
+                                <m-TMSI>
+                                    11101011100001101100010010010001
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504237750345</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionReestablishment-r8>
+                            <radioResourceConfigDedicated>
+                            </radioResourceConfigDedicated>
+                            <nextHopChainingCount>1</nextHopChainingCount>
+                        </rrcConnectionReestablishment-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504237750492</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237750293</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <c1>
+                        <measurementReport-r8>
+                            <measResults>
+                                <measId>15</measId>
+                                <measResultPCell>
+                                    <rsrpResult>32</rsrpResult>
+                                    <rsrqResult>26</rsrqResult>
+                                </measResultPCell>
+                            </measResults>
+                        </measurementReport-r8>
+                    </c1>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504237750707</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000000000
+                                </mmegi>
+                                <mmec>
+                                    00000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 5B A4 47 00 7A A4 47 00 7A 34 D7 5C 69 A5 
+                                35 17 73 E1 25 34 A1 01 00 00 09 00 08 00 3B 00 
+                                33 00 02 00 00 00 E3 4F 0F 00 C0 A9 0C 00 3F 6F 
+                                02 00 D2 1A 00 00 DB 14 00 00 57 99 02 00 0F 33 
+                                7E 24 20 14 00 02 6C 11 00 5B A4 47 00 7A A4 47 
+                                00 7A 34 D7 5C 69 A5 35 17 73 E1 25 34 A1 01 00 
+                                00 09 00 08 00 3B 00 33 00 02 00 00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530</hex></message-body><message-body><time>1504237751102</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformationBlockType1></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformationBlockType1>
+                <cellAccessRelatedInfo>
+                    <plmn-IdentityList>
+                        <PLMN-IdentityInfo>
+                            <plmn-Identity>
+                                <mnc>
+                                    <MCC-MNC-Digit>4</MCC-MNC-Digit>
+                                    <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                </mnc>
+                            </plmn-Identity>
+                            <cellReservedForOperatorUse><reserved/></cellReservedForOperatorUse>
+                        </PLMN-IdentityInfo>
+                        <PLMN-IdentityInfo>
+                            <plmn-Identity>
+                                <mnc>
+                                    <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                    <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                </mnc>
+                            </plmn-Identity>
+                            <cellReservedForOperatorUse><reserved/></cellReservedForOperatorUse>
+                        </PLMN-IdentityInfo>
+                        <PLMN-IdentityInfo>
+                            <plmn-Identity>
+                                <mnc>
+                                    <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                    <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                </mnc>
+                            </plmn-Identity>
+                            <cellReservedForOperatorUse><reserved/></cellReservedForOperatorUse>
+                        </PLMN-IdentityInfo>
+                        <PLMN-IdentityInfo>
+                            <plmn-Identity>
+                                <mnc>
+                                    <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                    <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                </mnc>
+                            </plmn-Identity>
+                            <cellReservedForOperatorUse><reserved/></cellReservedForOperatorUse>
+                        </PLMN-IdentityInfo>
+                        <PLMN-IdentityInfo>
+                            <plmn-Identity>
+                                <mnc>
+                                    <MCC-MNC-Digit>1</MCC-MNC-Digit>
+                                    <MCC-MNC-Digit>14</MCC-MNC-Digit>
+                                </mnc>
+                            </plmn-Identity>
+                            <cellReservedForOperatorUse><reserved/></cellReservedForOperatorUse>
+                        </PLMN-IdentityInfo>
+                        <PLMN-IdentityInfo>
+                            <plmn-Identity>
+                                <mnc>
+                                    <MCC-MNC-Digit>2</MCC-MNC-Digit>
+                                    <MCC-MNC-Digit>1</MCC-MNC-Digit>
+                                    <MCC-MNC-Digit>15</MCC-MNC-Digit>
+                                </mnc>
+                            </plmn-Identity>
+                            <cellReservedForOperatorUse><notReserved/></cellReservedForOperatorUse>
+                        </PLMN-IdentityInfo>
+                        <PLMN-IdentityInfo>
+                            <plmn-Identity>
+                                <mnc>
+                                    <MCC-MNC-Digit>11</MCC-MNC-Digit>
+                                    <MCC-MNC-Digit>14</MCC-MNC-Digit>
+                                </mnc>
+                            </plmn-Identity>
+                            <cellReservedForOperatorUse><reserved/></cellReservedForOperatorUse>
+                        </PLMN-IdentityInfo>
+                    </plmn-IdentityList>
+                    <trackingAreaCode>
+                        0010000000000000
+                    </trackingAreaCode>
+                    <cellIdentity>
+                        0000000000000000000000000000
+                    </cellIdentity>
+                    <cellBarred><barred/></cellBarred>
+                    <intraFreqReselection><allowed/></intraFreqReselection>
+                    <csg-Indication><false/></csg-Indication>
+                    <csg-Identity>
+                        011110001001000011111100101
+                    </csg-Identity>
+                </cellAccessRelatedInfo>
+                <cellSelectionInfo>
+                    <q-RxLevMin>-14</q-RxLevMin>
+                    <q-RxLevMinOffset>3</q-RxLevMinOffset>
+                </cellSelectionInfo>
+                <freqBandIndicator>1</freqBandIndicator>
+                <schedulingInfoList>
+                    <SchedulingInfo>
+                        <si-Periodicity><rf8/></si-Periodicity>
+                        <sib-MappingInfo>
+                        </sib-MappingInfo>
+                    </SchedulingInfo>
+                </schedulingInfoList>
+                <tdd-Config>
+                    <subframeAssignment><sa0/></subframeAssignment>
+                    <specialSubframePatterns><ssp0/></specialSubframePatterns>
+                </tdd-Config>
+                <si-WindowLength><ms1/></si-WindowLength>
+                <systemInfoValueTag>0</systemInfoValueTag>
+                <nonCriticalExtension>
+                </nonCriticalExtension>
+            </systemInformationBlockType1>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343233373735313130323C2F74696D653E3C6368616E6E656C3E424343482D444C2D5343482D4D6573736167653C2F6368616E6E656C3E</hex></message-body><message-body><time>1504237752443</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504237752183</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504237752369</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504237752493</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000100110101000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0100001000111000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><spare1/></reestablishmentCause>
+                        <spare>
+                            01
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504237752636</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000100110101000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0100001000111000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><spare1/></reestablishmentCause>
+                        <spare>
+                            01
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504237752594</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000100110101000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0100001000111000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><spare1/></reestablishmentCause>
+                        <spare>
+                            01
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504237752019</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionReestablishment-r8>
+                            <radioResourceConfigDedicated>
+                            </radioResourceConfigDedicated>
+                            <nextHopChainingCount>0</nextHopChainingCount>
+                        </rrcConnectionReestablishment-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504237752345</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000000101
+                                </mmegi>
+                                <mmec>
+                                    10100010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                00 60 54 47 00 75 54 47 00 75 94 57 5E 70 C1 95 
+                                17
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C7469</hex></message-body><message-body><time>1504237752517</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237752545</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237752404</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000000110
+                                </mmegi>
+                                <mmec>
+                                    11000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                00 61 54 47 00 75 54 47 00 75 B4 D7 5E 74 D1 B5 
+                                17 7B D9 25 32 91 01 00 00 09 00 08 00 3B 00 33 
+                                00 02 00 00 00 39 78 2A 00 A7 38 23 00 6B C7 02 
+                                00 38 41 00 00 39 2F 00 00 7D 5E E1 02 00 5A E4 
+                                7E 22 20 14 06 C2 84 11 00 61 54 47 00 75 54 47 
+                                00 75 B4 D7 5E 74 D1 B5 17 7B D9 25 32 91 01 00 
+                                00 09 00 08 00 3B 00 33 00 02 00 00 00 39 78 2A 
+                                00 A7 38 23 00 6B C7 02 00 38 41 00 00 39 2F 00 
+                                00 7D 5E E1 02 00 5A E4 7E 22 20 14 06 C2 84 11 
+                                00 61 54 47 00 75 54 47 00 75 B4 D7 5E 74 D1 B5 
+                                17 7B D9 25 32 91 01 00 00 09 00 08 00 3B 00 33 
+                                00 02 00 00 00 39 78 2A 00 A7 38 23 00 6B C7 02 
+                                00 38 41 00 00 39 2F 00 00 7D 5E E1 02 00 5A E4 
+                                7E 22 20 14 06 C2 84 11 00 61 54 47 00 75 54 47 
+                                00 75 B4 D7 5E 74 D1 B5 17 7B D9 25 32 91 01 00 
+                                00 09 00 08 00 3B 00 33 00 02 00 00 00 39 78 2A 
+                                00 A7 38 23 00 6B C7 02 00 38 41 00 00 39 2F 00 
+                                00 7D 5E E1 02 00 5A E4 7E 22 20 14 06 C2 84 11 
+                                00 61 54 47 00 75 54 47 00 75 B4 D7 5E 74 D1 B5 
+                                17 7B D9 25 32 91 01 00 00 09 00 08 00 3B 00 33 
+                                00 02 00 00 00 39 78 2A 00 A7 38 23 00 6B C7 02 
+                                00 38 41 00 00 39 2F 00 00 7D 5E E1 02 00 5A E4 
+                                7E 22 20 14 06 C2 84 11 00 61 54 47 00 75 54 47 
+                                00 75 B4 D7 5E 74 D1 B5 17 7B D9 25 32 91 01 00 
+                                00 09 00 08 00 3B 00 33 00 02 00 00 00 39 78 2A 
+                                00 A7 38 23 00 6B C7 02 00 38 41 00 00 39 2F 00 
+                                00 7D 5E E1 02 00 5A E4 7E 22 20 14 06 C2 84 11 
+                                00 61 54 47 00 75 54 47 00 75 B4 D7 5E 74 D1 B5 
+                                17 7B D9 25 32 91 01 00 00 09 00 08 00 3B 00 33 
+                                00 02 00 00 00 39 78 2A 00 A7 38 23 00 6B C7 02 
+                                00 38 41 00 00 39 2F 00 00 7D 5E E1 02 00 5A E4 
+                                7E 22 20 14 06 C2 84 11 00 61 54 47 00 75 54 47 
+                                00 75 B4 D7 5E 74 D1 B5 17 7B D9 25 32 91 01 00 
+                                00 09 00 08 00 3B 00 33 00 02 00 00 00 39 78 2A 
+                                00 A7 38 23 00 6B C7 02 00 38 41 00 00 39 2F 00 
+                                00 7D 5E E1 02 00 5A E4 7E 22 20 14 06 C2 84 11 
+                                00 61 54 47 00 75 54 47 00 75 B4 D7 5E 74 D1 B5 
+                                17 7B D9 25 32 91 01 00 00 09 00 08 00 3B 00 33 
+                                00 02 00 00 00 39 78 2A 00 A7 38 23 00 6B C7 02 
+                                00 38 41 00 00 39 2F 00 00 7D 5E E1 02 00 5A E4 
+                                7E 22 20 14 06 C2 84 11 00 61 54 47 00 75 54 47 
+                                00 75 B4 D7 5E 74 D1 B5 17 7B D9 25 32 91 01 00 
+                                00 09 00 08 00 3B 00 33 00 02 00 00 00 39 78 2A 
+                                00 A7 38 23 00 6B C7 02 00 38 41 00 00 39 2F 00 
+                                00 7D 5E E1 02 00 5A E4 7E 22 20 14 06 C2 84 11 
+                                00 61 54 47 00 75 54 47 00 75 B4 D7 5E 74 D1 B5 
+                                17 7B D9 25 32 91 01 00 00 09 00 08 00 3B 00 33 
+                                00 02 00 00 00 39 78 2A 00 A7 38 23 00 6B C7 02 
+                                00 38 41 00 00 39 2F 00 00 7D 5E E1 02 00 5A E4 
+                                7E 22 20 14 06 C2 84 11 00 61 54 47 00 75 54 47 
+                                00 75 B4 D7 5E 74 D1 B5 17 7B D9 25 32 91 01 00 
+                                00 09 00 08 00 3B 00 33 00 02 00 00 00 39 78 2A 
+                                00 A7 38 23 00 6B C7 02 00 38 41 00 00 39 2F 00 
+                                00 7D 5E E1 02 00 5A E4 7E 22 20 14 06 C2 84 11 
+                                00 61 54 47 00 75 54 47 00 75 B4 D7 5E 74 D1 B5 
+                                17 7B D9 25 32 91 01 00 00 09 00 08 00 3B 00 33 
+                                00 02 00 00 00 39 78 2A 00 A7 38 23 00 6B C7 02 
+                                00 38 41 00 00 39 2F 00 00 7D 5E E1 02 00 5A E4 
+                                7E 22 20 14 06 C2 84 11 00 61 54 47 00 75 54 47 
+                                00 75 B4 D7 5E 74 D1 B5 17 7B D9 25 32 91 01 00 
+                                00 09 00 08 00 3B 00 33 00 02 00 00 00 39 78 2A 
+                                00 A7 38 23 00 6B C7 02 00 38 41 00 00 39 2F 00 
+                                00 7D 5E E1 02 00 5A E4 7E 22 20 14 06 C2 84 11 
+                                00 61 54 47 00 75 54 47 00 75 B4 D7 5E 74 D1 B5 
+                                17 7B D9 25 32 91 01 00 00 09 00 08 00 3B 00 33 
+                                00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343233373735323430343C2F74696D653E3C6368616E6E656C3E554C2D444343482D4D6573736167653C2F6368616E6E656C3E3C6576656E743E727263436F6E6E656374</hex></message-body><message-body><time>1504237753205</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237753524</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000001000
+                                </mmegi>
+                                <mmec>
+                                    00000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 5A 94 47 00 79 94 47 00 79 44 17 5D 6B AD 
+                                45 17 74 D9 A5 33 9D 01 00 00 09 00 08 00 3B 00 
+                                33 00 02 00 00 00 5F C2 0F 00 C8 A8 09 00 40 57 
+                                02 00 47 1C 00 00 20 13 00 00 5A 93 02 00 25 89 
+                                7E 22 20 14 08 02 69 11 00 5A 94 47 00 79 94 47 
+                                00 79 44 17 5D 6B AD 45 17 74 D9 A5 33 9D 01 00 
+                                00 09 00 08 00 3B 00 33 00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530</hex></message-body><message-body><time>1504237753457</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237753691</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformation></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformation>
+                <criticalExtensions>
+                    <systemInformation-r8>
+                        <sib-TypeAndInfo>
+                                <sib2>
+                                    <radioResourceConfigCommon>
+                                        <rach-ConfigCommon>
+                                            <preambleInfo>
+                                                <numberOfRA-Preambles><n40/></numberOfRA-Preambles>
+                                                <preamblesGroupAConfig>
+                                                    <sizeOfRA-PreamblesGroupA><n4/></sizeOfRA-PreamblesGroupA>
+                                                    <messageSizeGroupA><b56/></messageSizeGroupA>
+                                                    <messagePowerOffsetGroupB><dB15/></messagePowerOffsetGroupB>
+                                                </preamblesGroupAConfig>
+                                            </preambleInfo>
+                                            <powerRampingParameters>
+                                                <powerRampingStep><dB0/></powerRampingStep>
+                                                <preambleInitialReceivedTargetPower><dBm-120/></preambleInitialReceivedTargetPower>
+                                            </powerRampingParameters>
+                                            <ra-SupervisionInfo>
+                                                <preambleTransMax><n3/></preambleTransMax>
+                                                <ra-ResponseWindowSize><sf2/></ra-ResponseWindowSize>
+                                                <mac-ContentionResolutionTimer><sf8/></mac-ContentionResolutionTimer>
+                                            </ra-SupervisionInfo>
+                                            <maxHARQ-Msg3Tx>1</maxHARQ-Msg3Tx>
+                                        </rach-ConfigCommon>
+                                        <bcch-Config>
+                                            <modificationPeriodCoeff><n2/></modificationPeriodCoeff>
+                                        </bcch-Config>
+                                        <pcch-Config>
+                                            <defaultPagingCycle><rf32/></defaultPagingCycle>
+                                            <nB><fourT/></nB>
+                                        </pcch-Config>
+                                        <prach-Config>
+                                            <rootSequenceIndex>32</rootSequenceIndex>
+                                            <prach-ConfigInfo>
+                                                <prach-ConfigIndex>5</prach-ConfigIndex>
+                                                <highSpeedFlag><true/></highSpeedFlag>
+                                                <zeroCorrelationZoneConfig>10</zeroCorrelationZoneConfig>
+                                                <prach-FreqOffset>81</prach-FreqOffset>
+                                            </prach-ConfigInfo>
+                                        </prach-Config>
+                                        <pdsch-ConfigCommon>
+                                            <referenceSignalPower>-60</referenceSignalPower>
+                                            <p-b>0</p-b>
+                                        </pdsch-ConfigCommon>
+                                        <pusch-ConfigCommon>
+                                            <pusch-ConfigBasic>
+                                                <n-SB>1</n-SB>
+                                                <hoppingMode><interSubFrame/></hoppingMode>
+                                                <pusch-HoppingOffset>0</pusch-HoppingOffset>
+                                                <enable64QAM><false/></enable64QAM>
+                                            </pusch-ConfigBasic>
+                                            <ul-ReferenceSignalsPUSCH>
+                                                <groupHoppingEnabled><false/></groupHoppingEnabled>
+                                                <groupAssignmentPUSCH>0</groupAssignmentPUSCH>
+                                                <sequenceHoppingEnabled><false/></sequenceHoppingEnabled>
+                                                <cyclicShift>0</cyclicShift>
+                                            </ul-ReferenceSignalsPUSCH>
+                                        </pusch-ConfigCommon>
+                                        <pucch-ConfigCommon>
+                                            <deltaPUCCH-Shift><ds1/></deltaPUCCH-Shift>
+                                            <nRB-CQI>0</nRB-CQI>
+                                            <nCS-AN>0</nCS-AN>
+                                            <n1PUCCH-AN>0</n1PUCCH-AN>
+                                        </pucch-ConfigCommon>
+                                        <soundingRS-UL-ConfigCommon>
+                                            <release></release>
+                                        </soundingRS-UL-ConfigCommon>
+                                        <uplinkPowerControlCommon>
+                                            <p0-NominalPUSCH>-126</p0-NominalPUSCH>
+                                            <alpha><al0/></alpha>
+                                            <p0-NominalPUCCH>-127</p0-NominalPUCCH>
+                                            <deltaFList-PUCCH>
+                                                <deltaF-PUCCH-Format1><deltaF-2/></deltaF-PUCCH-Format1>
+                                                <deltaF-PUCCH-Format1b><deltaF1/></deltaF-PUCCH-Format1b>
+                                                <deltaF-PUCCH-Format2><deltaF-2/></deltaF-PUCCH-Format2>
+                                                <deltaF-PUCCH-Format2a><deltaF-2/></deltaF-PUCCH-Format2a>
+                                                <deltaF-PUCCH-Format2b><deltaF-2/></deltaF-PUCCH-Format2b>
+                                            </deltaFList-PUCCH>
+                                            <deltaPreambleMsg3>-1</deltaPreambleMsg3>
+                                        </uplinkPowerControlCommon>
+                                        <ul-CyclicPrefixLength><len1/></ul-CyclicPrefixLength>
+                                    </radioResourceConfigCommon>
+                                    <ue-TimersAndConstants>
+                                        <t300><ms100/></t300>
+                                        <t301><ms100/></t301>
+                                        <t310><ms0/></t310>
+                                        <n310><n1/></n310>
+                                        <t311><ms1000/></t311>
+                                        <n311><n1/></n311>
+                                    </ue-TimersAndConstants>
+                                    <freqInfo>
+                                        <additionalSpectrumEmission>1</additionalSpectrumEmission>
+                                    </freqInfo>
+                                    <timeAlignmentTimerCommon><sf500/></timeAlignmentTimerCommon>
+                                </sib2>
+                            
+                        </sib-TypeAndInfo>
+                    </systemInformation-r8>
+                </criticalExtensions>
+            </systemInformation>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343233373735333639313C2F74696D653E3C6368616E6E656C3E424343482D444C2D5343482D4D6573736167653C2F6368616E6E656C3E3C6576656E743E73797374656D496E666F726D6174696F6E3E3C2F657665</hex></message-body><message-body><time>1504237753620</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000001001
+                                </mmegi>
+                                <mmec>
+                                    00100010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 56 64 47 00 76 64 47 00 76 F4 D2 4B 3E F9 
+                                E4 13 3E DD 06 39 C8 01 00 00 0A 00 08 00 3B 00 
+                                33 00 02 00 00 00 B0 8A 0A 00 DE C3 08 00 2F 4F 
+                                02 00 49 1D 00 00 58 15 00 00 5B 9B 02 00 75 C3 
+                                7E 22 20 14 09 22 59 11 00 56 64 47 00 76 64 47 
+                                00 76 F4 D2 4B 3E F9 E4 13
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E3135</hex></message-body><message-body><time>1504237753507</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237753381</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <csfbParametersResponseCDMA2000-r8>
+                        <rand>
+                            00000000001100110000001001010010
+                        </rand>
+                        <mobilityParameters>00 00</mobilityParameters>
+                    </csfbParametersResponseCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D62</hex></message-body><message-body><time>1504237753146</time><channel>UL-CCCH-Message</channel><event>messageClassExtensionFuture-r13></event><UL-CCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r13>
+            </messageClassExtensionFuture-r13>
+        </messageClassExtension>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504237753222</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    1011110000001001
+                                </mmegi>
+                                <mmec>
+                                    00110111
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 53 84 47 00 78 84 47 00 78 F4 D2 4B 48 21 
+                                85 14 48 D1 06 38 C0 01 00 00 0A 00 08 00 3B 00 
+                                33 00 02 00 00 00 C1 C7 15 00 D8 D9 10 00 4E 87 
+                                02 00 35 1B 00 00 A1 16 00 00 58 A1 02 00 1D 2D 
+                                7E 22 20 BC 09 37 4D 11 00 53 84 47 00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31</hex></message-body><message-body><time>1504237754566</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    1011110000001001
+                                </mmegi>
+                                <mmec>
+                                    00110111
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 53 84 47 00 78 84 47 00 78 F4 D2 4B 48 21 
+                                85 14 48 D1 06 38 C0 01 00 00 0A 00 08 00 3B 00 
+                                33 00 02 00 00 00 C1 C7 15 00 D8 D9 10 00 4E 87 
+                                02 00 35 1B 00 00 A1 16 00 00 58 A1 02 00 1D 2D 
+                                7E 22 20 BC 09 37 4D 11 00 53 84 47 00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31</hex></message-body><message-body><time>1504237754298</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0111101110001000
+                            </c-RNTI>
+                            <physCellId>32</physCellId>
+                            <shortMAC-I>
+                                0000000001100010
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><spare1/></reestablishmentCause>
+                        <spare>
+                            11
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504237754089</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237754492</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000001101
+                                </mmegi>
+                                <mmec>
+                                    10100010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 5C 84 47 00 78 84 47 00 78 14 53 4C 4C 31 
+                                C5 14 4C ED 86 37 BC 01 00 00 0A 00 08 00 3B 00 
+                                33 00 02 00 00 00 BE 6F 21 00 6B 4D 1E 00 61 BB 
+                                02 00 D4 2E 00 00 BB 21 00 00 70 C3 02 00 91 1D 
+                                7E 24 20 14 0D A2 71 11 00 5C 84 47 00 78 84 47 
+                                00 78 14 53 4C 4C 31 C5 14 4C ED 86 37 BC 01 00 
+                                00 0A 00 08 00 3B 00 33 00 02 00 00 00 BE 6F 21 
+                                00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034</hex></message-body><message-body><time>1504237755063</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformation></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformation>
+                <criticalExtensions>
+                    <systemInformation-r8>
+                        <sib-TypeAndInfo>
+                                <sib2>
+                                    <radioResourceConfigCommon>
+                                        <rach-ConfigCommon>
+                                            <preambleInfo>
+                                                <numberOfRA-Preambles><n40/></numberOfRA-Preambles>
+                                                <preamblesGroupAConfig>
+                                                    <sizeOfRA-PreamblesGroupA><n4/></sizeOfRA-PreamblesGroupA>
+                                                    <messageSizeGroupA><b56/></messageSizeGroupA>
+                                                    <messagePowerOffsetGroupB><dB5/></messagePowerOffsetGroupB>
+                                                </preamblesGroupAConfig>
+                                            </preambleInfo>
+                                            <powerRampingParameters>
+                                                <powerRampingStep><dB0/></powerRampingStep>
+                                                <preambleInitialReceivedTargetPower><dBm-120/></preambleInitialReceivedTargetPower>
+                                            </powerRampingParameters>
+                                            <ra-SupervisionInfo>
+                                                <preambleTransMax><n3/></preambleTransMax>
+                                                <ra-ResponseWindowSize><sf2/></ra-ResponseWindowSize>
+                                                <mac-ContentionResolutionTimer><sf8/></mac-ContentionResolutionTimer>
+                                            </ra-SupervisionInfo>
+                                            <maxHARQ-Msg3Tx>1</maxHARQ-Msg3Tx>
+                                        </rach-ConfigCommon>
+                                        <bcch-Config>
+                                            <modificationPeriodCoeff><n2/></modificationPeriodCoeff>
+                                        </bcch-Config>
+                                        <pcch-Config>
+                                            <defaultPagingCycle><rf32/></defaultPagingCycle>
+                                            <nB><fourT/></nB>
+                                        </pcch-Config>
+                                        <prach-Config>
+                                            <rootSequenceIndex>0</rootSequenceIndex>
+                                            <prach-ConfigInfo>
+                                                <prach-ConfigIndex>0</prach-ConfigIndex>
+                                                <highSpeedFlag><false/></highSpeedFlag>
+                                                <zeroCorrelationZoneConfig>0</zeroCorrelationZoneConfig>
+                                                <prach-FreqOffset>0</prach-FreqOffset>
+                                            </prach-ConfigInfo>
+                                        </prach-Config>
+                                        <pdsch-ConfigCommon>
+                                            <referenceSignalPower>-60</referenceSignalPower>
+                                            <p-b>0</p-b>
+                                        </pdsch-ConfigCommon>
+                                        <pusch-ConfigCommon>
+                                            <pusch-ConfigBasic>
+                                                <n-SB>1</n-SB>
+                                                <hoppingMode><interSubFrame/></hoppingMode>
+                                                <pusch-HoppingOffset>0</pusch-HoppingOffset>
+                                                <enable64QAM><false/></enable64QAM>
+                                            </pusch-ConfigBasic>
+                                            <ul-ReferenceSignalsPUSCH>
+                                                <groupHoppingEnabled><false/></groupHoppingEnabled>
+                                                <groupAssignmentPUSCH>0</groupAssignmentPUSCH>
+                                                <sequenceHoppingEnabled><false/></sequenceHoppingEnabled>
+                                                <cyclicShift>0</cyclicShift>
+                                            </ul-ReferenceSignalsPUSCH>
+                                        </pusch-ConfigCommon>
+                                        <pucch-ConfigCommon>
+                                            <deltaPUCCH-Shift><ds1/></deltaPUCCH-Shift>
+                                            <nRB-CQI>0</nRB-CQI>
+                                            <nCS-AN>0</nCS-AN>
+                                            <n1PUCCH-AN>0</n1PUCCH-AN>
+                                        </pucch-ConfigCommon>
+                                        <soundingRS-UL-ConfigCommon>
+                                            <release></release>
+                                        </soundingRS-UL-ConfigCommon>
+                                        <uplinkPowerControlCommon>
+                                            <p0-NominalPUSCH>-126</p0-NominalPUSCH>
+                                            <alpha><al0/></alpha>
+                                            <p0-NominalPUCCH>-127</p0-NominalPUCCH>
+                                            <deltaFList-PUCCH>
+                                                <deltaF-PUCCH-Format1><deltaF-2/></deltaF-PUCCH-Format1>
+                                                <deltaF-PUCCH-Format1b><deltaF1/></deltaF-PUCCH-Format1b>
+                                                <deltaF-PUCCH-Format2><deltaF-2/></deltaF-PUCCH-Format2>
+                                                <deltaF-PUCCH-Format2a><deltaF-2/></deltaF-PUCCH-Format2a>
+                                                <deltaF-PUCCH-Format2b><deltaF-2/></deltaF-PUCCH-Format2b>
+                                            </deltaFList-PUCCH>
+                                            <deltaPreambleMsg3>-1</deltaPreambleMsg3>
+                                        </uplinkPowerControlCommon>
+                                        <ul-CyclicPrefixLength><len1/></ul-CyclicPrefixLength>
+                                    </radioResourceConfigCommon>
+                                    <ue-TimersAndConstants>
+                                        <t300><ms100/></t300>
+                                        <t301><ms100/></t301>
+                                        <t310><ms0/></t310>
+                                        <n310><n1/></n310>
+                                        <t311><ms1000/></t311>
+                                        <n311><n1/></n311>
+                                    </ue-TimersAndConstants>
+                                    <freqInfo>
+                                        <additionalSpectrumEmission>1</additionalSpectrumEmission>
+                                    </freqInfo>
+                                    <timeAlignmentTimerCommon><sf500/></timeAlignmentTimerCommon>
+                                </sib2>
+                            
+                        </sib-TypeAndInfo>
+                    </systemInformation-r8>
+                </criticalExtensions>
+            </systemInformation>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343233373735353036333C2F74696D653E3C6368616E6E656C3E424343482D444C2D5343482D4D6573736167653C2F6368616E6E656C3E3C6576656E743E73797374656D496E666F726D6174696F6E3E3C2F657665</hex></message-body><message-body><time>1504237755233</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000001110
+                                </mmegi>
+                                <mmec>
+                                    11000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 5C 74 47 00 77 74 47 00 77 24 93 4C 49 25 
+                                95 14 49 ED A6 37 BD 01 00 00 0A 00 08 00 3B 00 
+                                33 00 02 00 00 00 04 C6 26 00 F0 17 24 00 67 C9 
+                                02 00 0C 29 00 00 01 20 00 00 6A BF 02 00 F2 6C 
+                                7E 22 20 14 0E C2 71 11 00 5C 74 47 00 77 74 47 
+                                00 77 24 93 4C 49 25 95 14 49 ED A6 37 BD 01 00 
+                                00 0A 00 08 00 3B 00 33 00 02 00 00 00 04 C6 26 
+                                00
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034</hex></message-body><message-body><time>1504237755683</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformation></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformation>
+                <criticalExtensions>
+                    <systemInformation-r8>
+                        <sib-TypeAndInfo>
+                                <sib2>
+                                    <radioResourceConfigCommon>
+                                        <rach-ConfigCommon>
+                                            <preambleInfo>
+                                                <numberOfRA-Preambles><n4/></numberOfRA-Preambles>
+                                            </preambleInfo>
+                                            <powerRampingParameters>
+                                                <powerRampingStep><dB0/></powerRampingStep>
+                                                <preambleInitialReceivedTargetPower><dBm-120/></preambleInitialReceivedTargetPower>
+                                            </powerRampingParameters>
+                                            <ra-SupervisionInfo>
+                                                <preambleTransMax><n50/></preambleTransMax>
+                                                <ra-ResponseWindowSize><sf2/></ra-ResponseWindowSize>
+                                                <mac-ContentionResolutionTimer><sf8/></mac-ContentionResolutionTimer>
+                                            </ra-SupervisionInfo>
+                                            <maxHARQ-Msg3Tx>1</maxHARQ-Msg3Tx>
+                                        </rach-ConfigCommon>
+                                        <bcch-Config>
+                                            <modificationPeriodCoeff><n2/></modificationPeriodCoeff>
+                                        </bcch-Config>
+                                        <pcch-Config>
+                                            <defaultPagingCycle><rf32/></defaultPagingCycle>
+                                            <nB><fourT/></nB>
+                                        </pcch-Config>
+                                        <prach-Config>
+                                            <rootSequenceIndex>15</rootSequenceIndex>
+                                            <prach-ConfigInfo>
+                                                <prach-ConfigIndex>63</prach-ConfigIndex>
+                                                <highSpeedFlag><true/></highSpeedFlag>
+                                                <zeroCorrelationZoneConfig>15</zeroCorrelationZoneConfig>
+                                                <prach-FreqOffset>127</prach-FreqOffset>
+                                            </prach-ConfigInfo>
+                                        </prach-Config>
+                                        <pdsch-ConfigCommon>
+                                            <referenceSignalPower>67</referenceSignalPower>
+                                            <p-b>3</p-b>
+                                        </pdsch-ConfigCommon>
+                                        <pusch-ConfigCommon>
+                                            <pusch-ConfigBasic>
+                                                <n-SB>4</n-SB>
+                                                <hoppingMode><intraAndInterSubFrame/></hoppingMode>
+                                                <pusch-HoppingOffset>2</pusch-HoppingOffset>
+                                                <enable64QAM><false/></enable64QAM>
+                                            </pusch-ConfigBasic>
+                                            <ul-ReferenceSignalsPUSCH>
+                                                <groupHoppingEnabled><false/></groupHoppingEnabled>
+                                                <groupAssignmentPUSCH>5</groupAssignmentPUSCH>
+                                                <sequenceHoppingEnabled><false/></sequenceHoppingEnabled>
+                                                <cyclicShift>0</cyclicShift>
+                                            </ul-ReferenceSignalsPUSCH>
+                                        </pusch-ConfigCommon>
+                                        <pucch-ConfigCommon>
+                                            <deltaPUCCH-Shift><ds1/></deltaPUCCH-Shift>
+                                            <nRB-CQI>0</nRB-CQI>
+                                            <nCS-AN>0</nCS-AN>
+                                            <n1PUCCH-AN>1</n1PUCCH-AN>
+                                        </pucch-ConfigCommon>
+                                        <soundingRS-UL-ConfigCommon>
+                                            <release></release>
+                                        </soundingRS-UL-ConfigCommon>
+                                        <uplinkPowerControlCommon>
+                                            <p0-NominalPUSCH>82</p0-NominalPUSCH>
+                                            <alpha><al04/></alpha>
+                                            <p0-NominalPUCCH>-127</p0-NominalPUCCH>
+                                            <deltaFList-PUCCH>
+                                                <deltaF-PUCCH-Format1><deltaF-2/></deltaF-PUCCH-Format1>
+                                                <deltaF-PUCCH-Format1b><deltaF1/></deltaF-PUCCH-Format1b>
+                                                <deltaF-PUCCH-Format2><deltaF-2/></deltaF-PUCCH-Format2>
+                                                <deltaF-PUCCH-Format2a><deltaF-2/></deltaF-PUCCH-Format2a>
+                                                <deltaF-PUCCH-Format2b><deltaF-2/></deltaF-PUCCH-Format2b>
+                                            </deltaFList-PUCCH>
+                                            <deltaPreambleMsg3>-1</deltaPreambleMsg3>
+                                        </uplinkPowerControlCommon>
+                                        <ul-CyclicPrefixLength><len1/></ul-CyclicPrefixLength>
+                                    </radioResourceConfigCommon>
+                                    <ue-TimersAndConstants>
+                                        <t300><ms100/></t300>
+                                        <t301><ms100/></t301>
+                                        <t310><ms0/></t310>
+                                        <n310><n1/></n310>
+                                        <t311><ms1000/></t311>
+                                        <n311><n1/></n311>
+                                    </ue-TimersAndConstants>
+                                    <freqInfo>
+                                        <additionalSpectrumEmission>8</additionalSpectrumEmission>
+                                    </freqInfo>
+                                    <timeAlignmentTimerCommon><sf2560/></timeAlignmentTimerCommon>
+                                </sib2>
+                            
+                        </sib-TypeAndInfo>
+                    </systemInformation-r8>
+                </criticalExtensions>
+            </systemInformation>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343233373735353638333C2F74696D653E3C6368616E6E656C3E424343482D444C2D5343482D4D6573736167653C2F6368616E6E656C3E3C6576656E743E73797374656D496E666F726D6174696F</hex></message-body><message-body><time>1504237755565</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0010000000000000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            00
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504237755190</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare2></spare2>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504237755392</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000010000
+                                </mmegi>
+                                <mmec>
+                                    00000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                5E 11 00 5F 84 47 00 78 84 47 00 78 84 17 5E 71 
+                                C5 85 17 78 D9 E5 32 97 01 00 00 09 00 08 00 3B 
+                                00 33 00 02 00 00 00 2E 41 1D 00 86 C0 14 00 5B 
+                                99 02 00 B0 25 00 00 C0 17 00 00 66 A5 02 00 67 
+                                22 7E 22 20 14 10 02 7D 5E 11 00 5F 84 47 00 78 
+                                84 47 00 78 84 17 5E 71 C5 85 17 78 D9 E5 32 97 
+                                01 00 00 09 00 08 00 3B 00 33 00 02 00 00 00 2E 
+                                41 1D 00 86 C0 14 00 5B 99 02 00 B0 25
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E3135303432</hex></message-body><message-body><time>1504237755166</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237757716</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <csfbParametersResponseCDMA2000-r8>
+                        <rand>
+                            00000000001100110000000001100110
+                        </rand>
+                        <mobilityParameters>00 00</mobilityParameters>
+                    </csfbParametersResponseCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D62</hex></message-body><message-body><time>1504237757048</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237757400</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000010100
+                                </mmegi>
+                                <mmec>
+                                    10000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 5C 54 47 00 75 54 47 00 75 94 57 5E 78 E1 
+                                95 17 79 C9 A5 31 8D 01 00 00 09 00 08 00 3B 00 
+                                33 00 02 00 00 00 FF 7D 5E 2C 00 D6 1E 26 00 6D 
+                                CF 02 00 9C 2F 00 00 9C 19 00 00 70 AB 02 00 C1 
+                                0B 7E 22 20 14 14 82 72 11 00 5C 54 47 00 75 54 
+                                47 00 75 94 57 5E 78 E1 95 17 79 C9 A5 31 8D 01 
+                                00 00 09 00 08 00 3B 00 33 00 02 00 00 00 FF 7D 
+                                5E 2C
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034</hex></message-body><message-body><time>1504237758121</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237759486</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000011011
+                                </mmegi>
+                                <mmec>
+                                    01100010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                00 61 44 47 00 74 44 47 00 74 14 57 5C 68 A1 15 
+                                17 71 01 86 33 9C 01 00 00 09 00 07 00 3B 00 33 
+                                00 02 00 00 00 B2 45 0F 00 F4 19 0A 00 3F 5B 02 
+                                00 47 1C 00 00 C9 10 00 00 5A 87 02 00 05 99 7E 
+                                22 20 14 1B 62 87 11 00 61 44 47 00 74 44 47 00 
+                                74 14 57 5C 68 A1 15 17 71 01 86 33 9C 01 00 00 
+                                09 00 07 00 3B 00 33 00 02 00 00 00 B2 45 0F 00 
+                                F4 19 0A 00 3F 5B 02 00 47 1C 00 00 C9 10 00 00 
+                                5A 87 02 00 05 99 7E 22 20 14 1B 62 87 11 00 61 
+                                44 47 00 74 44 47 00 74 14 57 5C 68 A1 15 17 71 
+                                01 86 33 9C 01 00 00 09 00 07 00 3B 00 33 00 02 
+                                00 00 00 B2 45 0F 00 F4 19 0A 00 3F 5B 02 00 47 
+                                1C 00 00 C9 10 00 00 5A 87 02 00 05 99 7E 22 20 
+                                14 1B 62 87 11 00 61 44 47 00 74 44 47 00 74 14 
+                                57 5C 68 A1 15 17 71 01 86 33 9C 01 00 00 09 00 
+                                07 00 3B 00 33 00 02 00 00 00 B2 45 0F 00 F4 19 
+                                0A 00 3F 5B 02 00 47 1C 00 00 C9 10 00 00 5A 87 
+                                02 00 05 99 7E 22 20 14 1B 62 87 11 00 61 44 47 
+                                00 74 44 47 00 74 14 57 5C 68 A1 15 17 71 01 86 
+                                33 9C 01 00 00 09 00 07 00 3B 00 33 00 02 00 00 
+                                00 B2 45 0F 00 F4 19 0A 00 3F 5B 02 00 47 1C 00 
+                                00 C9 10 00 00 5A 87 02 00 05 99 7E 22 20 14 1B 
+                                62 87 11 00 61 44 47 00 74 44 47 00 74 14 57 5C 
+                                68 A1 15 17 71 01 86 33 9C 01 00 00 09 00 07 00 
+                                3B 00 33 00 02 00 00 00 B2 45 0F 00 F4 19 0A 00 
+                                3F 5B 02 00 47 1C 00 00 C9 10 00 00 5A 87 02 00 
+                                05 99 7E 22 20 14 1B 62 87 11 00 61 44 47 00 74 
+                                44 47 00 74 14 57 5C 68 A1 15 17 71 01 86 33 9C 
+                                01 00 00 09 00 07 00 3B 00 33 00 02 00 00 00 B2 
+                                45 0F 00 F4 19 0A 00 3F 5B 02 00 47 1C 00 00 C9 
+                                10 00 00 5A 87 02 00 05 99 7E 22 20 14 1B 62 87 
+                                11 00 61 44 47 00 74 44 47 00 74 14 57 5C 68 A1 
+                                15 17 71 01 86 33 9C 01 00 00 09 00 07 00 3B 00 
+                                33 00 02 00 00 00 B2 45 0F 00 F4 19 0A 00 3F 5B 
+                                02 00 47 1C 00 00 C9 10 00 00 5A 87 02 00 05 99 
+                                7E 22 20 14 1B 62 87 11 00 61 44 47 00 74 44 47 
+                                00 74 14 57 5C 68 A1 15 17 71 01 86 33 9C 01 00 
+                                00 09 00 07 00 3B 00 33 00 02 00 00 00 B2 45 0F 
+                                00 F4 19 0A 00 3F 5B 02 00 47 1C 00 00 C9 10 00 
+                                00 5A 87 02 00 05 99 7E 22 20 14 1B 62 87 11 00 
+                                61 44 47 00 74 44 47 00 74 14 57 5C 68 A1 15 17 
+                                71 01 86 33 9C 01 00 00 09 00 07 00 3B 00 33 00 
+                                02 00 00 00 B2 45 0F 00 F4 19 0A 00 3F 5B 02 00 
+                                47 1C 00 00 C9 10 00 00 5A 87 02 00 05 99 7E 22 
+                                20 14 1B 62 87 11 00 61 44 47 00 74 44 47 00 74 
+                                14 57 5C 68 A1 15 17 71 01 86 33 9C 01 00 00 09 
+                                00 07 00 3B 00 33 00 02 00 00 00 B2 45 0F 00 F4 
+                                19 0A 00 3F 5B 02 00 47 1C 00 00 C9 10 00 00 5A 
+                                87 02 00 05 99 7E 22 20 14 1B 62 87 11 00 61 44 
+                                47 00 74 44 47 00 74 14 57 5C 68 A1 15 17 71 01 
+                                86 33 9C 01 00 00 09 00 07 00 3B 00 33 00 02 00 
+                                00 00 B2 45 0F 00 F4 19 0A 00 3F 5B 02 00 47 1C 
+                                00 00 C9 10 00 00 5A 87 02 00 05 99 7E 22 20 14 
+                                1B 62 87 11 00 61 44 47 00 74 44 47 00 74 14 57 
+                                5C 68 A1 15 17 71 01 86 33 9C 01 00 00 09 00 07 
+                                00 3B 00 33 00 02 00 00 00 B2 45 0F 00 F4 19 0A 
+                                00 3F 5B 02 00 47 1C 00 00 C9 10 00 00 5A 87 02 
+                                00 05 99 7E 22 20 14 1B 62 87 11 00 61 44 47 00 
+                                74 44 47 00 74 14 57 5C 68 A1 15 17 71 01 86 33 
+                                9C 01 00 00 09 00 07 00 3B 00 33 00 02 00 00 00 
+                                B2 45 0F 00 F4 19 0A 00 3F 5B 02 00 47 1C 00 00 
+                                C9 10 00 00 5A 87 02 00 05 99 7E 22 20 14 1B 62 
+                                87 11 00 61 44 47 00 74 44 47 00 74 14 57 5C 68 
+                                A1 15 17 71 01 86 33 9C 01 00 00 09 00 07 00 3B 
+                                00 33 00 02 00 00 00 B2 45 0F 00 F4 19 0A 00 3F 
+                                5B 02 00 47 1C 00 00 C9 10 00 00 5A 87 02 00 05 
+                                99 7E 22 20 14 1B 62 87 11 00 61 44 47 00 74 44 
+                                47 00 74 14 57 5C 68 A1 15 17 71 01 86 33 9C 01 
+                                00 00 09 00 07 00 3B 00 33 00 02 00 00 00 B2 45 
+                                0F 00 F4 19 0A 00 3F 5B 02 00 47 1C 00 00 C9 10 
+                                00 00 5A 87 02 00 05 99 7E 22 20 14 1B 62 87 11 
+                                00 61 44 47 00 74 44 47 00 74 14 57 5C 68 A1 15 
+                                17 71 01 86 33 9C 01 00 00 09 00 07 00 3B 00 33 
+                                00 02 00 00 00 B2 45 0F 00 F4 19 0A 00 3F 5B 02 
+                                00 47 1C 00 00 C9 10 00 00 5A 87 02 00 05 99 7E 
+                                22 20 14 1B 62 87 11 00 61 44 47 00 74 44 47 00 
+                                74 14 57 5C 68 A1 15 17 71 01 86 33 9C 01 00 00 
+                                09 00 07 00 3B 00 33 00 02 00 00 00 B2 45 0F 00 
+                                F4 19 0A 00 3F 5B 02 00 47 1C 00 00 C9 10 00 00 
+                                5A 87 02 00 05 99 7E 22 20 14 1B 62 87 11 00 61 
+                                44 47 00 74 44 47 00 74 14 57 5C 68 A1 15 17 71 
+                                01 86 33 9C 01 00 00 09 00 07 00 3B 00 33 00 02 
+                                00 00 00 B2 45 0F 00 F4 19 0A 00 3F 5B 02 00 47 
+                                1C 00 00 C9 10 00 00 5A 87 02 00 05 99 7E 22 20 
+                                14 1B 62 87 11 00 61 44 47 00 74 44 47 00 74 14 
+                                57 5C 68 A1 15 17 71 01 86 33 9C 01 00 00 09 00 
+                                07 00 3B 00 33 00 02 00 00 00 B2 45 0F 00 F4 19 
+                                0A 00 3F 5B 02 00 47 1C 00 00 C9 10 00 00 5A 87 
+                                02 00 05 99 7E 22 20 14 1B 62 87 11 00 61 44 47 
+                                00 74 44 47 00 74 14 57 5C 68 A1 15 17 71 01 86 
+                                33 9C 01 00 00 09 00 07 00 3B 00 33 00 02 00 00 
+                                00 B2 45 0F 00 F4 19 0A 00 3F 5B 02 00 47 1C 00 
+                                00 C9 10 00 00 5A 87 02 00 05 99 7E 22 20 14 1B 
+                                62 87 11 00 61 44 47 00 74 44 47 00 74 14 57 5C 
+                                68 A1 15 17 71 01 86 33 9C 01 00 00 09 00 07 00 
+                                3B 00 33 00 02 00 00 00 B2 45 0F 00 F4 19 0A 00 
+                                3F 5B 02 00 47 1C 00 00 C9 10 00 00 5A 87 02 00 
+                                05 99 7E 22 20 14 1B 62 87 11 00 61 44 47 00 74 
+                                44 47 00 74 14 57 5C 68 A1 15 17 71 01 86 33 9C 
+                                01 00 00 09 00 07 00 3B 00 33 00 02 00 00 00 B2 
+                                45 0F 00 F4 19 0A 00 3F 5B 02 00 47 1C 00 00 C9 
+                                10 00 00 5A 87 02 00 05 99 7E 22 20 14 1B 62 87 
+                                11 00 61 44 47 00 74 44 47 00 74 14 57 5C 68 A1 
+                                15 17 71 01 86 33 9C 01 00 00 09 00 07 00 3B 00 
+                                33 00 02 00 00 00 B2 45 0F 00 F4 19 0A 00 3F 5B 
+                                02 00 47 1C 00 00 C9 10 00 00 5A 87 02 00 05 99 
+                                7E 22 20 14 1B 62 87 11 00 61 44 47 00 74 44 47 
+                                00 74 14 57 5C 68 A1 15 17 71 01 86 33 9C 01 00 
+                                00 09 00 07 00 3B 00 33 00 02 00 00 00 B2 45 0F 
+                                00 F4 19 0A 00 3F 5B 02 00 47 1C 00 00 C9 10 00 
+                                00 5A 87 02 00 05 99 7E 22 20 14 1B 62 87 11 00 
+                                61 44 47 00 74 44 47 00 74 14 57 5C 68 A1 15 17 
+                                71 01 86 33 9C 01 00 00 09 00 07 00 3B 00 33 00 
+                                02
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343233373735393438363C2F74696D653E3C6368616E6E656C3E554C2D444343482D4D6573736167653C2F6368616E6E656C3E3C6576656E743E727263436F6E6E656374696F6E5365747570436F6D706C6574653E3C2F6576656E743E3C554C2D444343482D4D6573736167653E0A202020203C6D6573736167653E</hex></message-body><message-body><time>1504237759356</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504237759146</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionReestablishment-r8>
+                            <radioResourceConfigDedicated>
+                            </radioResourceConfigDedicated>
+                            <nextHopChainingCount>0</nextHopChainingCount>
+                        </rrcConnectionReestablishment-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504237759202</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <csfbParametersResponseCDMA2000-r8>
+                        <rand>
+                            00000000001010001101100000000110
+                        </rand>
+                        <mobilityParameters></mobilityParameters>
+                    </csfbParametersResponseCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D62</hex></message-body><message-body><time>1504237759395</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000011100
+                                </mmegi>
+                                <mmec>
+                                    10000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 5E A4 47 00 7A A4 47 00 7A 74 D7 5D 6F BD 
+                                75 17 77 DD 65 33 9B 01 00 00 09 00 07 00 3B 00 
+                                33 00 02 00 00 00 43 57 14 00 AB BE 0E 00 4B 7B 
+                                02 00 CE 1C 00 00 12 14 00 00 5A 97 02 00 AC 66 
+                                7E 22 20 14 1C 82 7B 11 00 5E A4 47 00 7A A4 47 
+                                00 7A 74 D7 5D 6F BD 75 17 77 DD 65 33 9B 01 00 
+                                00 09 00 07 00 3B 00 33 00 02 00 00 00 43 57 14 
+                                00 AB BE 0E 00 4B 7B 02 00 CE 1C
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E3135303432</hex></message-body><message-body><time>1504237760348</time><channel>UL-DCCH-Message</channel><event>rrcConnectionSetupComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionSetupComplete>
+                <rrc-TransactionIdentifier>1</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionSetupComplete-r8>
+                            <selectedPLMN-Identity>1</selectedPLMN-Identity>
+                            <registeredMME>
+                                <mmegi>
+                                    0001010000000000
+                                </mmegi>
+                                <mmec>
+                                    00000010
+                                </mmec>
+                            </registeredMME>
+                            <dedicatedInfoNAS>
+                                11 00 53 84 47 00 78 84 47 00 78 24 97 5C 79 E5 
+                                95 17 79 C5 E5 31 8F 01 00 00 0A 00 08 00 3B 00 
+                                33 00 02 00 00 00 B8 8C 16 00 E8 6E 13 00 50 93 
+                                02 00 55 27 00 00 12 25 00 00 68 CB 02 00 BC 73 
+                                7E 22 20 14 00 02 4C 11 00 53 84 47
+                            </dedicatedInfoNAS>
+                        </rrcConnectionSetupComplete-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionSetupComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31</hex></message-body><message-body><time>1504237760642</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237760108</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504237761087</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body></drive>

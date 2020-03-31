@@ -1,0 +1,56 @@
+﻿
+<div id="addnew-panel" class="popup-box">
+    <form name=vm.dashboardAndReportInitialInfo ng-submit=vm.saveJoin()>
+        <div class="widget-title">
+            <div class="title-text">Link properties</div>
+            <a class="close-popup" ng-click="vm.cancel()" href="#" title=""><i class="fa fa-times"></i></a>
+        </div><!-- Popup Title -->
+
+        <div class="popup-content">
+
+            <div class="row align-items-start">
+
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <input ng-model="vm.joinType" type="radio" value="INNER" name="linkpro">
+                    <label name="linkpro">Select corresponding records</label>
+                    <div class="help-block with-errors"></div>
+                </div>
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <input ng-model="vm.joinType" type="radio" value="LEFT" name="linkpro">
+                    <label name="linkpro">Select all from left</label>
+
+                    <div class="help-block with-errors"></div>
+                </div>
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <input ng-model="vm.joinType" type="radio" value="RIGHT" name="linkpro">
+                    <label name="linkpro">Select all from right</label>
+                    <div class="help-block with-errors"></div>
+                </div>
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <input ng-model="vm.joinType" type="radio" value="FULL OUTER" name="linkpro">
+                    <label name="linkpro">Select all from both sides</label>
+                    <div class="help-block with-errors"></div>
+                    <hr />
+                </div>
+
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <input ng-model="vm.operatorType" type="radio" value="AND" name="operatorType">
+                    <label name="linkpro">AND</label>
+                    <div class="help-block with-errors"></div>
+                </div>
+
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <input ng-model="vm.operatorType" type="radio" value="OR" name="operatorType">
+                    <label name="linkpro">OR</label>
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+
+        </div>
+        <div class="popup-footer align-right">
+            <button ng-disabled="!vm.dashboardAndReportInitialInfo.$valid" type="submit" class="custom-btn medium color1">Save</button>
+            <button type="button" class="custom-btn medium color11" ng-click="vm.cancel()">Cancel</button>
+        </div>
+    </form>
+</div>
+

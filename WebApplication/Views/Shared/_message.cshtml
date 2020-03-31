@@ -1,0 +1,19 @@
+﻿
+@if (TempData["msg_success"] != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        @TempData["msg_success"]
+    </div>
+
+    TempData["msg_success"] = null;
+}
+
+@if (TempData["msg_error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        @TempData["msg_error"]
+    </div>
+    TempData["msg_error"] = null;
+}

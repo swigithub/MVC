@@ -1,0 +1,1888 @@
+﻿@{
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Definationsjs = jss.Serialize(ViewBag.definations);
+    var EventsList = ViewBag.Events as List<SWI.Libraries.AD.Entities.AD_Defination>;
+    var Definations = ViewBag.definations as List<SWI.Libraries.AD.Entities.AD_Defination>;
+    var PreviousRecord = ViewBag.PreviousRecord as List<SWI.Libraries.AirView.Entities.AV_SiteScript>;
+    ViewBag.Title = "Script";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+<style>
+    .select2-container {
+        width: 110px !important;
+        margin-right: 15px !important;
+    }
+    /*.multiselect-container{
+            max-height:200px;
+            overflow:auto;
+    }*/
+    .multiselect{
+        width:200px !important;
+        padding:2px !important;
+    }
+    .todo-list {
+        overflow: unset;
+    }
+
+    li.myrow.clearfix .pull-left {
+        margin: 7px 0 5px;
+    }
+
+    .select2-container--default .select2-selection--single, .select2-selection .select2-selection--single {
+        padding: 3px 12px;
+    }
+
+    select.OptionDrop.search-type {
+        margin-right: 15px;
+        height: 28px;
+        cursor: pointer;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        margin-right: 15px;
+    }
+</style>
+<link href="~/AdminLTE/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminLTE/plugins/sweetalert/sweetalert.js"></script>
+<script src="~/Scale/js/sortable/jquery.sortable.js"></script>
+<script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="~/Content/js/Plugins/MultiselectBootstrap/js/scanner/bootstrap-multiselect.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.selectMulti').multiselect();
+    })
+</script>
+<script>
+    //    var DelayId = 0;
+    //var BandLockId = 0;
+    //var BandResetId = 0;
+    //var CarrierLockId = 0;
+    //var CarrierResetId = 0;
+    var Definationsjs = JSON.parse('@Html.Raw(Definationsjs)');
+    var count = 0;
+    var data=[];
+    var Bands,Carriers,ScannerProtocol,ScannerMeasurement,ScannerBand;
+    var RowColor = '#f4f4f4';
+    var TestCount = 0;
+    var UpCount = 0;
+    var NetworkModeId = '@ViewBag.NetworkModeId';
+    var NetworkMode = '';
+    if (NetworkModeId=='15') {
+        NetworkMode = 'PCI';
+    }else if (NetworkModeId == '14') {
+        NetworkMode = 'PSC';
+    }
+
+    /////scriptkpi
+    var ScriptKpis=[];
+    var scriptKpiDefType = "L3KPI";
+    function ScriptKPI() {
+
+        $.ajax({
+            url: '/NetLayerStatus/ScriptKPI?value='+scriptKpiDefType,
+            async:false,
+            success: function (res) {
+                ScriptKpis=res
+                console.log(res);
+            }
+                     ,error(err){
+
+                     }
+        });
+    }
+    // ScriptKPI();
+    ////
+    function wait(ms){
+        var start = new Date().getTime();
+        var end = start;
+        while(end < start + ms) {
+            end = new Date().getTime();
+        }
+    }
+    function GetBC(){
+        $.ajax({
+            url: '/NetLayerStatus/GetBC',
+            type: 'GET',
+            async:false,
+            success: function (res) {
+
+                if (res.Status == 'Success') {
+                    //  console.log(res);
+                    ScannerProtocol = res.ScannerProtocol;
+                    ScannerMeasurement = res.ScannerMeasurement;
+                    ScannerBand = res.ScannerBand;
+                    Manufacturer = res.Manufacturer;
+                    ScannerModel = res.ScannerModel;
+                    Bands=res.Bands;
+                    Carriers=res.Carriers;
+                    var myselect = $('<select name="EventValue" id='+count+'id>');
+                    $.each(Bands, function(index, key) {
+                        myselect.append( $('<option></option>').val(Bands[index].DefinationId).html(Bands[index].DefinationName) );
+                    });
+                    $('.bandsdrop').append(myselect.html());
+                    $(".bandsdrop").select2();
+                    var myselect = $('<select name="EventValue" id='+count+'id>');
+                    $.each(Carriers, function(index, key) {
+                        myselect.append( $('<option></option>').val(Carriers[index].DefinationId).html(Carriers[index].DefinationName) );
+                    });
+                    $('.carriersdrop').append(myselect.html());
+                    $(".carriersdrop").select2();
+
+                    //scannerprotocol
+                    var myselect = $('<select name="EventValue" id='+count+'id>');
+                    $.each(ScannerProtocol, function(index, key) {
+                        myselect.append( $('<option></option>').val(ScannerProtocol[index].DefinationId).html(ScannerProtocol[index].DefinationName) );
+                    });
+                    $('.ScannerProtocolDrop').append(myselect.html());
+                    $(".ScannerProtocolDrop").select2();
+
+                    //scanner measurement
+
+                    var myselect = $('<select name="EventValue" id='+count+'id>');
+                    $.each(ScannerMeasurement, function(index, key) {
+                        myselect.append( $('<option></option>').val(ScannerMeasurement[index].DefinationId).html(ScannerMeasurement[index].DefinationName) );
+                    });
+                    $('.ScannerMeasurementDrop').append(myselect.html());
+                    $(".ScannerMeasurementDrop").select2();
+
+                    //scanner measurement
+
+                    var myselect = $('<select name="EventValue" id='+count+'id>');
+                    $.each(ScannerBand, function(index, key) {
+                        myselect.append( $('<option></option>').val(ScannerBand[index].DefinationId).html(ScannerBand[index].DefinationName) );
+                    });
+                    $('.ScannerBandDrop').append(myselect.html());
+                    $(".ScannerBandDrop").select2();
+
+                    //manufecturer
+
+                    var myselect = $('<select name="EventValue" id='+count+'id>');
+                    $.each(Manufacturer, function(index, key) {
+                        myselect.append( $('<option></option>').val(Manufacturer[index].DefinationId).html(Manufacturer[index].DefinationName) );
+                    });
+                    $('.ManufacturerBandDrop').append(myselect.html());
+                    $(".ManufacturerBandDrop").select2();
+                    //scanner model
+
+                    var myselect = $('<select name="EventValue" id='+count+'id>');
+                    $.each(ScannerModel, function(index, key) {
+                        myselect.append( $('<option></option>').val(ScannerModel[index].DefinationId).html(ScannerModel[index].DefinationName) );
+                    });
+                    $('.ScannerModelBandDrop').append(myselect.html());
+                    $(".ScannerModelBandDrop").select2();
+
+                } else {
+                }
+
+            },
+            error: function (err) {
+                //  $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+                swal("Error !",err.statusText, "error");
+            },
+        });
+    }
+    GetBC();
+    function rgb2hex(orig) {
+        var rgb = orig.replace(/\s/g, '').match(/^rgba?\((\d+),(\d+),(\d+)/i);
+        return (rgb && rgb.length === 4) ? "#" +
+         ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+         ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : orig;
+    }
+
+
+    // ViewBag.SiteId = SiteId;
+    //ViewBag.NetworkModeId = NetworkModeId;
+    function GetSetting(data) {
+
+        $.ajax({
+            type:'post',
+            data:{'data':data,'value2':@ViewBag.SiteId,'value3':@ViewBag.NetworkModeId,'value4':@ViewBag.BandId},
+            url: '/NetLayerStatus/ScriptPreview',
+            async:false,
+            success: function (res) {
+                $('#tbl-preview').append(res);
+            }
+        });
+
+
+        // var CurrentEventType=$("#EventTypeId-"+rowCount).prop("value");
+        //var sk=ScriptKpis.filter(x=>x.PDefinationId == CurrentEventType);
+
+    }
+    Array.prototype.inArray = function (comparer) {
+        for (var i = 0; i < this.length; i++) {
+            if (comparer(this[i])) return true;
+        }
+        return false;
+    };
+
+    // adds an element to the array if it does not already exist using a comparer
+    // function
+    Array.prototype.pushIfNotExist = function (element, comparer) {
+        if (!this.inArray(comparer)) {
+            this.push(element);
+        }
+    };
+    function EventTypeIdChange(e) {
+        //EventTypeId
+        $('#tbl-preview').empty();
+        var mapcolumn;
+        var Head;
+        var mapclmHeads = {};
+        data=[];
+        console.log('hi');
+        console.log(data);
+        console.log('hi');
+
+        $('.EventTypeId').each(function (i) {
+
+            //console.log($(this).tagName);
+            if ($(this).siblings('[name="IsDeleted"]').val() != true && $(this).siblings('[name="IsDeleted"]').val() != 'true') {
+                if ($(this).is("select")) {
+                    mapcolumn = $(this).find(':selected').attr('data-mapcolumn');
+                    Head=$(this).find(':selected').text();//  console.log($(this).find(':selected').text());
+                } else {
+                    mapcolumn = $(this).attr('data-mapcolumn');
+                    $(this).find(':selected').text()
+                    Head='Ping'
+                }
+
+
+
+                mapcolumn = (mapcolumn == 'null' || mapcolumn == '') ? -1 : mapcolumn;
+                mapcolumn = (mapcolumn == 'undefined' || mapcolumn == undefined) ? -1 : mapcolumn;
+                //  debugger;
+                if(mapcolumn !=-1){
+                    mapclmHeads = {
+                        Col: mapcolumn,
+                        Heads:Head,
+                    }
+                    data.pushIfNotExist(mapclmHeads, function (e) {
+                        return e.Col === mapclmHeads.Col && e.Heads === mapclmHeads.Heads;
+                    });
+                }
+            }
+        })
+
+
+
+
+
+    }
+
+    function Count() {
+        return false
+        var bgcolor = '';
+        var Id = '';
+        var tempcount = 1;
+        $('ul.sortable li').each(function (i) {
+            var hjjhk=$(this).attr('class');
+            if ($(this).attr('class') == 'unsortable') {
+
+                bgcolor = $(this).css("background");
+                Id = $(this).attr('id');
+                $('span', this).text(tempcount);
+                tempcount++;
+            }
+            else  if ($(this).attr('class') == 'KPIli'){
+                bgcolor = $(this).css("background");
+            }
+            else {
+                $(this).attr('class', '');
+                $(this).addClass('myrow ' + Id);
+            }
+            $(this).css({ 'background': rgb2hex(bgcolor.substring(0, 18)) });
+            $(this).find("input[name=Color]").val(rgb2hex(bgcolor.substring(0, 18)));
+            if('@ViewBag.cls' != "CLS")
+            {
+                $(this).find("input[name=SequenceId]").val(tempcount-1);
+            }
+            //   console.log(tempcount);
+        })
+        $('.SequenceId').each(function (i) {
+            $(this).val(i);
+
+        })
+
+    }
+    function ColorField() {
+        return SequenceId()+'<input type="hidden"   name="Color" value="' + RowColor + '"/>';
+    }
+    function SequenceId() {
+        return '<input type="hidden" class="sequence"  id=s"' + TestCount + '"  name="SequenceId" value="' + TestCount + '"/>';
+    }
+
+    function RemoveRow(isParent) {
+        return '<a href="#" data-count="' + count + '" data-isParent="' + isParent + '" data-child="tree-' + TestCount + '" class="pull-right li-remove">x</a>';
+    }
+    function Start_li(Class) {
+        return '<li  Class="myrow clearfix" data-row="' + count + '" data-class="' + Class + '"  style="color:#141414;background: ' + RowColor + ';font-size: 16px;font-weight: normal;">';
+    }
+
+    function LoadTest(RowCount, SearchValue) {
+
+        $.each(Definationsjs, function (key, value) {
+            if (value.PDefinationId == SearchValue) {
+                $('#EventTypeId-' + RowCount).append('<option data-mapColumn="' + value.MapColumn + '" value="' + value.DefinationId + '">' + value.DefinationName + '</option>');
+            }
+
+        });
+    }
+
+    function oTest(TestName, EventId, EventValue, IsL3Enabled, mapColumn,TestKpiValue,SrId) {
+
+        if(ScriptKpis == undefined || ScriptKpis.length ==0){  ScriptKPI();}
+        var IsL3EnabledChecked = (IsL3Enabled == 'True') ? 'checked' : '';
+        var txt = Start_li('test') + '<span class="serial"></span> Attempt ' + TestName + EventTypeId(EventId, count, mapColumn) + ' test. ' +
+                  'Repeat&nbsp;&nbsp;<input class="value" type="number" min="1" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '"/><input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="false" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />&nbsp;&nbsp;Time(s)' +
+                  ' & Enable L3 <input type="hidden" id="IsL3-' + count + '"  name="IsL3Enabled" value="' + IsL3Enabled + '"/> <input    onchange="ChangeIsL3(this,' + count + '); return false;" ' + IsL3EnabledChecked + ' type="checkbox"/>' + ColorField() +
+                  RemoveRow(false) + '<input type="hidden" id="TestKPI-' + count + '" value="'+TestKpiValue+'" name="TestKPI" /><input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /></li>';
+        $('.sortable').append(txt);
+        //   if(IsL3EnabledChecked=="checked"){
+        $("#IsL3-"+count).parent().after("<li class='KPIli' style='background:#f4f4f4 !important' id='Iskpi-"+count+"' ><span></span></li>")
+
+        //  }
+        if(IsL3EnabledChecked!="checked"){
+            var FKpi=ScriptKpis.filter(x=>x.PDefinationId == parseInt(EventId));
+
+            var Build="";
+            FKpi.forEach(function(i){
+                Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+            })
+            $("#Iskpi-"+count).html("")
+            $("#Iskpi-"+count).append(Build)
+            $("#Iskpi-"+count).hide()
+            if(Build==""){
+                $("#Iskpi-"+count).remove();
+            }
+        }
+        else{
+            var TestVal=[];
+            var ValLength = TestKpiValue.length;
+            if(ValLength >0){
+                TestVal=   TestKpiValue.split(",");
+                //TestVal.forEach(function(i){
+                //});
+            }
+            var FKpi=ScriptKpis.filter(x=>x.PDefinationId == parseInt(EventId));
+            console.log(FKpi);
+            var Build="";
+            FKpi.forEach(function(i){
+
+                var found = TestVal.find(function(element) {
+                    return element.toString() == i.DefinationId.toString();
+                });
+                if(found != undefined){
+                    Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input checked class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                }
+                else{
+                    Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                }
+            })
+            $("#Iskpi-"+count).html("")
+            $("#Iskpi-"+count).append(Build)
+            if(Build==""){
+                $("#Iskpi-"+count).remove();
+            }
+        }
+        count++;
+        EventTypeIdChange(null);
+        //  GetSetting(data)
+        SortAble();
+    }
+
+    function Test(TestName, SearchValue, EventValue, IsL3Enabled, preSelected,TestKpiValue,SrId) {
+        if(ScriptKpis == undefined || ScriptKpis.length ==0){  ScriptKPI();}
+        var IsL3EnabledChecked = (IsL3Enabled == 'True') ? 'checked' : '';
+        var txt = Start_li('test') + '<span class="serial"></span> Attempt ' + TestName + '&nbsp;<select onchange="EventTypeIdChange(this);GetSetting(data);" class="value EventTypeId" data-selected="' + preSelected + '"  id="EventTypeId-' + count + '" name="EventTypeId"></select>&nbsp; test. ' +
+                  'Repeat&nbsp;&nbsp;<input class="value" type="number" min="1" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '"/><input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="false" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />&nbsp;&nbsp;Time(s)' +
+                  ' & Enable L3 <input type="hidden" id="IsL3-' + count + '"  name="IsL3Enabled" value="' + IsL3Enabled + '"/> <input    onchange="ChangeIsL3(this,' + count + '); return false;" ' + IsL3EnabledChecked + ' type="checkbox"/>' + ColorField() +
+                  RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="'+TestKpiValue+'" name="TestKPI" /></li>';
+        $('.sortable').append(txt);
+        LoadTest(count, SearchValue);
+
+        //    $('#EventTypeId-' + count).val($('#EventType-' + count).attr('data-selected'));
+        $('#EventTypeId-'+count).prop("data-selected",preSelected)
+        $('#EventTypeId-'+count).val(preSelected).attr('data-selected',preSelected);
+        //   $('#EventType-' + count).val($('#EventType-' + count).attr('data-selected'));
+        //  if(IsL3EnabledChecked=="checked"){
+        $("#IsL3-"+count).parent().after("<li class='KPIli' style='background:#f4f4f4 !important' id='Iskpi-"+count+"' ><span></span></li>")
+
+        // }
+        if(IsL3EnabledChecked!="checked"){
+            $("#Iskpi-"+count).hide()
+            if(Build==""){
+                $("#Iskpi-"+count).remove();
+            }
+        }
+        else{
+            var TestVal=[];
+            var ValLength = TestKpiValue.length;
+            if(ValLength >0){
+                TestVal=   TestKpiValue.split(",");
+                //TestVal.forEach(function(i){
+                //});
+            }
+            // console.log(TestVal);
+            var FKpi=ScriptKpis.filter(x=>x.PDefinationId == parseInt(preSelected));
+            var Build="";
+            FKpi.forEach(function(i){
+
+                var found = TestVal.find(function(element) {
+                    return element.toString() == i.DefinationId.toString();
+                });
+                if(found != undefined){
+                    Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input checked class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                }
+                else{
+                    Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                }
+            })
+            $("#Iskpi-"+count).html("")
+            $("#Iskpi-"+count).append(Build)
+
+            if(Build==""){
+                $("#Iskpi-"+count).remove();
+            }
+        }
+        count++;
+        EventTypeIdChange(null);
+        //  GetSetting(data)
+        SortAble();
+    }
+
+    function Wait(ETypeId, EventValue, mapColumn,EventDisplayType,IsL3Enabled,TestKpiValue,ETypeName,SrId) {
+        if(EventDisplayType =="Idle"){
+            var IsL3EnabledChecked = (IsL3Enabled == 'True') ? 'checked' : '';
+            var txt = Start_li('wait') + '<span></span> Collect Logs in IDLE Mode for ' + EventTypeId(ETypeId, count, mapColumn) +
+                 '<input class="value" type="text" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '" /><input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /> <input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" /> &nbsp;second(s)' +
+                  ' & Enable L3 <input type="hidden" id="IsL3-' + count + '"  name="IsL3Enabled" value="' + IsL3Enabled + '"/> <input    onchange="ChangeIsL3(this,' + count + '); return false;" ' + IsL3EnabledChecked + ' type="checkbox"/>'  + ColorField() +
+                 RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="'+TestKpiValue+'" name="TestKPI" /></li>';
+            $('.sortable').append(txt);
+            $("#IsL3-"+count).parent().after("<li class='KPIli' style='background:#f4f4f4 !important' id='Iskpi-"+count+"' ><span></span></li>")
+
+            if(IsL3EnabledChecked!="checked" || IsL3EnabledChecked== null){
+                var TestVal=[];
+                var ValLength = TestKpiValue.length;
+                if(ValLength >0){
+                    TestVal=   TestKpiValue.split(",");
+                    //TestVal.forEach(function(i){
+                    //});
+                }
+                var FKpi=ScriptKpis.filter(x=>x.PDefinationId == parseInt(ETypeId));
+                var Build="";
+                FKpi.forEach(function(i){
+                    Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;" value="'+i.DefinationId+'"       type="checkbox"/>';
+                })
+                $("#Iskpi-"+count).html("")
+                $("#Iskpi-"+count).append(Build)
+                $("#Iskpi-"+count).hide()
+                if(Build==""){
+                    $("#Iskpi-"+count).remove();
+                }
+            }
+
+            else{
+                var TestVal=[];
+                var ValLength = TestKpiValue.length;
+                if(ValLength >0){
+                    TestVal=   TestKpiValue.split(",");
+                    //TestVal.forEach(function(i){
+                    //});
+                }
+                var FKpi=ScriptKpis.filter(x=>x.PDefinationId == parseInt(EventId));
+                var Build="";
+                FKpi.forEach(function(i){
+
+                    var found = TestVal.find(function(element) {
+                        return element.toString() == i.DefinationId.toString();
+                    });
+                    if(found != undefined){
+                        Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input checked class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                    }
+                    else{
+                        Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                    }
+                })
+                $("#Iskpi-"+count).html("")
+                $("#Iskpi-"+count).append(Build)
+                if(Build==""){
+                    $("#Iskpi-"+count).remove();
+                }
+            }
+
+        }
+        else  if(EventDisplayType =="Screenshot"){
+            var txt = Start_li('wait') + '<span></span> Take Screenshot & Upload. ' + EventTypeId(ETypeId, count, mapColumn) +
+                 '<input class="value hidden" type="text" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '" /><input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /> <input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" /> ' +
+                 ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                 RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+            $('.sortable').append(txt);
+        }
+            //else  if(EventDisplayType =="Scanner"){
+            //    var txt = Start_li('wait') + '<span></span>Scanner ' + EventTypeId(ETypeId, count, mapColumn) +
+            //        '<input class="value hidden" type="text" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '" /><input type="hidden" value="0" name="BandReselection" /> <input type="hidden" value="true" name="IsValue" /> ' +
+            //        ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+            //        RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+            //    $('.sortable').append(txt);
+            //}
+        else  if(EventDisplayType =="actions"){
+            var _Modal = "";
+            if(SrId != undefined)
+            {
+                _Modal ='<a onclick="OpenActionDialogue('+SrId+')" href="#" ><i class="fa fa-bullseye" style="font-size:16px;color:black"></i></a>';
+            }
+            if(ETypeName =="Action Dialogue"){
+                var txt = Start_li('wait') + '<span></span> Open Action Dialogue &nbsp;  '+_Modal+ '' + EventTypeId(ETypeId, count, mapColumn) +
+                '<input class="value hidden" type="text" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '" /><input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /> <input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" /> ' +
+                ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+                $('.sortable').append(txt);
+            }
+            else {
+                var txt = Start_li('wait') + '<span></span> Attempt: Call Settings. ' + EventTypeId(ETypeId, count, mapColumn) +
+                '<input class="value hidden" type="text" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '" /><input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /> <input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" /> ' +
+                ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+                $('.sortable').append(txt);
+            }
+        }
+        else{
+            var txt = Start_li('wait') + '<span></span> Wait for ' + EventTypeId(ETypeId, count, mapColumn) +
+                 '<input class="value" onkeypress="return isNumberKey(event)" type="number" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '" /><input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /> <input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" /> &nbsp;second(s)' +
+                 ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                 RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+            $('.sortable').append(txt);
+        }
+        count++;
+        SortAble();
+    }
+
+    function RAT(ETypeId, EventValue, mapColumn,preselected,EventValue1,IsL3Enabled,TestKpiValue,SrId) {
+        debugger;
+        var txt="";
+        if((EventValue == "Carrier Lock" || EventValue == "Band Reselection" || EventValue == "Carrier Reselection" || EventValue=="Band Lock") && '@ViewBag.Scope' !='CLS')
+        {
+            if('@ViewBag.Scope' == 'SSV' || '@ViewBag.Scope' == 'NI' || '@ViewBag.Scope' == 'IND')
+            {
+                if(EventValue=="Carrier Lock")
+                {
+
+                    var result = $.grep(Carriers, function(e){ return e.DefinationId == @ViewBag.CarrierId; });
+                    txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +'<span>&nbsp;<b>'+result[0].DefinationName+'</b></span>'+
+                     '<input type="hidden" name="EventValue"  value="' + result[0].DefinationId + '" /> <input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />' +
+                     ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                     RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+                }
+
+                else   if(EventValue=="Band Reselection")
+                {
+
+                    var result = $.grep(Bands, function(e){ return e.DefinationId == @ViewBag.BandId; });
+                    if(preselected==undefined && result.length >0){
+                        preselected=result[0].DefinationId;
+                    }
+                    var IsL3EnabledChecked = (IsL3Enabled == 'True') ? 'checked' : '';
+                    txt = Start_li('LockAndReset') + '<span class="serial bandreselection"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +'      <select  name="EventValue" required id=EventValue-'+count+' class="bandsdrop"></select> to<select  name="BandReselection" required id=EventValue2-'+count+' class="bandsdrop"></select><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />'+
+                   '<input type="hidden" name="bEventValue"  value="' + preselected + '" /> <input type="hidden" value="true" name="IsValue" />' +
+                   '  <input value="false" type="hidden" id="IsL3-' + count + '"  name="IsL3Enabled" value="' + IsL3Enabled + '"/> <input     onchange="ChangeIsL3(this,' + count + '); return false;" ' + IsL3EnabledChecked + ' type="checkbox"/>' + ColorField() +
+                   RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="'+TestKpiValue+'" name="TestKPI" /></li>';
+                    //onchange="ChangeIsL3(this,' + count + '); return false;"
+                    $("#IsL3-"+count).parent().after("<li class='KPIli' style='background:#f4f4f4 !important' id='Iskpi-"+count+"' ><span></span></li>")
+                    if(IsL3EnabledChecked!="checked" || IsL3EnabledChecked== null){
+                        var FKpi=ScriptKpis.filter(x=>x.PDefinationId == parseInt(ETypeId));
+                        var Build="";
+                        FKpi.forEach(function(i){
+                            Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;" value="'+i.DefinationId+'"       type="checkbox"/>';
+                        })
+                        $("#Iskpi-"+count).html("")
+                        $("#Iskpi-"+count).append(Build)
+                        $("#Iskpi-"+count).hide()
+                        if(Build==""){
+                            $("#Iskpi-"+count).remove();
+                        }
+                    }
+                    else{
+
+                        var TestVal=[];
+                        var ValLength = TestKpiValue.length;
+                        if(ValLength >0){
+                            TestVal=   TestKpiValue.split(",");
+                            //TestVal.forEach(function(i){
+                            //});
+                        }
+                        var FKpi=ScriptKpis.filter(x=>x.PDefinationId == parseInt(ETypeId));
+                        var Build="";
+                        FKpi.forEach(function(i){
+
+                            var found = TestVal.find(function(element) {
+                                return element.toString() == i.DefinationId.toString();
+                            });
+
+                            if(found != undefined){
+                                Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input checked class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                            }
+                            else{
+                                Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                            }
+                        })
+                        $("#Iskpi-"+count).html("")
+                        $("#Iskpi-"+count).append(Build)
+                        if(Build==""){
+                            $("#Iskpi-"+count).remove();
+                        }
+                    }
+                }
+                else   if(EventValue=="Carrier Reselection")
+                {
+
+                    var result = $.grep(Bands, function(e){ return e.DefinationId == @ViewBag.BandId; });
+                    if(preselected==undefined && result.length >0){
+                        preselected=result[0].DefinationId;
+                    }
+                    var IsL3EnabledChecked = (IsL3Enabled == 'True') ? 'checked' : '';
+                    txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +'      <input  name="EventValue" required id=EventValue-'+count+' class="" type="number" /> to<input  name="BandReselection" required id=EventValue2-'+count+' class="" type="number" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />'+
+                   '<input type="hidden" name="bEventValue"  value="' + preselected + '" /> <input type="hidden" value="true" name="IsValue" />' +
+                   '  <input value="false" type="hidden" id="IsL3-' + count + '"  name="IsL3Enabled" value="' + IsL3Enabled + '"/> ' + ColorField() +
+                   RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+                    //onchange="ChangeIsL3(this,' + count + '); return false;"
+                }
+                else{
+
+                    var result = $.grep(Bands, function(e){ return e.DefinationId == @ViewBag.BandId; });
+                    @*txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +'<span>&nbsp;<b>'+result[0].DefinationName+'</b></span>'+
+                          '<input type="hidden" name="EventValue"  value="' + result[0].DefinationId + '" /> <input type="hidden" value="true" name="IsValue" />' +
+                          ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                          RemoveRow(false) + '</li>';*@
+                    if(preselected==undefined && result.length >0){
+                        preselected=result[0].DefinationId;
+                    }
+                    txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +'      <select  name="EventValue" required id=EventValue-'+count+' class="bandsdrop"></select>'+
+                  '<input type="hidden" name="bEventValue"  value="' + preselected + '" /> <input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />' +
+                  ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                  RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+                }
+            }
+
+            else {
+                txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +
+
+                    '<input type="hidden" name="EventValue"  value="' + EventValue + '" /><input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /> <input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />' +
+                         ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                         RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+            }
+        }
+        else{
+            txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +
+
+        '</b><input type="hidden" name="EventValue"  value="' + EventValue + '" /> <input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />' +
+             ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+             RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+
+        }
+        if((EventValue == "Carrier Lock" || EventValue=="Band Lock" || EventValue=="Band Reselection" || EventValue=="Carrier Reselection") && '@ViewBag.Scope' =='CLS')
+        {
+            if(EventValue == "Carrier Lock"){
+                txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +'      <select name="EventValue" required    id=EventValue-'+count+' class="carriersdrop"></select>'+
+                    '<input type="hidden" name="cEventValue"  value="' + preselected + '" /> <input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />' +
+                    ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                    RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+            }
+            else    if(EventValue=="Band Reselection")
+            {
+
+                @*var result = $.grep(Bands, function(e){ return e.DefinationId == @ViewBag.BandId; });
+                        if(preselected==undefined && result.length >0){
+                             preselected=result[0].DefinationId;
+                         }*@
+                var IsL3EnabledChecked = (IsL3Enabled == 'True') ? 'checked' : '';
+                txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +'      <select  name="EventValue" required id=EventValue-'+count+' class="bandsdrop"></select> to<select  name="BandReselection" required id=EventValue2-'+count+' class="bandsdrop"></select><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />'+
+                   '<input type="hidden" name="bEventValue"  value="' + preselected + '" /> <input type="hidden" value="true" name="IsValue" />' +
+                   ' <input value="false" type="hidden" id="IsL3-' + count + '"  name="IsL3Enabled" value="' + IsL3Enabled + '"/> <input     onchange="ChangeIsL3(this,' + count + '); return false;" ' + IsL3EnabledChecked + ' type="checkbox"/>' + ColorField() +
+                   RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+
+            }
+            else    if(EventValue=="Carrier Reselection")
+            {
+
+                @*var result = $.grep(Bands, function(e){ return e.DefinationId == @ViewBag.BandId; });
+                if(preselected==undefined && result.length >0){
+                    preselected=result[0].DefinationId;
+                }*@
+                var IsL3EnabledChecked = (IsL3Enabled == 'True') ? 'checked' : '';
+                txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +'      <input  name="EventValue" required id=EventValue-'+count+' class="" type="number" /> to<input  name="BandReselection" required id=EventValue2-'+count+' class="" type="number" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />'+
+                        '<input type="hidden" name="bEventValue"  value="' + preselected + '" /> <input type="hidden" value="true" name="IsValue" />' +
+                        ' <input value="false" type="hidden" id="IsL3-' + count + '"  name="IsL3Enabled" value="' + IsL3Enabled + '"/> ' + ColorField() +
+                        RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="" name="TestKPI" /></li>';
+            }
+            else{
+                txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +'      <select  name="EventValue" required id=EventValue-'+count+' class="bandsdrop"></select>'+
+                     '<input type="hidden" name="bEventValue"  value="' + preselected + '" /> <input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="true" name="IsValue" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" />' +
+                     ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                     RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="'+TestKpiValue+'" name="TestKPI" /></li>';
+            }
+        }
+        $('.sortable').append(txt);
+        if(EventValue =="Band Reselection" ){
+            $("#IsL3-"+count).parent().after("<li class='KPIli' style='background:#f4f4f4 !important' id='Iskpi-"+count+"' ><span></span></li>")
+
+            if(IsL3EnabledChecked!="checked" || IsL3EnabledChecked== null){
+                var FKpi=ScriptKpis.filter(x=>x.PDefinationId == parseInt(ETypeId));
+                var Build="";
+                FKpi.forEach(function(i){
+                    Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;" value="'+i.DefinationId+'"       type="checkbox"/>';
+                })
+                $("#Iskpi-"+count).html("")
+                $("#Iskpi-"+count).append(Build)
+                $("#Iskpi-"+count).hide()
+                if(Build==""){
+                    $("#Iskpi-"+count).remove();
+                }
+            }
+            else{
+                var TestVal=[];
+                var ValLength = TestKpiValue.length;
+                if(ValLength >0){
+                    TestVal=   TestKpiValue.split(",");
+                    //TestVal.forEach(function(i){
+                    //});
+                }
+                var FKpi=ScriptKpis.filter(x=>x.PDefinationId == parseInt(ETypeId));
+                var Build="";
+                FKpi.forEach(function(i){
+
+                    var found = TestVal.find(function(element) {
+                        return element.toString() == i.DefinationId.toString();
+                    });
+                    if(found != undefined){
+                        Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input checked class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                    }
+                    else{
+                        Build +=  '&nbsp;'+i.DefinationName+'&nbsp; <input class="CheckedKPI-'+count+'" onchange="ChangeTestKpi(this,' + count + '); return false;"  value="'+i.DefinationId+'"       type="checkbox"/>';
+                    }
+                })
+                $("#Iskpi-"+count).html("")
+                $("#Iskpi-"+count).append(Build)
+                if(Build==""){
+                    $("#Iskpi-"+count).remove();
+                }
+            }
+        }
+
+
+
+        if(('@ViewBag.Scope' == 'SSV' || '@ViewBag.Scope' == 'TSS' || '@ViewBag.Scope' == 'NI' || '@ViewBag.Scope' == 'IND') && EventValue =="Carrier Lock"){
+
+            var myselect = $('<select name="EventValue" id='+count+'id>');
+            $.each(Carriers, function(index, key) {
+                myselect.append( $('<option></option>').val(Carriers[index].DefinationId).html(Carriers[index].DefinationName) );
+            });
+            $('.carriersdrop').append(myselect.html());
+            //$(".carriersdrop").select2();
+            //if ($("#selector").length > 0)
+            //    $("#selector").select2();
+        }
+        if(('@ViewBag.Scope' == 'SSV' || '@ViewBag.Scope' == 'TSS' || '@ViewBag.Scope' == 'NI' || '@ViewBag.Scope' == 'IND') && EventValue =="Band Lock"){
+
+
+            //      var myselect = $('<select required  id='+count+'id>');
+
+            //$.each(Bands, function(index, key) {
+            //    myselect.append( $('<option></option>').val(Bands[index].DefinationId).html(Bands[index].DefinationName) );
+            //});
+            //$('#EventValue-'+count).append(myselect.html());
+
+            //$('#EventValue-'+count).prop("data-selected",preselected);
+            //$('#'+count+'id').val(preselected).attr('data-selected',preselected);
+            //$('#EventValue-'+count).val(preselected).attr('data-selected',preselected);
+            //$('#EventValue-'+count).select2();
+        }
+        if(('@ViewBag.Scope' == 'SSV' || '@ViewBag.Scope' == 'TSS' || '@ViewBag.Scope' == 'NI' || '@ViewBag.Scope' == 'IND') && (EventValue =="Band Reselection" || EventValue =="Carrier Reselection")){
+
+            if(EventValue =="Band Reselection" ){
+
+                var myselect = $('<select required  id='+count+'id>');
+
+                $.each(Bands, function(index, key) {
+                    myselect.append( $('<option></option>').val(Bands[index].DefinationId).html(Bands[index].DefinationName) );
+                });
+                //   $('#EventValue-'+count).append(myselect.html());
+
+                $('#EventValue-'+count).prop("data-selected",preselected);
+                $('#'+count+'id').val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).select2();
+
+                //   $('#EventValue2-'+count).append(myselect.html());
+                $('#EventValue2-'+count).prop("data-selected",EventValue1);
+                $('#'+count+'id').val(EventValue1).attr('data-selected',EventValue1);
+                $('#EventValue2-'+count).val(EventValue1).attr('data-selected',EventValue1);
+                $('#EventValue2-'+count).select2();
+            }
+            else{
+                var myselect = $('<select required name="EventValue" data-selected="' + preselected + '" id='+count+'id>');
+                $.each(Carriers, function(index, key) {
+                    myselect.append( $('<option></option>').val(Carriers[index].DefinationId).html(Carriers[index].DefinationName) );
+                });
+                //  $('#EventValue-'+count).append(myselect.html());
+
+                $('#EventValue-'+count).prop("data-selected",preselected);
+                $('#'+count+'id').val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).val(preselected)
+
+
+                var myselect = $('<select required name="EventValue" data-selected="' + preselected + '" id='+count+'id>');
+                $.each(Carriers, function(index, key) {
+                    myselect.append( $('<option></option>').val(Carriers[index].DefinationId).html(Carriers[index].DefinationName) );
+                });
+                $('#EventValue2-'+count).append(myselect.html());
+
+                $('#EventValue2-'+count).prop("data-selected",EventValue1);
+                $('#'+count+'id').val(EventValue1).attr('data-selected',EventValue1);
+                $('#EventValue2-'+count).val(EventValue1)
+
+            }
+
+        }
+        if(EventValue == "Carrier Lock" || EventValue=="Band Lock" || EventValue=="Band Reselection" || EventValue=="Carrier Reselection" && '@ViewBag.Scope' =='CLS')
+        {
+            if(EventValue=="Carrier Lock"){
+                var myselect = $('<select required name="EventValue" data-selected="' + preselected + '" id='+count+'id>');
+                $.each(Carriers, function(index, key) {
+                    myselect.append( $('<option></option>').val(Carriers[index].DefinationId).html(Carriers[index].DefinationName) );
+                });
+                $('#EventValue-'+count).append(myselect.html());
+
+                $('#EventValue-'+count).prop("data-selected",preselected);
+                $('#'+count+'id').val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).select2();
+            }
+            else if(EventValue=="Band Reselection"){
+                var myselect = $('<select required  id='+count+'id>');
+
+                $.each(Bands, function(index, key) {
+                    myselect.append( $('<option></option>').val(Bands[index].DefinationId).html(Bands[index].DefinationName) );
+                });
+                $('#EventValue-'+count).append(myselect.html());
+
+                $('#EventValue-'+count).prop("data-selected",preselected);
+                $('#'+count+'id').val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).select2();
+
+
+                $('#EventValue2-'+count).append(myselect.html());
+
+                $('#EventValue2-'+count).prop("data-selected",EventValue1);
+                $('#'+count+'id').val(EventValue1).attr('data-selected',EventValue1);
+                $('#EventValue2-'+count).val(EventValue1).attr('data-selected',EventValue1);
+                $('#EventValue2-'+count).select2();
+            }
+            else if(EventValue=="Carrier Reselection"){
+                var myselect = $('<select required name="EventValue" data-selected="' + preselected + '" id='+count+'id>');
+                $.each(Carriers, function(index, key) {
+                    myselect.append( $('<option></option>').val(Carriers[index].DefinationId).html(Carriers[index].DefinationName) );
+                });
+                $('#EventValue-'+count).append(myselect.html());
+
+                $('#EventValue-'+count).prop("data-selected",preselected);
+                $('#'+count+'id').val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).val(preselected)
+
+
+                var myselect = $('<select required name="EventValue" data-selected="' + preselected + '" id='+count+'id>');
+                $.each(Carriers, function(index, key) {
+                    myselect.append( $('<option></option>').val(Carriers[index].DefinationId).html(Carriers[index].DefinationName) );
+                });
+                $('#EventValue2-'+count).append(myselect.html());
+
+                $('#EventValue2-'+count).prop("data-selected",EventValue1);
+                $('#'+count+'id').val(EventValue1).attr('data-selected',EventValue1);
+                $('#EventValue2-'+count).val(EventValue1)
+            }
+            else{
+                var myselect = $('<select required  id='+count+'id>');
+
+                $.each(Bands, function(index, key) {
+                    myselect.append( $('<option></option>').val(Bands[index].DefinationId).html(Bands[index].DefinationName) );
+                });
+                $('#EventValue-'+count).append(myselect.html());
+
+                $('#EventValue-'+count).prop("data-selected",preselected);
+                $('#'+count+'id').val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).val(preselected).attr('data-selected',preselected);
+                $('#EventValue-'+count).select2();
+            }
+        }
+
+        //   $('#EventType-' + count).val($('#EventType-' + count).attr('data-selected'));
+        count++;
+        SortAble();
+    }
+
+
+
+    function Scanner(ETypeId, EventValue, mapColumn,preselected,EventValue1,TestKpiValue,SrId,EventValue2,EventValue3,EventValue4,EventValue5,EventValue6) {
+        //if (SrId=='' || SrId == undefined) {
+        //    SrId = 0;
+        //}
+        var _Modal = "";
+        if(SrId != undefined)
+        {
+            _Modal ='<div class="pull-left"> <a onclick="OpenScannerDialogue('+SrId+',this)" href="#" ><i class="fa fa-bullseye" style="font-size:16px;color:black"></i></a></div>';
+        }
+        var txt="";
+        txt = Start_li('LockAndReset') + '<span class="serial bandreselection"></span><input type="hidden" name="IsL3Enabled" value="false" /><div class="pull-left"><input type="hidden" value="true" name="IsValue" />' + ColorField() +' Scanner: ' + EventTypeId(ETypeId, count, mapColumn) +
+
+            'Manufacturer <select  name="ManufacturerSelection" data-countsc="'+count+'" required id=EventValue4-'+count+' class="ManufacturerBandDrop" ></select></div><div class="pull-left">'+
+            'Scanner Model <select  name="ScannerModelSelection" data-countsc="'+count+'" required id=EventValue5-'+count+' class="ScannerModelBandDrop" ></select></div><div class="pull-left">'+
+            'Protocol <select  name="EventValue" data-countsc="'+count+'" required id=EventValue-'+count+' class="ScannerProtocolDrop" ></select></div><div class="pull-left">'+
+            'Band <select  name="BandReselection"  data-countsc="'+count+'" required id=EventValue2-'+count+' class="ScannerBandDrop"></select></div><div class="pull-left">'+
+            'Measurement <select  name="ScannerSelection"  data-countsc="'+count+'" required id=EventValue3-'+count+' class="ScannerMeasurementDrop"></select> </div><div class="pull-left">'+
+            'Search Type <select name="OptionSelection"  data-countsc="'+count+'" required id=EventValue6-'+count+' class="OptionDrop search-type form-group"><option></option><option value="Channel">Channel</option><option value="Frequency">Frequency</option></select> </div><div class="pull-left" style="margin-right: 15px;">'+
+            '<span style="display:none;" id="EventValueLabel7-'+count+'">Channel/Frequency </span><select style="display:none;" multiple="multiple"   data-countsc="'+count+'" required id=EventValue7-'+count+' class="OptionIdDrop"></select> <input type="hidden" id=EventValueHideOptionsText-'+count+' class="optionIdsText"/><input type="hidden" id=EventValueHideOptions-'+count+' name="OptionIdSelection"/></div>'+
+            _Modal+
+        RemoveRow(false)+ '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="'+TestKpiValue+'" name="TestKPI" /></li>';
+        $('.sortable').append(txt);
+        var myselect = $('<select id='+count+'id>');
+        $.each(ScannerProtocol, function(index, key) {
+            myselect.append( $('<option></option>').val(ScannerProtocol[index].DefinationId).html(ScannerProtocol[index].DefinationName) );
+        });
+        $('#EventValue-'+count).append(myselect.html());
+        $('#EventValue-'+count).prop("data-selected",preselected);
+        $('#'+count+'id').val(preselected).attr('data-selected',preselected);
+        $('#EventValue-'+count).val(preselected).attr('data-selected',preselected);
+        $('#EventValue-'+count).select2();
+        var myselect = $('<select  id='+count+'id>');
+        $.each(ScannerBand, function(index, key) {
+            myselect.append( $('<option></option>').val(ScannerBand[index].DefinationId).html(ScannerBand[index].DefinationName) );
+        });
+        $('#EventValue2-'+count).append(myselect.html());
+        $('#EventValue2-'+count).prop("data-selected",EventValue1);
+        $('#'+count+'id').val(EventValue1).attr('data-selected',EventValue1);
+        $('#EventValue2-'+count).val(EventValue1).attr('data-selected',EventValue1);
+        $('#EventValue2-'+count).select2();
+        BindBandDropdown(count,preselected,EventValue1);
+        var myselect = $('<select  id='+count+'id>');
+        $.each(ScannerMeasurement, function(index, key) {
+            myselect.append( $('<option></option>').val(ScannerMeasurement[index].DefinationId).html(ScannerMeasurement[index].DefinationName) );
+        });
+        $('#EventValue3-'+count).append(myselect.html());
+        $('#EventValue3-'+count).prop("data-selected",EventValue2);
+        $('#'+count+'id').val(EventValue2).attr('data-selected',EventValue2);
+        $('#EventValue3-'+count).val(EventValue2).attr('data-selected',EventValue2);
+        $('#EventValue3-'+count).select2();
+        // menufecture and model
+
+        var myselect = $('<select  id='+count+'id>');
+        $.each(Manufacturer, function(index, key) {
+            myselect.append( $('<option></option>').val(Manufacturer[index].DefinationId).html(Manufacturer[index].DefinationName) );
+        });
+        $('#EventValue4-'+count).append(myselect.html());
+        $('#EventValue4-'+count).prop("data-selected",EventValue3);
+        $('#'+count+'id').val(EventValue3).attr('data-selected',EventValue3);
+        $('#EventValue4-'+count).val(EventValue3).attr('data-selected',EventValue3);
+        $('#EventValue4-'+count).select2();
+        BindScannerModelDropdown(count,preselected,EventValue4);
+
+        var myselect = $('<select  id='+count+'id>');
+        $.each(ScannerModel, function(index, key) {
+            myselect.append( $('<option></option>').val(ScannerModel[index].DefinationId).html(ScannerModel[index].DefinationName) );
+        });
+        $('#EventValue5-'+count).append(myselect.html());
+        $('#EventValue5-'+count).prop("data-selected",EventValue4);
+        $('#'+count+'id').val(EventValue4).attr('data-selected',EventValue4);
+        $('#EventValue5-'+count).val(EventValue4).attr('data-selected',EventValue4);
+        $('#EventValue5-'+count).select2();
+        BindMeasurementDropdown(count,EventValue4,EventValue2);
+
+        $('#EventValue6-'+count).val(EventValue5);
+        //search type/ freq channel
+
+        BindOptionIdsDropdown(count,EventValue1,EventValue5,EventValue6);
+
+        count++;
+        SortAble();
+    }
+    $(document).on('change', '.ScannerProtocolDrop', function () {
+        var ct = $(this).attr("data-countsc");
+        var defId = $(this).val();
+        BindBandDropdown(ct,defId,0);
+    })
+    $(document).on('change', '.ScannerModelBandDrop', function () {
+        var ct = $(this).attr("data-countsc");
+        var defId = $(this).val();
+        BindMeasurementDropdown(ct,defId,0);
+    })
+    $(document).on('change', '.OptionDrop', function () {
+        var ct = $(this).attr("data-countsc");
+        var defId = $(this).val();
+        var band = $('#EventValue2-'+ct).val();
+        BindOptionIdsDropdown(ct,band,defId,'');
+        
+    })
+    $(document).on('change', '.ManufacturerBandDrop', function () {
+        var ct = $(this).attr("data-countsc");
+        var defId = $(this).val();
+        BindScannerModelDropdown(ct,defId,0);
+    })
+    function BindBandDropdown(ct,defId,EventValue1){
+        var myselect = $('<select  id='+ct+'id>');
+        $.each(ScannerBand, function(index, key) {
+            if (ScannerBand[index].PDefinationId == defId) {
+                myselect.append( $('<option></option>').val(ScannerBand[index].DefinationId).html(ScannerBand[index].DefinationName) );
+            }
+        });
+        $('#EventValue2-'+ct).html('');
+        $('#EventValue2-'+ct).append(myselect.html());
+        $('#EventValue2-'+ct).prop("data-selected",EventValue1);
+        $('#'+ct+'id').val(EventValue1).attr('data-selected',EventValue1);
+        $('#EventValue2-'+ct).val(EventValue1).attr('data-selected',EventValue1);
+        $('#EventValue2-'+ct).select2();
+        $('#EventValue2-'+ct).select2().trigger('change');
+    }
+
+    function BindMeasurementDropdown(ct,defId,EventValue2){
+        var myselect = $('<select  id='+ct+'id>');
+        $.each(ScannerMeasurement, function(index, key) {
+            if (ScannerMeasurement[index].PDefinationId == defId) {
+                myselect.append( $('<option></option>').val(ScannerMeasurement[index].DefinationId).html(ScannerMeasurement[index].DefinationName) );
+            }
+        });
+        $('#EventValue3-'+ct).html('');
+        $('#EventValue3-'+ct).append(myselect.html());
+        $('#EventValue3-'+ct).prop("data-selected",EventValue2);
+        $('#'+ct+'id').val(EventValue2).attr('data-selected',EventValue2);
+        $('#EventValue3-'+ct).val(EventValue2).attr('data-selected',EventValue2);
+        $('#EventValue3-'+ct).select2();
+        $('#EventValue3-'+ct).select2().trigger('change');
+    }
+
+    function BindScannerModelDropdown(ct,defId,EventValue1){
+        var myselect = $('<select  id='+ct+'id>');
+        $.each(ScannerModel, function(index, key) {
+            if (ScannerModel[index].PDefinationId == defId) {
+                myselect.append( $('<option></option>').val(ScannerModel[index].DefinationId).html(ScannerModel[index].DefinationName) );
+            }
+        });
+        $('#EventValue5-'+ct).html('');
+        $('#EventValue5-'+ct).append(myselect.html());
+        $('#EventValue5-'+ct).prop("data-selected",EventValue1);
+        $('#'+ct+'id').val(EventValue1).attr('data-selected',EventValue1);
+        $('#EventValue5-'+ct).val(EventValue1).attr('data-selected',EventValue1);
+        $('#EventValue5-'+ct).select2();
+        $('#EventValue5-'+ct).select2().trigger('change');
+    }
+
+    function BindOptionIdsDropdown(ct,band,search,selected){
+        if (search != undefined && band != '') {
+            var myselect = $('<select multiple="multiple" class="selectMulti" data-start="0" data-next="100"  id='+ct+'id>');
+            var mySelectText = new Array();
+            var selectArray = new Array();
+            if (selected!="" || selected != undefined) {
+                selectArray = selected.split(':');
+            }
+            $.get("../../NetLayerStatus/GetOptionIdsByBand",{band:band,search:search,start:0,next:100},function(OptionIds){
+                $.each(OptionIds, function(index, key) {
+                    myselect.append( $('<option></option>').val(OptionIds[index].DefinationId).html(OptionIds[index].DefinationName) );
+                    if(checkValue(OptionIds[index].DefinationId,selectArray)) {
+                        mySelectText.push(' '+OptionIds[index].DefinationName);
+                    }
+                });
+                $('#EventValue7-'+ct).html('');
+                $('#EventValue7-'+ct).show();
+                $('#EventValueLabel7-'+ct).show();
+                $('#EventValue7-'+ct).append(myselect.html());
+                $('#EventValue7-'+ct).attr("data-start",100);
+                $('#EventValue7-'+ct).attr("data-next",100);
+                //$('#EventValue7-'+ct).multiselect();
+                try {
+                    $('#EventValue7-'+ct).val(selectArray);
+                    $('#EventValueHideOptions-'+ct).attr("value",selected);
+                    $('#EventValueHideOptionsText-'+ct).attr("value",mySelectText);
+                } catch (e) {
+
+                }
+                $('#EventValue7-'+ct).multiselect({
+                    maxHeight: 260,
+                    enableFiltering:true,
+                    enableCaseInsensitiveFiltering:true,
+                });
+                $('#EventValue7-'+ct).multiselect("rebuild");
+                BindScroll();
+            })
+        }else{
+            $('#EventValue7-'+ct).hide();
+        }
+    }
+    function BindScroll(){
+        $("ul.dropdown-menu").scroll(function(e){
+            ScrollCheck(e);
+        });
+    }
+    function checkValue(value,arr){
+        var status = false;
+ 
+        for(var i=0; i<arr.length; i++){
+            var name = arr[i];
+            if(name == value){
+                status = true;
+                break;
+            }
+        }
+
+        return status;
+    }
+    $(document).on('change', '.OptionIdDrop', function () {
+        try {
+            var sd = $(this).val();
+            var joinArr = sd.join(':');
+            var ct = $(this).attr("data-countsc");
+            $('#EventValueHideOptions-'+ct).attr("value",joinArr);
+        } catch (e) {
+
+        }
+
+    });
+    //$("body").on('scroll', '.multiselect-container .dropdown-menu', function () {
+    //    debugger
+    //    try {
+    //        ScrollCheck(this);
+    //    } catch (e) {
+
+    //    }
+
+    //});
+    function ScrollCheck(e){
+        var elem = $(e.currentTarget);
+        console.log(elem[0].scrollHeight-elem.scrollTop());
+        console.log(elem.outerHeight());
+        if (elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight())
+        {
+            var currentRow = $(elem).parent().parent().html();
+            var ct = $(currentRow).attr("data-countsc");
+            var band = $('#EventValue2-'+ct).val();
+            var search = $('#EventValue6-'+ct).val();
+            AppendOptionIdsDropdown(ct,band,search);
+        }
+    }
+    function AppendOptionIdsDropdown(ct,band,search){
+        if (search != undefined && band != '') {
+            var myselect = $('<select multiple="multiple"  class="selectMulti"  id='+ct+'id>');
+            var start = $('#EventValue7-'+ct).attr("data-start");
+            var next = $('#EventValue7-'+ct).attr("data-next");
+            var mySelectText = new Array();
+            var selectArray = new Array();
+            mySelectText = $('#EventValueHideOptionsText-'+ct).attr("value");
+            var selected = $('#EventValueHideOptions-'+ct).attr("value");
+            if (selected!="" || selected != undefined) {
+                selectArray = selected.split(':');
+            }
+            $.get("../../NetLayerStatus/GetOptionIdsByBand",{band:band,search:search,start:start,next:next},function(OptionIds){
+                $.each(OptionIds, function(index, key) {
+                    myselect.append( $('<option></option>').val(OptionIds[index].DefinationId).html(OptionIds[index].DefinationName) );
+                    if(checkValue(OptionIds[index].DefinationId,selectArray)) {
+                        mySelectText= mySelectText +', '+OptionIds[index].DefinationName;
+                    }
+                });
+                $('#EventValue7-'+ct).append(myselect.html());
+                $('#EventValue7-'+ct).attr("data-start",parseInt(start)+parseInt(next));
+                $('#EventValue7-'+ct).attr("data-next",100);
+                try {
+                    $('#EventValue7-'+ct).val(selectArray);
+                    $('#EventValueHideOptions-'+ct).attr("value",selected);
+                    $('#EventValueHideOptionsText-'+ct).attr("value",mySelectText);
+                } catch (e) {
+    
+                }
+                $('#EventValue7-'+ct).multiselect('rebuild');
+            });
+
+        }
+    }
+    $(document).on('change', '.bandsdrop', function () {
+        var select =$('option:selected', $(this)).val()
+        var abc = $(this).nextAll('input');
+        var a= abc[0];
+        $(a).attr("value", select);
+    });
+    $(document).on('change', '.carriersdrop', function () {
+        var select =$('option:selected', $(this)).val()
+        var abc = $(this).nextAll('input');
+        var a= abc[0];
+        $(a).attr("value", select);
+
+    });
+    function CRAT(ETypeId, EventValue, mapColumn,SrId) {
+        var txt = Start_li('wait') + '<span></span> Lock ' + NetworkMode + EventTypeId(ETypeId, count, mapColumn) +
+                 ' <input class="value" type="text" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '" /> <input type="hidden" value="true" name="IsValue" />' +
+                 ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                 RemoveRow(false) + '<input type="hidden" id="IsDeleted-' + count + '" value="false" name="IsDeleted" /><input type="hidden" id="SrId-' + count + '" value="'+SrId+'" name="SrId" /><input type="hidden" id="TestKPI-' + count + '" value="0" name="TestKPI" /><input type="hidden" value="0" name="BandReselection" /><input type="hidden" value="0" name="ScannerSelection" /><input type="hidden" value="0" name="ManufacturerSelection" /><input type="hidden" value="0" name="ScannerModelSelection" /><input type="hidden" value="0" name="OptionSelection" /><input type="hidden" value="0" name="OptionIdSelection" /></li>';
+        $('.sortable').append(txt);
+        count++;
+        SortAble();
+    }
+    function EventTypeId(value, row, mapColumn) {
+        return '<input type="hidden" class="EventTypeId" data-mapColumn="' + mapColumn + '" value="' + value + '" name="EventTypeId" id="EventTypeId-' + row + '" />';
+    }
+
+
+
+
+
+    function ChangeRowColor() {
+        TestCount++;
+        RowColor = (RowColor == '#f4f4f4') ? '#d0e1fb' : '#f4f4f4';
+        var txt = "";
+        var abc = $("#addbtn").text();
+        if (abc == "Add Device")
+            txt = '<li class="unsortable" id="tree-' + TestCount + '" style="color:#00acd6;background: ' + RowColor + ';font-size: 19px;"> Device # <span> ' + TestCount + '</span>' + RemoveRow(true) + '</li><input type="hidden" name="SiteClusterId" value='+@ViewBag.SiteClusterId+'>';
+        else
+            txt = '<li class="unsortable" id="tree-' + TestCount + '" style="color:#00acd6;background: ' + RowColor + ';font-size: 19px;"> TEST SEQUENCE # <span> ' + TestCount + '</span>' + RemoveRow(true) + '</li>';
+        count++;
+        var  def = '<input type="hidden" class="sequence" id=s"'+count+'"  name="Sequences" value="'+count+'"/>';
+
+
+        $('.sortable').append(txt);
+        // $('.sortable').append(def);
+
+    }
+    function ChangeTestKpi(e, rowCount) {
+        let CValue=$("#TestKPI-"+rowCount).val();
+        if ($(e).is(':checked')) {
+            if(CValue=="" || CValue==undefined)
+            {
+                CValue=e.value;
+            }
+            else{
+                CValue+=","+e.value;
+            }
+            $("#TestKPI-"+rowCount).val(CValue);
+        } else {
+            if(CValue=="" || CValue==undefined)
+            {
+
+            }
+            else{
+                let splited =  CValue.split(",");
+                let newval="";
+                splited.forEach(function(i){
+                    if(newval=="")
+                    {
+                        if(i!=e.value){
+                            newval=i;
+                        }
+
+                    }
+                    else{
+                        if(i!=e.value){
+                            newval+=","+i;
+                        }
+                    }
+                })
+                $("#TestKPI-"+rowCount).val(newval);
+            }
+        }
+    }
+    function ChangeIsL3(e, rowCount) {
+
+        if ($(e).is(':checked')) {
+
+            //  $("#IsL3-"+rowCount).parent().after("<li id='Iskpi-"+rowCount+"' ><span></span></li>")
+            $('#Iskpi-'+rowCount).show();
+            $('#IsL3-' + rowCount).val('true');
+        } else {
+            $("#Iskpi-"+rowCount).hide();
+            $('#IsL3-' + rowCount).val('false');
+        }
+    }
+    function ClearList() {
+        TestCount = 0;
+        $(".sortable").empty();
+        //   EventTypeIdChange(null);
+        GetSetting(data)
+        ChangeRowColor();
+    }
+
+    function SortAble() {
+        $(".sortable").sortable({
+            // group: 'sortable',
+            // pullPlaceholder: false,
+            items: "li:not(.unsortable)",
+            // handle: 'fa-minus',
+            onDrop: function (item, container, _super) {
+                console.log(item);
+                console.log('----');
+                console.log(container);
+                console.log('----');
+
+                console.log(_super);
+
+            }
+        });
+        //$('.sortable').sortable({});
+    }
+
+    $(function () {
+        SortAble();
+
+        $(document).on('click', '.li-remove', function () {
+
+            debugger;
+
+            var abc = $(this).parent().nextAll('input');
+            //var def = $(this).parent().hasClass("unsortable");
+            //if (def == true) {
+            //    abc[0].remove();
+            //}
+            var svalue=$(this).parent().find('select option').eq(0).val();
+            $(this).parent().find('select').val(svalue);
+
+
+
+            $("#IsDeleted-"+$(this).attr("data-count")).val(true);
+            $("#Iskpi-"+$(this).attr("data-count")).hide();
+            $(this).closest('li').hide();
+            if ($(this).attr('data-isParent') == 'true') {
+                var cls = $(this).attr('data-child');
+                //  var jhj = $('.' + cls).closest('li').length;
+                $('.' + cls).closest('li').remove();
+
+
+                //    console.log(jhj);
+
+                //$.each(abc, function (key, value) {
+                //    jkl = abc[key];
+                //    console.log(jkl);
+                //});
+
+            }
+
+            EventTypeIdChange(null);
+            GetSetting(data);
+            // console.log($(this).attr('data-child'));
+        });
+        $(document).on('mouseout', '.myrow', function () {
+            Count();
+        });
+    });
+</script>
+<div class="row">
+    <div class="col-sm-8">
+
+
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Create Test Script</h3>
+            </div>
+            <div class="box-body">
+                <div>
+                    @foreach (var item in Definations.Where(m => m.InputType == "button").OrderBy(m => m.SortOrder))
+                    {
+
+                        string OnClick = "";
+                        if (item.DisplayType == "etest")
+                        {
+                            OnClick = "Test('" + item.DefinationName + "'," + item.DefinationId + ", 1, 'false',''); return false;";
+                        }
+                        else if (item.DisplayType == "otest")
+                        {
+                            OnClick = "oTest('" + item.DefinationName + "'," + item.DefinationId + ", 1, 'false'," + item.MapColumn + ",''); return false;";
+                        }
+                        //else if (item.DisplayType == "rat")
+                        //{
+                        //    OnClick = "LockAndReset('"+ item.DefinationName+ "'); return false;";
+                        //}
+                        else if (item.DisplayType == "delay" || item.DisplayType == "Idle" || item.DisplayType == "Screenshot" || item.DisplayType == "actions")
+                        {
+                            OnClick = "Wait(" + item.DefinationId + ",'5','" + item.MapColumn + "','" + item.DisplayType + "','false','','" + item.DefinationName + "'); return false;";
+                        }
+                        else if (item.DisplayType == "Scanner")
+                        {
+                            // RAT(ETypeId, type, mapColumn)
+                            OnClick = "Scanner('" + item.DefinationId + "', '" + item.DefinationName + "','" + item.MapColumn + "', 1,''); ";
+                        }
+                        <div class="btn-group">
+
+                            @if (EventsList.Exists(m => m.PDefinationId == item.DefinationId))
+                            {
+
+                                <button style="background-color:@item.ColorCode;color:white" type="button" class="btn ">@item.DefinationName</button>
+
+                                <button style="background-color:@item.ColorCode;color:white" type="button" class="btn  dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    @foreach (var item2 in EventsList.Where(m => m.PDefinationId == item.DefinationId))
+                                    {
+                                        if (item.DisplayType == "etest")
+                                        {
+
+                                            OnClick = "Test('" + item2.DefinationName + "'," + item2.DefinationId + ", 1, 'false'); GetSetting(data)";
+                                        }
+                                        else if (item.DisplayType == "rat")
+                                        {
+                                            // RAT(ETypeId, type, mapColumn)
+                                            OnClick = "RAT('" + item2.DefinationId + "', '" + item2.DefinationName + "','" + @item.MapColumn + "', 1,''); ";
+                                        }
+
+                                        if (item2.DisplayType == "otest")
+                                        {
+                                            OnClick = "oTest('" + item2.DefinationName + "'," + item2.DefinationId + ", 1, 'false'," + item2.MapColumn + "); GetSetting(data)";
+                                        }
+                                        if (item2.DisplayType == "crat")
+                                        {
+                                            OnClick = "CRAT(" + item.DefinationId + ",'0','" + item.MapColumn + "'); ";
+                                        }
+
+                                        <li><a data-value="@item2.DefinationId" onclick="@OnClick" href="#">@item2.DefinationName</a></li>
+                                    }
+
+                                </ul>
+                            }
+                            else
+                            {
+
+                                <button style="background-color:@item.ColorCode;color:white" type="button" onclick="@OnClick" class="btn ">@item.DefinationName</button>
+                            }
+
+                        </div>
+                    }
+                </div>
+                <br />
+                @if (ViewBag.cls == "CLS")
+                {
+                    <button type="button" id="addbtn" onclick="ChangeRowColor(); return false;" style="background-color:#067730;color:white" class="btn btn-default">Add Device</button>
+                }
+                else
+                {
+                    <button type="button" onclick="ChangeRowColor(); return false;" style="background-color:#067730;color:white" class="btn btn-default">Add Test</button>
+                }
+                <br /><br />
+                <form method="post" id="frm-script" onsubmit="ScriptSubmit(); return false;" novalidate>
+                    <input type="hidden" value="@ViewBag.LayerId" name="NetLayerId" />
+                    <input type="hidden" value="@ViewBag.SiteId" name="SiteId" />
+                    <input type="hidden" value="@ViewBag.ScopeId" name="ScopeId" />
+                    <div style="height:700px;overflow:auto">
+                        <ul class="todo-list sortable" style="font-weight: bold;"></ul>
+                    </div>
+
+                    <button type="submit" class="btn btn-success pull-right">Save</button>
+                    <button onclick="ClearList(); return false;" class="btn btn-danger pull-left">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="col-sm-4">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Test Script Preview</h3>
+            </div>
+            <div class="box-body">
+                <div style="height:847px;overflow:auto">
+                    <div id="tbl-preview"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal custom-modal fade" id="ScannerModal">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">×</span><span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" style="font-weight:bold" id="av-modal-title">Configurations</h4>
+
+                    </div>
+                    <div class="modal-body" id="av-modal-body">
+                        <div id="TaskParameters">
+                            <form id="formBuilderScanner"></form>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="CloseBtn" data-dismiss="modal" type="button" onclick="" class="btn btn-danger">Close</button>
+
+                        <button type="submit" class='btn btn-success' onclick="SiteScriptScannerConfigSave()">Save</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal custom-modal fade" id="ScriptModal">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">×</span><span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" style="font-weight:bold" id="av-modal-title">Activity</h4>
+
+                    </div>
+                    <div class="modal-body" id="av-modal-body">
+                        <div id="TaskParameters">
+                            <form id="formBuilder"></form>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="CloseBtn" data-dismiss="modal" type="button" onclick="" class="btn btn-danger">Close</button>
+
+                        <button type="submit" class='btn btn-success' onclick="SiteScriptParameterSave()" id="TASKPARAMETERSave">Save</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade custom-modal" id="ScriptModal1" data-backdrop="static" data-keyboard="false">
+        <div class="vertical-alignment-helper">
+
+            <div class="modal-dialog" data-backdrop="static" data-keyboard="false">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button onclick="" type="button" class="close" data-dismiss="modal">×</button>
+                        <h4 class="modal-title">Kuch Title</h4>
+                    </div>
+                    <div class="modal-body" style="max-height:800px;overflow:auto">
+
+                        <div id="TaskParameters">
+                            <form id="formBuilder"></form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="CloseBtn" data-dismiss="modal" type="button" onclick="" class="btn btn-footer2">Close</button>
+
+                        <button type="submit" class='btn btn-footer1 pull-right' onclick="SiteScriptParameterSave()" id="TASKPARAMETERSave">Save</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .custom-modal .modal-body {
+        overflow: auto;
+        max-height: calc(100vh - 180px);
+    }
+
+    .custom-modal .modal-dialog {
+        width: 930px;
+    }
+</style>
+
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<script>
+
+    @{ string prevColor=string.Empty; }
+        @foreach (var item in PreviousRecord)
+        {
+            if (prevColor == item.Color)
+            {
+
+            }
+            else
+            {
+                @: ChangeRowColor();
+                                              prevColor = item.Color;
+            }
+
+
+            @: RowColor = '@prevColor';
+                                            if (item.IsValue)
+            {
+                if (item.DisplayType == "delay" || item.DisplayType == "Idle" || item.DisplayType =="Screenshot" || item.DisplayType == "actions")
+                {
+                    @: Wait('@item.EventTypeId', '@item.EventValue', '@item.MapColumn','@item.DisplayType','@item.IsL3Enabled','@item.TestKpi','@item.DefinationName','@item.SrId');
+
+                }
+
+                else if (item.DisplayType == "rat")
+                {
+                   @: RAT('@item.EventTypeId', '@item.DefinationName', '@item.MapColumn', '@item.EventValue','@item.EventValue1','@item.IsL3Enabled','@item.TestKpi','@item.SrId');
+                                                }else if (item.DisplayType == "crat")
+                {
+                    @: CRAT('@item.EventTypeId', '@item.EventValue', '@item.MapColumn','@item.SrId');
+
+                }
+                 else if (item.DisplayType == "Scanner")
+                {
+                   @: Scanner('@item.EventTypeId', '@item.DefinationName', '@item.MapColumn', '@item.EventValue','@item.EventValue1','@item.TestKpi','@item.SrId','@item.pDefinationId','@item.ScannerManufecturerId','@item.ScannerModelId','@item.Options','@item.OptionId');
+                        }
+            }
+            else if (item.IsValue == false)
+            {
+                if (item.DisplayType == "otest")
+                {
+                      @: oTest('@item.DefinationName', '@item.EventTypeId', '@item.EventValue', '@item.IsL3Enabled', '@item.MapColumn','@item.TestKpi','@item.SrId');
+                                                }
+                else
+                {
+                 @: Test('@item.pDefinationName', '@item.pDefinationId', '@item.EventValue', '@item.IsL3Enabled', '@item.EventTypeId','@item.TestKpi','@item.SrId');
+
+                }
+            }
+
+        }
+    EventTypeIdChange(null)
+    GetSetting(data);
+    if (TestCount == 0) {
+        ChangeRowColor();
+    }
+
+
+
+    function ScriptSubmit() {
+
+        var result;
+
+        $('#frm-script').find('select').each(function () {
+
+            var listtext = $(this).parent('li.myrow').find('select').text();
+            if(($(this).parent('li.myrow').find("input[name='IsDeleted']").prop("defaultValue"))=="false"){
+                if (!$(this).val()) {
+                    result=false;
+                    swal("Error !","Please select Item");
+                    return result;
+                }
+                else{
+                    result= true;
+                    return result;
+                }
+            }
+        });
+        //debugger;
+        //var count = 1;
+        //$.each(function(item){
+        //    count = count+1;
+        //if($('.bandreselection').parent().find('input:checkbox').is(':checked')){
+
+        //}
+        //});
+
+        if(result == true || result == undefined){
+            debugger;
+            $.ajax({
+                url: '/NetLayerStatus/Script',
+                type: 'post',
+                data: $('#frm-script').serialize(),
+                success: function (res) {
+                    if (res != 'session expired') {
+                        if (res.Status == 'success') {
+                            // $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                            swal("Success !",res.Message, "success");
+                            setTimeout(  location.reload(),3000);
+                        } else {
+                            // $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            swal("Error !",res.Message, "error");
+                        }
+                    } else {
+                        swal("Session Expired !","", "error");
+                        // $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                },
+                error: function (err) {
+                    // $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+                    swal("Error !",err.statusText, "error");
+                },
+            });
+        }
+    }
+    //only numeric value on delay input
+    function isNumberKey(evt)
+    {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function FormTemplate(KeyCode, KeyId) {
+        //KeyCode = (KeyCode == 'PROJECT_MILESTONE') ? 'MILESTONE' : 'STAGE';
+        //var tempfrmtyp = $scope.GetFormTypesByKeyCode(KeyCode);
+
+        $.ajax({
+            url: '/NetLayerStatus/FormBuilderPartial?FormTypeId=' + 163352 + '&KeyId=' + KeyId,
+            success: function (res) {
+                $('#formBuilder').html(res);
+                $('#btn-FormBuilderSubmit').hide();
+            }
+        });
+    }
+    function ScannerConfigurations(KeyId,measurementId,ManufacturerId,ScannerModelId,ProtocolId,BandId,SelectedChannels) {
+        $.ajax({
+            url: '/NetLayerStatus/GetScannerConfigurations?KeyId=' + KeyId+'&measurementId='+measurementId+'&ManufacturerId='+ManufacturerId+'&ScannerModelId='+ScannerModelId+'&ProtocolId='+ProtocolId+'&ScannerBandId='+BandId+'&SiteData='+@ViewBag.SiteId+','+@ViewBag.NetworkModeId+','+@ViewBag.BandId+'&SelectedChannels='+SelectedChannels,
+            success: function (res) {
+                $('#formBuilderScanner').html(res);
+            }
+        });
+    }
+
+    function   OpenActionDialogue(_FormId){
+        FormTemplate('KeyCode', _FormId)
+        $('#ScriptModal').modal('show');
+    }
+    function   OpenScannerDialogue(_FormId,e){
+        var measurementId = $(e).closest("li").find(".ScannerMeasurementDrop").val();
+        var manufacturerId = $(e).closest("li").find(".ManufacturerBandDrop").val();
+        var scannerModelId = $(e).closest("li").find(".ScannerModelBandDrop").val();
+        var ProtocolId = $(e).closest("li").find(".ScannerProtocolDrop").val();
+        var BandId = $(e).closest("li").find(".ScannerBandDrop").val();
+        var SelectedChannels = CheckIfSequence($(e).closest("li").find(".optionIdsText").val());//.join(', ');
+        ScannerConfigurations(_FormId,measurementId,manufacturerId,scannerModelId,ProtocolId,BandId,SelectedChannels);
+        $('#ScannerModal').modal('show');
+    }
+    function CheckIfSequence(test){
+        var result = "";
+        var arr = test.split(',');
+        var first = arr[0];
+        var last = arr[arr.length-1];
+        var org = (parseInt(last)+1)-parseInt(first);
+        if (org==arr.length) {
+            result = first + ' - ' + last;
+        }else{
+            result = test;
+        }
+        return result;
+    }
+    SiteScriptParameterSave = function (Value) {
+        let RequiredFields = true;
+        $('#formBuilder').find('input').each(function () {
+            if (!$(this).prop('required')) {
+                // console.log("NR");
+            } else {
+                //console.log("IR");
+                if ($(this).val() == "") {
+                    RequiredFields = false
+                }
+            }
+        });
+        $('#formBuilder').find('select').each(function () {
+            if (!$(this).prop('required')) {
+
+            } else {
+                if ($(this).val() == "" || $(this).val() == "-1") {
+                    RequiredFields = false
+                }
+
+            }
+        });
+        // $('#definationTypeId').val($scope.p.id);
+        if (RequiredFields == true) {
+            $.ajax({
+                url: '/NetLayerStatus/FormBuilder',
+                type: 'post',
+                data: $('#formBuilder').serialize(),
+                success: function (frm) {
+                    if (frm.Status == true) {
+                        var definationType = $('#definationTypeId').val();
+                        if (definationType != null) {
+                            $.ajax({
+                                url: "/NetLayerStatus/SavedFormInfo/",
+                                type: "post",
+                                data: {
+                                    FormId: definationType,
+                                },
+                                async: false,
+                            }).done(function (result) {
+                                var GeneratedForm = result.Form;
+                                $('#FormBuilderFields').html(GeneratedForm);
+                                swal("Success !", "", "success");
+                            });
+                        }
+                        else {
+                            swal("Success !", "", "success");
+                        }
+                    }
+                    else {
+                        swal("Error !", "Error occured ", "error");
+                    }
+                },
+                error: function () {
+                    swal("Error !", "Error occured", "error");
+                }
+            });
+        }
+        else {
+            //  swal("Fields with <i style='color:red' >*</i> are Compulsary !", "", "error");
+            swal({
+                title: "Fields with * are Compulsary !",
+                type: "warning",
+                border: "3px solid red;"
+            });
+        }
+    }
+
+
+
+    SiteScriptScannerConfigSave = function (Value) {
+        debugger
+        var fd = new FormData();
+        var kpiId = [];
+        var kpiValue = [];
+        $('#FormBuilderFields tr').each(function() {
+            if ( $(this).find("#kpiId").val()!=undefined) {
+                var kId = $(this).find("#kpiId").val();
+                var kVal = $(this).find("#kpiValue").val();
+                //var disp = $(this).attr("data-displayVal").val();
+                try {
+                    var sVPush = kVal.join(':');
+                    kVal = sVPush;
+                } catch (e) {
+
+                }
+                fd.append("kpiId", kId);
+                fd.append("kpiValue", kVal);
+            }
+            
+        });
+        var KeyId = $("#KeyId").val();
+        var MeasurementId = $("#MeasurementId").val();
+        fd.append("KeyId", KeyId);
+        fd.append("MeasurementId", MeasurementId);
+
+        $.ajax({
+            url: '/NetLayerStatus/SaveScannerConfiguration',
+            type: 'post',
+            data: fd,
+            processData: false,
+            contentType: false,
+            success: function (frm) {
+                if (frm.Status == true) {
+                    swal("Success !", "", "success");
+                }
+            },
+            error: function () {
+                swal("Error !", "Error occured", "error");
+            }
+        });
+    }
+
+</script>
+@section style{
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+    <style>
+        .value {
+            color: #ff0000;
+        }
+
+        .btn {
+            font-size: 16px;
+        }
+    </style>
+}

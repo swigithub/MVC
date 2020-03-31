@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0">
+
+    <div id="ProjectReadiness" style="margin: 0px auto;"></div>
+
+    <script src="Scripts/jquery-1.10.2.min.js"></script>
+    <script src="SmartAdmin/js/moment.min.js"></script>
+     <script src="Content/js/Project/canvasjs.min.js"></script>
+
+    <script>
+
+        window.onload = function () {
+            function setChartHeight() {
+                var chartHeight = $(window).height();
+                var chartWidth = $(window).width();
+                $('#ProjectReadiness').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+            }
+            setChartHeight();
+
+            $(window).resize(function () {
+                setChartHeight();
+            });
+
+            //http://localhost:18460/ProjectReadiness.html?filter=Get_Project_Issue_By&ProjectId=20021&&Value1=0&TaskIds=50080&LocationIds=163408_163409_163410_163411_163412_163413_163414_163415_163416_163405_163406_163407&FromDate=1/1/2018&ToDate=2/2/2018&SearchFilter=Daily
+
+            //163408_163409_163410_163411_163412_163413_163414_163415_163416_163405_163406_163407
+
+            var ProjectId = getParameter('ProjectId');
+            var RawMarketid = getParameter('LocationIds');
+            var marketid = RawMarketid.replace(/_/g, ",");
+            var taskid = getParameter('TaskIds');
+            var fromdate = getParameter('FromDate');
+            var todate = getParameter('ToDate');
+            var Value1 = getParameter('Value1');
+            var SearchFilter = getParameter('SearchFilter');
+
+            LoadReadiness();
+
+            function getParameter(theParameter) {
+                var params = window.location.search.substr(1).split('&');
+                for (var i = 0; i < params.length; i++) {
+                    var p = params[i].split('=');
+                    if (p[0] == theParameter) {
+                        return decodeURIComponent(p[1]);
+                    }
+                }
+                return false;
+            }
+
+            function LoadReadiness() {
+                CanvasJS.addColorSet("ReadinessColor",
+                               ["#4472c4", "#ed7d31", "#ff0000"]);
+                var url;
+                if (marketid != null) {
+                    var url = window.location.origin + '/swi/PM_Dashboard?filter=GET_PROJECT_READINESS&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid
+               + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+
+                }
+                else {
+                    url = window.location.origin + '/swi/PM_Dashboard?filter=GET_PROJECT_READINESS&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid
+                          + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+                }
+                var Readiness = [];
+
+                function GroupByIssues(data) {
+                    var group_to_values = data.reduce(function (obj, item) {
+                        obj[item.Type] = obj[item.Type] || [];
+                        obj[item.Type].push({ label: item.DefinationName, y: item.WoCount, toolTipContent: item.Type + ': ' + item.WoCount, Type: item.Type, ColorCode: item.ColorCode });
+                        return obj;
+                    }, {});
+
+                    var groups = Object.keys(group_to_values).map(function (key) {
+                        return { DefinationName: key, chartdata: group_to_values[key] };
+                    });
+
+                    return groups;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    async: false,
+                    success: function (data) {
+                        Readiness = [];
+                        var sd = {};
+                        var grpIssues = GroupByIssues(data);
+                        for (var i = 0; i < grpIssues.length; i++) {
+                            var col = '';
+                            var issueStackbar = [];
+                            for (var j = 0; j < grpIssues[i].chartdata.length; j++) {
+                                col = grpIssues[i].chartdata[j].ColorCode;
+                                issueStackbar.push({ indexLabel: "{y}", label: grpIssues[i].chartdata[j].label, y: grpIssues[i].chartdata[j].y, name: 'Market Issue', toolTipContent: grpIssues[i].chartdata[j].Type + ': ' + grpIssues[i].chartdata[j].y, color: grpIssues[i].chartdata[j].ColorCode });
+                            }
+                            Readiness.push({
+                                type: "column",
+                                legendText: grpIssues[i].DefinationName,
+                                legendMarkerColor: col,
+                                showInLegend: true,
+                                dataPoints: issueStackbar
+                            })
+                        }
+                    }
+                });
+
+                var chart = new CanvasJS.Chart("ProjectReadiness", {
+                    animationEnabled: true,
+                    colorSet: "ReadinessColor",
+                    //height: 270,
+                    exportEnabled: true,
+                    title: {
+                        text: "",
+                        fontFamily: "arial black",
+                        fontColor: "#695A42"
+                    },
+                    axisX: {
+                        //interval: 1,
+                        //intervalType: "year"
+                    },
+                    title: {
+                        text: "Readiness as of " + moment.utc(new Date).format('MMM DD, YY')
+                    },
+                    axisY: {
+                        //valueFormatString: "$#0bn",
+                        //gridColor: "#B6B1A8",
+                        //tickColor: "#B6B1A8"
+                    },
+                    toolTip: {
+                        //shared: true,
+                        //content: toolTipContent
+                    },
+
+                    data: Readiness
+                });
+                //showDefaultText(chart, "No Data Available");
+                chart.render();
+            }
+        }
+
+    </script>
+
+</body>
+</html>

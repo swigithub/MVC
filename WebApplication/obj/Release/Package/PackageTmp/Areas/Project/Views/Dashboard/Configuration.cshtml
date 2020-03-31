@@ -1,0 +1,561 @@
+﻿
+@{
+    var Counter = 0;
+    var Data = ViewBag.Data as List<AirView.DBLayer.Project.Model.ChartSettings>;
+    ViewBag.Title = "Configuration";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+    TempData.Keep("ProjectId");
+    string ProjectId = TempData["ProjectId"] as string;
+    var a = Data.Where(x => x.ChartType == "SERIES_CHART" && x.PanelName == "Program View").Count();
+    var b = Data.Where(x => x.ChartType == "SERIES_CHART" && x.PanelName == "Regional View").Count();
+    var c = Data.Where(x => x.ChartType == "SERIES_CHART" && x.PanelName == "Readiness View").Count();
+    var d = Data.Where(x => x.ChartType == "PIE_CHART" && x.PanelName == "Site Disposition").Count();
+    var e = Data.Where(x => x.ChartType == "PIE_CHART" && x.PanelName == "Issues View").Count();
+    var f = Data.Where(x => x.ChartType == "STACK_COLUMN_CHART" && x.PanelName == "National Program View").Count();
+    var g = Data.Where(x => x.ChartType == "STACK_COLUMN_CHART" && x.PanelName == "Regional View").Count();
+}
+
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+<span hidden id="pId" data-ProjectId="@TempData["ProjectId"]"></span>
+
+
+@using (Html.BeginForm("", "", new { }, FormMethod.Post, new { id = "Form_Chart" }))
+{
+    <div class="row" style="margin: 0px">
+        <div class="col-md-12">
+            <div class="jarviswidget light-widget" role="widget">
+                <header @*style="color:white"*@ role="heading" style="height: 38px">
+                    <div class="jarviswidget-ctrls" role="menu">
+                    </div>
+                    <h2 style="font-size: 20px;font-weight: 500">Chart Settings</h2>
+
+                    <button style="margin-right:5px;margin-top:7px" class="btn btn-xs btn-success  pull-right" type="submit">Apply</button>
+                    <a style="margin-right:5px;margin-top:7px" class="btn btn-xs btn-success  pull-right" href="/Project/Dashboard/Index/@ViewBag.ProjectId">Back to Dashboard</a>
+                </header>
+
+            </div>
+        </div>
+    </div>
+    <div class="row " style="margin: 0px">
+
+
+        <div class="col-md-6">
+            <div style="width:100%;overflow: auto;" class="jarviswidget light-widget" id="wid-id-4" role="widget">
+
+                <header @*style="color:white"*@ role="heading">
+                    <div class="jarviswidget-ctrls" role="menu">
+                    </div>
+                    <span class="widget-icon"> <i class="fa fa-tasks"></i>&nbsp; </span>
+                    <h2 style="font-weight: bold;">Issues View</h2>
+                </header>
+                @if (e > 0)
+                {
+                    <div role="content">
+                        <div class="box-body table-responsive  widget-body no-padding">
+                            <table class="table @*table-bordered*@ table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">Data series</th>
+                                        <th width="30%">
+                                            Color
+                                        </th>
+                                        <th width="30%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="TBody">
+                                    @foreach (var item in Data.Where(x => x.ChartType == "PIE_CHART" && x.PanelName == "Issues View"))
+                                    {
+                                        Counter = Counter + 1;
+                                        <tr>
+                                            <td>@item.DataSeries <input type="hidden" value="@item.SrId" name="SrId" data-name="SrId" id="SrId" /></td>
+                                            <td><input name="ColorCode" data-name="ColorCode" id="ColorCode-@Counter" type="color" value="@item.ColorCode" /></td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>No record found.</div>
+                }
+                @*</div>*@
+            </div>
+        </div>
+
+
+
+
+        <div class="col-md-6" style="display:none">
+            <div style="width:100%;overflow: auto;" class="jarviswidget light-widget" id="wid-id-5" role="widget">
+
+                <header @*style="color:white"*@ role="heading">
+                    <div class="jarviswidget-ctrls" role="menu">
+                    </div>
+                    <span class="widget-icon"> <i class="fa fa-tasks"></i>&nbsp; </span>
+                    <h2 style="font-weight: bold;">Issues &nbsp; : &nbsp;  National Program</h2>
+                </header>
+                @if (f > 0)
+                {
+                    <div role="content">
+                        <div class="box-body table-responsive  widget-body no-padding">
+                            <table class="table @*table-bordered*@ table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">Data series</th>
+                                        <th width="30%">
+                                            Color
+                                        </th>
+                                        <th width="30%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="TBody">
+                                    @foreach (var item in Data.Where(x => x.ChartType == "STACK_COLUMN_CHART" && x.PanelName == "National Program"))
+                                    {
+                                        Counter = Counter + 1;
+                                        <tr>
+                                            <td>@item.DataSeries <input type="hidden" value="@item.SrId" name="SrId" data-name="SrId" id="SrId" /></td>
+                                            <td><input name="ColorCode" data-name="ColorCode" id="ColorCode-@Counter" type="color" value="@item.ColorCode" /></td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>No record found.</div>
+                }
+                @*</div>*@
+            </div>
+        </div>
+
+
+
+
+        <div class="col-md-6 " style="display:none">
+            <div style="width:100%;overflow: auto;" class="jarviswidget light-widget" id="wid-id-6" role="widget">
+
+                <header @*style="color:white"*@ role="heading">
+                    <div class="jarviswidget-ctrls" role="menu">
+                    </div>
+                    <span class="widget-icon"> <i class="fa fa-tasks"></i>&nbsp; </span>
+                    <h2 style="font-weight: bold;">Issues &nbsp; : &nbsp;  Regional View</h2>
+                </header>
+                @if (g > 0)
+                {
+                    <div role="content">
+                        <div class="box-body table-responsive  widget-body no-padding">
+                            <table class="table @*table-bordered*@ table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">Data series</th>
+                                        <th width="30%">
+                                            Color
+                                        </th>
+                                        <th width="30%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="TBody">
+                                    @foreach (var item in Data.Where(x => x.ChartType == "STACK_COLUMN_CHART" && x.PanelName == "Regional View"))
+                                    {
+                                        Counter = Counter + 1;
+                                        <tr>
+                                            <td>@item.DataSeries <input type="hidden" value="@item.SrId" name="SrId" data-name="SrId" id="SrId" /></td>
+                                            <td><input name="ColorCode" data-name="ColorCode" id="ColorCode-@Counter" type="color" value="@item.ColorCode" /></td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>No record found.</div>
+                }
+                @*</div>*@
+            </div>
+        </div>
+
+
+
+        <div class="col-md-6">
+            <div class="jarviswidget light-widget" id="wid-id-0" style="width:100%;overflow: auto;" role="widget">
+
+                <header @*style="color:white"*@ role="heading">
+                    <div class="jarviswidget-ctrls" role="menu">
+                    </div>
+                    <span class="widget-icon"> <i class="fa fa-tasks"></i>&nbsp; </span>
+                    <h2 style="font-weight: bold;">Program View</h2>
+                </header>
+                @if (a > 0)
+                {
+                    <div role="content">
+                        <div class="box-body table-responsive  widget-body no-padding">
+                            <table class="table @*table-bordered*@ table-striped" @*id="tbl-user"*@>
+                                <thead>
+                                    <tr>
+                                        <th width="30%">
+                                            Data series
+                                        </th>
+                                        <th width="30%">
+                                            Color
+                                        </th>
+                                        <th width="30%">
+                                            Series Type
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="TBody">
+                                    @foreach (var item in Data.Where(x => x.ChartType == "SERIES_CHART" && x.PanelName == "Program View"))
+                                    {
+                                        Counter = Counter + 1;
+                                        <tr>
+                                            <td>
+                                                @item.DataSeries <input type="hidden" value="@item.SrId" name="SrId" data-name="SrId" id="SrId" />
+                                            </td>
+                                            <td>
+                                                <input name="ColorCode" data-name="ColorCode" id="ColorCode-@Counter" type="color" value="@item.ColorCode" />
+                                            </td>
+                                            <td>
+                                                @Html.DropDownList("SeriesType", new SelectList(ViewBag.SeriesTypes, "Value", "Text", @item.SeriesType)
+                             , "Select Series", new { @data_name = "SeriesType" })
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>No record found.</div>
+                }
+                @*</div>*@
+            </div>
+        </div>
+     
+
+
+        <!--Site Disposition-->
+        <div class="col-md-6">
+            <div style="width:100%;overflow: auto;" class="jarviswidget light-widget" id="wid-id-3" role="widget">
+
+                <header @*style="color:white"*@ role="heading">
+                    <div class="jarviswidget-ctrls" role="menu">
+                    </div>
+                    <span class="widget-icon"> <i class="fa fa-tasks"></i>&nbsp; </span>
+                    <h2 style="font-weight: bold;">@ViewBag.EntityTitle Disposition</h2>
+                </header>
+                @if (d > 0)
+                {
+                    <div role="content">
+                        <div class="box-body table-responsive  widget-body no-padding">
+                            <table class="table @*table-bordered*@ table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">Data series</th>
+                                        <th width="30%">
+                                            Color
+                                        </th>
+                                        <th width="30%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="TBody">
+                                    @foreach (var item in Data.Where(x => x.ChartType == "PIE_CHART" && x.PanelName == "Site Disposition"))
+                                    {
+                                        Counter = Counter + 1;
+                                        <tr>
+                                            <td>@item.DataSeries <input type="hidden" value="@item.SrId" name="SrId" data-name="SrId" id="SrId" /></td>
+                                            <td><input name="ColorCode" data-name="ColorCode" id="ColorCode-@Counter" type="color" value="@item.ColorCode" /></td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>No record found.</div>
+                }
+                @*</div>*@
+            </div>
+        </div>
+
+
+
+
+
+        <div class="col-md-6" style="display:none">
+            <div style="width:100%;overflow: auto;" class="jarviswidget  light-widget" id="wid-id-1" role="widget">
+
+                <header @*style="color:white"*@ role="heading">
+                    <div class="jarviswidget-ctrls" role="menu">
+                    </div>
+                    <span class="widget-icon"> <i class="fa fa-tasks"></i>&nbsp; </span>
+                    <h2 style="font-weight: bold;">Project &nbsp; : &nbsp;  Regional View</h2>
+                </header>
+                @if (b > 0)
+                {
+                    <div role="content">
+                        <div class="box-body table-responsive  widget-body no-padding">
+                            <table class="table @*table-bordered*@ table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">
+                                            Data series
+                                        </th>
+                                        <th width="30%">
+                                            Color
+                                        </th>
+                                        <th width="30%">Series Type</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody class=TBody>
+                                    @foreach (var item in Data.Where(x => x.ChartType == "SERIES_CHART" && x.ChartName == "Regional View"))
+                                    {
+                                        Counter = Counter + 1;
+                                        <tr>
+                                            <td>@item.DataSeries <input type="hidden" value="@item.SrId" name="SrId" data-name="SrId" id="SrId" /></td>
+                                            <td><input name="ColorCode" data-name="ColorCode" type="color" value="@item.ColorCode" id="ColorCode-@Counter" /></td>
+                                            <td>
+                                                @Html.DropDownList("SeriesType", new SelectList(ViewBag.SeriesTypes, "Value", "Text", @item.SeriesType)
+                                                             , "Select Series", new { @data_name = "SeriesType" })
+                                            </td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>No record found.</div>
+                }
+                @*</div>*@
+            </div>
+        </div>
+
+
+
+
+        <div class="col-md-6">
+            <div style="width:100%;overflow: auto;" class="jarviswidget  light-widget" id="wid-id-2" role="widget">
+
+                <header @*style="color:white"*@ role="heading">
+                    <div class="jarviswidget-ctrls" role="menu">
+                    </div>
+                    <span class="widget-icon"> <i class="fa fa-tasks"></i>&nbsp; </span>
+                    <h2 style="font-weight: bold;">Readiness View</h2>
+                </header>
+                @if (c > 0)
+                {
+                    <div role="content">
+                        <div class="box-body table-responsive  widget-body no-padding">
+                            <table class="table @*table-bordered*@ table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">Data series</th>
+                                        <th width="30%">
+                                            Color
+                                        </th>
+                                        <th width="30%">Series Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="TBody">
+                                    @foreach (var item in Data.Where(x => x.ChartType == "SERIES_CHART" && x.PanelName == "Readiness View"))
+                                    {
+                                        Counter = Counter + 1;
+                                        <tr>
+                                            <td>@item.DataSeries <input type="hidden" value="@item.SrId" name="SrId" data-name="SrId" id="SrId" /></td>
+                                            <td><input name="ColorCode" data-name="ColorCode" id="ColorCode-@Counter" type="color" value="@item.ColorCode" /></td>
+                                            <td>
+                                                @Html.DropDownList("SeriesType", new SelectList(ViewBag.SeriesTypes, "Value", "Text", @item.SeriesType)
+                             , "Select Series", new { @data_name = "SeriesType" })
+                                            </td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>No record found.</div>
+                }
+            </div>
+        </div>
+
+
+    </div>
+
+        <div class="row " style="margin: 0px">
+            <div class="col-md-6" >
+                <div style="width:100%;" class="jarviswidget  light-widget" id="wid-id-20" role="widget">
+                    <header role="heading">
+                        <div class="jarviswidget-ctrls" role="menu">
+                        </div>
+                        <span class="widget-icon"> <i class="fa fa-tasks"></i>&nbsp; </span>
+                        <h2 style="font-weight: bold;">Task View</h2>
+                    </header>
+                    <div role="content">
+                        <div class="box-body table-responsive  widget-body no-padding" style="max-height:200px; overflow:auto">
+                            <table class="table table-striped" id="tblTasks">
+                                <thead>
+                                    <tr>
+                                        <th width="30%" class="hidden"></th>
+                                        <th width="30%"> Task</th>
+                                        <th width="30%"> Color</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="TBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        }
+        @section scripts{
+            <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+            <script>
+                var loading = $.loading();
+                $(function () {
+                    //$('#tbl-user').dataTable({
+                    //    "scrollX": true,
+
+                    //});
+                });
+            </script>
+        }
+        @section style{
+            <style>
+                .table > tbody > tr > td {
+                    padding: 1px 10px;
+                }
+            </style>
+            <style>
+                .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+                    vertical-align: middle;
+                }
+
+                .col-md-6 {
+                    padding: 0;
+                    max-height: 250px;
+                    width: 49%;
+                    margin-left: 10px;
+                    margin-bottom: 16px;
+                    background: url(../img/mybg.png);
+                }
+            </style>
+
+        }
+
+        <script>
+            $(document).on('submit', '#Form_Chart', function () {
+                var hit = 0;
+                a = 0;
+                var Form = '.TBody';
+                $(Form).each(function (i) {
+                    $("tr", this).each(function (l) {
+                        $("input", this).each(function (j) {
+                            var name = $(this).attr('data-name');
+                            //var id = $(this).attr('id');
+                            //var id = id.split("-");
+                            $(this).attr('name', '[' + a + '].' + name);
+
+                        });
+                        $("select", this).each(function (k) {
+                            var name = $(this).attr('name');
+                            $(this).attr('name', '[' + a + '].' + name);
+                            //var id = $(this).attr('id');
+
+                            // $(this).attr('id', id + "-" + f);
+                        });
+                        a++;
+                    });
+
+                });
+               if (hit == 0) {
+                    $.ajax({
+                        url: '/Project/Dashboard/Configurations',
+                        type: 'POST',
+                        async: false,
+                        data: $(this).serialize(),
+                        success: function (response) {
+                            $.notify("Save successfully !", { type: "success", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                            setTimeout(function () { location.reload(); }, 1000);
+
+                        },
+                        error: function (response) {
+                            $.notify('Error Occured', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+
+                        },
+
+                    });
+                    return false;
+                }
+
+
+                return false;
+            });
+
+            //--------------------------
+            function getHostName(url) {
+                var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+                if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) {
+                    return match[2];
+                }
+                else {
+                    return null;
+                }
+            }
+
+           // var baseUrl = 'http://localhost:18460'; // for local
+            var CurrentUrl = window.location.href; // uncomment these two lines when publish
+            var baseUrl = getHostName(CurrentUrl);
+
+            //--------------------------
+
+            var returnedData = '';
+             var url = CurrentUrl.split("Project")[0] + 'swi/getProjectTasks?ProjectId=' + $('#pId').attr('data-ProjectId') + '&Filter=Get_Project_Tasks&Value1=0'
+            $.ajax({
+                url: url,
+                type: 'POST',
+                async: false,
+                success: function (data) {
+                    $('#tblTasks tbody').empty();
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            // var stDate = new Date(moment.utc(res[i].StartDate));
+                            returnedData += '<tr>' +
+                                '<td class="hidden"><input data-name="TaskId"  type="hidden" value=' + data[i].TaskId + ' />' + data[i].TaskId + '</td>' +
+                                '<td>' + data[i].Title + '</td>' +
+                                '<td><input  data-name="Color" id="Color-' + data[i].TaskId + '" type="color" value=' + data[i].Color + ' /></td>' +
+                                '</tr>';
+                            $('#tblTasks tbody').append(returnedData);
+                            returnedData = '';
+                        }
+                    }
+                }
+            });
+
+        </script>

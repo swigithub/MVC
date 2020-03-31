@@ -1,0 +1,129 @@
+﻿<script type="text/ng-template" id="myModalContent.html">
+
+    <div class="modal-header" style="background-color:#4c4f53;color:white!important;height:57px;">
+        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+            ×
+        </button>
+        <h3 style="margin-top:0px;">Warning</h3>
+    </div>
+
+    <div class="modal-body">
+        <h4 class="modal-title">Are You Sure?</h4>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="cancel('cancil')">Cancel</button>
+        <button class="btn btn-danger" ng-click="submit('delete')">Yes</button>
+    </div>
+
+</script>
+
+
+<!--<button class="btn" ng-click="open()">Open me!</button>-->
+<!--<div ng-show="selected">Selection from a modal: {{ selected }}</div>-->
+
+<div style="width:100%; clear:both; padding-bottom:5px;">
+
+    <button style="margin-left:5px;float:right; margin-right:10px;" id="btnremove" ng-click="addGroup('m')" class="btn btn-sm btn-success btnCustom btnremove"><span class="glyphicon glyphicon-plus-sign"> </span> Add Group</button>
+    <button style="float:right;" id="btnremove" ng-click="open()" class="btn btn-sm btn-danger btnCustom btnremoveclrAll"><span class="glyphicon glyphicon-remove-sign">&nbsp;</span>Clear All</button>
+
+
+</div>
+
+
+<div class="box-header with-border">
+   
+    <select style="width:53px;margin-bottom:2px;padding: 1px;font-size:10px;font-weight:bold;margin-top:-2px;border-radius:0" ng-options="o.name as o.name for o in operators" ng-if="group.removefirstcondition" ng-model="group.operator" class="form-control input-sm first2"></select>
+
+    <div class="outerdiv removeborber" style="margin-bottom:5px;">
+
+        <div class="form-inline btnDiv first3" style="background:0;margin-left:14px;padding-top:5px;padding-bottom:5px;" ng-hide="group.firstgroup">
+            <button style="margin-left:5px; margin-top:0px;" ng-click="addGroup('i')" class="btn btn-sm btn-success btnCustom"><span class="glyphicon glyphicon-plus-sign"></span></button>
+            <button style="margin-left:5px;margin-top:0px;" ng-click="addCondition()" class="btn btn-sm btn-success btnCustom first"><span class="glyphicon glyphicon-plus"></span> </button>
+            <button style="margin-left:5px;margin-right:5px;margin-top:0px;" ng-click="removeGroup()" class="btn btn-sm btn-danger btnCustom first1"><span class="glyphicon glyphicon-minus-sign"></span></button>
+        </div>
+
+        <div class="group-conditions">
+            <div ng-repeat="rule in group.rules track by $index">
+
+                <div ng-switch="rule.hasOwnProperty('group')">
+                    <div ng-switch-when="true">
+                        <query-builder group="rule.group"></query-builder>
+                    </div>
+
+                    <div ng-switch-default="ng-switch-default" style="color:#000;">
+
+                        <table style="margin-left:15px; margin-top:15px;" class="table1">
+                            <tr ng-if="rule.aftercondition">
+                                <td>
+                                  
+                                    <select style="font-weight:bold;margin-top:8px;border-radius:0;padding:2px;margin-bottom:5px;" ng-options="o.name as o.name for o in operators" ng-model="rule.operator1" ng-change="test(rule)" class="form-control input-sm"></select>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td ng-show="$last||rule.zeep||rule.group.length>0">
+                                    <!--<select style="margin-left: 5px;border-radius:0;height:25px" class="form-control input-sm col-md-3" ng-model="rule.field" ng-change="addType($index)" ng-options="rep.name as rep.name for rep in fields"></select>-->
+                                    <!--<select style="margin-left:5px;border-radius:0;height:25px;width:190px;" class="form-control input-sm col-md-3" ng-change="addType($index);" ng-model="rule.field">
+                                        <option  ng-repeat="item in fields" ng-value="{{item.name}}">{{item.name}}</option>
+                                    </select>-->
+                                   <!-- <select style="margin-left:5px;border-radius:0;width:190px;" ng-options="c.name as c.name for c in fields" ng-model="rule.field" ng-change="addType($index)" class="form-control input-sm"></select>-->
+                                </td>
+
+                                <td ng-show="$last||rule.zeep">
+                                    <select ng-if="rule.isString"  style="margin-left: 5px;border-radius:0;width:100px;" ng-options="c.name as c.name for c in conditions" ng-model="rule.condition" ng-change="checkfromCondition(rule.condition,$index)" class="form-control input-sm"></select>
+                                    <select ng-if="!rule.isString" style="margin-left: 5px;border-radius:0;width:100px;" ng-options="c.name as c.name for c in datecondition" ng-model="rule.condition" ng-change="checkfromCondition(rule.condition,$index)" class="form-control input-sm"></select>
+                                </td>
+
+                                <td ng-show="$last||rule.zeep">
+                                    <input style="margin-left: 10px;border-radius:0;width:190px;" type="text" ng-model="rule.data" ng-if="rule.type=='System.String'" class="form-control input-sm">
+                                    <input style="margin-left: 10px;border-radius:0;" type="date" ng-model="rule.data" ng-if="rule.type=='System.DateTime'" class="form-control input-sm">
+                                    <select style="margin-left: 5px;border-radius:0;width:150px;" class="form-control input-sm col-md-3" ng-model="rule.data" ng-if="rule.type=='select'" ng-options="rep.DefinationName as rep.DefinationName for rep in rule.definition"></select>
+
+                                </td>
+
+
+                                <td ng-show="$last||rule.zeep">
+                                    <button style="margin-left:5px;padding:5px;width:28px;border-radius:0;" ng-click="removeCondition($index)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                </td>
+                                <td ng-show="$last||rule.groupstart">
+                                    <div class="form-inline btnDiv first3" style="background:0;margin-left:14px;">
+                                        <button style="margin-left:5px;margin-top:0px;" ng-click="addGroup('i')" class="btn btn-sm btn-success btnCustom"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                        <button style="margin-left:5px;margin-top:0px;" ng-click="addCondition()" class="btn btn-sm btn-success btnCustom first"><span class="glyphicon glyphicon-plus"></span> </button>
+                                        <button style="margin-left:5px;margin-right:5px;margin-top:0px;" ng-click="removeGroup()" class="btn btn-sm btn-danger btnCustom first1"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                    </div>
+                                </td>
+
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select style="margin-top:4px;border-radius:0;padding:2px;margin-left: 4px;margin-bottom:5px;font-weight:bold;width:90px;" ng-options="o.name as o.name for o in operators" ng-show="!$last&&rule.isoperator" ng-model="rule.operator" ng-change="test(rule)" class="form-control input-sm"></select>
+                                </td>
+                            </tr>
+
+                            <tr ng-if="rule.isgroupoperator && !$last+1">
+                                <td>
+                                    <label ng-if="!$last+1" ng-click="test1(rule)" style="color:red;margin-bottom:15px;font-size:12px;"></label>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <label></label>
+</div>
+
+<style>
+    .outerdiv {
+        border-radius: 0;
+        border: 1px solid;
+        margin-left: 15px;
+        padding-right:11px;      
+    }
+</style>

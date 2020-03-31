@@ -1,0 +1,71 @@
+﻿<style>
+    .modal {
+    }
+
+    .vertical-alignment-helper {
+        display: table;
+        height: 100%;
+        width: 100%;
+    }
+
+    .vertical-align-center {
+        /* To center vertically */
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .modal-content {
+        /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+        width: inherit;
+        height: inherit;
+        /* To center horizontally */
+        margin: 0 auto;
+    }
+</style>
+<!--tabindex="-1"--> 
+<div class="modal fade" id="av-modal"  role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center" style="width:auto">
+            <div class="modal-content" style="display:table">
+                <div class="modal-header" >
+                    <div id="av-modal-header"></div>
+                    <button type="button" onclick="HideModal(); return false;" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" style="font-weight:bold" id="av-modal-title"></h4>
+
+                </div>
+                <div class="modal-body" id="av-modal-body"></div>
+                <div class="modal-footer" id="av-modal-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modal = $('#av-modal');
+    var modal_title = $('#av-modal-title');
+    var modal_header = $('#av-modal-header');
+    var modal_body = $('#av-modal-body');
+    var modal_content = $('.modal-content');
+    var modal_footer = $('#av-modal-footer');
+    function HideModal() {
+        fnHideModal();
+    }
+
+    function fnHideModal() {
+
+        modal_title.text('');
+        modal_body.empty();
+        modal.modal('hide');
+    }
+
+
+    function fnOpenModal(title, bodyHtml, css) {
+        modal_title.text(title);
+        modal_content.css(css);
+        modal_body.empty();
+        modal_body.html(bodyHtml);
+        modal.modal('show');
+    }
+</script>

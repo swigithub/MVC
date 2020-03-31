@@ -1,0 +1,173 @@
+<div class="row grid muuri page" ng-controller="grids" data-pagename="workorder">
+	<div class="col-xl-12 col-lg-12" data-position="1">
+		<div class="widget">
+			<div class="title-bar" style="background:{{titlebg}};">
+				<h3><i class="fa fa-exclamation-triangle"></i>
+					<span class="update-name">{{widgetname_01}}</span>
+					<span class="cache-value"></span>
+					<input ng-model="widgetname_01" ng-init="widgetname_01='Work Order Status'" type="text" />
+				</h3>
+
+				<div class="buttons-sets">
+					<a class="custom-btn icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+					<a class="custom-btn icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+					<a class="custom-btn icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+					<ul class="opt-dropdown" >
+						<li class="has-children"><a href="#" title="">Panel Size</a>
+							<ul class="column-size">
+								<li><a class="onesixth" href="#" title="">One Sixth <img src="images/onesixth.png" alt=""> </a></li>
+								<li><a class="onethird" href="#" title="">One Third <img src="images/onethird.png" alt=""> </a></li>
+								<li><a class="half" href="#" title="">Half <img src="images/half.png" alt=""></a></li>
+								<li><a class="twothird" href="#" title="">Two Thrid <img src="images/twothird.png" alt=""></a></li>
+								<li><a class="fivesixth" href="#" title="">Five Sixth <img src="images/fivesixth.png" alt=""> </a></li>
+								<li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+							</ul>
+						</li>
+						<li class="has-children"><a href="#" title="">Panel Color</a>
+							<ul class="panel-color">
+								<li>
+									<a href="#" title=""><input class="bgcolor"  type="text"  value="#fff" ng-model="titlebg"  ng-init="titlebg = '#fff'"  />
+									<div class="colorpickerwrapper style2"><div colorpicker></div></div></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="content-wrapper">
+				<div class="button-set align-right">
+					<a href="#" class="custom-btn color11 icon-btn" title=""><i class="fa fa-times-circle"></i> Clear All</a>
+					<a href="#" class="custom-btn color10 icon-btn" title=""><i class="fa fa-plus-square"></i> Add Group</a>
+				</div>
+				<div class="pane">
+					<form>
+						<div class="row align-items-center">
+							<div class="col-lg-auto col-md-6">
+								<select>
+									<option>Client Name</option>
+									<option>Region</option>
+									<option>Market</option>
+									<option>Submitted On</option>
+									<option>Assigned On</option>
+									<option>Status</option>
+								</select>
+							</div>
+							<div class="col-lg-auto col-md-6">
+								<select>
+									<option>>=</option>
+									<option>></option>
+									<option><</option>
+									<option><=</option>
+									<option>=</option>
+								</select>
+							</div>
+							<div class="col-lg-auto col-md-6">
+								<select>
+									<option>Option</option>
+									<option>Option</option>
+									<option>Option</option>
+									<option>Option</option>
+									<option>Option</option>
+									<option>Option</option>
+								</select>
+							</div>
+							<div class="col-lg-auto col-md-6"><a href="#" class="custom-btn color11 icon-btn-only" title=""><i class="fa fa-minus-circle"></i></a></div>
+							<div class="col-lg-auto col-md-6">
+								<a href="#" class="custom-btn color10 icon-btn-only" title=""><i class="fa fa-plus-circle"></i></a>
+								<a href="#" class="custom-btn color10 icon-btn-only" title=""><i class="fa fa-plus"></i></a>
+								<a href="#" class="custom-btn color11 icon-btn-only" title=""><i class="fa fa-minus"></i></a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-xl-12 col-lg-12" data-position="2">
+		<div class="widget"  ng-controller="table">
+			<div class="title-bar" style="background:{{titlebg_01}};">
+				<h3><i class="fa fa-table"></i>
+					<span class="update-name">{{widgetname_01}}</span>
+					<span class="cache-value"></span>
+					<input ng-model="widgetname_01" ng-init="widgetname_01='Data Tables'" type="text" />
+				</h3>
+
+				<div class="buttons-sets">
+					<a class="custom-btn icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+					<a class="custom-btn icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+					<a class="custom-btn icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+					<ul class="opt-dropdown" >
+						<li class="has-children"><a href="#" title="">Panel Size</a>
+							<ul class="column-size">
+		                                                <li><a class="onesixth" href="#" title="">One Sixth <img src="images/onesixth.png" alt=""> </a></li>
+		                                                <li><a class="onethird" href="#" title="">One Third <img src="images/onethird.png" alt=""> </a></li>
+		                                                <li><a class="half" href="#" title="">Half <img src="images/half.png" alt=""></a></li>
+		                                                <li><a class="twothird" href="#" title="">Two Thrid <img src="images/twothird.png" alt=""></a></li>
+		                                                <li><a class="fivesixth" href="#" title="">Five Sixth <img src="images/fivesixth.png" alt=""> </a></li>
+		                                                <li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+		                                        </ul>
+						</li>
+						<li class="has-children"><a href="#" title="">Panel Color</a>
+							<ul class="panel-color">
+								<li>
+									<a href="#" title=""><input class="bgcolor"  type="text"  value="#fff" ng-model="titlebg_01"  ng-init="titlebg_01 = '#fff'"  />
+									<div class="colorpickerwrapper style2"><div colorpicker></div></div></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+			<div class="content-wrapper"  ng-controller="datatable">
+				<div class="table-container auto-height no-borders ">
+					<div class="custom-selectbox left" >
+				                <span class="opt-btn">  <i>Toggle Columns</i></span>
+				                <ul class="opt-dropdown openright">
+				                        <li class="toggle-vis"  data-column="0"><a href="#"> <input type="checkbox" name="checkbox"  checked> Wo RefNo</a></li>
+							<li class="toggle-vis" data-column="1"><a href="#"> <input type="checkbox" name="checkbox" checked> Region</a></li>
+							<li class="toggle-vis" data-column="2"><a href="#"> <input type="checkbox" name="checkbox" checked> Market</a></li>
+							<li class="toggle-vis" data-column="3"><a href="#"> <input type="checkbox" name="checkbox"  checked> Site Code</a></li>
+							<li class="toggle-vis" data-column="4"><a href="#"> <input type="checkbox" name="checkbox" checked> Tester</a></li>
+							<li class="toggle-vis" data-column="5"><a href="#"> <input type="checkbox" name="checkbox" checked> Recieved</a></li>
+							<li class="toggle-vis" data-column="5"><a href="#"> <input type="checkbox" name="checkbox" checked> Submitted</a></li>
+							<li class="toggle-vis" data-column="5"><a href="#"> <input type="checkbox" name="checkbox" checked> Scheduled</a></li>
+							<li class="toggle-vis" data-column="5"><a href="#"> <input type="checkbox" name="checkbox" checked> Drive Completed</a></li>
+							<li class="toggle-vis" data-column="5"><a href="#"> <input type="checkbox" name="checkbox" checked> Reports Submitted</a></li>
+							<li class="toggle-vis" data-column="5"><a href="#"> <input type="checkbox" name="checkbox" checked> Approved</a></li>
+							<li class="toggle-vis" data-column="5"><a href="#"> <input type="checkbox" name="checkbox" checked> Status</a></li>
+							<li class="toggle-vis" data-column="5"><a href="#"> <input type="checkbox" name="checkbox" checked> Actions</a></li>
+				                </ul>
+				        </div>
+					<table id="datatable" class="hover" style="width:100%">
+						<thead>
+							<tr>
+								<th>Wo RefNo</th>
+								<th>Region</th>
+								<th>Market</th>
+								<th>Site Code</th>
+								<th>Tester</th>
+								<th>Recieved</th>
+								<th>Submitted</th>
+								<th>Scheduled</th>
+								<th>Drive Completed</th>
+								<th>Reports Submitted</th>
+								<th>Approved</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</thead>
+							</tr>
+						<tbody class="stripped">
+
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,216 @@
+﻿@model IEnumerable<AirView.DBLayer.Project.Model.PM_Issues>
+    @{
+        var Entity = TempData["ProjectEntity"] as AirView.DBLayer.Security.Entities.Sec_UserProjects;
+        TempData.Keep("ProjectEntity");
+    }
+  
+<span id="issuecount" hidden>@ViewBag.IssueCount</span>
+<table id="example1" class="table table-bordered table-striped" style="margin:0;padding:0;">
+
+    <thead>
+
+        <tr>
+            <th style="width:20px" class="NoExport"></th>
+            <th>@Entity.Title Code</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Task</th>
+            <th>Ticket Type</th>
+            <th style="width:686px;">Description</th>
+            <th>AssignedTo</th>
+            <th>Requested</th>
+            <th>Target</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+        @foreach (var row in Model)
+        {
+            string color = @row.PriorityColor.ToString();
+            var data = row;
+            <tr>
+                <td style="width:20px;background-color:@color"></td>
+                <td>@row.FACode</td>
+                <td>@row.Priority</td>
+                <td>@row.Status</td>
+                <td>@row.Task</td>
+                <td>@row.TicketType</td>
+                <td>@row.Description</td>
+                <td>@row.AssingedTo</td>
+                <td>@row.RequestDate</td>
+                @*<td>@row.TargetDate.Value.ToString("MM/dd/yyyy")</td>*@
+                <td>@row.TargetDate</td>
+                <td>
+                    @if (row.LogStatus != "Close")
+                    {
+                        if (ViewBag.AllowUri("/Project/Issue/Update"))
+                        {
+                            //@row.RequestDate= @row.RequestDate.Value.GetDateTimeFormats();
+                            <a class="issue" title="Update Issue Ticket" href="#" data-File="@row.FilePath" data-FaCode="@row.FACode" data-Priority="@row.Priority" data-Status="@row.Status" data-ProjectSiteId="@row.ProjectSiteId" data-PriorityId="@row.IssuePriorityId" data-StatusId="@row.IssueStatusId" data-TaskId="@row.TaskId" data-TaskType="@row.TaskTypeId" data-Description="@row.Description" data-AssingedTo="@row.AssignedToId" data-TargetDate="@row.TargetDate" data-ForecastDate="@row.ForecastDate" data-IssueId="@row.IssueId" data-IssueById="@row.IssueById" data-IsUnavoidable="@row.IsUnavoidable" data-ReasonId="@row.ReasonId"><span><img src="~/Content/Images/Common/pencil.png" alt="View Report" style="" /></span></a>
+                        }
+                    }
+                    @if (ViewBag.AllowUri("/Project/Issue/ChangeIssueStatus"))
+                    {
+                        <a class="modal-open issueLog" title="Change Status" data-LastStatus="@row.LastUpdated" data-UpdatedBy="@row.UpdatedBy" data-FaCode="@row.FACode" ng-click="GetIssueLog();" href="#" data-toggle="modal" data-target="#IssueStatusModal" data-Priority="@row.Priority" data-Status="@row.Status" data-PriorityId="@row.IssuePriorityId" data-StatusId="@row.IssueStatusId" data-TaskId="@row.TaskId" data-TaskType="@row.TaskTypeId" data-Description="@row.Description" data-AssingedTo="@row.AssignedToId" data-TargetDate="@row.TargetDate" data-ForecastDate="@row.ForecastDate" data-IssueId="@row.IssueId" data-IssueById="@row.IssueById" data-ReasonId="@row.ReasonId" data-LogStatus="@row.LogStatus"><span><img src="~/Content/Images/Common/status_x24.png" alt="View Report" style="" /></span></a>
+                    }
+                    @if (ViewBag.AllowUri("/Project/WorkLog/New"))
+                    {
+                        <a class="worklog" title="Issue Work Log" data-FaCode="@row.FACode" data-StatusId="@row.IssueStatusId" data-TaskId="@row.TaskId" data-ProjectSiteId="@row.ProjectSiteId" data-LogType="Issue" data-IssueId="@row.IssueId" data-toggle="modal" data-target="#LogModal" href="#">
+                            <span><img src="~/Content/Images/Common/worklog_x32.png" alt="View Report" style="margin-right:20px;" /></span>
+                        </a>
+                    }
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<script>
+    var worklogdates = '@ViewBag.worklogdays';
+    var selectedDates = [];
+    var currentWeek = [];
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    $(".issueLog").click(function () {
+        debugger
+        $('.labelFacode').empty();
+        var lbl = '<label style="margin-left: 33px;">@Entity.Title Code: </label><label style="margin-left:3px;">' + $(this).attr('data-FaCode') + '</label><label style="margin-left: 33px;">Updated By: </label><label style="margin-left:3px;">' + $(this).attr('data-UpdatedBy') + '</label><label style="margin-left: 33px;">Last Status: </label><label style="margin-left:3px;">' + $(this).attr('data-LastStatus') + '</label>'
+        $('.labelFacode').html(lbl);
+        IssueId = $(this).attr('data-IssueId');
+        LogStatus = $(this).attr('data-LogStatus');
+        angular.element(document.getElementById('widget-grid')).scope().GetDefinitions();
+        angular.element(document.getElementById('widget-grid')).scope().clearfields();
+        angular.element(document.getElementById('widget-grid')).scope().GetIssueLog();
+    })
+    $(".issue").click(function () {
+        debugger
+        $('.labelFacode').empty();
+        var lbl = '<label style="margin-left: 33px;">@Entity.Title Code: </label><label style="margin-left:3px;">' + $(this).attr('data-FaCode') + '</label>'
+        $('.labelFacode').html(lbl);
+        var SelectedPriority = {}
+        var Issue = {}
+        var SelectedStatus = {}
+        var SelectedPriority = $(this).attr('data-Priority');
+        var SelectedStatus = $(this).attr('data-Status');
+        var AssignedToIds = $(this).attr('data-AssingedTo');
+        AssignedToIds = AssignedToIds.split(',');
+        var ids = [];
+        for (var i = 0; i < AssignedToIds.length; i++) {
+            var tmp = parseInt(AssignedToIds[i]);
+            ids.push(tmp);
+            //console.log($scope.multiple.AssignToId);
+        }
+       angular.element(document.getElementById('widget-grid')).scope().GetUsers();
+        angular.element(document.getElementById('widget-grid')).scope().GetDefinitions();
+        angular.element(document.getElementById('widget-grid')).scope().clearfields();
+        angular.element(document.getElementById('widget-grid')).scope().GetIssueLogId($(this).attr('data-IssueId'));
+        angular.element(document.getElementById('widget-grid')).scope().GetSiteIssues($(this).attr('data-taskid'),$(this).attr('data-projectsiteid'));
+        var Issue = {
+            IssueId: parseInt($(this).attr('data-IssueId')), IssuePriorityId: parseInt($(this).attr('data-PriorityId')), IssueStatusId: parseInt($(this).attr('data-StatusId')), TaskId: parseInt($(this).attr('data-TaskId')), TaskTypeId: parseInt($(this).attr('data-TaskType')),
+            Description: $(this).attr('data-Description'), AssignedToId: ids, TargetDate: $(this).attr('data-TargetDate'), ProjectSiteId: $(this).attr('data-ProjectSiteId'), ForecastDate: $(this).attr('data-ForecastDate'),
+            IssueById: parseInt($(this).attr('data-IssueById')), ReasonId: parseInt($(this).attr('data-ReasonId')),ItemFilePath: $(this).attr('data-File'),
+            IsUnavoidable: $(this).attr('data-IsUnavoidable'),
+
+        }
+        
+        console.log(Issue);
+        angular.element(document.getElementById('widget-grid')).scope().EditIssue(Issue, SelectedPriority);
+        $("#SearchProject").click();
+
+    });
+
+    $(".worklog").click(function () {
+        $(".worklogdate").val('');
+        $('.dated-input').html("");
+        $('#work-desc').html("");
+        angular.element(document.getElementById('widget-grid')).scope().clearfields();
+        angular.element(document.getElementById('widget-grid')).scope().TaskIdIssue = $(this).attr("data-taskid");
+        angular.element(document.getElementById('widget-grid')).scope().ProjectSiteIdIssue = $(this).attr("data-projectsiteid");
+        angular.element(document.getElementById('widget-grid')).scope().LogTypeIsssue = $(this).attr("data-logtype");
+        workLog = {
+            ProjectId: parseInt($("#TodoProjectId").val()), ProjectSiteId: parseInt($(this).attr('data-projectsiteid')), TaskId: parseInt($(this).attr("data-taskid")), LogType: $(this).attr('data-LogType')
+        }
+        $('.labelFacode').empty();
+        var lbl = '<label style="margin-left: 33px;">@Entity.Title Code: </label><label style="margin-left:3px;">' + $(this).attr('data-FaCode') + '</label>'
+        $('.labelFacode').html(lbl);
+        IssueId = $(this).attr('data-IssueId');
+
+        angular.element(document.getElementById('widget-grid')).scope().GetSiteWorkLog($(this).attr('data-taskid'), $(this).attr('data-projectsiteid'), $(this).attr('data-logtype'));
+
+
+        /* === Week Button Click Display The Input Field For The Specific Day === */
+        $("body").on("click", ".current-week button", function () {
+            let date = $(this).attr('data-fulldate');
+            date = new Date(date);
+            date = date.getDate() + "-" + monthNames[date.getMonth()] + "-" + date.getFullYear();
+            let hour = $(this).attr('data-hours');
+            let WLogId = $(this).attr('data-WLogId');
+            let WLogType = $(this).attr('data-WLogType');
+            let approval = $(this).attr('data-approved');
+            let description = $(this).attr('data-description');
+            $(".dated-input").find('span').detach();
+            $("#work-desc").find('section').detach();
+            if (approval == "true") {
+                $(".dated-input").append(`<span><i>${date}</i><input required type="number" min="0" max="24" value="${hour}" data-WLogId="${WLogId}" data-WLogType="${WLogType}"  data-isApproved="${approval}" data-date="${date}" readonly></span>`);
+                $("#work-desc").append(`<section><label class="label">Comment <sup style="color:red">*</sup></label><div class="textarea"><textarea rows="3" maxlength="300" ng-model="Description" placeholder="Description" id="logdes"  class ="form-control ng-pristine ng-untouched ng-valid ng-empty" readonly>${description}</textarea></div></section>`);
+            } else {
+                $(".dated-input").append(`<span><i>${date}</i><input type="number" min="0" max="24"  required value="${hour}" data-WLogId="${WLogId}"   data-WLogType="${WLogType}" data-isApproved="${approval}" data-date="${date}" ></span>`);
+                $("#work-desc").append(`<section><label class="label">Comment <sup style="color:red">*</sup></label><div class="textarea"><textarea required rows="3" maxlength="300" ng-model="Description" placeholder="Description" id="logdes"  class ="form-control ng-pristine ng-untouched ng-valid ng-empty">${description}</textarea></div></section>`);
+            }
+        });
+
+        var selectabledays = 5;
+        /* === PickDate Initialize === */
+        $('.pickdate').datepicker({
+            multidate: selectabledays
+
+        });
+
+        /* === Append Custom Button In The Calendar === */
+        $('.pickdate').datepicker().on("show", function (e) {
+            let length = $(".apply-dates").length;
+            if (length < 1) {
+                $(".datepicker-dropdown").append(`<div class="apply-dates"><p>* Pick upto ${selectabledays} days</p><button  class="btn btn-xs btn-default log-hours" >Log Hours</button></div>`);
+            }
+        });
+
+        /* === Click Log Hours After Selecting Dates From Calendar  === */
+        $("body").on("click", ".log-hours", function () {
+            /* === Get Selected Dates From Calendar  === */
+            var getDates = $('.pickdate').datepicker('getDates');
+            angular.element(document.getElementById('widget-grid')).scope().GetSelectedSiteWorkLog(getDates, $('.worklog').attr('data-logtype'));
+            /* === Dummy JSON In Return From Selected Dates === */
+
+            $('.pickdate').datepicker('hide');
+            $(".dated-input").find('span').detach();
+
+            /* === Paint The Hours Div According To The Result === */
+            $.each(selectedDates, function (i, e) {
+                let date = moment(selectedDates[i].date);
+                date = new Date(date);
+                date = date.getDate() + "-" + monthNames[date.getMonth()] + "-" + date.getFullYear();
+                let approval = selectedDates[i].isApproved;
+                let description = selectedDates[i].description;
+                $("#work-desc").find('section').detach();
+                if (approval == true) {
+                    $(".dated-input").append(`<span><i>${date}</i><input required type="number" min="0" max="24"  value="${selectedDates[i].hours}"   data-WLogType="${selectedDates[i].WLogType}" data-WLogId="${selectedDates[i].WLogId}" data-isApproved="${selectedDates[i].isApproved} " data-date="${selectedDates[i].date} " readonly></span>`);
+                    if (selectedDates.length == 1) {
+                        $("#work-desc").append(`<section><label class="label">Comment <sup style="color:red">*</sup></label><div class="textarea"><textarea rows="3" maxlength="300" ng-model="Description" placeholder="Comment" id="logdes" class ="form-control ng-pristine ng-untouched ng-valid ng-empty" readonly>${description}</textarea></div></section>`);
+                    }
+                } else {
+                    $(".dated-input").append(`<span><i>${date}</i><input required type="number" min="0" max="24"  value="${selectedDates[i].hours}" data-WLogType="${selectedDates[i].WLogType}" data-isApproved="${selectedDates[i].isApproved} " data-date="${selectedDates[i].date} " ></span>`);
+                    if (selectedDates.length == 1) {
+                        $("#work-desc").append(`<section><label class="label">Comment <sup style="color:red">*</sup></label><div class="textarea"><textarea  required rows="3" maxlength="300" ng-model="Description" placeholder="Comment" id="logdes"  class ="form-control ng-pristine ng-untouched ng-valid ng-empty">${description}</textarea></div></section>`);
+                    }
+                }
+            });
+
+        });
+
+    });
+</script>

@@ -1,0 +1,504 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var Regions = jss.Serialize(ViewBag.Region);
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">Report</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                 <!--   <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>-->
+                </div>
+            </div>
+            <div class="box-body" style="display: block;">
+                <div class="col-sm-8">
+                    <div id="builder-import_export"></div>
+                    <button class="btn btn-primary parse-sql pull-right" data-target="import_export" id="btn-get-sql" data-stmt="false">Submit</button>
+                </div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-xs-5">
+                            <select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
+                                <option value="Site">Site</option>
+                                <option value="Region">Region</option>
+                                <option value="City">City</option>
+                                <option value="NetworkMode">Network Mode</option>
+                                <option value="Sector">Sector</option>
+                                <option value="TestType">TestType</option>
+                            </select>
+                        </div>
+
+                        <div class="col-xs-2">
+                            <button type="button" id="search_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+                            <button type="button" id="search_rightSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                            <button type="button" id="search_leftSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                            <button type="button" id="search_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+                        </div>
+                    </div>
+
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">Searched Record</h3>
+
+                <div class="box-tools pull-right">
+                    <a href="/Report/ToPDF" id="btn-pdf" class=""><span><img src="/Content/Images/Common/pdf_x32_1.png" alt="View Report" height="24" width="24" style="margin-right:10px;"></span></a>
+                    <a href="/Report/ToExcel" id="btn-exl" class=""><span><img src="/Content/Images/Common/excel_x32.png" alt="View Report" height="24" width="24" style="margin-right:10px;"></span></a>
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body" style="display: block;">
+                <div id="pan-jqGrid">
+                    <table class="table" id="jqGrid"></table>
+                    <div id="pager"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section scripts{
+
+@Scripts.Render("~/AdminLTE/plugins/datepicker/js")
+@Scripts.Render("~/Content/js/Plugins/QueryBuilder/js")
+@Scripts.Render("~/Content/js/Plugins/jqGrid/js")
+
+<script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+<script src="~/Content/js/Plugins/multiselect/js/multiselect.js"></script>
+    <script>
+        $(function () {
+            @*var Regions = JSON.parse('@Html.Raw(Regions)');*@
+
+
+            //var CountriesList = SelectedData('Countries');
+            //var CitiesList = SelectedData('Cities')
+            //var StatesList = SelectedData('States')
+            //var NetworkModesList = SelectedData('NetworkModes')
+            //var BandsList = SelectedData('Bands')
+            //var CarriersList = SelectedData('Carriers')
+            //var ScopesList = SelectedData('Scopes')
+            //var WoStatusList = SelectedData('WO Status')
+
+
+            //function SelectedData(Filter) {
+            //    var SelectedList = { 0: 'Select ' + Filter };
+            //    $.ajax({
+            //        url: '/Report/Definations',
+            //        type: 'post',
+            //        async: false,
+            //        data: { 'Filter': Filter },
+            //        dataType: 'json',
+            //        success: function (res) {
+            //            for (var i = 0; i < res.length; i++) {
+            //                SelectedList[res[i].DefinationId] = res[i].DefinationName;
+            //            }
+            //        }
+            //    });
+            //    return SelectedList;
+            //}
+
+
+            var DEFAULTS = {
+                operators: ['AND', 'OR', 'XOR']
+            };
+
+            var config = {
+                operators: ['OR', 'XOR']
+            };
+
+            config = $.extend(true, {}, DEFAULTS, config);
+
+            //var RegionsList = { 0: 'Select Region' };
+            //for (var i = 0; i < Regions.length; i++) {
+            //    RegionsList[Regions[i].Name] = Regions[i].Name;
+
+            //}
+
+
+            var sql_import_export = 'name LIKE "%Johnny%" AND (Country = 2 OR in_stock = 1)';
+
+            var obj = {};
+            var Filter = [];
+
+            $.ajax({
+                url: '/Report/ReportFilters',
+                type: 'post',
+                async: false,
+                data: { 'ReportId': '33246' },
+                dataType: 'json',
+                success: function (res) {
+                    for (var i = 0; i < res.length; i++) {
+
+                        obj['id'] = res[i].MapColumn;
+                        obj['label'] = res[i].DefinationName;
+                        obj['type'] = res[i].InputType;
+
+                        if (res[i].DisplayType == 'select') {
+                            obj['input'] = res[i].DisplayType;
+                            obj['values'] = SelectResult(res[i].DefinationId, res[i].DefinationName);
+                        }
+                        if (res[i].DisplayType == 'date') {
+                            type: 'date',
+                            obj['validation']= {
+                                format: 'YYYY/MM/DD'
+                            },
+                            obj['plugin']= 'datepicker',
+                            obj['plugin_config']= {
+                                format: 'yyyy/mm/dd',
+                                todayBtn: 'linked',
+                                todayHighlight: true,
+                                autoclose: true
+                            }
+                        }
+                        Filter.push(obj);
+                        obj = {};
+                    }
+                }
+            });
+
+
+            function SelectResult(Filter, Name) {
+                var SelectedList = { 0: 'Select ' + Name };
+                $.ajax({
+                    url: '/Report/FilterQuery',
+                    type: 'post',
+                    async: false,
+                    data: { 'value': Filter },
+                    dataType: 'json',
+                    success: function (res) {
+                        for (var i = 0; i < res.length; i++) {
+                            SelectedList[res[i].Value] = res[i].Text;
+                        }
+                    }
+                });
+                return SelectedList;
+            }
+
+            $('#builder-import_export').queryBuilder({
+                plugins: [
+                  'bt-tooltip-errors',
+                  'not-group'
+                ],
+                filters: Filter,
+
+                //  filters: [ {
+                //      id: 'Country',
+                //      label: 'Country',
+                //      type: 'integer',
+                //      input: 'select',
+                //      values: CountriesList,
+                // //     operators: ['equal', 'not_equal']
+                //  },
+                //   {
+                //       id: 'CityId',
+                //       label: 'City',
+                //       type: 'integer',
+                //       input: 'select',
+                //       values: CitiesList,
+                //   //    operators: ['equal', 'not_equal']
+                //   },
+                //   {
+                //       id: 'State',
+                //       label: 'State',
+                //       type: 'integer',
+                //       input: 'select',
+                //       values: SelectedData('States'),// StatesList,
+                //  //     operators: ['equal', 'not_equal']
+                //   },
+                //   {
+                //       id: 'Region',
+                //       label: 'Region',
+                //       type: 'string',
+                //       input: 'select',
+                //       values: RegionsList,
+                //  //     operators: ['equal', 'not_equal']
+                //   },
+
+                //   {
+                //       id: 'WoStatus',
+                //       label: 'Wo Status',
+                //       type: 'integer',
+                //       input: 'select',
+                //       values: WoStatusList,
+                //  //     operators: ['equal', 'not_equal']
+                //   },
+                //   {
+                //       id: 'NetworkModeId',
+                //       label: 'NetworkMode',
+                //       type: 'integer',
+                //       input: 'select',
+                //       values: NetworkModesList,
+                //  //     operators: ['equal', 'not_equal']
+                //   },
+                //   {
+                //       id: 'Bands',
+                //       label: 'Band',
+                //       type: 'integer',
+                //       input: 'select',
+                //       values: BandsList,
+                //  //     operators: ['equal', 'not_equal']
+                //   },
+                //   {
+                //       id: 'Carrier',
+                //       label: 'Carrier',
+                //       type: 'integer',
+                //       input: 'select',
+                //       values: CarriersList,
+                // //      operators: ['equal', 'not_equal']
+                //   },
+                //   {
+                //       id: 'Scope',
+                //       label: 'Scope',
+                //       type: 'integer',
+                //       input: 'select',
+                //       values: ScopesList,
+                //  //     operators: ['equal', 'not_equal']
+                //   }
+                //      ,{
+                //      id: 'Site',
+                //      label: 'Site Code',
+                //      type: 'string',
+                //   //   operators: ['equal', 'not_equal']
+                //      }
+                //      , {
+                //          id: 'WORefId',
+                //          label: 'WO Ref #',
+                //          type: 'string',
+                //   //       operators: ['equal', 'not_equal']
+                //      }
+                //   , {
+                //       id: 'ReceivedOn',
+                //       label: 'Received On',
+                //       type: 'date',
+                // //      operators: ['equal', 'not_equal'],
+                //       //validation: {
+                //       //    format: 'YYYY/MM/DD'
+                //       //},
+                //       plugin: 'datepicker',
+                //       plugin_config: {
+                //           format: 'yyyy/mm/dd',
+                //           todayBtn: 'linked',
+                //           todayHighlight: true,
+                //           autoclose: true
+                //       }
+                //          },
+                //     {
+                //         id: 'UploadedOn',
+                //         label: 'Uploaded On',
+                //         type: 'date',
+                //  //       operators: ['equal', 'not_equal'],
+                //         //validation: {
+                //         //    format: 'YYYY/MM/DD'
+                //         //},
+                //         plugin: 'datepicker',
+                //         plugin_config: {
+                //             format: 'yyyy/mm/dd',
+                //             todayBtn: 'linked',
+                //             todayHighlight: true,
+                //             autoclose: true
+                //         }
+                //     },
+
+                //  {
+                //      id: 'ReportSubmittedOn',
+                //      label: 'Report Submitted On',
+                //      type: 'date',
+                // //     operators: ['equal', 'not_equal'],
+                //      //validation: {
+                //      //    format: 'YYYY/MM/DD'
+                //      //},
+                //      plugin: 'datepicker',
+                //      plugin_config: {
+                //          format: 'yyyy/mm/dd',
+                //          todayBtn: 'linked',
+                //          todayHighlight: true,
+                //          autoclose: true
+                //      }
+                //  },
+
+                //  {
+                //      id: 'DrivedCompletedOn',
+                //      label: 'Drived Completed On',
+                //      type: 'date',
+                // //     operators: ['equal', 'not_equal'],
+                //      //validation: {
+                //      //    format: 'YYYY/MM/DD'
+                //      //},
+                //      plugin: 'datepicker',
+                //      plugin_config: {
+                //          format: 'yyyy/mm/dd',
+                //          todayBtn: 'linked',
+                //          todayHighlight: true,
+                //          autoclose: true
+                //      }
+                //  },
+                //  {
+                //      id: 'ApprovedOn',
+                //      label: 'Approved On',
+                //      type: 'date',
+                ////      operators: ['equal', 'not_equal'],
+                //      //validation: {
+                //      //    format: 'YYYY/MM/DD'
+                //      //},
+                //      plugin: 'datepicker',
+                //      plugin_config: {
+                //          format: 'yyyy/mm/dd',
+                //          todayBtn: 'linked',
+                //          todayHighlight: true,
+                //          autoclose: true
+                //      }
+                //  }, ]
+            });
+
+            $('#btn-reset').on('click', function () {
+                $('#builder-import_export').queryBuilder('reset');
+            });
+
+            $('#btn-set-sql').on('click', function () {
+                $('#builder-import_export').queryBuilder('setRulesFromSQL', sql_import_export);
+            });
+            var Data;
+            $('#btn-get-sql').on('click', function () {
+
+
+                var result = $('#builder-import_export').queryBuilder('getSQL', false);
+                if (result.sql.length) {
+                    $('#pan-jqGrid').empty();
+                    $('#pan-jqGrid').append('<table id="jqGrid"></table><div id="pager"></div>');
+                    console.log(result.sql);
+                    jqGrid(result.sql);
+                    // alert(result.sql + '\n\n' + JSON.stringify(result.params, null, 2));
+                }
+            });
+
+            $(document).on('change', 'select', function () {
+                $(".rule-filter-container select").select2();
+                $(".rule-value-container select").select2();
+            });
+
+            //btn btn-xs btn-success
+            $(".rule-filter-container select").select2();
+            $(".rule-value-container select").select2();
+
+            function jqGrid(filter) {
+                var Grid = $("#jqGrid");
+                // debugger;
+                //   $('#jqGrid').jqGrid('clearGridData');
+
+                var cols = [];
+                $("#search_to option").each(function () {
+                    cols.push($(this).val());
+                });
+
+                // Grid.clearGridData(true).trigger("reloadGrid");
+                //   $.jgrid.defaults.styleUI = 'Bootstrap';
+                //$("#jqGrid").html("");
+                Grid.jqGrid({
+                    url: '/Report/data?filter=' + filter + '&RemovCols=sdf',//+ cols,
+                    datatype: 'json',
+                    mtype: 'get',
+                    // table header name
+                    colNames: ['Site', 'Region', 'City', 'TestType', 'Sector', 'NetworkMode'],
+                    colModel: [
+                      //  { name: 'id', index: 'id', width: 55 },
+                        { name: 'Site', index: 'Site', width: 90 },
+                        { name: 'Region', index: 'Region', width: 100 },
+                        { name: 'City', index: 'City', width: 80, align: "right" },
+                        { name: 'TestType', index: 'TestType', width: 80, align: "right" },
+                        { name: 'Sector', index: 'Sector', width: 80, align: "right" },
+                        { name: 'NetworkMode', index: 'NetworkMode', width: 150, sortable: false }
+                    ],
+                    //datatype: "jsonstring",
+                    //datastr: res,
+                    pager: jQuery('#pager'),
+                    rowNum: 10,
+                    rowList: [10, 20, 30, 40],
+                    viewrecords: true,
+                    gridview: true,
+                    autoencode: true,
+                    height: "auto",
+                    autowidth: true,
+                    // loadonce: true,
+                    // caption: 'Jq grid sample Application',
+                    emptyrecords: 'No records to display',
+                    jsonReader: {
+                        root: "rows",
+                        page: "page",
+                        total: "total",
+                        records: "records",
+                        repeatitems: false,
+                        // Id: "0"
+                    },
+                    grouping: true,
+                    groupingView: {
+                        groupField: cols//["TestType", "Site", "Sector"]// cols//['Site']
+                    },
+                    autowidth: true,
+                    multiselect: false
+                });
+                //  Grid.jqGrid('setGridWidth', '800');
+                Grid.jqGrid('navGrid', '#pager', { edit: false, add: false, del: false, search: false, refresh: true });
+                //console.log(cols);
+
+                //    Grid.jqGrid('hideCol', cols);
+
+                //  Grid.trigger('reloadGrid');
+            }
+        });
+
+    </script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $('#search').multiselect({
+        search: {
+            left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+            right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+        },
+        fireSearch: function(value) {
+            return value.length > 3;
+        }
+    });
+});
+</script>
+    }
+
+@section style{
+@Styles.Render("~/AdminLTE/plugins/datepicker/css")
+@Styles.Render("~/Content/js/Plugins/QueryBuilder/css")
+@Styles.Render("~/Content/js/Plugins/jqGrid/css")
+
+   
+<link href="~/AdminLTE/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+
+<link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/multiselect/css/style.css" rel="stylesheet" />
+
+
+}

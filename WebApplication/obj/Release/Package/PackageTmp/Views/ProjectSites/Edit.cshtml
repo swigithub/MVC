@@ -1,0 +1,640 @@
+﻿@using System.Data;
+@model List<SWI.Libraries.AirView.Entities.Workorder>
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+    var Entity = TempData["ProjectEntity"] as AirView.DBLayer.Security.Entities.Sec_UserProjects;
+
+    var ProjectId = @ViewBag.Id;
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Bands = jss.Serialize(ViewBag.Bands);
+    var Carriers = jss.Serialize(ViewBag.Carriers);
+    var Regions = jss.Serialize(ViewBag.Regions);
+    var Surveys = jss.Serialize(ViewBag.Surveys);
+    var Cities = jss.Serialize(ViewBag.Cities);
+    var SubCheckList = jss.Serialize(ViewBag.SubCheckList);
+}
+
+
+<style>
+    .form-control {
+        padding: 0px;
+        width: 110px;
+    }
+
+    .jarviswidget > header {
+        line-height: 36px;
+    }
+</style>
+
+<span id="ProjectId" data-ProjectId="@ViewBag.Id" hidden></span>
+@using (Html.BeginForm("Edit", "ProjectSites", FormMethod.Post, new { id = "frm-ps1", @novalidate = "novalidate" }))
+{
+<div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
+    <header role="heading">
+        <div class="jarviswidget-ctrls" role="menu">
+
+        </div>
+        <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+        <h2>Edit @Entity.Title </h2>
+
+
+        <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+        <div class="pull-right" style="margin-right: 1%;">
+            <a style="margin-top:4px" href="/ProjectSites/All?Id=@ProjectId" class="btn btn-info btn-xs pull-right"><i class="fa  fa-list">&nbsp;</i>Return to @Entity.Title Lists</a>
+        </div>
+    </header>
+    <div role="content" style="width:100%; overflow-x: scroll;">
+            @*<input type="hidden" id="ProjectSiteId" name="ProjectSiteId" value="@ViewBag.ProjectSite.ProjectSiteId" />*@
+
+            <input type="hidden" id="ProjectSiteId" name="ProjectSiteId" value="@ViewBag.ProjectSiteId" />
+
+            @*<div class="box-header with-border boxHeader">
+                    <h3 class="box-title">Site Information</h3>
+                    <a href="#" onclick="history.back()" class="btn btn-info btn-xs pull-right"><i class="fa  fa-list">&nbsp;</i> Sites</a>
+                </div>*@
+
+
+            <div id="pan-SiteInfo">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-hover" id="tbl-wo">
+                            <thead>
+                                <tr>
+                                    @*<th class="hidden">Client</th>*@
+                                    <th>Project <span style="color: red">*</span></th>
+                                    <th>Market <span style="color: red">*</span></th>
+                                    <th>Scope</th>
+                                    <th>Cluster Id <span style="color: red">*</span></th>
+                                    <th>Recieved On <span style="color: red">*</span></th>
+                                    @*<th>State</th>
+                                    <th>Region</th>*@
+                                        
+                                    @*<th>Address</th>*@
+                                    <th>@Entity.Title Id <span style="color: red">*</span></th>
+                                    <th>@Entity.Title Name <span style="color: red">*</span></th>                            
+                                    @*<th>Site Class</th>*@
+                                    <th>Latitude <span style="color: red">*</span></th>
+                                    <th>Longitude <span style="color: red">*</span></th>
+                                    <th>@Entity.Title Type <span style="color: red">*</span></th>
+                                    <th>Color</th>
+                                    <th>Description</th>
+                                    <th>USID</th>
+                                    <th>Submarket</th>
+                                    <th>vMME</th>
+                                    <th>Controlled Intro</th>
+                                    <th>Super Bowl</th>
+                                    <th>DAS InBuild</th>
+                                    <th>First NetRAN</th>
+                                    <th>IPlan Job</th>
+                                    <th>Pace No</th>
+                                    <th>IPlan Issue Date</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="TBody">
+                                <tr id="NewRow-r0">
+                                    @*<td class="hidden">
+                                        <div class="form-group">
+                                            <input type="hidden" name="ProjectId" value="@ProjectId"  />
+                                            @Html.DropDownList("Client", ViewBag.Clients as List<SelectListItem>, new { @class = "form-control select Row Client ClusterRowFirst", @id = "Client-r0", @required = "required", @name = "Client", @data_name = "Client", tabindex = "1", onchange = "" })
+                                        </div>
+                                    </td>*@
+                                    <td>
+                                        <!----Project---->
+                                        <div class="form-group">
+                                            <input type="hidden" name="ProjectId" value="@ProjectId" />
+                                            <select data-inputName="Project" data-length="18" class="form-control select2 Row ProjectId" data-name="ProjectId" data-parsley-min="1" name="ProjectId" id="ProjectId-r0" data-required="yes" required tabindex="3">
+                                                <option value="0">-Project-</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+
+                                        <div class="form-group">
+                                            <select data-inputName="Market" data-required="yes" class="form-control select2 Row" data-name="Market" data-parsley-min="1" name="Market" id="Market-r0" tabindex="7" required>
+                                                <option value="0">-Market-</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                            <div class="form-group">
+                                                @Html.DropDownList("Scope", ViewBag.Scopes as List<SelectListItem>, new { @class = "form-control Row select2 Scope", @data_inputName = "Scope", @id = "Scope-r0", @data_required = "no", @data_parsley_min = "1", @data_name = "Scope", onchange = "", tabindex = "2" })
+                                            </div>
+                                        </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <input data-required="yes" data-length="50" maxlength="50" class="form-control Row clusterCode" data-inputName="Cluster Id" id="clusterCode-r0" name="clusterCode" data-name="clusterCode" tabindex="2" value="@ViewBag.ProjectSite.ClusterCode" required>
+                                        </div>
+                                    </td>
+                                   
+                                    <td>
+                                        <!--Received On-->
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input data-required="yes" type="text" value="@ViewBag.ProjectSite.ReceivedOn.ToString("dd/MM/yyyy")"  tabindex="4" class="form-control Row ReceivedOn @*UserLiveDate*@" style="width:100px;" id="ReceivedOn-r0" name="ReceivedOn" data_name="ReceivedOn" readonly>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                    @*<td>
+
+                                            <div class="form-group">
+                                                @Html.DropDownList("State", ViewBag.States as List<SelectListItem>, new { @class = "form-control select2 Row State", @id = "State-r0", required = "required", data_parsley_min = "1", name = "State", data_name = "State", onchange = "", tabindex = "5" })
+                                            </div>
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <select class="form-control select2 Row Region" data-name="Region" data-parsley-min="1" name="Region" id="Region-r0" onchange="" required tabindex="6">
+                                                    <option value="0">-Region-</option>
+                                                </select>
+                                            </div>
+                                        </td>*@
+                                     
+
+                                    @*<td>
+
+                                            <div class="form-group">
+                                                <input data-required="no" class="form-control Row Address AllowPaste" id="SiteAddress-r0" name="SiteAddress" data_name="SiteAddress" tabindex="8" value="@ViewBag.ProjectSite.Address">
+
+                                            </div>
+                                        </td>*@
+                                   
+                                    @*<td>
+
+                                            <div class="form-group">
+                                                @Html.DropDownList("SiteClassId", ViewBag.SiteClasses as List<SelectListItem>, new { @class = "form-control select2 Row SiteClassId", @id = "SiteClassId-r0", required = "required", @data_name = "SiteClassId", @name = "SiteClassId", tabindex = "10" })
+                                            </div>
+
+                                        </td>*@
+                                    <td>
+                                        <!--site Code-->
+                                        <div class="form-group CLSHIDE">
+                                            <input data-required="yes" data-length="50" maxlength="25" class="form-control siteCode Row" data-inputName="Site Id/FACode" value="@ViewBag.ProjectSite.SiteCode" id="siteCode-r0" name="siteCode" data-name="siteCode" tabindex="6">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--Site Name-->
+                                        <div class="form-group CLSHIDE">
+                                            <input data-required="yes" maxlength="500" type="text" class="form-control Row SiteName AllowPaste" data-inputName="Site Name" id="SiteName-r0" name="SiteName" data-name="SiteName" tabindex="7">
+                                        </div>
+                                    </td>
+                                  
+
+                                 
+                                    <td>
+                                        <!--siteLatitude-->
+                                        <div class="form-group CLSHIDE">
+                                            <input data-required="yes" data-length="255" maxlength="255" type="number" step="any" value="@ViewBag.ProjectSite.Latitude" data-inputName="Latitude" class="form-control Row siteLatitude AllowPaste" id="siteLatitude-r0" name="siteLatitude" data-name="siteLatitude" tabindex="8">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--siteLongitude-->
+                                        <div class="form-group">
+                                            <input data-required="yes" data-length="255" maxlength="255" type="number" step="any" value="@ViewBag.ProjectSite.Longitude" data-inputName="Longitude" class="form-control Row siteLongitude AllowPaste" id="siteLongitude-r0" name="siteLongitude" data-name="siteLongitude" tabindex="9">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--SiteTypeId-->
+                                        <div class="form-group">
+                                            @Html.DropDownList("SiteTypeId", ViewBag.SiteTypes as List<SelectListItem>, new { @class = "form-control select2 Row SiteTypeId", @data_inputName = "Site Type", data_required = "yes", @id = "SiteTypeId-r0", @name = "SiteTypeId", @data_name = "SiteTypeId",  tabindex = "5" })
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <input type="color" id="Color-r0" name="Color" data-name="Color" value="@ViewBag.ProjectSite.ColorId" />
+                                    </td>
+                                    <td>
+                                        <!--Description-->
+                                        <div class="form-group">
+                                            <input data-required="no" data-length="500"  maxlength="500" value="@ViewBag.ProjectSite.Description" class="form-control Row Description AllowPaste ProjectSitesRowLast" id="Description-r0" name="Description" data-name="Description" tabindex="10">
+
+                                        </div>
+                                    </td>
+
+
+
+
+                                    <td>
+                                        <!--USID-->
+                                        <div class="form-group">
+                                            <input type="text" dataPreValue3="" data-length="25" maxlength="25" data-required="no" class="form-control USID Row" data-name="USID" name="USID" id="USID-r0" value="@ViewBag.ProjectSite.USID" tabindex="11">
+                                        </div>
+                                    </td>
+
+
+                                    <td>
+                                        <!--Submarket-->
+                                        <div class="form-group">
+                                            <input dataPreValue3="" data-length="18" maxlength="18" data-required="no" class="form-control siteCode Row" data-name="submarket" name="SubMarket" id="SubMarket-r0" value="@ViewBag.ProjectSite.SubMarket" tabindex="12">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--vMME-->
+                                        <div class="form-group">
+                                            @if (ViewBag.ProjectSite.vMME == true)
+                                            {
+                                                <input type="checkbox" data-length="1" data-required="no" class="IsActive" name="vMME" Id="vMME-r0" checked="checked" value="true" tabindex="13" />
+                                            }else{
+                                            <input type="checkbox" data-length="1" data-required="no" class="IsActive" name="vMME" Id="vMME-r0" value="false" tabindex="13" />
+                                            }
+                                            
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--ControlledIntro-->
+                                        <div class="form-group">
+                                            @if (ViewBag.ProjectSite.ControlledIntro == true)
+                                            {
+                                                <input type="checkbox" data-length="1" data-required="no" class="IsActive" name="ControlledIntro" id="ControlledIntro-r0" checked="checked" value="true" tabindex="14" />
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" data-length="1" data-required="no" class="IsActive" name="ControlledIntro" id="ControlledIntro-r0"  value="false" tabindex="14" />
+                                            }
+                                            
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--SuperBowl-->
+                                        <div class="form-group">
+                                            @if (ViewBag.ProjectSite.SuperBowl == true)
+                                            {
+                                                <input type="checkbox" data-length="1" data-required="no" class="IsActive" name="SuperBowl" id="SuperBowl-r0" checked="checked" value="true" tabindex="15" />
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" data-length="1" data-required="no" class="IsActive" name="SuperBowl" id="SuperBowl-r0"  value="false" tabindex="15" />
+                                            }
+
+                                        </div>
+                                    </td>
+                                   
+                                    <td>
+                                        <!--DASInBuild-->
+                                        <div class="form-group">
+                                            <input dataPreValue3="" data-length="50" data-required="no" maxlength="50" class="form-control isDASInBuild Row" data-name="isDASInBuild" name="isDASInBuild" id="isDASInBuild-r0" value="@ViewBag.ProjectSite.isDASInBuild" tabindex="16">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--FirstNetRAN-->
+                                        <div class="form-group">
+                                            <input dataPreValue3="" data-required="no" data-length="50" maxlength="50" class="form-control FirstNetRAN Row" data-name="FirstNetRAN" name="FirstNetRAN" id="FirstNetRAN-r0" value="@ViewBag.ProjectSite.FirstNetRAN" tabindex="17">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--FirstNetRAN-->
+                                        <div class="form-group">
+                                            <input dataPreValue3="" data-required="no" data-length="50" maxlength="50" class="form-control IPlanJob Row" data-name="IPlanJob" name="IPlanJob" id="IPlanJob-r0" value="@ViewBag.ProjectSite.IPlanJob" tabindex="18">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--PaceNo-->
+                                        <div class="form-group">
+                                            <input dataPreValue3="" data-required="no" data-length="50" maxlength="50" class="form-control PaceNo Row" data-name="PaceNo" name="PaceNo" id="PaceNo-r0" value="@ViewBag.ProjectSite.PaceNo" tabindex="19">
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--IPlanIssueDate-->
+                                        @*<div class="form-group">
+                                            <input dataPreValue3="" data-required="no" class="form-control IPlanIssueDate Row" data-name="IPlanIssueDate" name="IPlanIssueDate" id="IPlanIssueDate-r0" value="@ViewBag.ProjectSite.IPlanIssueDate" tabindex="20">
+                                        </div>*@
+
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                @{ 
+                                                    string Date = !string.IsNullOrEmpty(ViewBag.ProjectSite.IPlanIssueDate) ? Convert.ToDateTime(ViewBag.ProjectSite.IPlanIssueDate).ToShortDateString() : string.Empty;
+                                                }
+                                                <input data-required="no" type="text"  value="@Date" class="form-control Row IPlanIssueDate @*UserLiveDate*@" style="width:100px;" id="IPlanIssueDate-r0" tabindex="20" name="IPlanIssueDate" data-name="IPlanIssueDate" readonly>
+                                            </div>
+                                        </div>
+                                    </td>
+
+
+                                </tr>
+                                @*<tr>
+                                    <td colspan="22">
+                                        <div class="form-group pull-right">
+                                            @if (ViewBag.AllowUri("/Equipment/Edit"))
+                                            {
+                                                <button type="submit" id="btn-submit" class="btn btn-success"><i class="fa  fa-save"></i> Update</button>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+    </div>
+</div>
+<div class="form-group pull-right">
+    @if (ViewBag.AllowUri("/Equipment/Edit"))
+    {
+        <button type="submit" id="btn-submit" class="btn btn-success"><i class="fa  fa-save"></i> Update</button>
+    }
+</div>
+}
+
+
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datepicker/js")
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+    <script src="~/AdminLTE/bootstrap/js/twitter-bootstrap.min-3.0.0.js"></script>
+
+    <script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+    <script>
+        if('@TempData["message"]' == 'success'){
+            $.notify("Updated successfully !", { type: "success", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+        }else if('@TempData["message"]' == 'error')
+        {
+            $.notify('Record not updated successfully. Please try again!', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+        }
+            var Regions = JSON.parse('@Html.Raw(Regions)');
+            var Surveys = JSON.parse('@Html.Raw(Surveys)');
+            var Cities = JSON.parse('@Html.Raw(Cities)');
+
+            ///project dropdown fill by Viewbag.projects
+            var ProjectId = '@ViewBag.ProjectSite.ProjectId';
+            var Projects =  @Html.Raw(Json.Encode(@ViewBag.Projects));
+            $('#ProjectId-r0').empty();
+            $('#ProjectId-r0').append(' <option  value="0">-Project-</option></select>');
+            $.each(Projects, function (i, item) {
+                $('#ProjectId-r0').append(' <option value=' + item.ProjectId + '>' + item.ProjectName +'</option></select>');
+            });
+            $('#ProjectId-r0').val(@ViewBag.Id);
+            $('#ProjectId-r0').attr("disabled", true);
+            var ClientId = '@ViewBag.ProjectSite.ClientId';
+            $('#Client-r0').val(ClientId);
+            var SiteTypeId = '@ViewBag.ProjectSite.SiteTypeId';
+            $('#SiteTypeId-r0').val(SiteTypeId);
+            //  debugger
+            var Scope = '@ViewBag.ProjectSite.ScopeId';
+ 
+            $('#Scope-r0').val(parseInt(Scope));
+
+            function StateChange(e) {
+                // debugger
+                var value = $('#State').val();
+                $('#Region').empty();
+                $('#Region').append(' <option value="0">-Region-</option></select>');
+                $.each(Regions, function (i, v) {
+                    if (v.PDefinationId == value) {
+                        $('#Region').append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                    }
+                });
+            }
+            $(document).on('change', '.State', function () {
+                // debugger
+                var Id = this.id;
+                var Number = Id.split("-r")[1];
+                //console.info(Number[1]);
+
+                var value = $('#State-r'+Number).val();
+                $('#Region-r'+Number).empty();
+                $('#Region-r'+Number).append(' <option value="0">-Region-</option></select>');
+                $.each(Regions, function (i, v) {
+                    if (v.PDefinationId == value) {
+                        $('#Region-r'+Number).append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                    }
+                });
+            });
+            $(document).on('change', '.Region', function () {
+                // debugger
+                var Id = this.id;
+                var Number = Id.split("-r")[1];
+                // console.info(Number[1]);
+
+                var value = $('#Region-r'+Number).val();
+                $('#Market-r'+Number).empty();
+                $('#Market-r'+Number).append(' <option  value="0">-Market-</option></select>');
+                $.each(Cities, function (i, v) {
+                    if (v.PDefinationId == value) {
+                        $('#Market-r'+Number).append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                    }
+                });
+            });
+            function RegionChange(e) {
+                // debugger
+                var abc = e.val();
+                var value = $('#Region').val();
+                $('#Market').empty();
+                $('#Market').append(' <option  value="0">-Market-</option></select>');
+                $.each(Cities, function (i, v) {
+                    if (v.PDefinationId == value) {
+                        $('#Market').append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                    }
+                });
+            }
+            var State = '@ViewBag.ProjectSite.State';
+            $('#State-r0').val(parseInt(State));
+            $('#Region-r0').empty();
+            $('#Region-r0').append(' <option value="0">-Region-</option></select>');
+            $.each(Regions, function (i, v) {
+                if (v.PDefinationId == parseInt(State)) {
+                    $('#Region-r0').append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                }
+            });
+            var Region = '@ViewBag.ProjectSite.Region';
+            $('#Region-r0').val(parseInt(Region));
+            $('#Market-r0').empty();
+            $('#Market-r0').append(' <option  value="0">-Market-</option></select>');
+            $.each(Cities, function (i, v) {
+                //if (v.PDefinationId == parseInt(Region)) {
+                //    $('#Market-r0').append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                //}
+                $('#Market-r0').append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+            });
+            //  debugger
+            var Sitename='@ViewBag.ProjectSite.SiteName';
+            $("#SiteName-r0").val(Sitename);
+            var CityId = '@ViewBag.ProjectSite.City';
+            $('#Market-r0').val(parseInt(CityId));
+            $(document).on('submit', '#frm-ps1', function (evt) {
+                var hit = 0;
+                var Scope = $('#Scope :selected').text();
+
+                $('#pan-SiteInfo select').each(function () {
+                    var value = $.trim($(this).val())
+                    var required = $(this).attr('data-required');
+                    if (required != 'no' && required != undefined) {
+                        if (value == "0" || value == '' || value == null) {
+                            var inputName = $(this).attr('data-inputName');
+                            $(this).addClass('required');
+                            hit = 1;
+                            // $.notify('Select ' + $(this).attr('data-name'), { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            $.notify('Please select ' + inputName, { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            evt.preventDefault();
+                        } else {
+                            $(this).removeClass('required');
+                        }
+                    }
+                });
+                if (hit == 0) {
+                    $('#pan-SiteInfo input').each(function () {
+                        var textBox = $.trim($(this).val())
+                        var required = $(this).attr('data-required');
+                        if (required != 'no') {
+                            if (textBox == "") {
+                                var inputName2 = $(this).attr('data-inputName');
+                                $(this).addClass('required');
+                                hit = 1;
+                                $.notify('Please fill ' + inputName2, { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                                evt.preventDefault();
+                            } else {
+                                $(this).removeClass('required');
+                            }
+                        }
+                    });
+
+                }
+
+                $.ajax({
+                    url: '/ProjectSites/IsSiteCodeExistInProject',
+                    type: 'POST',
+                    async: false,
+                    data: {ProjectSiteId: @ViewBag.ProjectSiteId, ProjectId: $('input[name="ProjectId"]').val(), SiteCode: $("#siteCode-r0").val()},
+                    success: function (res) {
+                        if(res == true){
+                            $.notify('Site Id already exist in this Project!', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            evt.preventDefault();
+                        }
+                    },
+                    error: function (response) {
+                        $.notify('There is an error to update record. Please refresh Page and try again!', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        evt.preventDefault();
+                    },
+                });
+
+                // if (hit == 0) {
+                //var Form = '#TBody tr';
+                //var DataObjects = [];
+                //$(Form).each(function (i) {
+
+                //    var abc = "";
+                //    var def = "";
+
+                //    // debugger
+                //    $("td input", this).each(function (j) {
+
+                //        var name = $(this).attr('data-name');
+
+                //        $(this).attr('name', '[' + i + '].' + name);
+                //    });
+                //    $("td select", this).each(function (j) {
+                //        var name = $(this).attr('data-name');
+                //        $(this).attr('name', '[' + i + '].' + name);
+                //    });
+                //    $("td select", this).each(function (j) {
+                //        var name = $(this).attr('data-name');
+                //        $(this).attr('name', '[' + i + '].' + name);
+                //    });
+                //});
+                //$.ajax({
+                //    url: '/ProjectSites/Edit',
+                //    type: 'POST',
+                //    async: false,
+                //    data: $(this).serialize(),
+                //    success: function (response) {
+                //        console.log(response);
+                //        var res = response.response
+                //        if (res != 'session expired') {
+                //            if (res.Status == 'success') {
+                //                debugger
+                //                $.notify("Save successfully !", { type: "success", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                //                setTimeout(function () { location.reload(); }, 1000);
+
+                //                formdata = new FormData();
+                //                RowCounter = 0
+
+                //            } else {
+                //                $.notify(res.Message, { type: "danger", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                //            }
+                //        } else {
+                //            $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                //        }
+                //        //  alert(res);
+                //    },
+                //    error: function (response) {
+                //        $.notify(res.Message, { type: "danger", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                //        setTimeout(function () { location.reload(); }, 1000);
+
+                //        formdata = new FormData();
+                //        RowCounter = 0
+                //    },
+
+                //});
+                //return false;
+                // }
+
+
+                // return false;
+            });
+
+
+
+            $("input[type='checkbox']").change(function() {
+                debugger;
+                if(this.checked) {
+                    $(this).val('true');
+                }
+                else{
+                    $(this).removeAttr("checked");
+                    $(this).val('false');
+                }
+            });
+
+
+    </script>
+}
+@section style{
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="~/Content/box.css" rel="stylesheet" />
+
+    <link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    @Styles.Render("~/AdminLTE/plugins/datepicker/css")
+    <style>
+        .required {
+            border-color: red;
+        }
+
+        #tbl-wo .form-control {
+            /*width: 100px;*/
+        }
+
+        .SelectedRow {
+            background-color: #454de2 !important;
+            color: white;
+        }
+    </style>
+
+
+}
+
+

@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Report</title>
+   
+</head>
+<body>
+    <div class="container body-content"style="margin-top:50px;">
+        @RenderBody()
+        <hr />
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 1.0.0
+            </div>
+            <strong>Copyrights &copy; 2016 <a href="http://swius.com">SWIUS Inc.</a></strong> All rights  reserved.
+        </footer>
+    </div>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,532 @@
+﻿
+@{
+    ViewBag.Title = "Survey";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    //Layout = "~/Areas/Survey/Views/Shared/_Layout.cshtml";
+}
+
+
+@*---+++++++ Tree View+++++++-*@
+@*<link href="~/Content/angular.treeview.css" rel="stylesheet" />
+    <script src="~/Scripts/angular.treeview.js"></script>*@
+@*----------------------*@
+
+<script src="~/Scale/js/sortable/jquery.sortable.js"></script>
+<script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+<script src="~/Content/js/Plugins/angularmultislect/multiselect.js"></script>
+
+<script>
+
+    var SurveyId = '@ViewBag.SurveyId';
+
+    //function SectionLoad(tempSurveyId) {
+    //    $.ajax({
+    //        url: '/Survey/Section/List/?Value=' + tempSurveyId,
+    //        success: function (res) {
+    //            $('#sec-SurveyList').empty();
+    //            $('#sec-SurveyList').append(res);
+    //        }
+    //    });
+    //}
+
+    function ResponseCount() {
+
+        $('.ResponseCount').each(function (i) {
+            $(this).text(i);
+        });
+    }
+
+    $(document).on('keydown', '.ResponseText', function (e) {
+        var keyCode = e.keyCode || e.which;
+
+        if (e.keyCode == 46) {
+            e.preventDefault();
+            $(this).closest('tr').remove();
+            $('.ResponseText:last').focus();
+            ResponseCount();
+        }
+
+    });
+
+    //$(document).on('keydown', '.NewControll', function (e) {
+    //    var keyCode = e.keyCode || e.which;
+
+    //    if (keyCode == 9) {
+    //        e.preventDefault();
+    //        var html = $('#ResponseRow').html();
+    //        $('#tbl-response').append('<tr>' + html + '</tr>');
+    //        $('.ResponseText:last').focus();
+    //        ResponseCount();
+    //    }
+    //});
+</script>
+
+<style>
+    .clr {
+        color: seagreen;
+    }
+
+    /*ul li {
+        margin-left:0px;
+        list-style-type: none;
+        width:650px;
+        border:1px solid red;
+    }*/
+</style>
+
+<div ng-app="TSS">
+
+    <div data-loading> </div>
+
+    <div ng-controller="Question">
+
+        <div class="row">
+            <div class="col-sm-12" style="margin-bottom: 10px">
+
+                <a href="/Survey/Document/List" class="btn btn-sm btn-info btn-flat pull-right">Return to Survey List</a>
+                <button ng-click="CreateNewWorkOrder()" class="btn btn-sm btn-success btn-flat pull-right" style="margin-right: 5px;">Create Demo WorkOrder </button>
+                <button ng-click="CloneSurvey()" class="btn btn-sm btn-warning btn-flat pull-right" style="margin-right: 5px;">Clone Survey </button>
+            </div>
+            <div class="col-sm-12">
+                <section class="panel panel-default">
+                    <header class="panel-heading font-bold">@ViewBag.Title</header>
+                    <div class="panel-body" ng-controller="Document">
+                        @Html.Action("New", "Document", new { area = "Survey", Id = ViewBag.SurveyId })
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="row" ng-controller="Section" ng-show="ishide">
+            <div class="col-sm-5">
+                <section class="panel panel-default">
+                    <header class="panel-heading bg-light">
+
+                        <ul class="nav nav-tabs nav-justified">
+                            <li class="active" id="CreateSectionli"><a href="" class="tab" data-toggle="tab" ng-click="ShowSection()">Create Section</a></li>
+                            <li id="AddQuestionli"><a href="" class="tab" data-toggle="tab" ng-click="ShowQuestion()">Create Question </a></li>
+                            <li id="CreateQuestionLogicli"><a href="" class="tab" data-toggle="tab" ng-click="ShowQuestionLogic()">Create Question Logic</a></li>
+                        </ul>
+                    </header>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="CreateSection">
+
+                                <div id="sec-SurveyNew">
+                                    @Html.Action("New", "Section", new { area = "Survey", Id = ViewBag.SurveyId })
+                                </div>
+                                @*<div id="sec-SurveyList" >
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <ul class="sortable">
+                                                    <li class="list-group-item" style="display: block; border: solid 1px; margin-top: 10px;" ng-repeat="item in Sections">
+                                                        <span class="pull-right">
+                                                            <input type="checkbox" ng-model="item.IsActive" ng-change="EditIsActive(item)" />
+                                                            <a href="#" ng-click="Edit(item)"><i class="fa fa-pencil icon-muted fa-fw m-r-xs"></i></a>
+                                                            <!-- <a href="#" ng-click="Delete(item.SectionId)"><i class="fa fa-bank icon-muted fa-fw"></i></a>-->
+                                                        </span><!-- <span class="pull-left media-xs"><i class="fa fa-sort text-muted fa m-r-sm"></i></span>-->
+                                                        <div class="clear"> {{item.SectionTitle}} </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                @*<span>Selected Node: {{mytree.currentNode.SectionTitle}}</span>
+                                    <div data-angular-treeView="true"
+                                         data-tree-id="mytree"
+                                         data-tree-model="List"
+                                         data-node-id="SectionId"
+                                         data-node-label="SectionTitle"
+                                         data-node-children="Sections">
+                                        <span class="item-button item-button-trash" ng-click=""></span>
+                                    </div>*@
+                            </div>
+                            <div class="tab-pane "  id="AddQuestion"  >
+                                @Html.Action("New", "Question", new { area = "Survey" })
+                            </div>
+                            <div class="tab-pane" id="CreateQuestionLogic" ng-controller="QuestionLogic">
+                                @Html.Action("New", "QuestionLogic", new { area = "Survey" })
+
+                                @*<header class="panel-heading font-bold">Question Logic</header>*@
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Question Logic</label>
+                                            <ul style="list-style-type: none; padding-left: 0px;" ng-repeat="(key, value) in QuestionLogics | groupBy: '[FromQuestion, Condition,Response,Action]'">
+                                                <li>
+                                                    <div style="border: 1px solid gray; border-radius: 3px;">
+                                                        <div style="font-size: 15px; padding: 5px;">
+
+                                                            <span class="clr">IF</span> {{ value[0].FromQuestion }}
+                                                            <span class="clr">IS</span> {{ value[0].Condition }}
+                                                            <span class="clr">TO</span> {{ value[0].Response }}
+                                                            <span class="clr">THEN</span> {{ value[0].Action }}
+                                                            <div style="float: right;">
+                                                                <a href="#" ng-click="EditLogic(value[0].LogicId)"><i class="fa fa-pencil icon-muted fa-fw m-r-xs"></i></a>
+                                                                <a href="#" ng-click="Delete(value[0].LogicId)"><i class="fa fa-bank icon-muted fa-fw"></i></a>
+                                                            </div>
+                                                        </div>
+                                                        <ul>
+                                                            <li style="list-style-type: none;" ng-repeat="q in value">
+                                                                {{q.ToQuestion}}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <script type="text/ng-template" id="items_renderer.html">
+                <div ng-show="SectionsForTree.length>1">
+                    <div ui-tree-handle class="list-node" style="{{GetStyle(item.IsLogicExists)}}">
+                        <a class="arrow-icon" data-nodrag ng-click="toggle(this)"><i ng-if="item.Sections.length > 0" class="fa" ng-class="{'fa-chevron-right': collapsed, 'fa-chevron-down': !collapsed}"></i></a>
+                        <input type="checkbox" data-nodrag ng-model="item.IsActive" ng-change="SectionEditIsActive(item)" />
+                        <a class="pointer" data-nodrag ng-click="LoadQuestionsForPreview(item, $event)">{{item.SectionTitle}}</a>
+                        <a class="edit-icon" data-nodrag style="cursor:pointer" ng-click="EditSection(item)"><i class="fa fa-pencil icon-muted fa-fw m-r-xs"></i></a>
+                        <a class="delete" style="cursor:pointer;font-size:11px;color:#3c8dbc" data-nodrag ng-click="DeleteSection(item)"><i class="fa fa-trash icon-muted fa-fw"></i></a>
+                    </div>
+                    <input style="display:none" ng-model="item.sort = $index" ng-value="$index" />
+                    <input type="hidden" ng-model="parentValue" ng-init="parentValue = item.SectionId" />
+                    <ol parent-data="{{parentValue}}" ui-tree-nodes="options" ng-model="item.Sections" ng-class="{hidden: collapsed}">
+                        <li parent-data="{{$parent.$parent.parentValue}}" data-order="{{$index}}" ng-repeat="item in item.Sections" ui-tree-node ng-include="'items_renderer.html'">
+                        </li>
+                    </ol>
+                </div>
+                <div ng-hide="SectionsForTree.length>1">
+                    <div class="list-node"  data-nodrag style="{{GetStyle(item.IsLogicExists)}}">
+                        <a class="arrow-icon" data-nodrag ng-click="toggle(this)"><i ng-if="item.Sections.length > 0" class="fa" ng-class="{'fa-chevron-right': collapsed, 'fa-chevron-down': !collapsed}"></i></a>
+                        <input type="checkbox" data-nodrag ng-model="item.IsActive" ng-change="SectionEditIsActive(item)" />
+                        <a class="pointer" data-nodrag ng-click="LoadQuestionsForPreview(item, $event)">{{item.SectionTitle}}</a>
+                        <a class="edit-icon" data-nodrag style="cursor:pointer" ng-click="EditSection(item)"><i class="fa fa-pencil icon-muted fa-fw m-r-xs"></i></a>
+                        <a class="delete" style="cursor:pointer;font-size:11px;color:#3c8dbc" data-nodrag ng-click="DeleteSection(item)"><i class="fa fa-trash icon-muted fa-fw"></i></a>
+                    </div>
+                    <input style="display:none" ng-model="item.sort = $index" ng-value="$index" />
+                    <input type="hidden" ng-model="parentValue" ng-init="parentValue = item.SectionId" />
+                    <ol parent-data="{{parentValue}}" ui-tree-nodes="options" ng-model="item.Sections" ng-class="{hidden: collapsed}">
+                        <li parent-data="{{$parent.$parent.parentValue}}" data-order="{{$index}}" ng-repeat="item in item.Sections" ui-tree-node ng-include="'items_renderer.html'">
+                        </li>
+                    </ol>
+                </div>
+            </script>
+            <div class="col-sm-7">
+                <section class="panel panel-default">
+                    <header class="panel-heading font-bold">@ViewBag.Title Preview</header>
+                    <div class="panel-body">
+                        <div @*id="Section-Preview"*@ class="preview-table">
+                            @* This is done b junaid *@
+                            @*<div data-angular-treeview="true"
+                                     data-tree-id="sectionTree"
+                                     data-tree-model="Sections">
+                                </div>*@
+
+
+                            <div style="background-color: whitesmoke;border-right: lightgray 1px solid;" >
+                                <header class="panel-heading font-bold">Sections</header>
+                                <div class="preview-options" ui-tree="options" ng-if="SectionsForTree.length>0">
+                                    <ol ui-tree-nodes ng-model="SectionsForTree" parent-data="mainParentDiv">
+                                        <li parent-data="mainParentDiv" data-order="{{$index}}" ng-repeat="item in SectionsForTree" ui-tree-node ng-include="'items_renderer.html'"></li>
+                                    </ol>
+                                </div>
+                           </div>
+                                <div class="table-area" ui-tree="questionTree">
+
+                                    <table class="table table-bordered" ui-tree-nodes="" ng-model="QuestionList" ng-if="QuestionList.length > 0">
+                                        <tr style="background-color: #f5f5f5" ng-if="QuestionList!=null" ui-tree-node data-nodrag>
+                                            <th style="width: 40%">Question</th>
+                                            <th>Type</th>
+                                            <th style="text-align: center;">Weightage</th>
+                                            <th style="text-align: center;">Required?</th>
+                                            <th>Active</th>
+                                        </tr>
+
+                                        <tr ng-repeat="q in QuestionList" ui-tree-node data-order="{{$index}}" style="{{GetStyle(q.IsLogicExists)}}">
+                                            <td ui-tree-handle>
+                                                {{q.Question}}
+                                                <span hidden="hidden"> {{q.SortOrder=$index}}</span>
+                                            </td>
+                                            <td>{{ChangeName(q.QuestionType)}}</td>
+                                            <td align="center">
+                                                {{q.Weightage}}
+                                            </td>
+                                            <td align="center">
+                                                <input type="checkbox" ng-checked="q.IsRequired" ng-model="q.IsRequired" ng-change="ChangeIsRequired(q)" />
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" ng-model="q.IsActive" ng-change="EditIsActive(q)" />&nbsp;&nbsp;|
+                                                <a href="#" class="edit-icon" style="font-size:11px;" ng-click="EditQuestion(q)"><i class="fa fa-pencil icon-muted fa-fw m-r-xs"></i></a>
+                                                <a href="#" class="delete" style="font-size:11px;" ng-click="DeleteQuestion(q,q.QuestionId,Clear)"><i class="fa fa-trash icon-muted fa-fw"></i></a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    @*</div>*@
+                                </div>
+</div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+        <div class="modal fade" id="CloneSurvey-popup">
+            <div class="modal-dialog" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Clone Survey</h4>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                
+                                    <div class="form-group">
+                                        <label>Survey Title<span style="color:red">*</span></label>
+                                        <input type="text"   ng-model="CloneSurveyName" class="form-control" />
+                                    </div>               
+                            </div>
+                            <div class="col-md-6">
+                                <label>Client<span style="color:red">*</span></label>
+                                <select class="form-control" ng-model="ClientId">
+                                    <option value="">--Client--</option>
+                                    <option ng-value="item.ClientId" ng-repeat="item in AllClients">{{item.ClientName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="button-set">
+                            <a class="btn btn-danger btn-sm" title="Stay Here" data-dismiss="modal" ng-click="Close()"> Close </a>
+                            <a class="btn btn-success btn-sm" data-dismiss="modal" title="Save LatLng" ng-click="SaveCloneSurvey(CloneSurveyName,ClientId)"> Save </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+@section scripts{
+
+    <script src="~/Content/js/Angular/angular-filter.js"></script>
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    @*<script src="~/Scale/js/sortable/jquery-sortable2.js"></script>*@
+
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+    <script src="~/Content/js/Plugins/Confirm/js/confirm.min.js"></script>
+    <script>
+        var UserId=@ViewBag.UserId;
+    </script>
+    <script src="~/Areas/Survey/Content/angular-ui-tree.js"></script>
+    <script src="~/Areas/Survey/Content/SurveyDocument.js"></script>
+    @*<script src="~/Content/js/Plugins/pace/pace.js"></script>*@
+}
+@section style{
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/Confirm/css/confirm.min.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Areas/Survey/Content/angular-ui-tree.min.css">
+    @*<link rel="stylesheet" href="~/Areas/Survey/Content/custom-tree.css">*@
+    @*<link href="~/Content/js/Plugins/pace/pace.css" rel="stylesheet" />*@
+
+    <style>
+        .nav-tabs-custom > .nav-tabs > li.active > a {
+            color: black !important;
+        }
+
+        .boxShadow {
+            box-shadow: 5px 4px 5px #88887B;
+        }
+
+        .panel-heading {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .sortable {
+            padding-left: 2%;
+            width: 98%;
+        }
+    </style>
+    <style type="text/css">
+        /* angular.treeview */
+
+        div[data-angular-treeview] {
+            /* prevent user selection */
+            -moz-user-select: -moz-none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            /* default */
+            font-weight: bold;
+            font-size: 14px;
+            color: #555;
+            text-decoration: none;
+        }
+
+        div[data-tree-model] ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            border: none;
+            overflow: hidden;
+        }
+
+        div[data-tree-model] li {
+            position: relative;
+            padding: 0 0 0 20px;
+            line-height: 20px;
+        }
+
+            div[data-tree-model] li .expanded {
+                padding: 1px 10px;
+                background-image: url("http://cfile23.uf.tistory.com/image/205B973A50C13F4B19D9BD");
+                background-repeat: no-repeat;
+            }
+
+            div[data-tree-model] li .collapsed {
+                padding: 1px 10px;
+                background-image: url("http://cfile23.uf.tistory.com/image/1459193A50C13F4B1B05FB");
+                background-repeat: no-repeat;
+            }
+
+            div[data-tree-model] li .normal {
+                padding: 1px 10px;
+                background-image: url("http://cfile23.uf.tistory.com/image/165B663A50C13F4B196CCA");
+                background-repeat: no-repeat;
+            }
+
+            div[data-tree-model] li i, div[data-tree-model] li span {
+                cursor: pointer;
+            }
+
+            div[data-tree-model] li .selected {
+                background-color: #8293a8;
+                padding: 1px 5px;
+                color: #FFF;
+            }
+
+        /* example */
+        /*label {
+            display: inline-block;
+            width: 30px;
+            padding: 0 10px;
+            font-weight: bold;
+        }*/
+
+        .button_panel {
+            margin: 10px 0 30px 0;
+            padding: 10px;
+            background-color: #EEEEEE;
+            border-radius: 5px;
+            font: 12px Tahoma;
+        }
+
+        .input_panel {
+            padding: 10px 5px;
+        }
+
+        .done_button {
+            margin-top: 10px;
+        }
+
+        .preview-table {
+            margin: -15px;
+            display: flex;
+        }
+
+        .table-area {
+            width: 100%;
+        }
+
+            .table-area table {
+                margin: 0;
+            }
+
+        div[data-angular-treeview] {
+            padding: 20px 10px;
+            background: #fafafa;
+            border-right: 1px solid #ddd;
+            min-width: 150px;
+        }
+
+            div[data-angular-treeview] ul li {
+                padding: 0;
+                font-weight: 600;
+            }
+
+                div[data-angular-treeview] ul li ul {
+                    padding: 0 0 0 10px;
+                    width: 100%;
+                }
+ 
+
+.list-node {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #555;
+    border: none;
+    border: 0;
+    background: none;
+    padding: 5px 10px;
+    position:relative;
+    padding-left:20px;
+}
+  
+.list-node a.arrow-icon {
+    color: #6e6e6e;
+    cursor: pointer;
+    font-size: 9px;
+    position: absolute;
+    left: 7px;
+    top: 5px;
+}
+.list-node input{margin: 0 5px 0 0}
+.list-node a {
+    color: #333;
+}
+.list-node a.edit-icon {
+    margin-left: auto;
+    font-size:10px;
+    color:#3c8dbc;
+}
+.preview-options {
+    min-width:190px;
+    background: #fafafa;
+    border-right: 1px solid #ddd;
+}          
+.preview-options > ol > li{border-bottom: 1px solid #ddd}
+/*.preview-options > ol > li:nth-child(odd){background:#f5f5f5}*/
+.angular-ui-tree-nodes .angular-ui-tree-nodes {
+   padding-left: 10px;
+}
+    .pointer{
+        cursor:pointer;
+    }
+    .highlight-text{
+            background: #b3e3ff;
+    }
+    #map_canvas
+    {
+        height:300px;
+    }
+       </style>
+
+}

@@ -1,0 +1,3796 @@
+﻿@using System.Web.Mvc.Html
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+    var ProjectId = ViewBag.Id;
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var WoStatus = jss.Serialize(ViewBag.WoStatus);
+    var Entity = TempData["ProjectEntity"] as AirView.DBLayer.Security.Entities.Sec_UserProjects;
+     TempData.Keep("ProjectEntity");
+}
+@*<link href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />*@
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+<link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://angular-ui.github.io/ui-select/dist/select.css">
+<link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+<link href="~/Areas/Project/Content/Project/groupMultiSelect.css" rel="stylesheet" />
+<link href="~/Areas/Project/Content/Project/Style.css" rel="stylesheet" />
+<script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+<script src="~/Content/js/Plugins/Pagination/js/simplePagination.js"></script><!--Pagination-->
+<link href="~/Content/js/Plugins/Pagination/css/simplePagination.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Areas/Project/Content/stylesR/daterangepicker.css">
+@*<link rel="stylesheet" href="~/Areas/Project/Content/stylesR/multidatepicker.css">*@
+
+
+<script src="~/Content/js/ui-bootstrap-tpls-0.13.0.js"></script>
+
+<script src="~/Areas/Project/Content/ScriptR/vendor.js"></script>
+<script src="~/Areas/Project/Content/ScriptR/multidaterangepicker.js"></script>
+<style>
+    .calendar .calendar-table {
+        height: 250px;
+        width: 250px;
+    }
+
+    .options {
+        z-index: 2 !important;
+    }
+
+    .fc-content {
+        margin-top: -12px;
+    }
+
+    span#sizing-addon2 {
+        display: table-cell;
+        height: 30px;
+        padding: 5px 10px;
+    }
+
+    .input-group-sm {
+        display: table;
+    }
+
+    .modal-body {
+        position: relative;
+        padding: 5px 20px 20px !important;
+    }
+
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x- ng-cloak {
+        display: none !important;
+    }
+
+    .daterangepicker {
+        z-index: 10000000001 !important;
+    }
+
+    /*.multiselect-selected-text {
+            font-size: 10px !important;
+        }
+
+        .multiselect {
+            width: 100px;
+        }*/
+    /*.dd-item > button {
+            margin-top: 16px !important;
+        }*/
+    .dd-item > button {
+        /*margin: 0;*/
+        margin-left: 15px;
+        font-size: 24px;
+        height: 24px;
+        margin-top: 15px !important;
+    }
+
+    #regionviewchart > .canvasjs-chart-container > .canvasjs-chart-canvas {
+        width: 100%;
+    }
+
+    .canvasjs-chart-container {
+        width: 100%;
+    }
+
+    #legend {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        padding: 10px;
+        right: 10px;
+        top: 50%;
+        position: absolute;
+        border: 3px solid #000;
+        transform: translateY(-50%);
+        max-height: 270px;
+        max-width: 170px;
+        overflow: auto;
+        z-index: 200;
+        /*2000000000000*/
+    }
+
+    .map-filters {
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: auto !important;
+        width: calc(100% - 40px);
+        z-index: 200;
+    }
+
+    #legend3 {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        padding: 10px;
+        margin: 10px;
+        border: 3px solid #000;
+    }
+
+    #legend h3 {
+        margin-top: 0;
+    }
+
+    #legend img {
+        vertical-align: middle;
+    }
+
+    .chart-heading {
+        margin-top: -8px;
+        float: left;
+        max-width: 50%;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+        .chart-heading h4 {
+            float: left;
+            background: #eee;
+            margin-right: 7px;
+            height: 23px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #acacac;
+            /*text-transform: uppercase;*/
+        }
+
+            .chart-heading h4:last-child {
+                margin: 0;
+            }
+
+            .chart-heading h4 span {
+                float: left;
+                border-right: 1px solid #acacac;
+                padding: 0 4px;
+                height: 23px;
+            }
+
+                .chart-heading h4 span:last-child {
+                    border: 0;
+                }
+
+    #legend img {
+        vertical-align: middle;
+    }
+
+
+    .modal {
+        z-index: 999000000000000 !important;
+    }
+
+
+
+    .header-btns {
+        float: left;
+    }
+
+        .header-btns > a {
+            float: left;
+            line-height: 1;
+            padding: 6px 10px;
+            margin-top: 2px;
+        }
+
+        .header-btns > form {
+            float: left;
+            margin-left: 5px;
+        }
+
+            .header-btns > form button {
+                color: #333;
+                padding: 6px 10px;
+                font-family: arial;
+                margin-top: 2px;
+                margin-left: 5px;
+                border: 0;
+                float: left;
+                border-radius: 2px;
+                line-height: 1;
+            }
+
+                .header-btns > form button i {
+                    float: left;
+                    margin-right: 5px;
+                }
+</style>
+<script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+<script type="text/javascript">
+
+    var loading = $.loading();
+    loading.ajax(true);
+</script>
+<section id="widget-grid" class="ng-cloak" ng-app="DashboardApp" ng-controller="DashboardCtrl">
+    <div class="alert alert-success alert-dismissable" id="SuccessMessage" style="display:none;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <b>Success!</b> <p id="SuccessText">Save successfully.</p>
+    </div>
+    <span data-UserId="@ViewBag.UserId" hidden id="UserId"></span>
+    <div class="row">
+
+        <div class="modal  fade" data-backdrop="static" data-keyboard="false" id="IssueModal">
+            <div class="modal-dialog" style="min-width:90%;" data-backdrop="static" data-keyboard="false" >
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"> <label> Issue Ticket</label><label class="labelFacode"></label></h5>
+                    </div>
+                    <div class="modal-body">
+                        @Html.Action("New", "Issue", new { area = "Project" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal  fade" id="AttachmentModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"> <label> Change Status</label> <label class="labelFacode"></label></h5>
+                    </div>
+                    <div class="modal-body">
+                        @*@Html.Action("ProjectAttachment", "Dashboard", new { area = "Project" })*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal  fade" id="IssueStatusModal">
+            <div class="modal-dialog" style="width:50%;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"> <label> Change Status </label> <label class="labelFacode"></label></h5>
+                    </div>
+                    <div class="modal-body">
+                        @Html.Action("ChangeIssueStatus", "Issue", new { area = "Project" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal  fade" id="SiteStatus">
+            <div class="modal-dialog" style="width:79%;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"> <label> Update @Entity.Title Status</label><label class="labelFacode"></label></h5>
+                    </div>
+                    <div class="modal-body">
+
+                        @Html.Partial("~/Areas/Project/Views/ProjectSite/_SiteStatus.cshtml")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal  fade" id="LogModal">
+            <div class="modal-dialog" style="width:51%;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"><label>Add Work Log </label><label class="labelFacode"></label></h5>
+                    </div>
+                    <div class="modal-body">
+
+                        <form ng-submit="SaveLog()" name="Logform" role="form">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label>Log Date</label>
+
+                                    <div class="input-group-sm">
+                                        <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" class="form-control logDateInput" date-picker ng-model="LogDate" required
+                                               aria-describedby="sizing-addon2">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label>Work Hours</label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-clock-o"></i></span>
+                                        <input type="number" class="form-control" ng-model="LogHours" required aria-describedby="sizing-addon2">
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @*<label style="margin-left:14px;">Description</label>*@
+                                <textarea rows="3" ng-model="Description" placeholder="Description" class="form-control ng-pristine ng-untouched ng-valid ng-empty" style="width:97%;margin-left:14px;height:300px;"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn custom-btn1">
+                                    Save
+                                </button>
+                                <button class="btn custom-btn2" data-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal  fade" id="FormModal">
+            <div class="modal-dialog" style="width:51%;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"><label> Data Entry </label><label class="labelFacode"></label></h5>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-inline" id="frmTaskEntry" action="#!" role="form">
+                            <div id="CustomForm">
+                            </div>
+                            <input type="submit" value="Save" class="btn btn-info pull-right" />
+                            <br />
+                            <br />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form class="form-inline" role="form">
+
+            <div class="modal  fade" id="PlanningModal">
+                <div class="modal-dialog" style="width:68%;">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                            <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                                ×
+                            </button>
+                            <h5 class="modal-title" style="color:white;margin-top:5px;font-size:16px;"> <label> Task Planning </label><label class="labelFacode"></label></h5>
+                        </div>
+                        <div class="modal-body" style="height:auto">
+                            @Html.Action("PlanningNew", "Task", new { area = "Project" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="modal  fade" id="ChangeStatus">
+            <div class="modal-dialog" style="width:67%;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"> <label> Change Status</label><label class="labelFacode"></label></h5>
+                    </div>
+                    <div class="modal-body" style="height:auto">
+                        @Html.Partial("~/Areas/Project/Views/Dashboard/_StatusChange.cshtml")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" style="margin-left:-15px;">
+        <div ng-repeat="x in BookmarkTasks">
+            <div class="row" ng-if="x.Tasks.length"></div>
+            <div class="row" ng-if="x.Tasks.length">
+                <!-- ./col -->
+                <div class="col-sm-2" style="margin-left:-10px;">
+                    <!-- small box -->
+                    <div class="small-box StatusShadow" style="color: white; background-color: {{x.Color}}; font-weight: bold;">
+                        <div class="inner">
+                            <h3>{{x.ActualSites}}</h3>
+
+                            <p>{{x.Task}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2" ng-repeat="y in x.Tasks" style="margin-left:-10px;">
+                    <!-- small box -->
+                    <div class="small-box StatusShadow" style="color: white; background-color: {{y.Color}}; font-weight: bold;">
+                        <div class="inner">
+                            <h3>{{y.ActualSites}}</h3>
+
+                            <p>{{y.Task}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!(x.Tasks.length)">
+                <!-- ./col -->
+                <div class="col-sm-2" style="margin-left:-10px;">
+                    <!-- small box -->
+                    <div class="small-box StatusShadow" style="color: white; background-color: {{x.Color}}; font-weight: bold;">
+                        <div class="inner">
+                            <h3>{{x.ActualSites}}</h3>
+
+                            <p>{{x.Task}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2" ng-repeat="y in x.Tasks" style="margin-left:-10px;">
+                    <!-- small box -->
+                    <div class="small-box StatusShadow" style="color: white; background-color: {{y.Color}}; font-weight: bold;">
+                        <div class="inner">
+                            <h3>{{y.ActualSites}}</h3>
+
+                            <p>{{y.Task}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+    </div>
+    @*<div class="container-fluid" id="BookMarkList" style="margin-left:-22px;margin-bottom:6px;">
+            <div ng-repeat="x in BookmarkTasks" class="w3-responsive">
+                    <div class="col-md-2" style="text-align:left;border-left:1.5px solid #999696;border-top:1.5px solid #999696;border-bottom:1.5px solid #999696;height:74px;background:{{x.Color}};margin-left:10px;width:154px;" ng-if="x.Tasks.length>0">
+
+                        <strong style="font-size:25px;color:#fff">{{x.ActualSites}}</strong><br />
+                        <i style="color:#fff;font-size:14px;font-weight:bold;">{{x.Task}}</i>
+                    </div>
+                    <div class="col-md-1" ng-repeat="y in x.Tasks" style="border-right:1.5px solid #999696;border-top:1.5px solid #999696;border-bottom:1.5px solid #999696;text-align:left;height:74px;width:88px;;background:{{y.Color}};" ng-if="x.Tasks.length>0">
+                        <strong style="font-size:25px;color:#fff">{{y.ActualSites}}</strong><br />
+                        <i style="color:#fff;font-size:12px;font-weight:bold;">{{y.Task}}</i>
+                    </div>
+           </div>
+        </div>*@
+
+    @*<div class="container-fluid" id="BookMarkList" style="margin-left:-22px;margin-bottom:6px;">
+            <div ng-repeat="x in BookmarkTasks" class="w3-responsive">
+                    <div class="col-md-2" style="text-align:left;border-left:1.5px solid #999696;border-top:1.5px solid #999696;border-bottom:1.5px solid #999696;height:74px;background:{{x.Color}};margin-left:10px;width:154px;" ng-if="x.Tasks.length>0">
+
+                        <strong style="font-size:25px;color:#fff">{{x.ActualSites}}</strong><br />
+                        <i style="color:#fff;font-size:14px;font-weight:bold;">{{x.Task}}</i>
+                    </div>
+                    <div class="col-md-1" ng-repeat="y in x.Tasks" style="border-right:1.5px solid #999696;border-top:1.5px solid #999696;border-bottom:1.5px solid #999696;text-align:left;height:74px;width:88px;;background:{{y.Color}};" ng-if="x.Tasks.length>0">
+                        <strong style="font-size:25px;color:#fff">{{y.ActualSites}}</strong><br />
+                        <i style="color:#fff;font-size:12px;font-weight:bold;">{{y.Task}}</i>
+                    </div>
+           </div>
+        </div>*@
+
+    <div class="modal  fade" id="TodoModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                    <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"> <label> Todo Task</label></h5>
+                </div>
+                <div class="modal-body" style="height:232px;">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Description</label>
+                            <textarea class="form-control" ng-model="Todo.Description" rows="3"></textarea>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label>Status:</label>
+                                <select ng-model="Todo.Status" class="form-control">
+                                    <option>Crititcal</option>
+                                    <option>Important</option>
+                                    <option>Completed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Type:</label>
+                                <select ng-model="Todo.Type" class="form-control">
+                                    <option>Meeting</option>
+                                    <option>Reminder</option>
+                                    <option>Appointment</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                    <footer>
+                        <button ng-click="SaveTodo()" class="btn btn-primary" style="float:right;">
+                            Save
+                        </button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- row -->
+    <div class="row">
+        <span hidden id="pId" data-ProjectId="@ViewBag.Id"></span>
+        <article class="col-sm-12 sortable-grid ui-sortable" style="margin-bottom:-18px;">
+            <!-- new widget -->
+            <div class="jarviswidget jarviswidget-color-blueDark jarviswidget-sortable" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" role="widget">
+
+                <header role="heading">
+                    <span class="widget-icon"> <i class="glyphicon glyphicon-stats"></i> </span>
+                    <h2 style="font-weight:bold;">Program View </h2>
+                    <div class="widget-toolbar filters pv">
+                        <div class="input-group" style="margin-right:2px;">
+
+                            <button type="button" class="btn btn-default pull-right" id="reportrange1">
+                                <span>
+                                    Date range picker
+                                </span>
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+                        @*<div class="input-group" style="margin-right:2px;">
+                                <button type="button" class="btn btn-default" id="reportrange1">
+                                    <span>
+                                        Date range picker
+                                    </span>
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
+                            </div>*@
+
+                        <div class="example" id="lstProjectMarkets">
+                        </div>
+                        <div class="example" id="lstIssueStatus">
+                        </div>
+                        @*<div class="example" id="ListProjectTask">
+                            </div>*@
+
+                        <div class="groupMultiSelect example" id="ListProjectTask" style="background:#fff;border-radius:4px;height:30px;width:136px;">
+                        </div>
+                        <button class="btn btn-default" id="SearchProject" style="background: #a8a9a7;color: #fff;margin-left:2px;height:30px;"><span class="fa fa-filter"></span></button>
+                        @*@if (ViewBag.AllowUri("/Project/Targets/Index"))
+                            {
+                                <a class="btn btn-sm btn-success" href="/Project/Targets/Index/@ViewBag.Id" id="setTarget" style="margin-left:10px;">Set Targets</a>
+                            }*@
+
+                        <div class="header-btns">
+                            @if (ViewBag.AllowUri("/Project/Targets/Index"))
+                            {
+                                <a class="btn btn-sm btn-success" href="/Project/Targets/Index/@ViewBag.Id" id="setTarget" target="_blank" style="margin-left:5px;">Set Targets</a>
+                            }
+
+                            @using (Html.BeginForm("Pdf", "Dashboard", FormMethod.Post))
+                            {
+
+                                <button type="submit" id="viewReport" class="btn btn-primary" style="color: white;height: 26px;margin-left: 0px;width: 89px;"><i class="fa fa-file-pdf-o"></i>Report</button>
+
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <ul class="nav nav-tabs pull-right in" id="myTab" style="margin-top:-38px;">
+
+                        <li class="active">
+                            <a data-toggle="tab" title="Project Tracking" id="btns2" href="#s2" id="s2_button"><i style="opacity:1" class="fa fa-clock-o"></i> <span class="hidden-mobile hidden-tablet"><b>Tracking</b></span></a>
+                        </li>
+
+                        <li>
+                            <a data-toggle="tab" title="Project Sites" id="btns1" href="#s1"><i style="opacity:1" class="fa fa-files-o"></i> <span class="hidden-mobile hidden-tablet"><b>Sites</b></span></a>
+                        </li>
+
+
+                        <li>
+                            <a data-toggle="tab" title="Project Issues" id="btns3" href="#s3"><i style="opacity:1" class="fa fa-warning"></i> <span class="hidden-mobile hidden-tablet"><b>Issues</b></span></a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" title="Project Summary" id="btns4" href="#s4"><i style="opacity:1" class="fa fa-comment"></i> <span class="hidden-mobile hidden-tablet"><b>Summary</b></span></a>
+                        </li>
+
+                    </ul>
+                    <ul id="sparks" style="width:80%;margin-top:1px !important;">
+
+                        <li class="sparks-info">
+                            <div class="sparkline hidden-mobile hidden-md hidden-sm" style="margin-right:10px;float:left;color:#fff;">
+                                8,20,490,1404,17,29,17,1,23,1405,577,153,1157
+                            </div>
+                            <h5 style="float:right;color:#fff;"> Completion <span style="color:#fff;"><i class="fa fa-arrow-circle-up"></i>&nbsp;{{s.CompletionPercent}}%</span></h5>
+
+                        </li>
+
+                    </ul>
+
+                    <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+                </header>
+
+                <!-- widget div-->
+                <div class="no-padding" role="content">
+
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane fade  in padding-10 no-padding-bottom" id="s1">
+                            <div class="box-body">
+
+                                @*<a class="btn btn-xs btn-info" href="/workorder/New/@ViewBag.Id">
+                                        Create Work Order
+                                    </a>*@
+
+
+                                @*<input type="text" id="searchbox" style="width:180px;height: 29px;margin-right:31px" placeholder="Search" class="form-control pull-right Web">*@
+
+                                <div id="divclientsites" style="height:300px;overflow:auto;">
+                                    @*@Html.Action("TableResult", "Dashboard", new { Area = "Project", ProjectId = ProjectId, Page = 1 })*@
+                                </div>
+                                <div class="pull-left">Showing <span id="GridShowing"> 5</span>  of <span id="GridShowingTotal"></span> entries</div>
+                                <div id="SiteGridPagination" class="pull-right"></div>
+                            </div>
+                        </div>
+                        <!-- end s1 tab pane -->
+                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s2" style="margin-bottom:-40px;">
+                            <div class="row no-space">
+                                <div style="margin-bottom:8px;float:right;margin-right:26%;margin-top:-8px;">
+                                    <button data-type="Daily" class="btn btn-chart programchart" style="float:left;margin-right:2px;">Daily</button>
+                                    <button class="btn btn-chart programchart" style="float:left;margin-right:2px;" data-type="Weekly">Weekly</button>
+                                    <button class="btn btn-chart programchart" style="float:left;margin-right:2px;" data-type="Monthly">Monthly</button>
+                                    <button class="btn btn-chart programchart" style="float:left; margin-right:1px;" data-type="Quaterly">Quaterly</button>
+                                    <button class="btn btn-chart programchart" style="float:left;" data-type="Yearly">Yearly</button>
+                                </div>
+                                <div class="chart-heading">
+                                    <h4 style="margin-left:-9px;"><span style="background-color: #ccc">Forecasted MTD : {{ForecastedMTD}}</span><span style="background-color: #ccc">Actual MTD: {{ActualMTD}}</span></h4>
+                                    <h4><span style="background-color: #ccc">Project Forecast TD : {{ProjectForecastTD}}</span><span style="background-color: #ccc">Project Actual TD : {{ProjectActualTD}}</span></h4>
+                                </div>
+                                <div id="chartContainer" style="height:320px;margin-bottom: -10px !important;margin-top: -10px !important;" class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+
+                                    <div id="updating-chart" hidden class="chart-large txt-color-blue" style="padding: 0px; position: relative;"><canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 717px; height: 235px;" width="717" height="235"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 26px; text-align: center;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 91px; text-align: center;">10</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 159px; text-align: center;">20</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 226px; text-align: center;">30</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 294px; text-align: center;">40</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 362px; text-align: center;">50</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 430px; text-align: center;">60</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 498px; text-align: center;">70</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 565px; text-align: center;">80</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 633px; text-align: center;">90</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 698px; text-align: center;">100</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 203px; left: 13px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 163px; left: 7px; text-align: right;">20</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 123px; left: 7px; text-align: right;">40</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 83px; left: 7px; text-align: right;">60</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 43px; left: 7px; text-align: right;">80</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 3px; left: 0px; text-align: right;">100</div></div></div><canvas class="flot-overlay" style="direction: ltr; position:absolute; left: 0px; top: 0px; width: 717px; height: 235px;" width="717" height="235"></canvas></div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 show-stats" style="height:340px;top:-36px;overflow-y:auto;overflow-x:hidden;border-left:1px solid #e8e8e8;">
+
+                                    <div class="row" style="height: 336px;margin-top:-7px;overflow-y:  auto;">
+                                        @Html.Action("GetMileStoneValues", "Dashboard", new { Area = "Project", ProjectId = ProjectId, filterOption = "" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="show-stat-microcharts" class="show-stat-microcharts">
+                            </div>
+                        </div>
+                        <!-- end s2 tab pane -->
+
+                        <div class="tab-pane fade" id="s3">
+                            <div class="widget-body-toolbar bg-color-white">
+
+                                <form class="form-inline" role="form">
+
+                                    <div class="form-group" style="float:right;">
+                                        <input type="text" class="form-control input-sm pull-right" placeholder="Search" id="searchboxIssue">
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="divissues">
+                                @*@Html.Action("GetProjectIssue", "Dashboard", new { Area = "Project", projectId = ViewBag.Id, Page = 1 })*@
+                            </div>
+                            <div class="pull-left">Showing <span id="IssueGridShowing"></span>  of <span id="IssueGridShowingTotal"></span> entries</div>
+                            <div id="IssueGridPagination" class="pull-right"></div>
+                        </div>
+                        <div class="tab-pane fade" id="s4">
+                            @*<label style="font-weight:bold;margin-left:10px;">PROGRAM SUMMARY</label>*@
+                            <h3>
+                                <p id="Summary" style="height: 312px;margin-left:10px;font-weight: bold;overflow:hidden;"></p>
+                            </h3>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+    </div>
+
+    <div class="row">
+
+        <article class="col-sm-12 col-md-8 col-lg-8" style="padding-right:0;">
+            <!-- new widget -->
+            <div class="jarviswidget jarviswidget-color-blueDark jarviswidget-sortable" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-collapsed="false" data-widget-sortable="false">
+
+                <header>
+                    <div class="btn-group" style="margin-top:-10px;">
+                        <span class="widget-icon" style="margin-left:5px;"> <i class="fa fa-map-marker"></i> </span>
+                        <h2 style="margin-left:2px;font-weight:bold;">Project: </h2> <h2 style="cursor:pointer;font-weight:bold;" class="dropdown-toggle" data-toggle="dropdown">Regional View<i class="caret"></i></h2>
+
+                        <ul class="dropdown-menu js-status-update pull-right">
+                            <li>
+                                <a href="#" id="Projects">Regional View</a>
+                            </li>
+                            <li>
+                                <a href="#" id="Readiness">Readiness View</a>
+                            </li>
+                            @*@<li>
+                                    <a href="javascript:void(0);" id="SITE_DISPOSITON">Site Disposition</a>
+                                </li>*@
+                        </ul>
+                    </div>
+
+                    <div class="widget-toolbar filters" id="marketfilters">
+                        <!-- add: non-hidden - to disable auto hide -->
+                        <div class="input-group" style="margin-right:2px;">
+
+                            <button type="button" class="btn btn-default pull-right" id="reportrangemarket">
+                                <span>
+                                    Date range picker
+                                </span>
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+                        <div class="example" id="lstMarketMarkets">
+                            <script type="text/javascript">
+                            </script>
+                        </div>
+                        @*<div class="example" id="ListMarketIssue">
+                            </div>*@
+                        <div class="groupMultiSelect2 example" id="ListMarketIssue" style="background:#fff;border-radius:4px;height:30px;width:136px;margin-right:3px;">
+                        </div>
+                        <button class="btn btn-default" id="SearchMarket" style="background: #a8a9a7;color:#fff;margin-left:1px;margin-right:-5px;"><span class="fa fa-filter"></span></button>
+                    </div>
+                </header>
+
+                <div>
+
+                    <div class="jarviswidget-editbox">
+                        <div>
+                            <label>Title:</label>
+                            <input type="text" />
+                        </div>
+                    </div>
+                    @*<div class="widget-body no-padding">
+                            <div id="Project_View_Chart" style="min-width: 310px; height:299px; margin: 0 auto;"></div>
+                        </div>*@
+
+                    <div class="widget-body no-padding" id="marketregion">
+                        @*@Html.Action("GetMarkets", "Dashboard", new { Area = "Project", ProjectId = ProjectId, filter = "Get_RegionView_WO" })*@
+                    </div>
+                    <div class="widget-body no-padding" id="ProjectReadiness" style="height:299px;">
+                        @*@Html.Action("GetMarkets", "Dashboard", new { Area = "Project", ProjectId = ProjectId, filter = "Get_RegionView_WO" })*@
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="col-sm-12 col-md-4 col-lg-4">
+            <!-- new widget -->
+            <div class="jarviswidget jarviswidget-color-blueDark jarviswidget-sortable" id="wid-id-3" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-collapsed="false" data-widget-sortable="false">
+
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-warning"></i> </span>
+
+                    <div class="btn-group" style="margin-top:-10px;">
+                        <h2 style="margin-left:12px;font-weight:bold;">Issues: </h2> <h2 style="cursor:pointer;font-weight:bold;" class="dropdown-toggle" data-toggle="dropdown">Project View<i class="caret"></i></h2>
+
+                        <ul class="dropdown-menu js-status-update pull-right">
+                            <li>
+                                <a href="#" id="Issue_By_pie_btn">Project View</a>
+                            </li>
+                            <li>
+                                <a href="#" id="Issue_By_Geo_btn">Regional View</a>
+                            </li>
+                            <li>
+                                <a href="#" id="NATIONAL_PROGRAM_ISSUES">National Program</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- add: non-hidden - to disable auto hide -->
+
+                    <div class="widget-toolbar filters">
+                        <!-- add: non-hidden - to disable auto hide -->
+                        <div class="input-group" style="margin-right:2px;">
+                            <button type="button" class="btn btn-default pull-right" id="reportrange2">
+                                <span>
+                                    <i class="fa fa-calendar"></i> Date range picker
+                                </span>
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+
+                        <div class="example" id="lstIssueMarkets">
+                            <script type="text/javascript">
+                            </script>
+                        </div>
+
+                        @*<div class="example" id="lstIssueTasks">
+                                <script type="text/javascript">
+                                                $(document).ready(function() {
+                                                    $('#example-multiple-optgroups1').multiselect();
+                                                });
+                                </script>
+                            </div>*@
+                        <button class="btn btn-default" id="SearchIssue" style="background: #a8a9a7;color: #fff;margin-left:2px;margin-right:-4px;"><span class="fa fa-filter"></span></button>
+                    </div>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <div>
+                            <label>Title:</label>
+                            <input type="text" />
+                        </div>
+                    </div>
+                    <!-- end widget edit box -->
+                    <div class="widget-body no-padding ">
+                        <div class="filterbuttons isssuesbtn">
+
+                            <button class="btn invisible btn-chart btn-default" id="backButton1" style="float: right;margin-left: 10px;width:40px;"> <span class="fa fa-arrow-left"></span> </button>
+                            <button class="btn btn-chart issue-button" style="float:right;" data-type="Yearly" ng-click="FilterbyDateandTime('Yearly','Get_Datewise_Issue','Issue')">Yearly</button>
+                            <button class="btn btn-chart issue-button" style="float:right;margin-right:1px;" data-type="Quaterly" ng-click="FilterbyDateandTime('Quaterly','Get_Datewise_Issue','Issue')">Quaterly</button>
+                            <button class="btn btn-chart issue-button" style="float:right;margin-right:2px;" data-type="Monthly" ng-click="FilterbyDateandTime('Monthly','Get_Datewise_Issue','Issue')">Monthly</button>
+                            <button class="btn btn-chart issue-button" style="float:right;margin-right:2px;" data-type="Weekly" ng-click="FilterbyDateandTime('Weekly','Get_Datewise_Issue','Issue')">Weekly</button>
+                            <button class="btn btn-chart issue-button" style="float:right;margin-right:2px;" data-type="Daily" ng-click="FilterbyDateandTime('Daily','Get_Datewise_Issue','Issue')">Daily</button>
+                        </div>
+                        <div class="filterbuttons national">
+                            <button class="btn btn-chart national-chart" style="float:right;" data-type="Yearly">Yearly</button>
+                            <button class="btn btn-chart national-chart" style="float:right;margin-right:3px;" data-type="Quaterly">Quaterly</button>
+                            <button class="btn btn-chart national-chart" style="float:right;margin-right:2px;" data-type="Monthly">Monthly</button>
+                            <button class="btn btn-chart national-chart" style="float:right;margin-right:2px;" data-type="Weekly">Weekly</button>
+                            <button class="btn btn-chart national-chart" style="float:right;margin-right:2px;" data-type="Daily">Daily</button>
+                        </div>
+
+                        @*<div id="Issue_By_Geo" style="min-width: 310px; height:269px; margin: 0 auto;"></div>*@
+                        <div id="Issue_By_pie" style="min-width: 310px; height:300px; margin: 0 auto;"></div>
+                    </div>
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+    </div>
+
+    <div class="row">
+        <article class="col-sm-12 col-md-8 col-lg-8" style="margin-bottom:-18px;margin-top:-17px;padding-right:0;">
+
+            <!-- new widget -->
+            <div class="jarviswidget jarviswidget-color-blueDark " id="wid-id-5" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-collapsed="false" data-widget-sortable="false">
+
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-map-marker"></i> </span>
+                    <h2 style="font-weight:bold;">Map View</h2>
+
+                    @*<div class="widget-toolbar">
+                            <a href="/Project/Defination/Details/@ViewBag.Id" class="btn  btn-xs btn-info" style="margin-right:4px;margin-left:4px;">
+                                <span class="fa fa-plus"></span>
+                            </a>
+                        </div>*@
+
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <div class="widget-body no-padding">
+
+                        <div class="widget-body-toolbar bg-color-white" style="padding:0">
+                            <div style="overflow:  hidden;width: 100%;">
+                                <div id="map" style="width:100%;height:530px;">
+
+                                </div>
+                                <div id="legend">
+                                    <div><img src="~/Content/Images/Markers/pending.png" style="margin-top:5px;background-color:black;border-radius:10px;height:20px;width:20px;margin-right:5px">Pending</div>
+                                    <div><img src="~/Content/Images/Markers/tss.png" style="margin-top:5px;background-color:black;border-radius:10px;height:20px;width:20px;margin-right:5px">TSS</div>
+                                    <div><img src="~/Content/Images/Markers/tss_ssm.png" style="margin-top:5px;background-color:black;border-radius:10px;height:20px;width:20px;margin-right:5px">TSS_SSM</div>
+                                    <div><img src="~/Content/Images/Markers/tss_epl.png" style="margin-top:5px;background-color:black;border-radius:10px;height:20px;width:20px;margin-right:5px">TSS_EPL</div>
+                                    <div><img src="~/Content/Images/Markers/tss_ssm_epl.png" style="margin-top:5px;background-color:black;border-radius:10px;height:20px;width:20px;margin-right:5px">TSS_SSM_EPL</div>
+                                    <div><img src="~/Content/Images/Markers/preinstall.png" style="margin-top:5px;background-color:black;border-radius:10px;height:20px;width:20px;margin-right:5px">Preinstall</div>
+                                    @*<div><img src="~/Content/Images/Markers/ongoing.png" style="margin-top:5px;background-color:black;border-radius:10px;height:20px;width:20px;margin-right:5px">Ongoing</div>*@
+                                    <div><img src="~/Content/Images/Markers/migrated.png" style="margin-top:5px;background-color:black;border-radius:10px;height:20px;width:20px;margin-right:5px">Migrated</div>
+                                    <div><img src="~/Content/Images/Markers/completed.png" style="margin-top:5px;background-color:black;border-radius:10px;height:20px;width:20px;margin-right:5px">Completed</div>
+                                </div>@*<div id="legend2" style="z-index: 0;margin-top:10px !important; margin-left:10px !important;WIDTH:500px"></div>*@
+                            </div>
+                        </div>
+                    </div>
+                    <!--Map Filter-->
+                    <div class="widget-toolbar filters map-filters" id="mapfilters">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- add: non-hidden - to disable auto hide -->
+                                <div class="input-group" @*style="margin-right:2px;"*@>
+
+
+                                    <button type="button" class="btn btn-default pull-right" style="z-index:9000000" id="MapDate">
+                                        <span>
+                                            <i class="fa fa-calendar"></i> Date range picker
+                                        </span>
+                                        <i class="fa fa-caret-down"></i>
+                                    </button>
+                                </div>
+                                <div class="example" id="lstMapMarkets">
+                                    <script type="text/javascript">
+                                    </script>
+                                </div>
+                                @*<div class="groupMultiSelect2 example" id="ListMapStatus" style="background:#fff;border-radius:4px;height:30px;width:136px;">
+                                    </div>*@@*groupMultiSelect3*@
+                                    <div class="example" id="ListMapIssues" @*style="background:#fff;border-radius:4px;height:30px;width:136px;    margin-right: 2px;"*@>
+                                        <script type="text/javascript">
+                                        </script>
+                                    </div>
+                                    <div class="example" id="ListMapStatus">
+                                        <script type="text/javascript">
+                                        </script>
+                                    </div>
+                                    <div id="ListMapType"></div>
+                                    @*<div class="groupMultiSelect1">
+                                            <select></select>
+                                        </div>*@
+
+                                    <button class="btn btn-default" id="SearchMap" style="background: #a8a9a7;color:#fff;margin-left:1px;margin-right:-5px;height: 30px;margin-top: 0px;float: left;border-radius: 4px;"><span class="fa fa-filter"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end widget div -->
+                    </div>
+                    <!-- end widget -->
+                </div>
+            </article>
+            <article class="col-sm-12 col-md-4 col-lg-4" style="margin-bottom:-18px;margin-top:-17px;">
+                <!-- new widget -->
+                <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-4" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-collapsed="false" data-widget-sortable="false">
+
+                    <header>
+                        <span class="widget-icon"> <i class="fa fa-calendar"></i> </span>
+                        <h2 id="TaskView" style="font-weight:bold;">Task View</h2>
+
+                        <div class="widget-toolbar">
+                            <!-- add: non-hidden - to disable auto hide -->
+
+                            <div class="btn-group" style="margin-top:5px">
+                                <button class="btn dropdown-toggle btn-xs btn-default" data-toggle="dropdown">
+                                    Showing <i class="fa fa-caret-down"></i>
+                                </button>
+                                <ul class="dropdown-menu js-status-update pull-right">
+                                  
+                                    <li>
+                                        <a href="javascript:void(0);" id="mt">Month</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" id="ag">Agenda</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" id="td">Today</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" id="cv">Event</a>
+                                    </li>
+                                    <li>
+
+                                        <a href="javascript:void(0);" id="todo">Todo</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </header>
+                    <!-- widget div-->
+                    <div style="height:533px;overflow:hidden;">
+                        <!-- widget edit box -->
+                        <div class="jarviswidget-editbox">
+                            <input class="form-control" type="text">
+                        </div>
+                        <!-- end widget edit box -->
+                        <div class="widget-body no-padding">
+                            <!-- content goes here -->
+                            <div class="widget-body-toolbar" id="widget-body-toolbar">
+
+                                <div id="calendar-buttons">
+                                    <div class="btn-group">
+                                        <button class="btn btn-xs btn-default" data-toggle="modal" data-target="#TodoModal" style="margin-right:5px;"><i _ngcontent-ylg-63="" class="fa fa-plus"></i>&nbsp Add Todo</button>
+                                        <a href="javascript:void(0)" class="btn btn-default btn-xs" id="btn-prev"><i class="fa fa-chevron-left"></i></a>
+                                        <a href="javascript:void(0)" class="btn btn-default btn-xs" id="btn-next"><i class="fa fa-chevron-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="calendar"></div>
+                            <div class="row no-space" id="Todoview" style="height:437px;">
+                                <div class="jarviswidget jarviswidget-sortable jarviswidget-color-teal" data-widget-editbutton="false" data-widget-custombutton="false" id="dashboard-analytics--todo-s" data-widget-attstyle="jarviswidget-color-teal" role="widget" style="">
+                                    <header role="heading" class="ui-sortable-handle">
+                                        <div class="jarviswidget-ctrls" role="menu">   <a href="javascript:void(0);" class="button-icon jarviswidget-toggle-btn" rel="tooltip" title="Collapse" data-placement="bottom"><i class="fa fa-minus "></i></a> <a href="javascript:void(0);" class="button-icon jarviswidget-fullscreen-btn" rel="tooltip" title="Fullscreen" data-placement="bottom"><i class="fa fa-expand "></i></a> <a href="javascript:void(0);" class="button-icon jarviswidget-delete-btn" rel="tooltip" title="Delete" data-placement="bottom"><i class="fa fa-times"></i></a></div><div class="widget-toolbar" role="menu"><a data-toggle="dropdown" class="dropdown-toggle color-box selector" href="javascript:void(0);"></a><ul class="dropdown-menu arrow-box-up-right color-select pull-right"><li><span class="bg-color-green" data-widget-setstyle="jarviswidget-color-green" rel="tooltip" data-placement="left" data-original-title="Green Grass"></span></li><li><span class="bg-color-greenDark" data-widget-setstyle="jarviswidget-color-greenDark" rel="tooltip" data-placement="top" data-original-title="Dark Green"></span></li><li><span class="bg-color-greenLight" data-widget-setstyle="jarviswidget-color-greenLight" rel="tooltip" data-placement="top" data-original-title="Light Green"></span></li><li><span class="bg-color-purple" data-widget-setstyle="jarviswidget-color-purple" rel="tooltip" data-placement="top" data-original-title="Purple"></span></li><li><span class="bg-color-magenta" data-widget-setstyle="jarviswidget-color-magenta" rel="tooltip" data-placement="top" data-original-title="Magenta"></span></li><li><span class="bg-color-pink" data-widget-setstyle="jarviswidget-color-pink" rel="tooltip" data-placement="right" data-original-title="Pink"></span></li><li><span class="bg-color-pinkDark" data-widget-setstyle="jarviswidget-color-pinkDark" rel="tooltip" data-placement="left" data-original-title="Fade Pink"></span></li><li><span class="bg-color-blueLight" data-widget-setstyle="jarviswidget-color-blueLight" rel="tooltip" data-placement="top" data-original-title="Light Blue"></span></li><li><span class="bg-color-teal" data-widget-setstyle="jarviswidget-color-teal" rel="tooltip" data-placement="top" data-original-title="Teal"></span></li><li><span class="bg-color-blue" data-widget-setstyle="jarviswidget-color-blue" rel="tooltip" data-placement="top" data-original-title="Ocean Blue"></span></li><li><span class="bg-color-blueDark" data-widget-setstyle="jarviswidget-color-blueDark" rel="tooltip" data-placement="top" data-original-title="Night Sky"></span></li><li><span class="bg-color-darken" data-widget-setstyle="jarviswidget-color-darken" rel="tooltip" data-placement="right" data-original-title="Night"></span></li><li><span class="bg-color-yellow" data-widget-setstyle="jarviswidget-color-yellow" rel="tooltip" data-placement="left" data-original-title="Day Light"></span></li><li><span class="bg-color-orange" data-widget-setstyle="jarviswidget-color-orange" rel="tooltip" data-placement="bottom" data-original-title="Orange"></span></li><li><span class="bg-color-orangeDark" data-widget-setstyle="jarviswidget-color-orangeDark" rel="tooltip" data-placement="bottom" data-original-title="Dark Orange"></span></li><li><span class="bg-color-red" data-widget-setstyle="jarviswidget-color-red" rel="tooltip" data-placement="bottom" data-original-title="Red Rose"></span></li><li><span class="bg-color-redLight" data-widget-setstyle="jarviswidget-color-redLight" rel="tooltip" data-placement="bottom" data-original-title="Light Red"></span></li><li><span class="bg-color-white" data-widget-setstyle="jarviswidget-color-white" rel="tooltip" data-placement="right" data-original-title="Purity"></span></li><li><a href="javascript:void(0);" class="jarviswidget-remove-colors" data-widget-setstyle="" rel="tooltip" data-placement="bottom" data-original-title="Reset widget color to default">Remove</a></li></ul></div>
+                                        <span class="widget-icon"> <i _ngcontent-ylg-63="" class="fa fa-check txt-color-white"></i> </span>
+
+                                        <h2> ToDo's </h2>
+
+                                        <div class="widget-toolbar" role="menu">
+                                            <button class="btn btn-xs btn-default" data-toggle="modal" data-target="#TodoModal"><i class="fa fa-plus"></i>&nbsp Add Todo</button>
+                                        </div>
+                                        <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+                                    </header>
+
+                                    <div role="content">
+                                        <div class="widget-body no-padding smart-form" style="height:508px;">
+                                            <div>
+                                                <h5 class="todo-group-title"><i class="fa fa-warning"></i> Critical Tasks {{Critical.length}}</h5>
+                                                <ul class="todo">
+
+                                                    <li ng-repeat="x in Critical">
+                                                        <span class="handle">
+                                                            <label class="checkbox" data-TodoId="{{x.TodoId}}">
+                                                                <input name="checkbox-inline" class="critical" type="checkbox" ng-click="DeleteTodo(x,$index,'Critical')">
+                                                                <i></i>
+                                                            </label>
+                                                        </span>
+
+                                                        <p>
+                                                            <strong>{{x.Description}}</strong> - {{x.Type}}
+
+                                                            <span class="date">{{x.CreatedOn}} <a class="text-muted"><i class="fa fa-trash"></i></a></span>
+                                                        </p>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div>
+                                                <h5 class="todo-group-title"><i class="fa fa-exclamation"></i> Important Tasks {{Important.length}}</h5>
+                                                <ul class="todo">
+
+                                                    <li ng-repeat="x in Important">
+                                                        <span class="handle">
+                                                            <label class="checkbox">
+                                                                <input name="checkbox-inline" type="checkbox" ng-click="DeleteTodo(x,$index,'Important')">
+                                                                <i></i>
+                                                            </label>
+                                                        </span>
+
+                                                        <p>
+                                                            <strong>{{x.Description}}</strong> - {{x.Type}}
+
+                                                            <span class="date">{{x.CreatedOn}} <a class="text-muted"><i class="fa fa-trash"></i></a></span>
+                                                        </p>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div>
+                                                <h5 class="todo-group-title"><i class="fa fa-check"></i> Completed Tasks {{Completed.length}}</h5>
+                                                <ul class="todo">
+
+                                                    <li ng-repeat="x in Completed">
+                                                        <span class="handle">
+                                                            <label class="checkbox">
+                                                                <input name="checkbox-inline" type="checkbox">
+                                                                <i></i>
+                                                            </label>
+                                                        </span>
+
+                                                        <p>
+                                                            <strong>{{x.Description}}</strong> - {{x.Type}}
+
+                                                            <span class="date">{{x.CreatedOn}} <a class="text-muted"><i class="fa fa-trash"></i></a></span>
+                                                        </p>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end widget div -->
+                    </div>
+                    <!-- end widget -->
+                </div>
+            </article>
+        </div>
+    </section>
+    <style type="text/css">
+        /*.caret {
+            float: right;
+            margin-top: 9px;
+        }*/
+        .modal-body {
+            display: inline-block;
+            width: 100%;
+        }
+
+        #regionviewchart > .canvasjs-chart-container {
+            margin-left: -6px;
+        }
+
+        .error {
+            border: 1px solid red;
+        }
+
+        .child-table tr td {
+            padding: 0px !important;
+        }
+
+        .child-table tr th {
+            padding: 0px !important;
+        }
+
+        table.dataTable {
+            margin-top: 0px !important;
+        }
+
+        .dropdown-menu li a {
+            color: #0064a9 !important;
+        }
+
+        .box-title {
+            color: #0064a9;
+        }
+
+        .box-body ul li a {
+            color: #770d0d;
+        }
+
+            .box-body ul li a:hover {
+                color: #337ab7;
+            }
+
+        .icon-margin {
+            margin-right: 10px;
+        }
+
+        .selectedDate {
+            background-color: forestgreen;
+            color: white;
+        }
+
+        .StatusShadow {
+            box-shadow: 5px 4px 5px #88887B;
+        }
+
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x- ng-cloak {
+            display: none !important;
+        }
+    </style>
+    <script src="~/Content/js/Project/jquery-cookie.js"></script>
+    <script src="~/SmartAdmin/js/plugin/moment/moment.min.js"></script>
+
+    <script>
+
+        var TasksList = [];
+        var StartDate, EndDate;
+        var fromdate = ($.cookie("IssueFromDate") == undefined) ? null : $.cookie("IssueFromDate");
+        var todate = ($.cookie("IssueToDate") == undefined) ? null : $.cookie("IssueToDate");
+        var marketid = ($.cookie("IssueMarkets") == undefined) ? null : $.cookie("IssueMarkets");
+        var taskid = ($.cookie("IssueTasks") == undefined) ? null : $.cookie("IssueTasks");
+        var IssueViewName = null;
+        var MarketViewName = null;
+        var mfromdate = ($.cookie("MarketFromDate") == undefined) ? null : $.cookie("MarketFromDate");
+        var mtodate = ($.cookie("MarketToDate") == undefined) ? null : $.cookie("MarketToDate");
+        var mmarketid = ($.cookie("MarketMarkets") == undefined) ? null : $.cookie("MarketMarkets");
+        var mtaskid = ($.cookie("MarketTasks") == undefined) ? null : $.cookie("MarketTasks");
+        var TimeFilter = 'Daily';
+        var issuetasks = [];
+        var markettsks = [];
+        var maptsks = [];
+        var projecttasks = [];
+        var pageNum = 1;
+        var SitepageNum = 1;
+        var LogStatus = '';
+        var siteId = 0;
+        var IssueId = 0;
+        var TskID = 0;
+        var ProjectSiteId = 0;
+        var btnBackFlag = 0;
+        var workLog;
+        var TasksList = [];
+        var ResourceIssue = [];
+        var fromdate = ($.cookie("IssueFromDate") == undefined) ? null : $.cookie("IssueFromDate");
+        var todate = ($.cookie("IssueToDate") == undefined) ? null : $.cookie("IssueToDate");
+        var marketid = ($.cookie("IssueMarkets") == undefined) ? null : $.cookie("IssueMarkets");
+        var taskid = ($.cookie("IssueTasks") == undefined) ? null : $.cookie("IssueTasks");
+        var IssueViewName = null;
+        var MarketViewName = null;
+        var mfromdate = ($.cookie("MarketFromDate") == undefined) ? null : $.cookie("MarketFromDate");
+        var mtodate = ($.cookie("MarketToDate") == undefined) ? null : $.cookie("MarketToDate");
+        var mmarketid = ($.cookie("MarketMarkets") == undefined) ? null : $.cookie("MarketMarkets");
+        var mtaskid = ($.cookie("MarketTasks") == undefined) ? null : $.cookie("MarketTasks");
+        var TimeFilter = 'Daily';
+        var issuetasks = [];
+        var markettsks = [];
+        var maptsks = [];
+        var projecttasks = [];
+        var pageNum = 1;
+        var SitepageNum = 1;
+        var LogStatus = '';
+        var siteId = 0;
+        var IssueId = 0;
+        var TskID = 0;
+        var ProjectSiteId = 0;
+        var btnBackFlag = 0;
+        var workLog;
+        var TabFlag = 'Tracking';
+
+    </script>
+
+    <script src="~/Areas/Project/Content/Project/LoadFilters.js"></script>
+    @section scripts{
+        <!-- Vector Maps Plugin: Vectormap engine, Vectormap language -->
+        <!-- SPARKLINES -->
+        <link href="~/Content/js/Plugins/Pagination/css/simplePagination.css" rel="stylesheet" />
+        <script src="~/AdminLTE/plugins/sparkline/js/jquery.sparkline.js"></script>
+        <script src="~/SmartAdmin/js/plugin/vectormap/jquery-jvectormap-1.2.2.min.js"></script>
+        <script src="~/SmartAdmin/js/plugin/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+        <!-- Full Calendar -->
+        <script src="~/AdminLTE/plugins/datepicker/js/bootstrap-datepicker.js"></script>
+        <link href="~/AdminLTE/plugins/datepicker/css/datepicker3.css" rel="stylesheet" />
+        <script src="~/SmartAdmin/js/plugin/jquery-nestable/jquery.nestable.min.js"></script>
+        <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+        <script src="~/Content/js/Project/canvasjs.min.js"></script>
+        <script src="~/Areas/Project/Content/Project/Charts.js"></script>
+        <script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+        <script src="~/SmartAdmin/js/plugin/fullcalendar/jquery.fullcalendar.min.js"></script>
+        <script src="~/Content/js/Plugins/Pagination/js/simplePagination.js"></script>
+        <script src="~/Content/js/Project/PMDashboard.js"></script>
+        <script src="~/AdminLTE/plugins/datatables/js/jquery.dataTables.js"></script>
+        <script src="~/SmartAdmin/js/plugin/datatables/dataTables.colVis.min.js"></script>
+        <script src="~/SmartAdmin/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+        <script src="~/SmartAdmin/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+        <script src="~/SmartAdmin/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+        <script src="~/Content/js/Plugins/QueryBuilder/js/moment.min.js"></script>
+        @*<script src="~/AdminLTE/plugins/daterangepicker/js/daterangepicker.js"></script>*@
+        @*<script src="~/AdminLTE/plugins/knob/js/jquery.knob.js"></script>*@
+        <script src="~/Content/js/Plugins/angularmultislect/multiselect.js"></script>
+        <script src="~/Areas/Project/Content/Project/groupMultiSelect.js"></script>
+        @*<script src="~/Areas/Project/Content/Project/DashboardScript.js"></script>*@
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-sanitize.js"></script>
+        <script src="https://angular-ui.github.io/ui-select/dist/select.js"></script>
+        <script src="~/Content/js/Project/Dashboard/DashboardController.js"></script>
+        <script src="~/SmartAdmin/js/plugin/flot/jquery.flot.cust.min.js"></script>
+        <script src="~/SmartAdmin/js/plugin/flot/jquery.flot.resize.min.js"></script>
+        <script src="~/SmartAdmin/js/plugin/flot/jquery.flot.time.min.js"></script>
+        <script src="~/SmartAdmin/js/plugin/flot/jquery.flot.tooltip.min.js"></script>
+        <script src="~/Areas/Project/Content/Project/DashboardSearch.js"></script>
+
+
+
+        <script type="text/javascript">
+            //$(document).ready(function () {
+            //    $(".groupMultiSelect").groupMultiSelect({
+            //        initial: {parent: 'EPL',children: ["Ordered"]},
+            //        onChange: function (parent, children) {
+            //            if (parent != "") { projecttasks = []; projecttasks.push(parent); }
+            //            for (var i = 0; i < children.length; i++) { projecttasks.push(children[i]); }
+            //        }
+            //    });
+            //});
+        </script>
+        <script>
+
+            function GroupProgramIssue(data) {
+                var group_to_values = data.reduce(function (obj, item) {
+                    obj[item.Issue] = obj[item.Issue] || [];
+                    obj[item.Issue].push({ DefinationName: item.DefinationName, ColorCode: item.ColorCode, DefinationId: item.DefinationId, y: item.TotalSite, ColorCode: item.ColorCode });
+                    return obj;
+                }, {});
+
+                var groups = Object.keys(group_to_values).map(function (key) {
+                    return { Issue: key, data: group_to_values[key] };
+                });
+
+                return groups;
+            }
+
+            function loadChartNational(searchfilter) {
+
+                var url = ''
+                if (marketid != null) {
+                    var url = '/Project/Dashboard/GetDashboardCharts?filter=NATIONAL_PROGRAM_ISSUES&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds' + taskid
+               + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + searchfilter
+
+                }
+                else {
+                    var url = '/Project/Dashboard/GetDashboardCharts?filter=NATIONAL_PROGRAM_ISSUES&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds' + $.cookie('ProjectTasks')
+              + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=' + searchfilter
+
+                }
+
+                series = []
+                $.ajax({
+                    //    url: '/Project/Dashboard/GetDashboardCharts?filter=NATIONAL_PROGRAM_ISSUES&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=null&TaskIds' + $.cookie("ProjectTasks")
+                    //    + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + FromDate + '&ToDate=' + ToDate + '&SearchFilter=' + searchfilter,
+                    url: url,
+                    type: 'Get',
+                    async: false,
+                    success: function (data) {
+                        data = GroupProgramIssue(data);
+                        for (var i = 0; i < data.length; i++) {
+
+                            var issueStackbar = [];
+                            for (var j = 0; j < data[i].data.length; j++) {
+                                if (searchfilter == 'Daily') {
+                                    var date = new Date(moment.utc(data[i].data[j].DefinationName));
+                                    sd = { label: (date.getDate()) + '/' + (date.getMonth() + 1), y: data[i].data[j].y };
+                                }
+                                else {
+
+                                    sd = { label: data[i].data[j].DefinationName, y: data[i].data[j].y };
+                                }
+
+                                issueStackbar.push(sd);
+                            }
+
+                            series.push({
+                                type: "stackedColumn",
+                                legendText: data[i].Issue,
+                                showInLegend: true,
+                                dataPoints: issueStackbar
+                            })
+
+                        }
+
+
+                    }
+                });
+                var chart = new CanvasJS.Chart("Issue_By_pie", {
+                    animationEnabled: true,
+                    colorSet: "CustomColor",
+                    height: 270,
+                    exportEnabled: true,
+                    title: {
+                        text: "",
+                        fontFamily: "arial black",
+                        fontColor: "#695A42"
+                    },
+                    axisX: {
+                        interval: 1,
+                        //intervalType: "year"
+                    },
+                    axisY: {
+                        //valueFormatString: "$#0bn",
+                        //gridColor: "#B6B1A8",
+                        //tickColor: "#B6B1A8"
+                    },
+                    toolTip: {
+                        //shared: true,
+                        //content: toolTipContent
+                    },
+                    data: series
+                });
+
+                showDefaultText(chart, "No Data Available");
+                chart.render();
+            }
+            function toDate(selector) {
+                if (selector != null) {
+                    var from = selector.split("/");
+                    return new Date(from[2], from[1] - 1, from[0]);
+                }
+            }
+            //$("#searchbox").click(function () {
+            //    $(this).closest('form').find("input[type=text], textarea").val("");
+            //});
+
+            $(function () {
+
+
+
+                var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+                var firstDay = new Date(y, m, 1);
+                var lastDay = new Date(y, m + 1, 0);
+                firstDay = moment(firstDay).format('MM/DD/YY');
+                lastDay = moment(lastDay).format('MM/DD/YY');
+
+
+                var pstart, pend, mstart, mend, istart, iend, mapstart, mapend
+                if ($.cookie('FromDate') == undefined) {
+                    pstart = firstDay;//moment().subtract(29, 'days');
+                    pend = lastDay;//moment();
+                    $.cookie("FromDate", pstart, {
+                        expires: 2000
+                    });
+                    $.cookie("ToDate", pend, {
+                        expires: 2000
+                    });
+                }
+                else {
+                    pstart = $.cookie('FromDate')
+                    pend = $.cookie('ToDate')
+                }
+
+                if ($.cookie('IssueFromDate') == undefined) {
+
+                    istart = firstDay;//moment().subtract(29, 'days');
+                    iend = lastDay;// moment();
+                }
+                else {
+
+                    istart = $.cookie('IssueFromDate')
+                    iend = $.cookie('IssueToDate')
+                }
+                fromdate = istart;
+                todate = iend;
+                if ($.cookie('MarketFromDate') == undefined) {
+                    mstart = firstDay;//moment().subtract(29, 'days');
+                    mend = lastDay;//moment();
+                }
+                else {
+
+                    mstart = $.cookie('MarketFromDate')
+                    mend = $.cookie('MarketToDate')
+                }
+                mromdate = mstart;
+                mtodate = mend;
+
+                if ($.cookie('MapFromDate') == undefined) {
+                    mapstart = firstDay;//moment().subtract(29, 'days');
+                    StartDate = mapstart;
+                    mapend = lastDay;//moment();
+                    EndDate = mapend;
+                }
+                else {
+
+                    mapstart = $.cookie('MapFromDate');
+                    StartDate = mapstart;
+                    mapend = $.cookie('MapToDate');
+                    EndDate = mapend;
+                }
+
+                function cb7(start, end) {
+                    PFromDate = moment(start).format('MM/DD/YY');
+                    PToDate = moment(end).format('MM/DD/YY');
+                    $('#MapDate span').html(PFromDate + ' - ' + PToDate);
+                }
+
+
+                $('#MapDate').daterangepicker({
+                    startDate: mapstart,
+                    endDate: mapend,
+                    opens: 'right',
+                    minDate: moment().add(-5, 'years'),
+                    maxDate: moment().add(5, 'years'),
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'Custom Range': "custom"
+                    }
+                }, cb7);
+                cb7(mapstart, mapend);
+                //  mapstart = mstart;
+                // mapend = mend;
+                //EndDate = mapend;
+                $('#frmTaskEntry').submit(function () {
+                    var TaskEntry = [];
+                    $(".frm-dynamic").each(function () {
+                      TaskEntry.push({ FormId: $(this).attr('data-formid'), ProjectSiteId: $('#siteId').attr('data-siteId'), TaskId: TskID, FormValue: $(this).val(), ProjectId: $("#pId").attr("data-ProjectId") });
+                        log($(this).val());
+                        log($(this).attr('data-formid'));
+                    });
+                     log(TaskEntry);
+                    $.ajax({
+                        url: '/Project/Task/TaskEntry',
+                        type: 'post',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(TaskEntry),
+
+                        success: function (res) {
+                            log(res);
+                            $('#FormModal').modal('hide');
+                        }
+                    });
+                    return false;
+                });
+
+
+
+
+
+
+
+                function cb1(start, end) {
+                    PFromDate = moment(start).format('MM/DD/YY');
+                    PToDate = moment(end).format('MM/DD/YY');
+                    FromDate = moment(start).format('MM/DD/YY');
+                    ToDate = moment(end).format('MM/DD/YY');
+                    $('#reportrange1 span').html(PFromDate + ' - ' + PToDate);
+                }
+
+                $('#reportrange1').daterangepicker({
+                    startDate: pstart,
+                    endDate: pend,
+                    opens: 'right',
+                    minDate: moment().add(-5, 'years'),
+                    maxDate: moment().add(5, 'years'),
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'Custom Range': "custom"
+                    }
+                }, cb1);
+                cb1(pstart, pend);
+
+
+                function cb3(start, end) {
+
+                    MFromDate = moment(start).format('MM/DD/YY');
+                    MToDate = moment(end).format('MM/DD/YY');// end.format('MM/DD/YY');
+                    $('#reportrangemarket span').html(MFromDate + ' - ' + MToDate);
+                }
+
+                $('#reportrangemarket').daterangepicker({
+                    startDate: mstart,
+                    endDate: mend,
+                    opens: 'right',
+                    minDate: moment().add(-5, 'years'),
+                    maxDate: moment().add(5, 'years'),
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'Custom Range': "custom"
+                    }
+                }, cb3);
+                cb3(mstart, mend);
+                function cb2(start, end) {
+
+                    IFromDate = moment(start).format('MM/DD/YY');
+                    IToDate = moment(end).format('MM/DD/YY');
+
+                    $('#reportrange2 span').html(IFromDate + ' - ' + IToDate);
+                }
+
+                $('#reportrange2').daterangepicker({
+                    startDate: istart,
+                    endDate: iend,
+                    orientation: 'left',
+                    minDate: moment().add(-5, 'years'),
+                    maxDate: moment().add(5, 'years'),
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'Custom Range': "custom"
+                    }
+                }, cb2);
+
+                cb2(istart, iend);
+
+
+
+
+
+
+
+                //if ($.cookie("FromDate") != undefined) {
+                //    $('#reportrangemarket span').html($.cookie("FromDate") + ' - ' + $.cookie("ToDate"));
+                //    $('#reportrange1 span').html($.cookie("FromDate") + ' - ' + $.cookie("ToDate"));
+                //    $('#reportrange2 span').html($.cookie("FromDate") + ' - ' + $.cookie("ToDate"));
+
+                //}
+
+            });
+
+            $(function () {
+
+                $(document).on("click", ".expandable", function () {
+                    $(this).children('ul').toggle();
+                    return false;
+                });
+
+            });
+
+            window.onload = function () {
+                CanvasJS.addColorSet("CustomColor",
+                                    [
+                                    "#7cb5ec",
+                                    "#5c5c61",
+                                    "#90ed7d",
+                                    "#f7a35c",
+                                    "#d0d2f7",
+
+                                    ]);
+                $('.jarviswidget-ctrls').remove();
+                var cookie = $.cookie("BookMark");
+                var items = cookie ? cookie.split(/,/) : new Array();
+                $('.BookMark').each(function () {
+                    for (var i = 0; i < items.length; i++) {
+                        if ($(this).attr('data-bookmark') == items[i]) {
+                            $(this).addClass('Yellow');
+                            $(this).addClass("fa-check-square-o")
+                            $(this).removeClass("fa-square-o")
+                        }
+                    }
+                });
+
+
+
+
+                //tracking map
+                $('.jarviswidget-ctrls').remove();
+                var Forecast = [];
+                var Planned = [];
+                var Actual = [];
+                var Target = [];
+                var CumActual = [];
+                var CumForecast = [];
+                var CumTarget = [];
+                var RunRate = [];
+
+                array = [];
+                var actularcolor, forecastcolor, plancolor, targetcolor, runratecolor, cumactualcolor, cumforecastcolor, cumtargetcolor;
+
+
+
+
+            }
+
+            var FromDate, ToDate, PFromDate, PToDate, MFromDate, MToDate, IFromDate, IToDate;
+
+            $(document).ready(function () {
+                $(".ColVis_catcher").click(function () {
+
+                    $('ul.ColVis_collection').find('li:first').hide()
+                    $('ul.ColVis_collection').find('li:last').hide()
+
+                });
+
+                $(document).on('click', '.ColVis_MasterButton button', function (e) {
+                    alert();
+                    e.preventDefault();
+                });
+                //$('.ColVis_MasterButton button').live('click', function () {
+                //    console.log("this is the click");
+
+                //});
+
+
+                function GetTaskIds(value) {
+                    var str_task = []
+                    var arr_task = value;
+                    for (var i = 0; i < TasksList.length; i++) {
+                        if (arr_task.length > 1) {
+                            if (arr_task[0] == TasksList[i].Task) {
+                                str_task.push(TasksList[i].TaskId);
+                            }
+                            if (arr_task[1] == TasksList[i].Task) {
+                                str_task.push(TasksList[i].TaskId);
+                            }
+                        }
+                        else if (arr_task.length > 0) {
+                            if (arr_task[0] == TasksList[i].Task) {
+                                str_task.push(TasksList[i].TaskId);
+                            }
+
+                        }
+                    }
+                    return str_task.join(',');
+
+                }
+                //Search Start
+
+                $('#SearchIssue').click(function () {
+
+                    $('.national').hide();
+                    $('.issue-button').hide();
+
+                    //Start
+                    $.removeCookie("IssueTasks");
+                    $.removeCookie("IssueMarkets");
+                    $.removeCookie("IssueFromDate");
+                    $.removeCookie("IssueToDate");
+                    var issuemarkets = $("#example-xss-html_Issue").val();
+                    var issuetasks = $("#example-multiple-optgroups_Issue").val();
+                    // ProjectMarkets Cookie
+                    var cookie = $.cookie("IssueMarkets");
+                    var items = cookie ? cookie.split(/,/) : new Array();
+                    items.push(issuemarkets);
+                    var uniqueNames = [];
+                    $.each(items, function (i, el) {
+                        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                    });
+                    items = uniqueNames
+                    $.cookie("IssueMarkets", items.join(','), {
+                        expires: 2000
+                    });
+
+                    // ProjectTasks Cookie
+                    var Taskscookie = $.cookie("IssueTasks");
+                    var Tasksitems = Taskscookie ? Taskscookie.split(/,/) : new Array();
+
+                    $.cookie("IssueFromDate", IFromDate, {
+                        expires: 2000
+                    });
+                    $.cookie("IssueToDate", IToDate, {
+                        expires: 2000
+                    });
+
+                    Tasksitems.push(issuetasks);
+                    uniqueNames = [];
+                    $.each(Tasksitems, function (i, el) {
+                        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                    });
+                    Tasksitems = uniqueNames
+                    $.cookie("IssueTasks", Tasksitems.join(','), {
+                        expires: 2000
+                    });
+
+
+
+
+                    //End
+                    fromdate = IFromDate;
+                    todate = IToDate;
+                    var m = $("#example-xss-html_Issue").val();
+                    marketid = m.join(',');
+                    var tskid = $("#example-multiple-optgroups_Issue").val();
+                    if (IssueViewName == 'piechart') {
+                        LoadpieChart(marketid, taskid, fromdate, todate);
+                    }
+                    else if (IssueViewName == 'National') {
+                        $('.national').show();
+                        loadChartNational('Daily')
+                    }
+                    else {
+                        IssueViewName = 'Regional'
+                        $('.national').hide();
+                        $('#lstIssueMarkets').show();
+                        $.ajax({
+                            url: '/Project/Dashboard/GetMarkets?filter=' + 'Get_Region_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=null',
+                            //    url: '/Project/Dashboard/GetDashboardCharts?filter=Get_Region_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie('ProjectTasks')
+                            //+ '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily',
+
+
+                            type: 'get',
+                            async: false,
+                            success: function (data) {
+                                //$('#Issue_By_Geo').empty();
+                                //$('#Issue_By_Geo').html(data);
+                                $('#Issue_By_pie').empty();
+                                $('#Issue_By_pie').html(data);
+                            }
+                        });
+                    }
+
+
+                })
+                $('#lstIssueStatus').hide();
+                MarketViewName = 'MarketRegional';
+
+                var protsks = []
+                $('#SearchProject').click(function () {
+                    debugger
+                    $.removeCookie("ProjectTasks");
+                    $.removeCookie("ProjectTasksTitle");
+                    $.removeCookie("ProjectMarkets");
+                    $.removeCookie("FromDate");
+                    $.removeCookie("ToDate");
+                    var issuemarkets = $("#example-xss-html_Project").val();
+                    //  var issuetasks = projecttasks;// $("#example-multiple-optgroups_Project").val();
+
+
+                    var protsks = GetTaskIds(projecttasks);
+                    $.cookie("ProjectTasksTitle", projecttasks.join(','), {
+                        expires: 2000
+                    });
+                    // ProjectMarkets Cookie
+                    var cookie = $.cookie("ProjectMarkets");
+                    var items = cookie ? cookie.split(/,/) : new Array();
+                    items.push(issuemarkets);
+                    var uniqueNames = [];
+                    $.each(items, function (i, el) {
+                        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                    });
+                    items = uniqueNames
+                    $.cookie("ProjectMarkets", items.join(','), {
+                        expires: 2000
+                    });
+
+                    // ProjectTasks Cookie
+                    var Taskscookie = $.cookie("ProjectTasks");
+                    var Tasksitems = Taskscookie ? Taskscookie.split(/,/) : new Array();
+
+                    $.cookie("FromDate", PFromDate, {
+                        expires: 2000
+                    });
+                    $.cookie("ToDate", PToDate, {
+                        expires: 2000
+                    });
+                    var IssuesStatus = $("#example-getting-started").val();
+                    IssuesStatus = IssuesStatus.join(',');
+                    Tasksitems.push(protsks);
+                    uniqueNames = [];
+                    $.each(Tasksitems, function (i, el) {
+                        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                    });
+                    Tasksitems = uniqueNames
+                    $.cookie("ProjectTasks", Tasksitems.join(','), {
+                        expires: 2000
+                    });
+
+                    if (TabFlag == 'Sites') {
+                        //alert("dfsasad");
+                        $.ajax({
+                            url: "/KPI/Monitoring/SiteGrid?RequestFrom=" + window.location.pathname.split("/")[1],
+                            type: 'POST',
+                            success: function (data) {
+                                if (data != "") {
+                                    $('#divclientsites').empty();
+                                    $('#divclientsites').html(data);
+                                    WoDone++;
+
+                                }
+                            }
+                        })
+
+                        
+
+                    }
+                    else if (TabFlag == 'Issues') {
+                       
+                        $.ajax({
+                            //url: '/Project/Dashboard/GetMilstonesBarchart?ProjectId=' + $("#pId").attr("data-ProjectId") + '&filter=Get_Project_Timeline_Variance',
+                            url: '/Project/Dashboard/GetProjectIssue?ProjectId=' + $("#pId").attr("data-ProjectId") + '&Page=1' + '&TaskIds=' + IssuesStatus
+                     + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate"),
+
+                            type: 'Get',
+                            async: false,
+                            success: function (data) {
+                                $('#divissues').html(data);
+
+                                IssueGridPagination();
+                            }
+                        });
+                    }
+                    else if (TabFlag == 'Tracking') {
+
+                        angular.element(document.getElementById('widget-grid')).scope().GetProgramLabel();
+                        LoadProgramChart('Daily')
+                    }
+                    else {
+
+                        $.ajax({
+                            url: '/Project/Dashboard/GetSummary?Filter=PROGRAM_SUMMARY&ProjectId=' + parseInt($("#pId").attr("data-ProjectId")) + '&Value1=' + '' + '&TaskIds=' + $.cookie("ProjectTasks") + '&LocationIds=' + $.cookie("ProjectMarkets")
+                            + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=',
+                            type: 'Get',
+                            async: false,
+                            success: function (data) {
+                                $('#Summary').html(data);
+                            }
+                        });
+
+                    }
+
+
+
+
+
+                    //$.ajax({
+                    //    url: '/Project/Dashboard/GetDashboardCharts?Filter=Get_Region_Issue&=ProjectId' + parseInt($("#UserId").attr("data-UserId")) + '&Value1=' + '' + '&TaskIds=' + issuetasks + '&LocationIds=' + issuemarkets
+                    //    + '&FromDate=' + FromDate + '&ToDate=' + ToDate + '&SearchFilter=Global',
+                    //    type: 'Get',
+                    //    async: false,
+                    //    success: function (data) {
+                    //        array = data;
+                    //        var sd = {};
+                    //        for (var i = 0; i < data.length ; i++) {
+                    //            if (data[i].WoDate != null) {
+                    //                var date = new Date(parseInt(data[i].WoDate.substr(6)));
+                    //                sd = { label: (date.getDay() + 1) + '/' + date.getMonth(), y: data[i].WoCount };
+                    //                if (data[i].WoType == 'Forecast') {
+                    //                    Forecast.push(sd);
+                    //                }
+                    //                else if (data[i].WoType == 'Planned') {
+                    //                    Planned.push(sd);
+                    //                }
+                    //                else if (data[i].WoType == 'Actual') {
+                    //                    Actual.push(sd);
+                    //                }
+                    //            }
+
+                    //        }
+                    //        $('#show-stat-microcharts').html(data);
+                    //    }
+                    //});
+                    //location.reload();
+                })
+
+
+                $('#SearchMarket').click(function () {
+
+
+                    ets = $("#example-xss-html_Market").val();
+
+                    var mtskids = GetTaskIds(markettsks);
+                    var issuetasks = markettsks;//$("#example-multiple-optgroups_Market").val();
+                    var issuemarkets = $("#example-xss-html_Market").val();
+                    mfromdate = MFromDate;
+                    mtodate = MToDate;
+                    //mtaskid = markettsks.join(',');
+                    mtaskid = mtskids;
+
+
+
+                    //mmarketid = $("#example-xss-html_Market").val();
+                    mmarketid = issuemarkets.join(',');
+                    //Start
+                    $.removeCookie("MarketTasks");
+                    $.removeCookie("MarketTasksTitle");
+                    $.removeCookie("MarketMarkets");
+                    $.removeCookie("MarketFromDate");
+                    $.removeCookie("MarketToDate");
+                    $.cookie("MarketTasksTitle", markettsks.join(','), {
+                        expires: 2000
+                    });
+                    var issuemarkets = $("#example-xss-html_Market").val();
+                    //var issuetasks = markettsks;
+                    // ProjectMarkets Cookie
+                    var cookie = $.cookie("MarketMarkets");
+                    var items = cookie ? cookie.split(/,/) : new Array();
+                    items.push(issuemarkets);
+                    var uniqueNames = [];
+                    $.each(items, function (i, el) {
+                        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                    });
+                    items = uniqueNames
+                    $.cookie("MarketMarkets", items.join(','), {
+                        expires: 2000
+                    });
+
+                    // ProjectTasks Cookie
+
+                    var Taskscookie = $.cookie("MarketTasks");
+                    var Tasksitems = Taskscookie ? Taskscookie.split(/,/) : new Array();
+                    $.cookie("MarketFromDate", MFromDate, {
+                        expires: 2000
+                    });
+                    $.cookie("MarketToDate", MToDate, {
+                        expires: 2000
+                    });
+
+                    //Tasksitems.push(markettsks);
+                    Tasksitems.push(mtskids);
+                    uniqueNames = [];
+                    $.each(Tasksitems, function (i, el) {
+                        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                    });
+                    Tasksitems = uniqueNames
+                    $.cookie("MarketTasks", Tasksitems.join(','), {
+                        expires: 2000
+                    });
+
+
+
+
+                    //End
+                    if (MarketViewName == 'MarketRegional') {
+                        $.ajax({
+                            url: '/Project/Dashboard/GetMarkets?filter=' + 'Get_RegionView_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=null',
+
+                            type: 'get',
+                            async: false,
+                            success: function (data) {
+
+                                $('#regionviewchart1').empty();
+                                $('#regionviewchart1').html(data);
+                            }
+                        })
+                    }
+                    else if (MarketViewName == 'Readiness') {
+                        LoadReadiness();
+                    }
+                    else {
+                        loadDisposition();
+                    }
+
+
+
+
+                });
+
+                $('.programchart').click(function () {
+
+                    LoadProgramChart($(this).attr('data-type'));
+                });
+                $(document).on("click", "#SearchMap", function () {
+
+                    //  $('#SearchMap').click(function () {
+                    //  debugger
+                    ets = $("#example-xss-html_Market").val();
+
+                    var mtskids = GetTaskIds(maptsks);
+                    var issuetasks = markettsks;//$("#example-multiple-optgroups_Market").val();
+                    var issuemarkets = $("#example-xss-html_Market").val();
+
+                    mfromdate = MFromDate;
+                    mtodate = MToDate;
+                    //mtaskid = markettsks.join(',');
+                    mtaskid = mtskids;
+
+
+
+                    //mmarketid = $("#example-xss-html_Market").val();
+                    mmarketid = issuemarkets.join(',');
+                    //Start
+                    $.removeCookie("MapTasks");
+                    $.removeCookie("MapTasksTitle");
+                    $.removeCookie("MapStatus");
+                    $.removeCookie("MapType");
+                    $.removeCookie("MapMarkets");
+                    $.removeCookie("MapFromDate");
+                    $.removeCookie("MapToDate");
+                    $.cookie("MapTasksTitle", maptsks.join(','), {
+                        expires: 2000
+                    });
+                    $.cookie("MapStatus", $('#example-multiple-optgroups_Map').val(), {
+                        expires: 2000
+                    });
+                    $.cookie("MapType", $('#example-xss-html_Map7').val(), {
+                        expires: 2000
+                    });
+                    //   console.log("typevalue",$('#example-xss-html_Map7').val());
+                    var MapMarkets = $("#example-xss-html_Map").val();
+                    if (MapMarkets != null) {
+                        $.cookie("MapMarkets", MapMarkets.join(','), {
+                            expires: 2000
+                        });
+                    }
+                    else {
+                        $.cookie("MapMarkets", "0", {
+                            expires: 2000
+                        });
+                    }
+                    // MapTasks Cookie
+                     mapstart = firstDay;//moment().subtract(29, 'days');
+                    StartDate = mapstart;
+                    mapend = lastDay;//moment();
+                    EndDate = mapend;
+
+                    var MapDate = $('#MapDate span').html().split("-");
+
+                    // MapFromDate = moment(mapstart).format('MM/DD/YY');
+                    //   MapToDate = moment(mapend).format('MM/DD/YY');// end.format('MM/DD/YY');
+                    $.cookie("MapFromDate", MapDate[0], {
+                        expires: 2000
+                    });
+                    $.cookie("MapToDate", MapDate[1], {
+                        expires: 2000
+                    });
+
+                    var MapTasks = $("#example-xss-html_Map5").val();
+                    if (MapTasks != null) {
+                        $.cookie("MapTasks", MapTasks.join(','), {
+                            expires: 2000
+                        });}
+                    else{
+                        $.cookie("MapTasks", "0", {
+                            expires: 2000
+                        });
+                    }
+
+                    initMap();
+
+                });
+
+                var WoStatus = JSON.parse('@Html.Raw(WoStatus)');
+               $('#btns1').click(function () {
+                    TabFlag = 'Sites';
+                    $('#ListProjectTask').hide();
+                    $('#lstProjectMarkets').show();
+                    $('#lstIssueStatus').hide();
+                    $('#setTarget').hide();
+                    $.ajax({
+                        url: "/KPI/Monitoring/SiteGrid?RequestFrom=" + window.location.pathname.split("/")[1],
+                        type: 'POST',
+                        success: function (data) {
+                            if (data != "") {
+                                $('#divclientsites').empty();
+                                $('#divclientsites').html(data);
+                              //  WoDone++;
+                                fnWoStatus();
+                                SiteGridPagination(7);   ///$(".tableRow").length
+                            }
+                        }
+                    })
+
+                   
+                   // angular.element(document.getElementById('widget-grid')).scope().GetAllSites();
+
+               });
+               function SiteGridPagination(TotalRecord) {
+               //    debugger
+                   var count = $('#TotalSites').text();
+                   if (TotalRecord != undefined && TotalRecord > 0) {
+                       count = TotalRecord;
+                   }
+
+
+                   //var count = $('#TotalSites').text();
+                   var pag = parseFloat(count) / parseFloat(5);
+
+                   //ceil
+                   // var TotalPages = Math.round(pag);
+                   var TotalPages = Math.ceil(pag);
+
+                   $('#SiteGridPagination').pagination({
+                       pages: TotalPages,
+                       cssStyle: 'compact-theme',
+                       currentPage: 1,
+                       hrefTextPrefix: '#',
+                       displayedPages: 7,
+                       onPageClick: function (page) {
+
+                           var search = $('#searchbox').val();
+                           //debugger;
+                           if (search.length > 1) {
+                               $.ajax({
+                                   url: '/Dashboard/SiteGridSearch',
+                                   type: 'post',
+                                   data: { 'value': search, 'Page': page },
+                                   success: function (res) {
+                                       divclientsites.empty();
+                                       divclientsites.html(res);
+                                       fnWoStatus();
+                                       var showing = parseInt(page) * 5;
+                                       $('#GridShowing').text(showing);
+
+                                   }
+                               });
+                           } else {
+                               $.ajax({
+                                   url: '/Dashboard/SiteGridNextPage',
+                                   type: 'post',
+                                   data: { 'Page': page },
+                                   success: function (res) {
+                                       divclientsites.empty();
+                                       divclientsites.html(res);
+                                       fnWoStatus();
+
+                                       var showing = parseInt(page) * 5;
+                                       $('#GridShowing').text(showing);
+
+                                   }
+                               });
+                           }
+
+                       },
+
+                   });
+                   $('#GridShowing').text($('#example1 tr').length - 1);
+
+                   if (count > 5) {
+                       $('#GridShowing').text("5");
+                       $('#GridShowingTotal').text(count);
+                   }
+                   else {
+                       $('#GridShowing').text(count);
+                       $('#GridShowingTotal').text(count);
+                   }
+               }
+
+               function fnWoStatus() {
+
+                   $.each(WoStatus, function (i, v) {
+                       if (v.KeyCode == 'PENDING_SCHEDULED') {
+                           $('.PENDING_SCHEDULED_COLOR').css({
+                               'background-color': v.ColorCode
+                           });
+                       }
+                       else if (v.KeyCode == 'COMPLETED') {
+                           $('.COMPLETED_COLOR').css({
+                               'background-color': v.ColorCode,
+                               'font-weight': 'bold'
+                           });
+                           $('.COMPLETED_TITLE').text(v.DefinationName);
+                       }
+                       else if (v.KeyCode == 'SCHEDULED') {
+                           $('.SCHEDULED_COLOR').css({
+                               'background-color': v.ColorCode,
+                               'font-weight': 'bold'
+                           });
+                           $('.SCHEDULED_TITLE').text(v.DefinationName);
+                       }
+                       else if (v.KeyCode == 'DRIVE_COMPLETED') {
+                           $('.DRIVE_COMPLETED_COLOR').css({
+                               'background-color': v.ColorCode,
+                               'font-weight': 'bold'
+                           });
+                           $('.DRIVE_COMPLETED_TITLE').text(v.DefinationName);
+                       }
+                       else if (v.KeyCode == 'PENDING_WITH_ISSUE') {
+                           $('.PENDING_WITH_ISSUE_COLOR').css({
+                               'background-color': v.ColorCode,
+                               'font-weight': 'bold'
+                           });
+                           $('.PENDING_WITH_ISSUE_TITLE').text(v.DefinationName);
+                       } else if (v.KeyCode == 'TOTAL_SITES') {
+                           $('.TOTAL_SITES_COLOR').css({
+                               'background-color': v.ColorCode,
+                               'font-weight': 'bold'
+                           });
+                           $('.TOTAL_SITES_TITLE').text(v.DefinationName);
+                       }
+                       else if (v.KeyCode == 'IN_PROGRESS') {
+                           $('.IN_PROGRESS_COLOR').css({
+                               'background-color': v.ColorCode,
+                               'font-weight': 'bold'
+                           });
+                           $('.IN_PROGRESS_TITLE').text(v.DefinationName);
+                       }
+                       else if (v.KeyCode == 'REPORT_SUBMITTED') {
+                           $('.REPORT_SUBMITTED_COLOR').css({
+                               'background-color': v.ColorCode,
+                               'font-weight': 'bold'
+                           });
+                           $('.REPORT_SUBMITTED_TITLE').text(v.DefinationName);
+                       }
+
+
+
+
+                   });
+
+               }
+                $('#btns2').click(function () {
+                    TabFlag = 'Tracking';
+                    $('#ListProjectTask').show();
+                    $('#lstIssueStatus').hide();
+                    $('#lstProjectMarkets').show();
+                    $('#setTarget').show();
+                });
+                $('#btns3').click(function () {
+                    TabFlag = 'Issues';
+                    $('#lstProjectMarkets').show();
+                    $('#lstIssueStatus').show();
+                    $('#setTarget').hide();
+                    $('#lstIssueStatus > .multiselect-native-select > .btn-group > .multiselect > .multiselect-selected-text').text('All Selected');
+                    angular.element(document.getElementById('widget-grid')).scope().GetAllIssues();
+                    $('#ListProjectTask').hide();
+                });
+                $('#btns4').click(function () {
+                    TabFlag = 'Summary';
+                    $('#lstIssueStatus').hide();
+                    $('#setTarget').hide();
+                    $('#lstProjectMarkets').hide();
+                    $('#ListProjectTask').hide();
+                });
+
+
+                function SortByName(a, b) {
+                    var aName = a.Issue.toLowerCase();
+                    var bName = b.Issue.toLowerCase();
+                    return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+                }
+                function SortByLabel(a, b) {
+                    var aName = a.label.toLowerCase();
+                    var bName = b.label.toLowerCase();
+                    return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+                }
+                var TitleText = '';
+
+                function ShowSuccessMessage() {
+                    $("#SuccessMessage").fadeIn(3000);
+                    $("#SuccessMessage").fadeIn(5000);
+
+                }
+
+                $('#example-enableClickableOptGroups-onChange').multiselect({
+                    enableClickableOptGroups: true,
+                    onChange: function (option, checked) {
+                        alert(option.length + ' options ' + (checked ? 'selected' : 'deselected'));
+                    }
+                });
+                var Readiness = [];
+                function GroupByIssues(data) {
+                    var group_to_values = data.reduce(function (obj, item) {
+                        obj[item.Type] = obj[item.Type] || [];
+                        obj[item.Type].push({ label: item.DefinationName, y: item.WoCount, toolTipContent: item.Type + ': ' + item.WoCount, Type: item.Type, ColorCode: item.ColorCode });
+                        return obj;
+                    }, {});
+
+                    var groups = Object.keys(group_to_values).map(function (key) {
+                        return { DefinationName: key, chartdata: group_to_values[key] };
+                    });
+
+                    return groups;
+                }
+                $('#Readiness').click(function () {
+                    MarketViewName = 'Readiness';
+                    $("#ListMarketIssue").show();
+                    $("#marketfilters").hide();
+                    $(".datewise").hide();
+                    $("#RbackButton").hide();
+                    //$('#regionviewchart').hide();
+                    //$('#marketregion').hide();
+                    //$('#ProjectReadiness').show();.
+                    LoadReadiness();
+
+                });
+                function LoadRegion() {
+
+                    $.ajax({
+                        url: '/Project/Dashboard/GetMarkets?Filter=Get_RegionView_WO&ProjectId=' + $("#pId").attr("data-ProjectId"),
+                        type: 'Get',
+                        async: false,
+                        success: function (data) {
+                            $('#marketregion').html(data);
+                        }
+                    });
+                }
+                LoadRegion();
+                function LoadReadiness() {
+                    CanvasJS.addColorSet("ReadinessColor",
+                                   [
+                                   "#4472c4",
+                                   "#ed7d31",
+                                   "#ff0000"
+
+                                   ]);
+                    var url;
+
+                    if (mmarketid != null) {
+                        var url = '/Project/Dashboard/GetDashboardCharts?filter=GET_PROJECT_READINESS&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + mtaskid
+                   + '&LocationIds=' + mmarketid + '&FromDate=' + mfromdate + '&ToDate=' + mtodate + '&SearchFilter=Daily'
+
+                    }
+                    else {
+                        url = '/Project/Dashboard/GetDashboardCharts?filter=GET_PROJECT_READINESS&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie('ProjectTasks')
+                              + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily'
+
+                    }
+
+                    $.ajax({
+                        //url: '/Project/Dashboard/GetRegionIssue?Filter=GET_PROJECT_READINESS&ProjectId=' + $("#pId").attr("data-ProjectId"),
+                        // url: '/Project/Dashboard/GetDashboardCharts?filter=GET_PROJECT_READINESS&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=null&TaskIds=' + $.cookie("ProjectTasks")
+                        //+ '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=',
+                        url: url,
+                        type: 'Get',
+                        async: false,
+                        success: function (data) {
+                            Readiness = [];
+                            var sd = {};
+
+                            var grpIssues = GroupByIssues(data);
+                            for (var i = 0; i < grpIssues.length; i++) {
+                                var col = '';
+                                var issueStackbar = [];
+                                for (var j = 0; j < grpIssues[i].chartdata.length; j++) {
+                                    col = grpIssues[i].chartdata[j].ColorCode;
+                                    issueStackbar.push({ indexLabel: "{y}", label: grpIssues[i].chartdata[j].label, y: grpIssues[i].chartdata[j].y, name: 'Market Issue', toolTipContent: grpIssues[i].chartdata[j].Type + ': ' + grpIssues[i].chartdata[j].y, color: grpIssues[i].chartdata[j].ColorCode });
+                                }
+
+                                Readiness.push({
+                                    type: "column",
+                                    legendText: grpIssues[i].DefinationName,
+                                    legendMarkerColor: col,
+                                    showInLegend: true,
+                                    dataPoints: issueStackbar
+                                })
+
+                            }
+
+                        }
+                    });
+                    //$('#regionviewchart').empty();
+                    //LoadCharts("regionviewchart", 290, Readiness, "CustomColor", "bottom", "Readiness as of " + moment.utc(new Date).format('MMM DD, YY'))
+
+                    var chart = new CanvasJS.Chart("regionviewchart1", {
+                        animationEnabled: true,
+                        colorSet: "ReadinessColor",
+                        height: 270,
+                        exportEnabled: true,
+                        title: {
+                            text: "",
+                            fontFamily: "arial black",
+                            fontColor: "#695A42"
+                        },
+                        axisX: {
+                            //interval: 1,
+                            //intervalType: "year"
+                        },
+                        title: {
+                            text: "Readiness as of " + moment.utc(new Date).format('MMM DD, YY')
+                        },
+                        axisY: {
+                            //valueFormatString: "$#0bn",
+                            //gridColor: "#B6B1A8",
+                            //tickColor: "#B6B1A8"
+                        },
+                        toolTip: {
+                            //shared: true,
+                            //content: toolTipContent
+                        },
+
+                        data: Readiness
+                    });
+                    showDefaultText(chart, "No Data Available");
+                    chart.render();
+
+                }
+                $('#Projects').click(function () {
+                    MarketViewName = 'MarketRegional';
+                    $("#marketfilters").show();
+                    $("#ListMarketIssue").show();
+                    $.ajax({
+                        url: '/Project/Dashboard/GetMarkets?filter=' + 'Get_RegionView_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=null',
+
+                        type: 'get',
+                        async: false,
+                        success: function (data) {
+
+                            $('#regionviewchart').empty();
+                            //$('#regionviewchart').html(data);
+                            $('#marketregion').html(data);
+                            $('#regionviewchart1').empty();
+                            $('#regionviewchart1').html(data);
+                        }
+                    })
+
+                    //$.ajax({
+                    //    url: '/Project/Dashboard/GetMarkets?Filter=Get_RegionView_WO&ProjectId=' + $("#pId").attr("data-ProjectId"),
+                    //    type: 'Get',
+                    //    async: false,
+                    //    success: function (data) {
+                    //        $('#marketregion').html(data);
+                    //    }
+                    //});
+
+                    //$('#regionviewchart').show();
+                    $('#marketregion').show();
+                    //$('#ProjectReadiness').hide();
+                })
+                $('.national').hide();
+                IssueViewName = 'piechart'
+                $('#Issue_By_pie_btn').click(function () {
+                    IssueViewName = 'piechart'
+                    $('#lstIssueMarkets').show();
+                    $('.national').hide();
+                    $('.isssuesbtn').hide();
+                    LoadpieChart();
+                    $('#backButton').hide();
+                });
+                //function GroupProgramIssue(data) {
+                //    var group_to_values = data.reduce(function (obj, item) {
+                //        obj[item.Issue] = obj[item.Issue] || [];
+                //        obj[item.Issue].push({ DefinationName: item.DefinationName, DefinationId: item.DefinationId, y: item.TotalSite });
+                //        return obj;
+                //    }, {});
+
+                //    var groups = Object.keys(group_to_values).map(function (key) {
+                //        return { Issue: key, data: group_to_values[key] };
+                //    });
+
+                //    return groups;
+                //}
+                var series = []
+                $('#NATIONAL_PROGRAM_ISSUES').click(function () {
+                    IssueViewName = 'National'
+                    $('#lstIssueMarkets').hide();
+                    $('.isssuesbtn').hide();
+                    $('.national').show();
+                    loadChartNational('Daily')
+
+
+                });
+
+                $('.national-chart').click(function () {
+
+                    if ($(this).attr('data-type') != undefined) {
+                        loadChartNational($(this).attr('data-type'));
+                    }
+
+                })
+
+                function loadChartNational(searchfilter) {
+
+                    var url = ''
+                    if (marketid != null) {
+                        var url = '/Project/Dashboard/GetDashboardCharts?filter=NATIONAL_PROGRAM_ISSUES&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds' + taskid
+                   + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + searchfilter
+
+                    }
+                    else {
+                        var url = '/Project/Dashboard/GetDashboardCharts?filter=NATIONAL_PROGRAM_ISSUES&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds' + $.cookie('ProjectTasks')
+                  + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=' + searchfilter
+
+                    }
+
+                    series = []
+                    $.ajax({
+                        //    url: '/Project/Dashboard/GetDashboardCharts?filter=NATIONAL_PROGRAM_ISSUES&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=null&TaskIds' + $.cookie("ProjectTasks")
+                        //    + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + FromDate + '&ToDate=' + ToDate + '&SearchFilter=' + searchfilter,
+                        url: url,
+                        type: 'Get',
+                        async: false,
+                        success: function (data) {
+                            data = GroupProgramIssue(data);
+                            for (var i = 0; i < data.length; i++) {
+                                var issueStackbar = [];
+                                var col = '';
+                                for (var j = 0; j < data[i].data.length; j++) {
+                                    if (searchfilter == 'Daily') {
+                                        var date = new Date(moment.utc(data[i].data[j].DefinationName));
+                                        sd = { label: (date.getDate()) + '/' + (date.getMonth() + 1), color: data[i].data[j].ColorCode, y: data[i].data[j].y, color: data[i].data[j].ColorCode };
+                                        col = data[i].data[j].ColorCode;
+                                    }
+                                    else {
+                                        col = data[i].data[j].ColorCode;
+                                        sd = { label: data[i].data[j].DefinationName, y: data[i].data[j].y, color: data[i].data[j].ColorCode, color: data[i].data[j].ColorCode };
+                                    }
+
+                                    issueStackbar.push(sd);
+                                }
+
+                                series.push({
+                                    type: "stackedColumn",
+                                    legendText: data[i].Issue,
+                                    legendMarkerColor: col,
+                                    showInLegend: true,
+                                    dataPoints: issueStackbar
+                                })
+
+                            }
+
+
+                        }
+                    });
+                    //LoadCharts("Issue_By_pie", "270", series, "CustomColor","bottom")
+                    var chart = new CanvasJS.Chart("Issue_By_pie", {
+                        animationEnabled: true,
+                        colorSet: "CustomColor",
+                        height: 270,
+                        exportEnabled: true,
+                        title: {
+                            text: "",
+                            fontFamily: "arial black",
+                            fontColor: "#695A42"
+                        },
+                        axisX: {
+                            interval: 1,
+
+                        },
+                        axisY: {
+
+                        },
+                        toolTip: {
+
+                        },
+                        data: series
+                    });
+                    showDefaultText(chart, "No Data Available");
+                    chart.render();
+                }
+                $('#SITE_DISPOSITON').click(function () {
+                    MarketViewName = 'Disposition';
+                    $("#marketfilters").show();
+                    $(".datewise").hide();
+                    $("#RbackButton").hide();
+                    $("#ListMarketIssue").hide();
+                    //$('#regionviewchart').hide();
+                    //$('#marketregion').hide();
+                    //$('#ProjectReadiness').show();
+                    //
+                    loadDisposition();
+
+                });
+
+
+                function loadDisposition() {
+                    var url;
+                    if (mmarketid != null) {
+                        var url = '/Project/Dashboard/GetDashboardCharts?filter=SITE_DISPOSITON&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + mtaskid
+                   + '&LocationIds=' + mmarketid + '&FromDate=' + mfromdate + '&ToDate=' + mtodate + '&SearchFilter=Daily'
+
+                    }
+                    else {
+                        url = '/Project/Dashboard/GetDashboardCharts?filter=SITE_DISPOSITON&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie('ProjectTasks')
+                              + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily'
+
+                    }
+
+                    $.ajax({
+                        //url: '/Project/Dashboard/GetDashboardCharts?filter=SITE_DISPOSITON&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie('ProjectTasks')
+                        //+ '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily',
+                        url: url,
+                        type: 'Get',
+                        async: false,
+                        success: function (data) {
+
+                            var datapoints = []
+                            var sd = {};
+
+                            for (var i = 0; i < data.length ; i++) {
+
+                                sd = { label: data[i].Status, y: data[i].SiteCount, legendText: data[i].Status, color: data[i].ColorCode };
+                                datapoints.push(sd);
+
+                            }
+                            var pie = [{
+                                type: "pie",
+                                height: 200,
+                                //width:705,
+                                showInLegend: true,
+                                indexLabelPlacement: "inside",
+                                indexLabelFontSize: 15,
+                                indexLabelFontColor: '#fff',
+                                indexLabel: "{y}",
+                                yValueFormatString: "##0\"\"",
+                                dataPoints: datapoints
+                            }]
+                            LoadCharts("regionviewchart1", 290, pie, "PieColor", "right", "")
+                            //var chart = new CanvasJS.Chart("regionviewchart", {
+                            //    animationEnabled: true,
+                            //    colorSet: "CustomColor",
+                            //    exportEnabled: true,
+                            //    theme: "light2",
+
+                            //    height: "290",
+                            //    width: "700",
+                            //    legend: {
+                            //        horizontalAlign: "right", // "center" , "right"
+                            //        verticalAlign: "center",  // "top" , "bottom"
+                            //        fontSize: 15
+                            //    },
+                            //    data: [{
+                            //        type: "pie",
+                            //        height: 200,
+                            //        //width:705,
+                            //        showInLegend: true,
+                            //        indexLabelPlacement: "inside",
+                            //        indexLabelFontSize: 15,
+                            //        indexLabelFontColor: '#fff',
+                            //        indexLabel: "{y}",
+                            //        yValueFormatString: "##0\"\"",
+                            //        dataPoints: datapoints
+                            //    }]
+                            //});
+
+                            //showDefaultText(chart, "No Data Available");
+                            //chart.render();
+                        }
+                    });
+                }
+
+
+                var picchart = []
+                function LoadpieChart(mid, tid, fdate, todate) {
+
+                    var url = ''
+                    if (mid != null) {
+                        var url = '/Project/Dashboard/GetDashboardCharts?filter=Get_Project_Issue_By&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds' + tid
+                   + '&LocationIds=' + mid + '&FromDate=' + fdate + '&ToDate=' + todate + '&SearchFilter=Daily'
+
+                    }
+                    else {
+                        var url = '/Project/Dashboard/GetDashboardCharts?filter=Get_Project_Issue_By&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds' + $.cookie('ProjectTasks')
+                  + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily'
+
+                    }
+                    $.ajax({
+                        //url: '/Project/Dashboard/GetRegionIssue?Filter=Get_Project_Issue_By&ProjectId=' + $("#pId").attr("data-ProjectId"),
+                        url: url,
+                        type: 'Get',
+                        async: false,
+                        success: function (data) {
+
+                            picchart = []
+                            var sd = {};
+                            for (var i = 0; i < data.length ; i++) {
+
+                                sd = { label: data[i].IssueBy, y: data[i].TotalSite, legendText: data[i].IssueBy + ' ' + '(' + data[i].IssueCount + ')', color: data[i].ColorCode };
+                                picchart.push(sd);
+
+                            }
+                            //         var option2 = '';
+                            //         for (var i = 0; i < data.length; i++) {
+
+                            //             //if (data[i].TaskId == parseInt($.cookie("MarketTasks"))) {
+                            //             //    option2 += '<option value="' + (i+1) + '" " selected="selected">' + result[i].IssueBy + '</option>'
+                            //             //}
+                            //             //else {
+                            //                 option2 += '<option value="' + (i+1) + '">' + data[i].IssueBy + '</option>'
+                            //             //}
+
+                            //         }
+                            //var txt1 = '<script type="text/javascript">$(document).ready(function() {$("#example-multiple-optgroups_Map").multiselect();});<'+'/'+'script><select class="form-control" id="example-multiple-optgroups_Map">' + option2 + '</select>';
+
+                            //$('#ListMapIssues').html(txt1)
+                            picchart = picchart.sort(SortByLabel);
+                            $('#Issue_By_pie').empty();
+                            //$('#Issue_By_pie').html(data);
+                        }
+                    });
+                    var pie = [{
+                        type: "pie",
+                        height: 200,
+                        //width:705,
+                        showInLegend: true,
+                        indexLabelPlacement: "inside",
+                        indexLabelFontSize: 15,
+                        indexLabelFontColor: '#fff',
+                        indexLabel: "{y}",
+                        yValueFormatString: "##0.0\"%\"",
+                        dataPoints: picchart
+                    }]
+                    CanvasJS.addColorSet("PieColor",
+                                  [
+                                  "#7cb5ec",
+                                  "#5c5c61",
+                                  "#90ed7d",
+                                  "#f7a35c",
+                                  "#d0d2f7",
+                                  "#f15c80",
+                                  "#2b908f",
+
+                                  ]);
+
+                    //LoadCharts("Issue_By_pie", 290, pie, "PieColor", "right", "")
+                    var chart = new CanvasJS.Chart("Issue_By_pie", {
+                        animationEnabled: true,
+                        colorSet: "PieColor",
+                        theme: "light2",
+                        height: "290",
+                        exportEnabled: true,
+                        //width: "700",
+                        legend: {
+                            horizontalAlign: "right", // "center" , "right"
+                            verticalAlign: "center",  // "top" , "bottom"
+                            fontSize: 15
+                        },
+                        data: [{
+                            type: "pie",
+                            height: 200,
+                            //width:705,
+                            showInLegend: true,
+                            indexLabelPlacement: "inside",
+                            indexLabelFontSize: 15,
+                            indexLabelFontColor: '#fff',
+                            indexLabel: "{y}",
+                            yValueFormatString: "##0.0\"%\"",
+                            dataPoints: picchart
+                        }]
+                    });
+
+                    showDefaultText(chart, "No Data Available");
+                    chart.render();
+                }
+                LoadpieChart();
+
+                ////#REGION SUMMARY CAHARTS
+
+                ////#end REGION SUMMARY CAHARTS
+
+                function LoadCharts(id, height, data, color, lagendside, title) {
+                    var chart = new CanvasJS.Chart(id, {
+                        animationEnabled: true,
+                        colorSet: color,
+                        theme: "light2",
+                        height: height,
+                        exportEnabled: true,
+                        title: {
+                            text: title
+                        },
+                        width: "700",
+                        legend: {
+                            horizontalAlign: lagendside,// "right", // "center" , "right"
+                            verticalAlign: "center",  // "top" , "bottom"
+                            fontSize: 15
+                        },
+                        data: data
+                    });
+
+                    showDefaultText(chart, "No Data Available");
+                    chart.render();
+
+                }
+                $('#Issue_By_Geo_btn').click(function () {
+                    debugger
+                    IssueViewName = 'Regional'
+                    $('.national').hide();
+                    $('#lstIssueMarkets').show();
+                    $.ajax({
+                       // url: '/Project/Dashboard/GetMarkets?filter=' + 'Get_Region_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=null',
+                            url: '/Project/Dashboard/GetDashboardCharts?filter=Get_Region_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie('ProjectTasks')
+                        + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily',
+
+
+                        type: 'get',
+                        async: false,
+                        success: function (data) {
+                            $('#Issue_By_Geo').empty();
+                            $('#Issue_By_Geo').html(data);
+                            $('#Issue_By_pie').empty();
+                          //  $('#Issue_By_pie').html(data);
+                        }
+                    });
+
+                    //$('#backButton').show();
+                    $('#Issue_By_Geo').show();
+                    $('#Issue_By_pie').hide();
+                });
+
+                $.ajax({
+                    url: '/Project/Dashboard/GetSummary?Filter=PROGRAM_SUMMARY&ProjectId=' + parseInt($("#pId").attr("data-ProjectId")) + '&Value1=' + '' + '&TaskIds=' + $.cookie("ProjectTasks") + '&LocationIds=' + $.cookie("ProjectMarkets")
+                    + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=',
+                    type: 'Get',
+                    async: false,
+                    success: function (data) {
+                        $('#Summary').html(data);
+                    }
+                });
+                $('#todo').click(function () {
+                    $('#calendar').hide();
+                    $('#Todoview').show();
+                    $('#widget-body-toolbar').hide();
+                });
+                $('#cv').click(function () {
+                    $('#calendar').show();
+                    $('#Todoview').hide();
+                    $('#widget-body-toolbar').show();
+                });
+
+                var RegionId;
+                var workLog;
+                var ProjectSiteId;
+                var MarketId = null;
+                var stages;
+                $('#market').hide();
+
+                $('#Todoview').hide();
+                $('#Issue_By_Geo').hide();
+                $('#ProjectReadiness').hide();
+                $('.issue-button').hide();
+                pageSetUp();
+
+
+
+                $(".dropdown-menu a").click(function () {
+                    var selText = $(this).text();
+                    var $this = $(this);
+                    $this.parents('.text-dropdown').find('h2').html(selText + ' <span class="caret"></span>');
+                    $this.parents('.dropdown-menu').find('li').removeClass('active');
+                    $this.parent().addClass('active');
+                });
+
+
+                /*
+                * TODO: add a way to add more todo's to list
+                */
+
+                //// initialize sortable
+                //$(function () {
+                //    $("#sortable1, #sortable2").sortable({
+                //        handle: '.handle',
+                //        connectWith: ".todo",
+                //        update: countTasks
+                //    }).disableSelection();
+                //});
+
+                // check and uncheck
+                $('.todo .checkbox > input[type="checkbox"]').click(function () {
+                    var $this = $(this).parent().parent().parent();
+
+                    if ($(this).prop('checked')) {
+                        $this.addClass("complete");
+
+                        // remove this if you want to undo a check list once checked
+                        //$(this).attr("disabled", true);
+                        $(this).parent().hide();
+
+                        // once clicked - add class, copy to memory then remove and add to sortable3
+                        $this.slideUp(500, function () {
+                            $this.clone().prependTo("#sortable3").effect("highlight", {}, 800);
+                            $this.remove();
+                            countTasks();
+                        });
+                    } else {
+                        // insert undo code here...
+                    }
+
+                })
+                // count tasks
+                function countTasks() {
+
+                    $('.todo-group-title').each(function () {
+                        var $this = $(this);
+                        $this.find(".num-of-tasks").text($this.next().find("li").size());
+                    });
+
+                }
+
+                /*
+                * RUN PAGE GRAPHS
+                */
+
+                /* TAB 1: UPDATING CHART */
+                // For the demo we use generated data, but normally it would be coming from the server
+
+                var data = [], totalPoints = 200, $UpdatingChartColors = $("#updating-chart").css('color');
+
+                function getRandomData() {
+                    if (data.length > 0)
+                        data = data.slice(1);
+
+                    // do a random walk
+                    while (data.length < totalPoints) {
+                        var prev = data.length > 0 ? data[data.length - 1] : 50;
+                        var y = prev + Math.random() * 10 - 5;
+                        if (y < 0)
+                            y = 0;
+                        if (y > 100)
+                            y = 100;
+                        data.push(y);
+                    }
+
+                    // zip the generated y values with the x values
+                    var res = [];
+                    for (var i = 0; i < data.length; ++i)
+                        res.push([i, data[i]])
+                    return res;
+                }
+
+                // setup control widget
+                var updateInterval = 1500;
+                $("#updating-chart").val(updateInterval).change(function () {
+
+                    var v = $(this).val();
+                    if (v && !isNaN(+v)) {
+                        updateInterval = +v;
+                        $(this).val("" + updateInterval);
+                    }
+
+                });
+
+                // setup plot
+                var options = {
+                    yaxis: {
+                        min: 0,
+                        max: 100
+                    },
+                    xaxis: {
+                        min: 0,
+                        max: 100
+                    },
+                    colors: [$UpdatingChartColors],
+                    series: {
+                        lines: {
+                            lineWidth: 1,
+                            fill: true,
+                            fillColor: {
+                                colors: [{
+                                    opacity: 0.4
+                                }, {
+                                    opacity: 0
+                                }]
+                            },
+                            steps: false
+
+                        }
+                    }
+                };
+
+                var plot = $.plot($("#updating-chart"), [getRandomData()], options);
+
+                /* live switch */
+                $('input[type="checkbox"]#start_interval').click(function () {
+                    if ($(this).prop('checked')) {
+                        $on = true;
+                        updateInterval = 1500;
+                        update();
+                    } else {
+                        clearInterval(updateInterval);
+                        $on = false;
+                    }
+                });
+
+                function update() {
+                    if ($on == true) {
+                        plot.setData([getRandomData()]);
+                        plot.draw();
+                        setTimeout(update, updateInterval);
+
+                    } else {
+                        clearInterval(updateInterval)
+                    }
+
+                }
+
+                var $on = false;
+
+                var checkprojectId = 0;
+
+                $('.task').click(function () {
+                    var id = $(this).attr('data-ProjectId')
+                    var eventdata = [];
+                    if (id != checkprojectId) {
+                        $.ajax({
+                            url: '/Project/Dashboard/GetMilstonesBarchart?ProjectId=' + id + '&filter=' + 'Get_Calendar_WO',
+                            type: 'Get',
+                            async: false,
+                            success: function (data) {
+                                for (var i = 0; i < data.length; i++) {
+                                    var date = new Date(parseInt(data[i].ActualDate.substr(6)));
+                                    var obj = { title: data[i].Title, start: new Date(date), className: ["event", "bg-color-greenLight"], icon: 'fa-check' }
+                                    $('#calendar').fullCalendar('renderEvent', obj, true);
+                                    eventdata.push(obj);
+                                }
+                            }
+                        });
+                    }
+                    checkprojectId = id;
+
+                });
+
+                if ($("#calendar").length) {
+                    var date = new Date();
+                    var d = date.getDate();
+                    var m = date.getMonth();
+                    var y = date.getFullYear();
+                    var calendar = $('#calendar').fullCalendar({
+
+                        //editable : true,
+                        //draggable : true,
+                        selectable: false,
+                        selectHelper: true,
+                        unselectAuto: false,
+                        disableResizing: true,
+                        height: 530,
+
+                        header: {
+                            left: 'title', //,today
+                            center: 'prev, next, today',
+                            right: 'month, agendaWeek, agenDay' //month, agendaDay,
+                        },
+
+                        select: function (start, end, allDay) {
+                            var title = prompt('Event Title:');
+                            if (title) {
+                                calendar.fullCalendar('renderEvent', {
+                                    title: title,
+                                    start: start,
+                                    end: end,
+                                    allDay: allDay
+                                }, true // make the event "stick"
+                                );
+                            }
+                            calendar.fullCalendar('unselect');
+                        },
+
+                        events: [],
+
+                        eventRender: function (event, element, icon) {
+                            if (!event.description == "") {
+                                element.find('.fc-event-title').append("<br /><span class='ultra-light'>" + event.description + "</span>");
+                            }
+                            if (!event.icon == "") {
+                                element.find('.fc-event-title').append("<i class='air air-top-right fa " + event.icon + " '></i>");
+                            }
+                        }
+                    });
+
+                };
+
+                /* hide default buttons */
+                $('.fc-header-right, .fc-header-center').hide();
+
+                // calendar prev
+                $('#calendar-buttons #btn-prev').click(function () {
+                    $('.fc-button-prev').click();
+                    return false;
+                });
+
+                // calendar next
+                $('#calendar-buttons #btn-next').click(function () {
+                    $('.fc-button-next').click();
+                    return false;
+                });
+
+                // calendar today
+                $('#calendar-buttons #btn-today').click(function () {
+                    $('.fc-button-today').click();
+                    return false;
+                });
+
+                // calendar month
+                $('#mt').click(function () {
+                    $('#calendar').fullCalendar('changeView', 'month');
+                });
+
+                // calendar agenda week
+                $('#ag').click(function () {
+                    $('#calendar').fullCalendar('changeView', 'agendaWeek');
+                });
+
+                // calendar agenda day
+                $('#td').click(function () {
+                    $('#calendar').fullCalendar('changeView', 'agendaDay');
+                });
+
+                /*
+                 * CHAT
+                 */
+
+                $.filter_input = $('#filter-chat-list');
+                $.chat_users_container = $('#chat-container > .chat-list-body')
+                $.chat_users = $('#chat-users')
+                $.chat_list_btn = $('#chat-container > .chat-list-open-close');
+                $.chat_body = $('#chat-body');
+
+                /*
+                * LIST FILTER (CHAT)
+                */
+
+                // custom css expression for a case-insensitive contains()
+                jQuery.expr[':'].Contains = function (a, i, m) {
+                    return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+                };
+
+
+
+                function LoadProgramChart(type) {
+                    $.ajax({
+                        //url: '/Project/Dashboard/GetMilstonesBarchart?ProjectId=' + $("#pId").attr("data-ProjectId") + '&filter=Get_Project_Timeline_Variance',
+                        url: '/Project/Dashboard/GetDashboardCharts?filter=Get_Project_Timeline_Variance&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '&TaskIds=' + $.cookie('ProjectTasks')
+                        + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=' + type,
+
+                        type: 'Get',
+                        async: false,
+                        success: function (data) {
+
+                            array = data;
+                            var sd = {};
+                            Forecast = [];
+                            Planned = [];
+                            Actual = [];
+                            Target = [];
+                            RunRate = [];
+                            CumActual = [];
+                            CumForecast = [];
+                            CumTarget = [];
+
+                            for (var i = 0; i < data.length ; i++) {
+
+                                if (data[i].WoDate != null) {
+                                    if (type == "Daily") {
+                                        var date = new Date(parseInt(data[i].WoDate.substr(6)));
+                                        sd = { label: ((date.getMonth() + 1) + '/' + date.getDate()), y: data[i].WoCount };
+                                    }
+                                    else {
+                                        sd = { label: data[i].WoDate, y: data[i].WoCount, legendMarkerColor: data[i].ColorCode };
+                                    }
+
+                                    if (data[i].WoType == 'Forecast') {
+                                        forecastcolor = data[i].ColorCode;
+                                        Forecast.push(sd);
+                                    }
+                                    else if (data[i].WoType == 'CumForecast') {
+                                        cumforecastcolor = data[i].ColorCode;
+                                        CumForecast.push(sd);
+                                    }
+                                    else if (data[i].WoType == 'Actual') {
+                                        actularcolor = data[i].ColorCode;
+                                        Actual.push(sd);
+                                    }
+                                    else if (data[i].WoType == 'CumActual') {
+
+                                        cumactualcolor = data[i].ColorCode;
+                                        CumActual.push(sd);
+                                    }
+                                    else if (data[i].WoType == 'Target') {
+                                        targetcolor = data[i].ColorCode;
+                                        Target.push(sd);
+                                    }
+                                    else if (data[i].WoType == 'CumTarget') {
+                                        cumtargetcolor = data[i].ColorCode;
+                                        CumTarget.push(sd);
+                                    }
+
+                                    else if (data[i].WoType == 'RunRate') {
+                                        runratecolor = data[i].ColorCode;
+                                        RunRate.push(sd);
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                    });
+                    var chart = new CanvasJS.Chart("chartContainer", {
+                        animationEnabled: true,
+                        //colorSet: "CustomColor",
+                        theme: "light2",
+                        exportEnabled: true,
+                        height: "300",
+                        title: {
+                            text: ""
+                        },
+                        axisX: {
+                            valueFormatString: "MMM",
+                            interval: 1
+                        },
+                        axisY: {
+                            labelFormatter: addSymbols,
+                            //interval: 50
+                        },
+                        axisY2: {
+                            interval: 500
+                        },
+                        toolTip: {
+                            shared: true
+                        },
+                        legend: {
+                            cursor: "pointer",
+                            itemclick: toggleDataSeries
+                        },
+                        data: [
+                        {
+                            type: "column",
+                            axisYType: "primary",
+                            axisYindex: 0,
+                            exportEnabled: true,
+                            name: "Actual",
+                            //color: "#0070c0",
+                            color: actularcolor,
+                            showInLegend: true,
+                            xValueFormatString: "MMMM YYYY",
+                            yValueFormatString: "#,##0",
+                            dataPoints: Actual
+                        },
+                        {
+                            type: "line",
+                            axisYType: "secondary",
+                            axisYindex: 0,
+                            //color: "#0070c0",
+                            color: cumactualcolor,
+                            name: "Cum. Actual",
+                            exportEnabled: true,
+                            markerBorderColor: "white",
+                            markerBorderThickness: 2,
+                            showInLegend: true,
+                            yValueFormatString: "#,##0",
+                            dataPoints: CumActual
+                        }, {
+                            type: "column",
+                            axisYType: "primary",
+                            axisYindex: 0,
+                            exportEnabled: true,
+                            name: "Forecast",
+                            //color: "#70ad47",
+                            color: forecastcolor,
+                            markerBorderColor: "white",
+                            markerBorderThickness: 2,
+                            showInLegend: true,
+                            yValueFormatString: "#,##0",
+                            dataPoints: Forecast
+                        },
+                        {
+                            type: "line",
+                            axisYType: "secondary",
+                            axisYindex: 1,
+                            //color: "#70ad47",
+                            color: cumforecastcolor,
+                            exportEnabled: true,
+                            name: "Cum. Forecast",
+                            showInLegend: true,
+                            yValueFormatString: "#,##0",
+                            dataPoints: CumForecast
+
+                        }, {
+                            type: "column",
+                            axisYType: "primary",
+                            axisYindex: 0,
+                            exportEnabled: true,
+                            name: "Target",
+                            //color: "#70ad47",
+                            color: targetcolor,
+                            markerBorderColor: "white",
+                            markerBorderThickness: 2,
+                            showInLegend: true,
+                            yValueFormatString: "#,##0",
+                            dataPoints: Target
+                        },
+                        {
+                            type: "line",
+                            axisYType: "secondary",
+                            axisYindex: 1,
+                            //color: "#70ad47",
+                            color: cumtargetcolor,
+                            exportEnabled: true,
+                            name: "Cum. Target",
+                            showInLegend: true,
+                            yValueFormatString: "#,##0",
+                            dataPoints: CumTarget
+
+                        },
+                        {
+                            type: "line",
+                            axisYType: "primary",
+                            axisYindex: 1,
+                            //color: "#e51427",
+                            color: runratecolor,
+                            exportEnabled: true,
+                            name: "Run Rate",
+                            showInLegend: true,
+                            yValueFormatString: "#,##0",
+                            dataPoints: RunRate
+
+                        }]
+                    });
+
+                    //showDefaultText(chart, "No Data Available");
+                    chart.render();
+
+                    function addSymbols(e) {
+                        var suffixes = ["", "K", "M", "B"];
+                        var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+
+                        if (order > suffixes.length - 1)
+                            order = suffixes.length - 1;
+
+                        var suffix = suffixes[order];
+                        return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+                    }
+
+                    function toggleDataSeries(e) {
+                        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                            e.dataSeries.visible = false;
+                        } else {
+                            e.dataSeries.visible = true;
+                        }
+
+                        showDefaultText(chart, "No Data Available");
+                        e.chart.render();
+                    }
+
+                    function toolTipFormatter(e) {
+                        var str = "";
+                        var total = 0;
+                        var str3;
+                        var str2;
+                        for (var i = 0; i < e.entries.length; i++) {
+                            var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong> <br />";
+                            total = e.entries[i].dataPoint.y + total;
+                            str = str.concat(str1);
+                        }
+                        str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br />";
+                        str3 = "<span style = \"color:Tomato\">Total: </span><strong>" + total + "</strong><br />";
+                        return (str2.concat(str)).concat(str3);
+                    }
+
+                    function toggleDataSeries(e) {
+                        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                            e.dataSeries.visible = false;
+                        }
+                        else {
+                            e.dataSeries.visible = true;
+                        }
+                        showDefaultText(chart, "No Data Available");
+                        chart.render();
+                    }
+
+                }
+
+                LoadProgramChart("Daily");
+
+            });
+
+        @*</script>
+        <script>*@
+            var latlong = [];
+            var CLONE;
+            var IsAjax = false;
+            function initMap() {
+
+
+                $.ajax({
+                    //url: '/Project/Dashboard/GetSiteLatLong?ProjectId=' + $("#pId").attr("data-ProjectId"),
+                    url: '/Project/Dashboard/GetDashboardCharts?filter=Get_Site_LatLong&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie('MapTasks')
+                      + '&LocationIds=' + $.cookie("MapMarkets") + '&FromDate=' + $.cookie("MapFromDate") + '&ToDate=' + $.cookie("MapToDate") + '&SearchFilter=Daily' + '&MapStatus=' + $.cookie('MapStatus') + '&MapType=' + $.cookie("MapType"),
+
+                    type: 'Get',
+                    async: false,
+                    success: function (data) {
+                        latlong = data;
+                    }
+                });
+
+                var map;
+                if (latlong.length > 0) {
+                    map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 5,
+                        center: { lat: latlong[0].Latitude, lng: latlong[0].Longitude },
+                        mapTypeControl: false,
+                        streetViewControl: false,
+                        fullscreenControl: false,
+                        fullscreenControlOptions: {
+                            position: google.maps.ControlPosition.TOP_RIGHT
+                        }
+                    });
+                    setMarkers(map);
+                    map.addListener('bounds_changed', function () {
+
+                        //  setTimeout(function () {
+                        var container = $(".gm-style-pbc");
+                        var Map = container.width();
+                        var Window = $(window).width();
+                        if (Map >= screen.width - 200) {
+                            $("#legend").css({ "z-index": "2000000000000000000000" });
+                            $(".map-filters").css({ "z-index": "2000000000000000000000" });
+                        }
+                        else { //$("#legend2").css("width", "500px");
+                            $("#legend").css({ 'z-index': "200" });
+                            $(".map-filters").css({ 'z-index': "20" });
+                        }
+
+                        //    }, 300);
+
+
+                    });
+                }
+                else {
+                    map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 5
+                        , center: { lat: 40.709642, lng: -73.889764 },
+                        mapTypeControl: false,
+                        streetViewControl: false,
+                        fullscreenControl: true,
+                        fullscreenControlOptions: {
+                            position: google.maps.ControlPosition.TOP_RIGHT
+                        }
+                    });
+                    map.addListener('bounds_changed', function () {
+                        //  setTimeout(function () {
+                        var container = $(".gm-style-pbc");
+                        var Map = container.width();
+                        var Window = $(window).width();
+                        if (Map >= screen.width - 200) {
+                            //  $("#legend2").css("width", "700px");
+                            // $(".map-filters").css({ "width": "900px" });
+                            $(".map-filters").css({ "z-index": "2000000000000000000000" });
+                            //$(".map-filters").css({ "bottom": "auto" });
+                            // $(".map-filters").css({ "position": "absolute" });
+                            $("#legend").css({ "z-index": "2000000000000000000000" });
+                            $(".map-filters").css({ "z-index": "2000000000000000000000" });
+                        }
+                        else { //$("#legend2").css("width", "500px");
+                            $("#legend").css({ 'z-index': "200" });
+                            $(".map-filters").css({ 'z-index': "20" });
+                        }
+
+                        //    }, 300);
+
+
+                    });
+
+                    setMarkers(map);
+                }
+
+                google.maps.event.addListenerOnce(map, 'tilesloaded', function () {
+                    $('#container div.gm-style button[title="Toggle fullscreen view"]').trigger('click');
+                    google.maps.event.addListenerOnce(map, 'tilesloaded', function () {
+                        //this part runs when the mapobject shown for the first time
+                    });
+                });
+
+            }
+
+            function showDefaultText(chart, text) {
+
+                var isEmpty = !(chart.options.data[0].dataPoints && chart.options.data[0].dataPoints.length > 0);
+
+                if (!chart.options.subtitles)
+                    (chart.options.subtitles = []);
+
+                if (isEmpty)
+                    chart.options.subtitles.push({
+                        text: text,
+                        verticalAlign: 'center',
+                    });
+                else
+   	(chart.options.subtitles = []);
+            }
+            function setMarkers(map) {
+                var isFullScreen = document.fullScreen ||
+       document.mozFullScreen ||
+       document.webkitIsFullScreen;
+
+                // var  MapMarkets = ($("#mapfilters").clone()).html();
+                //if (MapMarkets != undefined) {
+                //     CLONE = MapMarkets;
+                //}
+                //else {
+
+                //}
+                ////    $("#mapfilters").remove();
+                //  debugger
+                var legend = document.getElementById('legend');
+                //  var legend2 = document.getElementById('legend2');
+                //  legend2.innerHTML =CLONE;
+
+                //if (IsAjax == false) {
+                //var CustomIcons = latlong[0];
+                //var option2 = '';
+                //var optgroup5 = '';
+                //Object.keys(CustomIcons).forEach(function (key) {
+                //    //if (key != 'Latitude' && key != 'Longitude') {
+                //    //    var div = document.createElement('div');
+                //    //    div.innerHTML = '<img style="margin-top:5px;background-color:' + CustomIcons[key] + ';border-radius:10px;height:20px;width:20px;margin-right:5px">' + key;
+                //    //    legend.appendChild(div);
+                //    //}
+
+
+
+                //option2 += '<option value="' + 0 + '" selected="selected">' + key + '</option>'
+
+                //});
+
+                //optgroup5 += '<optgroup label="Types">' + option2 + '</optgroup>'
+                //var txt1 = "<script type='text/javascript'>$(document).ready(function() {$('#example-xss-html_Map7').multiselect({enableClickableOptGroups:true,includeSelectAllOption: true});});</"+"script><select class='form-control' id='example-xss-html_Map7' multiple='multiple'>" + option2 + "</select>";
+
+                //    $('#ListMapType').append(txt1);
+                //    IsAjax = true;
+                //}
+
+
+                //google.maps.event.addListener(map, 'zoom_changed', function () {
+                //    for (var i = 0; i < map.circle.length; i++) {
+                //        var p = Math.pow(2, (21 - map.getZoom()));
+                //        map.circle[i].setRadius(p * 1128.497220 * 0.0027);
+                //    }
+
+                //    menu.hide();
+                //});
+                ////for (var key in icons) {
+                ////    var type = icons[key];
+                ////    var name = type.name;
+                ////    var icon = type.icon;
+                ////    var div = document.createElement('div');
+                ////    div.innerHTML = '<img style="background-color:green;border:2px solid;border-radius:10px;height:20px;width:20px;margin-right:5px">' + name;
+                ////    legend.appendChild(div);
+                ////}
+                //  map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+                //   map.controls[google.maps.ControlPosition.TOP_LEFT].push(legend2);
+
+
+                var shape = {
+                    coords: [1, 1, 1, 20, 18, 20, 18, 1],
+                    type: 'poly'
+                };
+                // debugger
+                for (var i = 0; i < latlong.length; i++) {
+
+                    var site = latlong[i];
+                    var Image;
+                    switch (site.Stage) {
+                        case "TSS":
+                            Image = "tss.png";
+                            break;
+                        case "PENDING":
+                            Image = "pending.png";
+                            break;
+                        case "TSS_SSM":
+                            Image = "tss_ssm.png";
+                            break;
+                        case "TSS_EPL":
+                            Image = "tss_epl.png";
+                            break;
+                        case "TSS_SSM_EPL":
+                            Image = "tss_ssm_epl.png";
+                            break;
+                        case "PREINSTALL":
+                            Image = "preinstall.png";
+                            break;
+                            //case "ONGOING":
+                            //    Image = "ongoing.png";
+                            //    break;
+                        case "MIGRATE":
+                            Image = "migrated.png";
+                            break;
+                        case "COMPLETED":
+                            Image = "completed.png";
+                            break;
+                        default:
+
+                    }
+                    var image = {
+                        url: '/Content/Images/Markers/' + Image,
+                        size: new google.maps.Size(20, 32),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(0, 32)
+                    };
+                    var marker = new google.maps.Marker({
+                        position: { lat: latlong[i].Latitude, lng: latlong[i].Longitude },
+                        map: map,
+                        icon: image,
+                        shape: shape,
+                        animation: google.maps.Animation.DROP,
+                        //title: beach[0],
+                        //zIndex: beach[3]
+                    });
+                    if (site.Stage == "MIGRATE") {
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                    }
+                    //setTimeout(function () { marker.setAnimation(null); }, 750);
+
+                }
+            }
+
+            $("[data-toggle=popover]").popover({
+                html: true,
+                content: function () {
+                    return $('#popover-content').html();
+                }
+            });
+
+            $(document).on("change", ".multiselect-native-select", function () {
+                var Id = $(this).children("select").attr("id");
+                var Value = $("#" + Id).val();
+
+
+
+                if (Value == null) {
+                    switch (Id) {
+                        case "example-xss-html_Map5":
+                            //$("#example-xss-html_Map5").multiselect("enable");
+                            $("#example-multiple-optgroups_Map").multiselect("enable");
+                            $("#example-xss-html_Map7").multiselect("enable");
+                            break;
+                        case "example-multiple-optgroups_Map":
+                            $("#example-xss-html_Map5").multiselect("enable");
+                            //   $("#example-multiple-optgroups_Map").multiselect("enable");
+                            $("#example-xss-html_Map7").multiselect("enable");
+                            break;
+                        case "example-xss-html_Map7":
+                            $("#example-xss-html_Map5").multiselect("enable");
+                            $("#example-multiple-optgroups_Map").multiselect("enable");
+                            // $("#example-xss-html_Map7").multiselect("enable");
+                            break;
+                        default:
+
+                    }
+                }
+                else {
+                    switch (Id) {
+                        case "example-xss-html_Map5":
+                            //$("#example-xss-html_Map5").multiselect("enable");
+                            $("#example-multiple-optgroups_Map").multiselect("disable");
+                            $("#example-xss-html_Map7").multiselect("disable");
+                            break;
+                        case "example-multiple-optgroups_Map":
+                            $("#example-xss-html_Map5").multiselect("disable");
+                            //   $("#example-multiple-optgroups_Map").multiselect("enable");
+                            $("#example-xss-html_Map7").multiselect("disable");
+                            break;
+                        case "example-xss-html_Map7":
+                            $("#example-xss-html_Map5").multiselect("disable");
+                            $("#example-multiple-optgroups_Map").multiselect("disable");
+                            // $("#example-xss-html_Map7").multiselect("enable");
+                            break;
+                        default:
+
+                    }
+                }
+
+            });
+
+
+
+            $('#viewReport').click(function () {
+
+                //var selectedMarketIds = $("#example-xss-html_Issue option:selected").val();
+                //var stringIds = "";
+                //for (let x = 0; x < selectedMarketIds.length; x++) {
+                //    stringIds += selectedMarketIds[x] + ","
+                //}
+
+                //stringIds = stringIds.slice(-1);
+                var url;
+                $.ajax({
+                    url: '/Project/Dashboard/Pdf?ProjectId=' + $("#pId").attr("data-ProjectId") + '&TaskIds=' + $.cookie('ProjectTasks')
+                                                             + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate")
+                                                             + '&ToDate=' + $.cookie("ToDate"),
+                    type: 'Post',
+                    async: false,
+                    success: function (data) {
+                    }
+                });
+            });
+
+            //url: '/Project/Dashboard/Pdf?ProjectId=' + $("#pId").attr("data-ProjectId") + '&TaskIds=' + $.cookie('MapTasks')
+            //                                              + '&LocationIds=' + $.cookie("MapMarkets") + '&FromDate=' + $.cookie("FromDate")
+            //                                              + '&ToDate=' + $.cookie("ToDate"),
+          
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCT11sJXZjs6UAa2A65ETGbpTx_hNCJv_o&callback=initMap"
+                async defer></script>
+<script src="~/Content/js/Dashboard/js/Dashboard.js"></script>
+<script src="~/Content/js/Dashboard/js/SiteGrid.js"></script>
+    }
+
+    @*function initMap() {
+          var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 5,
+            center: {lat: 24.886, lng: -70.268},
+          });
+
+          // Define the LatLng coordinates for the polygon's  outer path.
+          var outerCoords = [
+            {lat: 25.774, lng: -80.190}
+
+          ];
+
+          // Define the LatLng coordinates for the polygon's inner path.
+          // Note that the points forming the inner path are wound in the
+          // opposite direction to those in the outer path, to form the hole.
+          var innerCoords = [
+            {lat: 28.745, lng: -70.579}
+
+          ];
+
+          // Construct the polygon, including both paths.
+          var bermudaTriangle = new google.maps.Circle({
+            paths: [outerCoords, innerCoords],
+            strokeColor: '#FFC107',
+            strokeOpacity: 1,
+            strokeWeight: 4,
+            fillColor: '#FFC107',
+            fillOpacity: 0.0,
+             map: map,
+            center:  {lat: 28.745, lng: -70.579},
+           radius: 87688
+          });
+          bermudaTriangle.setMap(map);
+
+          var bermudaTriangle2 = new google.maps.Circle({
+            paths: [outerCoords, innerCoords],
+            strokeColor: '#FF0000',
+            strokeOpacity: 1,
+            strokeWeight: 4,
+            fillColor: '#FFC107',
+            fillOpacity: 0.0,
+             map: map,
+            center:  {lat: 28.745, lng: -70.579},
+           radius: 70688
+          });
+          bermudaTriangle2.setMap(map);
+
+           var bermudaTriangle3 = new google.maps.Circle({
+            paths: [outerCoords, innerCoords],
+            strokeColor: 'green',
+            strokeOpacity: 1,
+            strokeWeight: 5,
+            fillColor: '#FFC107',
+            fillOpacity: 0.0,
+             map: map,
+            center:  {lat: 28.745, lng: -70.579},
+           radius: 30688
+          });
+          bermudaTriangle3.setMap(map);
+          bermudaTriangle3.setAnimation(google.maps.Animation.BOUNCE);
+          setTimeout(function () { marker.setAnimation(null); }, 750);
+           marker.setAnimation(bermudaTriangle3);
+        }*@
+
+
+
+

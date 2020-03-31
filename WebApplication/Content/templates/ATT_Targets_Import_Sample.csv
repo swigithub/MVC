@@ -1,0 +1,6 @@
+Project,Task,TargetType,TargetValue,SiteCount
+Test Project 2,STAGE 3,day,9/1/2018,30
+Test Project 2,STAGE 3,quarter,Q3-2018,40
+Test Project 2,STAGE 3,month,Sep-2018,50
+Test Project 2,STAGE 3,year,2018,60
+Test Project 2,STAGE 3,week,W36-2018,70

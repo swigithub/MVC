@@ -1,0 +1,445 @@
+﻿@using System.Web.Mvc.Html
+@using SWI.Libraries.Common
+@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.AD.Entities
+
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    Layout = null;
+    int count = 0;
+    int RowSpan = Model.Count() + 1;
+    DirectoryHandler dh = new DirectoryHandler();
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var NetLayerReport = jss.Serialize(ViewBag.NetLayerReport);
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Layer Report</title>
+
+    <link href="~/Content/js/Plugins/DateTimePicker/dtpicker.css" rel="stylesheet" />
+    <link href="~/Content/NetLayreReport.css" rel="stylesheet" />
+    @Scripts.Render("~/AdminLTE/plugins/jquery/js")
+    <style>
+        .FTtableHeading {
+            background-color: #FFD966;
+        }
+    </style>
+</head>
+
+<body>
+    @if (Model != null && Model.Count() > 0)
+    {
+
+        var Pcis = (ViewBag.PciDisLagend as List<AV_NetLayerReportPlot>);
+        var CwPcis = Pcis.Where(m => m.TestType == "CW").ToList();
+        var CcwPcis = Pcis.Where(m => m.TestType == "CCW").ToList();
+
+        @functions{
+
+            public string SectorColor(string key)
+            {
+                try
+                {
+                    var LagentPCI = ViewBag.Sectors as ICollection<AD_Defination>;
+                    return LagentPCI.Where(m => m.DefinationName == key).FirstOrDefault().ColorCode;
+                }
+                catch
+                {
+                    return null;
+                }
+
+            }
+
+        }
+
+
+        var First = Model.FirstOrDefault();
+        int TotalRecord = Model.Count();
+        string NetworkMode = First.NetworkMode;
+        // var rptConfig = ViewBag.ReportConfiguration as ICollection<AD_ReportConfiguration>;
+        ViewBag.ClientLogo = First.ClientLogo;
+        ViewBag.VendorLogo = First.VendorLogo;
+
+        <div class="container" id="pdf" style="width:1400px;margin: auto;padding:2px;">
+            <a href="#" style="float:right; position: fixed; right: 100px" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+
+
+            <div id="print" class="clear">
+                <div class="bgcolor WELCOME_PAGE_COLOR" data-type="BGCOLOR" style="color: white;padding-top: 201px;height: 801px;margin-left: -20px;margin-right: -20px;margin-bottom: -26px;">
+                    <img src="~/Content/Images/ClientLogo/nokia_logo.png" class="" style="top: -100px;position: relative;" />
+
+                    <div style="margin-left:50px;font-size:xx-large;font-family: Arial, Verdana;margin-top:-100px;">
+
+                        <h1 id="PROJECT_TITLE" class="" data-type="BOOLEAN,STRING" data-preValue="@First.Region"></h1>
+                        <h1 id="" class="" data-type="BOOLEAN,STRING" style="margin-top:-30px;">Call Test Report</h1>
+                    </div>
+                    <div class="" style="margin-top:100px;margin-left:50px; font-size:large;font-family: Arial, Verdana;">
+                        <div>
+                            <div class="left">
+                                <h2>Site : @First.Site _ @First.Band</h2>
+                                <h2>@First.SiteScheduleDate.Value.ToString("MMM dd, yyyy")</h2>
+                            </div>
+                            <div class="left"></div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    <img src="~/Content/Images/Common/tmobile.png" style="position: relative;right: -800px;bottom: -100px;width: 547px;height: 92px;" />
+                </div>
+                @*@Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")*@
+
+
+                <P CLASS="breakhere" />
+                <!--Site Data-->
+                <div class="page">
+                    <div class="" style="color:#3b39e2;">
+                        <h1 id="SITE_DATA" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading"></h1>
+                        <div class="" style="width:100%;border-bottom:solid 2px;border-top:solid 2px;">
+                        <table style="width:100%;text-align:center;" class="font">
+                            <tr class="tbl-heading ">
+                                <th>Site Id</th>
+                                <th>Sector Id</th>
+                                <th>Network Mode</th>
+                                <th>Band</th>
+                                <th>Carrier</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                @*<th>BeamWidth</th>*@
+                                <th>Azimuth</th>
+                                <th>
+                                    @if (First.NetworkMode == "LTE")
+                                    {
+                                        <span>PCI</span>
+                                    }
+                                    @if (First.NetworkMode == "GSM")
+                                    {
+                                        <span>BCCH</span>
+                                    }
+                                    @if (First.NetworkMode == "WCDMA")
+                                    {
+                                        <span>PSC</span>
+                                    }
+                                </th>
+                            </tr>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Site</td>
+                                <td data-type="STRING" class="SECTOR_@item.Sector.ToUpper()">@item.Sector</td>
+                                <td>@item.NetworkMode</td>
+                                <td>@item.Band</td>
+
+                                <td>@item.Carrier</td>
+                                <td>@item.Latitude</td>
+                                <td>@item.Longitude</td>
+                                @*<td>@item.BeamWidth</td>*@
+                                <td>@item.Azimuth</td>
+                                <td>@item.PciId</td>
+                            </tr>
+                        }
+
+
+                            </table>
+
+                        </div>
+                        <br /><br />
+                        <div class="" id="site_data_map" style="width:auto;height:560px;"></div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="footer">
+                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    </div>
+                </div>
+                <!--Field Test-->
+                <div class="page">
+                    <div id="pan-FIELD_TEST">
+                        <h1 id="FIELD_TEST" data-type="BOOLEAN,STRING" class="heading" data-preValue="@First.Site"></h1>
+                        @Html.Partial("~/views/site/_ntlFieldTestNI.cshtml", Model)
+                        <div class="footer">
+                            @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                        </div>
+                    </div>
+                </div>
+                @if (First.NetworkMode == "LTE")
+                {
+                    <!-- PCI Plot-->
+                    <div id="pan-PCI_PLOT" data-type="BOOLEAN" style="position:relative">
+                        <h1 id="PCI_PLOT" data-type="BOOLEAN" data-preValue="@First.Site" class="heading">
+                            @First.Site
+                            @if (NetworkMode == "LTE")
+                            {
+                            <span> PCI Plot </span>
+                            }
+                            else if (NetworkMode == "GSM")
+                            {
+                            <span>BCCH Plot</span>
+                            }
+                            else if (NetworkMode == "WCDMA")
+                            {
+                            <span>PSC Plot</span>
+                            }
+
+                        </h1>
+
+                        <div id="frm-pci">
+                            <table>
+                                <tr>
+                                    <td> Circle Radius</td>
+                                    <td><input type="number" value="17" id="pci-Radius" /> </td>
+                                    <td>Azmuth Radius</td>
+                                    <td><input type="number" value="200" id="pci-Azmuth" /> </td>
+                                    <td><input type="button" value="Load" id="btn-pci" /> </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="pan-map googlemap" id="PCI_Plot"></div>
+                        <div class="PciLegend">
+
+                            <div class="lagendHeader">
+                                @if (NetworkMode == "LTE")
+                                {
+                                <span> PCI Plot </span>
+                                }
+                                else if (NetworkMode == "GSM")
+                                {
+                                <span>BCCH Plot</span>
+                                }
+                                else if (NetworkMode == "WCDMA")
+                                {
+                                <span>PSC Plot</span>
+                                }
+
+                            </div>
+                            <table style="">
+                                @{
+
+                                    int PcisCount = Pcis.Count;
+                                    if (ViewBag.AfterDate == false || First.City != "Chicago")
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                <tr>
+
+                                    <td>
+
+                                        <div class="colorBox" style="background-color:@SectorColor(item.Sector);"></div>
+                                    </td>
+                                    <td><span class="pci-count">@item.PciId</span></td>
+                                </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (int i = 0; i < PcisCount; i += 2)
+                                        {
+                                <tr>
+                                    <td>
+                                        <div class="colorBox" style="background-color:@Pcis[i].Color;"></div>
+                                    </td>
+                                    <td><span>@Pcis[i].PCI</span></td>
+
+                                    @if (i + 1 < PcisCount)
+                                                {
+                                                <td>
+                                                    <div class="colorBox" style="background-color:@Pcis[i + 1].Color;"></div>
+                                                </td>
+                                                <td><span>@Pcis[i + 1].PCI</span></td>
+                                                }
+                                </tr>
+                                        }
+
+                                    }
+
+                                }
+                            </table>
+                        </div>
+                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                        <hr />
+                        <P CLASS="breakhere" />
+                    </div>
+                 }
+                
+
+                <!--Stationary Test-->
+                @{ bool ImageStatus = false;
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.StationaryTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                }
+
+                @if (ImageStatus)
+                {
+                    count = 0;
+                    <div class="page">
+                        <center>
+                            <h1 class="heading">@First.Site Stationary Test</h1>
+                            @foreach (var item in Model)
+                            {
+                                if (dh.FileExist(Server.MapPath(item.StationaryTestFilePath)))
+                                {
+                                    if (count == 3)
+                                    {
+                                        <br />
+                                        count = 0;
+                                    }
+                                    <img src="@item.StationaryTestFilePath" class="ooklaImages" />
+
+                                    count++;
+                                }
+
+
+                            }
+
+                        </center>
+                    </div>
+                    <div class="footer">
+                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    </div>
+                }
+
+
+                <!--Stationary Test-->
+                @{ ImageStatus = false;
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.CwTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                }
+
+                @if (ImageStatus)
+                {
+                    count = 0;
+                    <div class="page">
+                        <center>
+                            <h1 class="heading">@First.Site Mobility Test</h1>
+                            @foreach (var item in Model)
+                            {
+                                if (dh.FileExist(Server.MapPath(item.CwTestFilePath)))
+                                {
+                                    if (count == 3)
+                                    {
+                                        <br />
+                                        count = 0;
+                                    }
+                                    <img src="@item.CwTestFilePath" class="ooklaImages" />
+                                    count++;
+                                }
+                            }
+
+                        </center>
+                    </div>
+                    <div class="footer">
+                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    </div>
+                }
+
+                <div class="WELCOME_PAGE_COLOR" id="thank-you" style="background:#004B99;padding-top:150px;height:800px;margin-left: -50px;margin-right: -20px;margin-top: 10px;padding-bottom: 50px;">
+                    <img src="~/Content/Images/Report/Nokia-bg.png" style="margin-top: 215px;margin-left: 381px;" />
+
+                </div>
+            </div>
+
+            <a href="" style="float:right;" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+
+        </div>
+        <div style="display:none" id="Azimuth_Circle">0</div>
+
+        <script src="~/Content/js/Plugins/DateTimePicker/dtpicker.js"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.ApiMapKey)&sensor=false&libraries=geometry&bogusParam=.js"></script>
+        <script src="~/Content/js/MapLabel.js"></script>
+
+        @*<script src="~/Content/js/Plugins/kml/geoxml3.js"></script>
+        <script src="~/Content/js/Plugins/kml/ProjectedOverlay.js"></script>*@
+
+        <script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+        <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+
+        <script src="~/Content/js/GoogleMapsNTL.js"></script>
+        <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script><!--loading-->
+                                <script>
+                                    var ReportConfiguration = JSON.parse('@Html.Raw(ReportConfiguration)');
+                                    function Configurations(keyCode, dataType, value, IsActive) {
+
+                                        if (dataType == 'BOOLEAN') {
+                                            if (IsActive == true) {
+                                                $('#' + keyCode).show();
+                                                $('.' + keyCode).show();
+                                                $('#pan-' + keyCode).show();
+                                            } else {
+                                                $('#' + keyCode).hide();
+                                                $('.' + keyCode).hide();
+                                                $('#pan-' + keyCode).hide();
+                                            }
+                                        }
+
+                                        //if (dataType == 'BGCOLOR') {
+                                        //    $('.' + c.KeyCode).css({
+                                        //        'background': c.value
+                                        //    });
+                                        //}
+
+                                        if (dataType == 'STRING') {
+                                            if (value != null || value != '') {
+                                                var preValue = $('#' + keyCode).attr('data-preValue');
+                                                if (preValue != undefined) {
+                                                    $('#' + keyCode).text(preValue + ' ' + value);
+                                                } else {
+                                                    $('#' + keyCode).text(value);
+                                                }
+
+                                                $('.' + keyCode).text(value);
+                                            }
+                                        }
+                                    }
+                                    $(function () {
+
+                                    });
+                                </script>
+                                <script>
+                                    var NetLayerReport = JSON.parse('@Html.Raw(NetLayerReport)');
+                                    var SiteId = '@First.SiteId';
+                                    var NetworkModeId = '@First.NetworkModeId';
+                                    var BandId = '@First.BandId';
+                                    var CarrierId = '@First.CarrierId';
+                                    var ScopeId = '@First.ScopeId';
+                                    @{
+                                        string NetLayer = First.ActualSiteCode+ "/"+First.NetworkMode + "_" +First.Band + "_" +First.Carrier;
+                                    }
+
+                                    var SiteLatitude = '@First.Latitude';
+                                    var SiteLongitude = '@First.Longitude';
+                                    var SiteCode = '@First.Site _ @First.Band';
+                                    var NetLayer = '@NetLayer';
+                                    var AfterDate = '@ViewBag.AfterDate';
+                                    var domain = '@ViewBag.domain';
+                                    var AzmuthRadius = '@ViewBag.AzmuthRadius';
+                                    var ClientPrefix = '@First.ClientPrefix';
+                                    // console.log(NetLayerReport);
+                                </script>
+                                <script src="/Content/js/NetLayerReport.js"></script>
+    }
+</body>
+
+</html>

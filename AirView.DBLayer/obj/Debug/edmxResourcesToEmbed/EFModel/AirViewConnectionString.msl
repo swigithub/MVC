@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="AirViewModelStoreContainer" CdmEntityContainer="Entities">
+    <FunctionImportMapping FunctionImportName="AV_ProcessNemoLogs1" FunctionName="AirViewModel.Store.AV_ProcessNemoLogs" />
+    <EntitySetMapping Name="AV_LogsInfo">
+      <EntityTypeMapping TypeName="AirViewModel.AV_LogsInfo">
+        <MappingFragment StoreEntitySet="AV_LogsInfo">
+          <ScalarProperty Name="fileType" ColumnName="fileType" />
+          <ScalarProperty Name="scopeID" ColumnName="scopeID" />
+          <ScalarProperty Name="carrierID" ColumnName="carrierID" />
+          <ScalarProperty Name="bandID" ColumnName="bandID" />
+          <ScalarProperty Name="networkModeID" ColumnName="networkModeID" />
+          <ScalarProperty Name="sectorID" ColumnName="sectorID" />
+          <ScalarProperty Name="siteID" ColumnName="siteID" />
+          <ScalarProperty Name="pathFile" ColumnName="pathFile" />
+          <ScalarProperty Name="createDate" ColumnName="createDate" />
+          <ScalarProperty Name="fileName" ColumnName="fileName" />
+          <ScalarProperty Name="fileID" ColumnName="fileID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AV_NemoSiteLogs">
+      <EntityTypeMapping TypeName="AirViewModel.AV_NemoSiteLogs">
+        <MappingFragment StoreEntitySet="AV_NemoSiteLogs">
+          <ScalarProperty Name="SNR8" ColumnName="SNR8" />
+          <ScalarProperty Name="SNR7" ColumnName="SNR7" />
+          <ScalarProperty Name="SNR6" ColumnName="SNR6" />
+          <ScalarProperty Name="SNR5" ColumnName="SNR5" />
+          <ScalarProperty Name="SNR4" ColumnName="SNR4" />
+          <ScalarProperty Name="SNR3" ColumnName="SNR3" />
+          <ScalarProperty Name="SNR2" ColumnName="SNR2" />
+          <ScalarProperty Name="SNR1" ColumnName="SNR1" />
+          <ScalarProperty Name="SNR" ColumnName="SNR" />
+          <ScalarProperty Name="EventFields" ColumnName="EventFields" />
+          <ScalarProperty Name="Direction" ColumnName="Direction" />
+          <ScalarProperty Name="PUSCH_UL_Throughput_bits" ColumnName="PUSCH_UL_Throughput_bits" />
+          <ScalarProperty Name="PDSCH_DL_Throughput_bits" ColumnName="PDSCH_DL_Throughput_bits" />
+          <ScalarProperty Name="Attempted_Channel" ColumnName="Attempted_Channel" />
+          <ScalarProperty Name="Current_PCI" ColumnName="Current_PCI" />
+          <ScalarProperty Name="Connection_Setup_Time_ms" ColumnName="Connection_Setup_Time_ms" />
+          <ScalarProperty Name="RTT_ms" ColumnName="RTT_ms" />
+          <ScalarProperty Name="Ping_Size_bytes" ColumnName="Ping_Size_bytes" />
+          <ScalarProperty Name="Call_Connection_Status" ColumnName="Call_Connection_Status" />
+          <ScalarProperty Name="MO_MTPhone_Number" ColumnName="MO_MTPhone_Number" />
+          <ScalarProperty Name="Call_Direction" ColumnName="Call_Direction" />
+          <ScalarProperty Name="Call_Type" ColumnName="Call_Type" />
+          <ScalarProperty Name="Event" ColumnName="Event" />
+          <ScalarProperty Name="HO_Uplane_interruption_ms" ColumnName="HO_Uplane_interruption_ms" />
+          <ScalarProperty Name="HO_Duration_ms" ColumnName="HO_Duration_ms" />
+          <ScalarProperty Name="Attempted_Band" ColumnName="Attempted_Band" />
+          <ScalarProperty Name="Attempted_PCI" ColumnName="Attempted_PCI" />
+          <ScalarProperty Name="Attempted_System" ColumnName="Attempted_System" />
+          <ScalarProperty Name="Current_Band" ColumnName="Current_Band" />
+          <ScalarProperty Name="Current_Channel" ColumnName="Current_Channel" />
+          <ScalarProperty Name="HO_Type" ColumnName="HO_Type" />
+          <ScalarProperty Name="RSRP_RSCP_dBm9" ColumnName="RSRP_RSCP_dBm9" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db9" ColumnName="RSRQ_Ec_I0_db9" />
+          <ScalarProperty Name="RSSI_dBm9" ColumnName="RSSI_dBm9" />
+          <ScalarProperty Name="PCI_PN9" ColumnName="PCI_PN9" />
+          <ScalarProperty Name="Channel9" ColumnName="Channel9" />
+          <ScalarProperty Name="Band9" ColumnName="Band9" />
+          <ScalarProperty Name="Cell9" ColumnName="Cell9" />
+          <ScalarProperty Name="RSRP_RSCP_dBm8" ColumnName="RSRP_RSCP_dBm8" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db8" ColumnName="RSRQ_Ec_I0_db8" />
+          <ScalarProperty Name="RSSI_dBm8" ColumnName="RSSI_dBm8" />
+          <ScalarProperty Name="PCI_PN8" ColumnName="PCI_PN8" />
+          <ScalarProperty Name="Channel8" ColumnName="Channel8" />
+          <ScalarProperty Name="Band8" ColumnName="Band8" />
+          <ScalarProperty Name="Cell8" ColumnName="Cell8" />
+          <ScalarProperty Name="RSRP_RSCP_dBm7" ColumnName="RSRP_RSCP_dBm7" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db7" ColumnName="RSRQ_Ec_I0_db7" />
+          <ScalarProperty Name="RSSI_dBm7" ColumnName="RSSI_dBm7" />
+          <ScalarProperty Name="PCI_PN7" ColumnName="PCI_PN7" />
+          <ScalarProperty Name="Channel7" ColumnName="Channel7" />
+          <ScalarProperty Name="Band7" ColumnName="Band7" />
+          <ScalarProperty Name="Cell7" ColumnName="Cell7" />
+          <ScalarProperty Name="RSRP_RSCP_dBm6" ColumnName="RSRP_RSCP_dBm6" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db6" ColumnName="RSRQ_Ec_I0_db6" />
+          <ScalarProperty Name="RSSI_dBm6" ColumnName="RSSI_dBm6" />
+          <ScalarProperty Name="PCI_PN6" ColumnName="PCI_PN6" />
+          <ScalarProperty Name="Channel6" ColumnName="Channel6" />
+          <ScalarProperty Name="Band6" ColumnName="Band6" />
+          <ScalarProperty Name="Cell6" ColumnName="Cell6" />
+          <ScalarProperty Name="RSRP_RSCP_dBm5" ColumnName="RSRP_RSCP_dBm5" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db5" ColumnName="RSRQ_Ec_I0_db5" />
+          <ScalarProperty Name="RSSI_dBm5" ColumnName="RSSI_dBm5" />
+          <ScalarProperty Name="PCI_PN5" ColumnName="PCI_PN5" />
+          <ScalarProperty Name="Channel5" ColumnName="Channel5" />
+          <ScalarProperty Name="Band5" ColumnName="Band5" />
+          <ScalarProperty Name="Cell5" ColumnName="Cell5" />
+          <ScalarProperty Name="RSRP_RSCP_dBm4" ColumnName="RSRP_RSCP_dBm4" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db4" ColumnName="RSRQ_Ec_I0_db4" />
+          <ScalarProperty Name="RSSI_dBm4" ColumnName="RSSI_dBm4" />
+          <ScalarProperty Name="PCI_PN4" ColumnName="PCI_PN4" />
+          <ScalarProperty Name="Channel4" ColumnName="Channel4" />
+          <ScalarProperty Name="Band4" ColumnName="Band4" />
+          <ScalarProperty Name="Cell4" ColumnName="Cell4" />
+          <ScalarProperty Name="RSRP_RSCP_dBm3" ColumnName="RSRP_RSCP_dBm3" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db3" ColumnName="RSRQ_Ec_I0_db3" />
+          <ScalarProperty Name="RSSI_dBm3" ColumnName="RSSI_dBm3" />
+          <ScalarProperty Name="PCI_PN3" ColumnName="PCI_PN3" />
+          <ScalarProperty Name="Channel3" ColumnName="Channel3" />
+          <ScalarProperty Name="Band3" ColumnName="Band3" />
+          <ScalarProperty Name="Cell3" ColumnName="Cell3" />
+          <ScalarProperty Name="RSRP_RSCP_dBm2" ColumnName="RSRP_RSCP_dBm2" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db2" ColumnName="RSRQ_Ec_I0_db2" />
+          <ScalarProperty Name="RSSI_dBm2" ColumnName="RSSI_dBm2" />
+          <ScalarProperty Name="PCI_PN2" ColumnName="PCI_PN2" />
+          <ScalarProperty Name="Channel2" ColumnName="Channel2" />
+          <ScalarProperty Name="Band2" ColumnName="Band2" />
+          <ScalarProperty Name="Cell2" ColumnName="Cell2" />
+          <ScalarProperty Name="RSRP_RSCP_dBm1" ColumnName="RSRP_RSCP_dBm1" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db1" ColumnName="RSRQ_Ec_I0_db1" />
+          <ScalarProperty Name="RSSI_dBm1" ColumnName="RSSI_dBm1" />
+          <ScalarProperty Name="PCI_PN1" ColumnName="PCI_PN1" />
+          <ScalarProperty Name="Channel1" ColumnName="Channel1" />
+          <ScalarProperty Name="Band1" ColumnName="Band1" />
+          <ScalarProperty Name="Cell1" ColumnName="Cell1" />
+          <ScalarProperty Name="RSRP_RSCP_dBm" ColumnName="RSRP_RSCP_dBm" />
+          <ScalarProperty Name="RSRQ_Ec_I0_db" ColumnName="RSRQ_Ec_I0_db" />
+          <ScalarProperty Name="RSSI_dBm" ColumnName="RSSI_dBm" />
+          <ScalarProperty Name="PCI_PN" ColumnName="PCI_PN" />
+          <ScalarProperty Name="Channel" ColumnName="Channel" />
+          <ScalarProperty Name="Band" ColumnName="Band" />
+          <ScalarProperty Name="Cell" ColumnName="Cell" />
+          <ScalarProperty Name="fileID_Fk" ColumnName="fileID_Fk" />
+          <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+          <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+          <ScalarProperty Name="Current_System" ColumnName="Current_System" />
+          <ScalarProperty Name="Time" ColumnName="Time" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

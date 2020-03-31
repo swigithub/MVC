@@ -1,0 +1,294 @@
+﻿@model IEnumerable<AirView.DBLayer.Project.Model.PM_ProjectSite>
+
+
+<style>
+    input {
+        width: 100px;
+    }
+</style>
+
+@*<form method="post" id="frm-plan" onsubmit="SaveProjectPlan(); return false;">*@
+
+
+<table class="table table-bordered table-striped tblProjectPlan" id="tblPlan" style="width:100%;" >
+    <tr>
+        <th>
+            @Html.CheckBox("CheckAll", new { @id = "checkAll" })
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.SiteCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Market)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.eNB)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SiteName)
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.EstimatedStartDate)*@
+            <input type="text" class="datePicker" id="ActualStartDate1" placeholder="Actual Start ">
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.ActualEndDate)*@
+            <input type="text" class="datePicker" id="ActualEndDate1" placeholder="Actual End ">
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.EstimatedStartDate)*@
+            <input type="text" class="datePicker" id="EstimatedStartDate1" placeholder="Estimated Start ">
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.ActualEndDate)*@
+            <input type="text" class="datePicker" id="EstimatedEndDate1" placeholder="Estimated End ">
+        </th>
+
+        <th>
+            @*@Html.TextBox("PlannedDate1", "",htmlAttributes:new { @class= "planDateCheck", @value="01/01/2018" })onblur="applyPlanDate()"   *@
+            <input type="text" class="datePicker" id="PlannedDate1" placeholder="Plan Date">
+        </th>
+        
+        <th>
+            @*@Html.DisplayNameFor(model => model.TargetDate)*@
+            <input type="text" class="datePicker" id="TargetDate1"  placeholder="Target Date">
+        </th>
+
+      
+        <th>
+            @*@Html.DisplayNameFor(model => model.Status)*@
+            @Html.DropDownList("StatusId", new SelectList(ViewBag.StatusId, "Value", "Text", ViewBag.StatusId), htmlAttributes: new { @class = "SelectedListStatus" })
+        </th>
+
+        <th>
+            @Html.DisplayName("Assign Resources")
+            @*@Html.DropDownList("UsersId", new SelectList(ViewBag.UsersId, "Value", "Text", ViewBag.UsersId), htmlAttributes: new { @class = "lstUsers SelectedListUsers", @multiple = true })*@
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @*<input type="checkbox" name="siteIds" id="siteIds" value="' + data[i].ProjectSiteId + '" />*@
+                @Html.CheckBoxFor(modelItem => item.CheckAll, new { @Name = "siteIds", @class = "checkAll" })
+                @Html.HiddenFor(modelItem => item.ProjectSiteId, htmlAttributes: new { @class = "ProjectSiteId" })
+                @Html.HiddenFor(modelItem => item.ProjectId, htmlAttributes: new { @class = "ProjectId" })
+                @Html.HiddenFor(modelItem => item.TaskId, htmlAttributes: new { @class = "TaskId" })
+
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.SiteCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Market)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.eNB)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SiteName)
+            </td>
+            <td>
+                @Html.TextBoxFor(modelItem => item.ActualStartDate, new { @class = "datePicker ActualStartDate" })
+            </td>
+            <td>
+                @Html.TextBoxFor(modelItem => item.ActualEndDate, new { @class = "datePicker ActualEndDate" })
+            </td>
+            <td>
+                @Html.TextBoxFor(modelItem => item.EstimatedStartDate, new { @class = "datePicker EstimatedStartDate" })
+            </td>
+            <td>
+                @Html.TextBoxFor(modelItem => item.EstimatedEndDate, new { @class = "datePicker EstimatedEndDate" })
+            </td>
+            <td>
+                @Html.TextBoxFor(modelItem => item.PlannedDate, new { @class = "datePicker PlannedDate" })
+            </td>
+        
+            <td>
+                @Html.TextBoxFor(modelItem => item.TargetDate, new { @class = "datePicker TargetDate" })
+            </td>
+          
+            <td>
+                @Html.DropDownListFor(modelItem => item.StatusId, new SelectList(@item.SelectedListStatus, "Value", "Text", item.SelectedListStatus), "Select Status", htmlAttributes: new { @class = "SelectedListStatus" })
+            </td>
+            <td>
+                <select id="SelectedListUsers" class="form-control SelectedListUsers" multiple>
+                    @foreach (var itemn in item.Clients)
+                    {
+                        <optgroup label="@itemn.ClientName">
+                            @foreach (var itemrole in itemn.userRolesList)
+                            {
+                                <optgroup label="@itemrole.RoleName">
+                                    @foreach (var itemuser in itemrole.userList)
+                                    {
+                                        <option value="@itemuser.UserId">@itemuser.FirstName @itemuser.LastName</option>
+                                    }
+                                </optgroup>
+                            }
+                        </optgroup>
+                    }
+                </select>
+
+                @*@Html.DropDownListFor(modelItem => item.ListCompanyUsers, new SelectList(@item.ListCompanyUsers, "ClientId", "ClientName", item.ListCompanyUsers), new { @class = "example lstUsers SelectedListUsers", @multiple = true })*@
+            </td>
+        </tr>
+    }
+
+</table>
+
+
+<div id="alert"></div>
+
+<br />
+
+
+@*</form>*@
+
+<script type="text/javascript" language="javascript">
+    $(function () {
+        $("#checkAll").click(function () {
+            debugger
+            if ($(this).is(':checked')) {
+                $("input[name='siteIds']").prop("checked", true);
+            }
+            else {
+                $("input[name='siteIds']").prop("checked", false);
+            }
+        });
+
+        $("input[name='siteIds']").click(function () {
+            if ($("input[name='siteIds']").length == $("input[name='siteIds']:checked").length) {
+                $("#checkAll").attr("checked", "checked");
+            }
+            else {
+                $("#checkAll").prop("checked", false);
+            }
+        });
+    });
+    
+
+
+    //--------------------------------------------------
+    $("#PlannedDate1").on('change', function () {
+        applyPlanDate();
+    });
+
+    function applyPlanDate() {
+        var plnDate = $("#PlannedDate1").val();
+        $('.PlannedDate').each(function () {
+            $(this).val(plnDate);
+        });
+    }
+
+    //--------------------------------------------------
+    $("#EstimatedStartDate1").on('change', function () {
+        applyEstimatedStartDate();
+    });
+    $("#ActualStartDate1").on('change', function () {
+        applyActualStartDate();
+    });
+
+
+    function applyEstimatedStartDate() {
+        var startDate = $("#EstimatedStartDate1").val();
+        $('.EstimatedStartDate').each(function () {
+            $(this).val(startDate);
+        });
+    }
+
+    function applyActualStartDate() {
+        var startDate = $("#ActualStartDate1").val();
+        $('.ActualStartDate').each(function () {
+            $(this).val(startDate);
+        });
+    }
+
+    //--------------------------------------------------
+    $("#TargetDate1").on('change', function () {
+        applyTargetDate();
+    });
+
+    function applyTargetDate() {
+        var targetDate = $("#TargetDate1").val();
+        $('.TargetDate').each(function () {
+            $(this).val(targetDate);
+        });
+    }
+
+    //--------------------------------------------------
+    $("#EstimatedEndDate1").on('change', function () {
+        applyEstimatedEndDate();
+    });
+    $("#ActualEndDate1").on('change', function () {
+        applyActualEndDate();
+    });
+
+    function applyActualEndDate() {
+        var endDate = $("#ActualEndDate1").val();
+        $('.ActualEndDate').each(function () {
+            $(this).val(endDate);
+        });
+    } function applyEstimatedEndDate() {
+        var endDate = $("#EstimatedEndDate1").val();
+        $('.EstimatedEndDate').each(function () {
+            $(this).val(endDate);
+        });
+    }
+
+    ////------------------------------------
+    //function applyPlanDate() {
+    //    var x = document.getElementById("PlannedDate1");
+    //    var vals = x.value;
+    //    $('.PlannedDate').each(function () {
+    //        $(this).val(vals);
+    //    });
+    //}
+    ////-----------------------
+    //function applyStartDate() {
+    //    var x = document.getElementById("StartDate1");
+    //    var vals = x.value;
+    //    $('.EstimatedStartDate').each(function () {
+    //        $(this).val(vals);
+    //    });
+    //}
+    ////-----------------------
+    //function applyTargetDate() {
+    //    var x = document.getElementById("TargetDate1");
+    //    var vals = x.value;
+    //    $('.TargetDate').each(function () {
+    //        $(this).val(vals);
+    //    });
+    //}
+    ////-----------------------
+    //function applyEndDate() {
+    //    var x = document.getElementById("EndDate1");
+    //    var vals = x.value;
+    //    $('.ActualEndDate').each(function () {
+    //        $(this).val(vals);
+    //    });
+    //}
+
+    ////-----------------------------------------
+
+    $("#StatusId").change(function () {
+        var val = $(this).val();
+        $('.SelectedListStatus').each(function () {
+            $(this).val(val);
+        });
+    });
+
+    $("#UsersId").change(function () {
+        var val = $(this).val();
+        $('.SelectedListUsers').each(function () {
+            $(this).val(val);
+        });
+    });
+
+    // apply css and js plugins on select option
+    $(function () {
+        $(".SelectedListUsers").multiselect({ enableClickableOptGroups: true, includeSelectAllOption: true });
+    });
+</script>

@@ -1,0 +1,227 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+<div class="box box-solid" ng-controller="Store" ng-app="app">
+    <div class="box-header with-border boxHeader" style="background-color:rgba(52, 130, 174, 0.89)">
+        <h2 class="box-title" style="color:white">Store</h2>
+    </div>
+    <div class="box-body">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#Pending">pending</a></li>
+            <li><a data-toggle="tab" href="#Approved">Approved</a></li>
+           
+        </ul>
+
+        <div class="tab-content">
+            <div id="Pending" class="tab-pane fade in active">
+                <div class="box box-solid">
+                    <div class="box-header with-border boxHeader" >
+                        <button class="btn btn-sm btn-success pull-right" ng-click="Approve()">Approve</button>
+                    </div>
+                    <div class="box-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>User</th>
+                                    <th>App Name</th>
+                                    <th>Category</th>
+                                    <th><input class="selectall" value="0" type="checkbox"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="s in stores">
+                                    <td><label class="label label-primary">{{s.PinGenerateDate | date :  "dd.MM.y"}}</label></td>
+                                    <td>{{s.FirstName}}&nbsp;{{s.LastName}}</td>
+                                    <td>{{s.App_Name}}</td>
+                                    <td>{{s.App_Category}}</td>
+                                    <td>
+                                        <input value="{{s.UserId}},{{s.TypeValue}}" type="checkbox">
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                            
+
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div id="Approved" class="tab-pane fade">
+                <div class="box box-solid">
+                    <div class="box-header with-border boxHeader">
+                        <input  ng-model="_date" style="width:170px !important;" type="date"  class="form-control pull-right hidden">
+                        </div>
+                    <div class="box-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>User</th>
+                                    <th>App Name</th>
+                                    <th>Category</th>
+                                </tr>
+                            </thead>
+                            <tbody  @*| dateRange :_date:_date*@>
+                                <tr ng-repeat="s in approves ">
+                                    <td><label class="label label-success">{{s.PinGenerateDate | date :  "dd.MM.y"}}</label></td>
+                                    <td>{{s.FirstName}}&nbsp;{{s.LastName}}</td>
+                                    <td>{{s.App_Name}}</td>
+                                    <td>{{s.App_Category}}</td>
+                                </tr>
+
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+         
+
+       
+
+    </div>
+</div>
+
+<script>
+    var app = angular.module('app', []);
+    app.directive('datepicker', function () {
+
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModelCtrl) {
+                $(function () {
+                    element.datepicker({
+                        dateFormat: 'yyyy/mm/dd',
+                        onSelect: function (date) {
+                            scope.$apply(function () {
+                                ngModelCtrl.$setViewValue(date);
+                            });
+                        }
+                    });
+                });
+            }
+        }
+    });
+    app.controller('Store', function ($scope, $http) {
+        $scope.currentPage = 0;
+        $scope.pageSize = '20';
+    //+++++++++++++++++++++++++++++++++++++++
+    GetFormattedDateR = function (todayTime) {
+       var abc = todayTime.split("T");
+        var def = abc[0].split("-");
+         var month = def[1]
+        var day = def[2]
+        var year = def[0]
+        if (day.toString().length == 1)
+            day = "0" + day;
+        if (month.toString().length == 1)
+            month = "0" + month;
+        return day + "-" + month + "-" + year;
+    }
+
+    GetFormattedDate = function (todayTime) {
+        // var todayTime = new Date();
+        var month = todayTime.getMonth() + 1;
+        var day = todayTime.getDate();
+        var year = todayTime.getFullYear();
+        if (day.toString().length == 1)
+            day = "0" + day;
+        if (month.toString().length == 1)
+            month = "0" + month;
+        return day + "-" + month + "-" + year;
+    }
+
+    var date = new Date();
+    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    //-----------------------------------
+  GetList = function () {
+        $http({
+            method: 'GET',
+            url: '/Store/stores'
+        }).then(function successCallback(response) {
+           $scope.stores = $.parseJSON(response.data.response.Value);
+        }, function errorCallback(response) {
+
+        });
+    }
+    $scope.Approve = function () {
+       $('input[type=checkbox]:checked').each(function () {
+            var A =  $(this).val();
+            if(A!="0")
+            {
+             A =  A.split(",");
+             var App = A[1];
+             var User = A[0];
+             var url = "http://localhost:18460/swi/Approve/AppRequest?AppId="+App+"&UserId="+User;
+                $http({
+                    method: 'POST',
+                    url: url
+                }).then(function successCallback(response) {
+                    console.log("success", response);
+                }, function errorCallback(response) {
+                    console.log("error", response);
+                });
+            }
+        });
+        $.notify('Approved !', { type: 'success', color: "#ffffff", background: "#D44950", blur: 0.6 });
+        setTimeout(function () { GetList(); }, 2000);
+      
+    }
+    GetList();
+    $scope.$watch("_date", function (newValue, oldValue) {
+        console.log(newValue);
+        return
+       if(newValue != undefined)
+       {
+           $http({
+               method: 'POST',
+               url: '/Store/Search',
+               data: { 'date': newValue }
+
+           }).then(function successCallback(response) {
+               $scope.approves = $.parseJSON(response.data.response.Value);
+           }, function errorCallback(response) {
+
+           });
+       }
+    });
+});
+
+app.filter('dateRange', function () {
+    return function (items, fromDate, toDate) {
+        var filtered = [];
+ var a;
+        if (fromDate != undefined) {
+             a = GetFormattedDate(toDate)
+          
+        }
+
+      
+        angular.forEach(items, function (item) {
+            var abc = Date.parse(item.PinGenerateDate);
+            var b = GetFormattedDateR(item.PinGenerateDate);
+            if (b == a || fromDate == undefined  //|| (item.StartDate >= a && item.StartDate <= b)
+                ) {
+               filtered.push(item);
+            }
+        });
+        return filtered;
+    };
+});
+</script>
+<script>
+    $('.selectall').click(function () {
+        $('input:checkbox').not(this).prop('checked', this.checked);
+});
+</script>

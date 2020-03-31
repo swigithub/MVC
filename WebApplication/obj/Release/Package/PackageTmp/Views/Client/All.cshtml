@@ -1,0 +1,156 @@
+﻿@using SWI.Libraries.AirView.Entities
+
+@model IEnumerable<AD_Clients>
+@{
+    ViewBag.Title = "All";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header" style="background-color:#3c8dbc" >
+            <header  style="color:white" role="heading">
+                <i class="fa fa-list"></i>&nbsp;
+                <h3 class="box-title">Clients List</h3>
+                <a href="@Url.Action("New","Client",new { title="New" })" class="btn btn-xs btn-info btn-flat pull-right">New Client</a>
+            </header>  
+             </div>
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-bordered table-striped" id="tbl-user">
+                    <thead style="background-color:rgba(53, 124, 165, 0.89);color:white">
+                        <tr>
+                            <th data-column-id="Logo" data-formatter="Logo">
+                                Logo
+                            </th>
+                            <th data-column-id="ClientName">
+                                Client Name
+                            </th>
+                            <th data-column-id="ClientType">
+                                Client Type
+                            </th>
+                            <th data-column-id="PClient">
+                                PClient
+                            </th>
+                            <th data-column-id="ClientId" data-formatter="Active" >
+                                Active
+                            </th>
+                            <th data-column-id="Id" data-formatter="action" >
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @*@foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@item.Logo" class="img-responsive" height="50" width="60" />
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ClientName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ClientType)
+                                </td>
+                                <td >
+                                    @Html.DisplayFor(modelItem => item.PClient)
+                                </td>
+                                
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsActive)
+                                </td>
+                                <td>
+                                    <a href="/Client/Edit?Id=@item.ClientId" Client-Id="@item.ClientId"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                </td>
+                            </tr>
+                        }*@
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+<script src="~/Content/js/Plugins/bootgrid/jquery.bootgrid.js"></script>
+<script src="~/Content/js/Plugins/ContextMenu/contextMenu.min.js"></script>
+    <script>
+        var loading = $.loading();
+        ///active deactive
+        function IsActive(id) {
+            $.ajax({
+                url: '/Client/IsActive',
+                data: { Id: id, IsActive: true },
+                type: 'POST',
+                dataType: "json",
+                success: function (response) {
+                    if (response.Status == "danger") {
+                        // $.notify(response.Message, { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                    else {
+                        // $.notify(response.Message, { type: "success", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                    }
+                }
+     , error: function () {
+         // $.notify("Error occured !", { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+
+     }
+            });
+            return false
+        }
+        $(function () {
+
+            var grid = $("#tbl-user").bootgrid({
+                ajax: true,
+                sorting: false,
+                post: function () {
+                    return {
+                        //id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
+                    };
+                },
+                url: "/Client/Paging",
+                searchSettings: {
+                    delay: 100,
+                    characters: 3
+                },
+                formatters: {
+                    action: function (column, row) {
+                        return '<a href="/Client/Edit?Id=' + row.ClientId +'">Edit</a>'
+                    },
+                    Logo: function (column, row) {
+                        return '<img src="'+row.Logo+'" class="img-responsive" height="50" width="60" />'
+                    },
+                    Active: function (column, row) {
+                        if (row.IsActive == true) {
+                            return '<input type="checkbox" onclick="IsActive('+row.ClientId+')" class="IsActive"   checked="true" name="IsActive1" />'
+
+                        }
+                        else {
+                            return '<input type="checkbox" onclick="IsActive('+row.ClientId+')" class="IsActive"   name="IsActive1" />'
+
+                        }
+                    }
+                },
+            });
+            $('.column-header-anchor').css('color', 'white');
+
+            $("#tbl-user th").hover(function () {
+                $(this).css('background-color', 'rgba(53, 124, 165, 0.89)');
+            });
+
+            
+
+        });
+      
+</script>
+}
+@section style{
+    @Styles.Render("~/AdminLTE/plugins/datatables/css")
+    <link href="~/Content/js/Plugins/bootgrid/jquery.bootgrid.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/ContextMenu/contextMenu.min.css" rel="stylesheet" />
+}

@@ -1,0 +1,437 @@
+﻿@using System.Data;
+@{ 
+    var Entity = TempData["ProjectEntity"] as AirView.DBLayer.Security.Entities.Sec_UserProjects;
+    TempData.Keep("ProjectEntity");
+}
+
+<style>
+    tr .dataTables_wrapper {
+        padding-left: 5px;
+        border-left: 4px solid #ddd;
+    }
+</style>
+<table class="table table-striped tbl_@ViewBag.TaskId" @*id="tbl_@ViewBag.TaskId"*@>
+
+    <thead>
+        <tr>
+            <th class="NoExport" style="width:20px;">
+                <label data-siteId="@ViewBag.SiteId" id="siteId" hidden></label>
+                <label data-FACode="@ViewBag.FACode" id="facode" hidden></label>
+            </th>
+            @foreach (DataColumn row in ViewBag.TLGrid.Columns)
+            {
+                if (@row.Caption != "SiteId" && @row.Caption != "Count" && @row.Caption != "TaskId" && @row.Caption != "PTaskId" && @row.Caption != "ProjectId" && @row.Caption != "StatusColor" && @row.Caption != "Task" && @row.Caption != "PriorityColor" && @row.Caption != "AssignTo" && @row.Caption != "StatusId" && @row.Caption != "StageId")
+                {
+                    if (@row.Caption == "Task")
+                    {
+                        <th style="width:220px;"> @row.Caption </th>
+                    }
+                    else if (@row.Caption == "Priority" || @row.Caption == "Status")
+                    {
+                        <th style="width:100px;"> @row.Caption </th>
+                    }
+                    else if (@row.Caption == "TrackerCount" || @row.Caption == "TaskEntryCount")
+                    {
+
+                    }
+                    else
+                    {
+                        <th style="width:120px"> @row.Caption </th>
+                    }
+                }
+            }
+            <th class="NoExport"></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (DataRow row in ViewBag.TLGrid.Rows)
+        {
+            var Milestone = @row["Task"];
+            //  var ForecastDate = @row["Forecast Date"];
+            //var ForecastDate = string.IsNullOrEmpty(@row["Forecast Date"].ToString()) ? (DateTime?)null : DateTime.Parse(@row["Forecast Date"].ToString());
+            var PlanDate = @row["Plan"];
+            var ActualEndDate = @row["Actual End"];
+            var ActualStartDate = @row["Actual Start"];
+            var ForecastEndDate = @row["Forecast End"];
+            var ForecastStartDate = @row["Forecast Start"];
+            var TargetDate = @row["Target"];
+            var StatusId = @row["StatusId"];
+            var AssignTo = @row["AssignTo"];
+
+
+            <tr>
+                @if (@row["Count"].ToString() == "0")
+                {
+                    <td class="NoExport" data-ProjectId="@row.ItemArray[1]" data-MilestobeId="@row.ItemArray[0]" data-LogType="task"></td>
+                }
+                else
+                {
+                    <td class="details-control NoExport" data-siteId="@row["SiteId"].ToString()" data-ProjectId="@row.ItemArray[1]" data-MilestobeId="@row.ItemArray[0]" data-LogType="task"></td>
+                }
+                @foreach (DataColumn col in ViewBag.TLGrid.Columns)
+                {
+                    if (col.ColumnName != "SiteId" && col.ColumnName != "Count" && col.ColumnName != "TaskId" && col.ColumnName != "PTaskId" && col.ColumnName != "ProjectId" && col.ColumnName != "StatusColor" && col.ColumnName != "PriorityColor" && col.ColumnName != "Task" && col.ColumnName != "StatusId" && col.ColumnName != "AssignTo" && col.ColumnName != "StageId")
+                    {
+                        if (col.ColumnName == "Status")
+                        {
+                            <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@row["StatusColor"]">@row["Status"]</span></td>
+                        }
+                        else if (col.ColumnName == "TrackerCount")
+                        {
+                        }
+                        else if (col.ColumnName == "TaskEntryCount")
+                        {
+                        }
+                        else if (col.ColumnName == "Priority")
+                        {
+                            <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@row["PriorityColor"]">@row["Priority"]</span></td>
+                        }
+                        else
+                        {
+                            if (col.DataType == typeof(System.DateTime))
+                            {
+                                DateTime colVal;
+                                if (row[col.ColumnName].ToString() != "" && row[col.ColumnName].ToString() != "1/1/1900 12:00:00 AM") 
+                                {
+                                    colVal = Convert.ToDateTime(row[col.ColumnName]);
+                                    <td>@colVal.ToShortDateString()</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                            else
+                            {
+                                <td>@row[col.ColumnName]</td>
+                            }
+                        }
+                    }
+
+                }
+                <td>
+                    @if (ViewBag.AllowUri("/Project/Task/TaskEntry"))
+                    {
+                        if (@row["TaskEntryCount"].ToString() != "0")
+                        {
+
+                                    <a class="customfrm" title="Data Entry" data-siteId="@row["SiteId"].ToString()" data-toggle="modal" href="#" data-Task="@row["Task"]" data-MilestobeId="@row["TaskId"]">
+                            <span><img src = "/Content/Images/Common/paramform_x32.png" alt="View Report" style="" /></span>
+                        </a>
+                            }
+                        }
+                    @if (ViewBag.AllowUri("/Project/Issue/New"))
+                    {
+                        <a class="modal-open siteid" data-backdrop="static" data-keyboard="false" title="Create Issue Ticket" data-Task="@row["Task"]"data-siteId="@row["SiteId"].ToString()" data-ProjectSiteId="@row["TaskId"]" data-toggle="modal" data-target="#IssueModal" style="cursor:pointer;">
+                            <span><img src="/Content/Images/Common/reportissue_x32.png" alt="View Report" style="" /></span>
+                        </a>
+                    }
+                    @if (ViewBag.AllowUri("/Project/Task/PlanningNew"))
+                    {
+                        <a class="modal-open stages" data-taskStageId="@Convert.ToString(row["StageId"])" data-siteId="@row["SiteId"].ToString()" data-Title="@row["Title"]" title="Task Planning" data-TaskId="@row["TaskId"]" data-PTaskId="@row["PTaskId"]" data-Milstone="@Milestone" data-AssignTo="@AssignTo" data-ForecastEndDate="@ForecastEndDate" data-ForecastStartDate="@ForecastStartDate" data-PlanDate="@PlanDate" data-ActualEndDate="@ActualEndDate" data-ActualStartDate="@ActualStartDate" data-StatusId="@StatusId" data-TargetDate="@TargetDate" data-ProjectId="@row["ProjectId"]" data-toggle="modal" data-target="#PlanningModal" style="cursor:pointer;">
+                            <span><img src="/Content/Images/Common/planning_x32.png" alt="View Report" style="" /></span>
+                        </a>
+                    }
+                    @if (ViewBag.AllowUri("/Project/Tracker/Index"))
+                    {
+                    if (@row["TrackerCount"].ToString() != "0")
+                    {
+                                        <a id="Trackersss" class="modal-open Trackersss" data-Title="@row["Task"]" data-siteId="@row["SiteId"].ToString()" title="Task Trackers" data-Task="@row["Task"]" data-TaskId="@row["TaskId"]" data-PTaskId="@row["PTaskId"]" data-Milstone="@Milestone" data-AssignTo="@AssignTo" data-ForecastEndDate="@ForecastEndDate" data-ForecastStartDate="@ForecastStartDate" data-PlanDate="@PlanDate" data-ActualEndDate="@ActualEndDate" data-ActualStartDate="@ActualStartDate" data-StatusId="@StatusId" data-TargetDate="@TargetDate" data-ProjectId="@row["ProjectId"]" data-toggle="modal" data-target="#TrackerModal" style="cursor:pointer;">
+                                            <span><img src="/Content/Images/Common/trackers_x32.png" alt="View Report" style="" /></span>
+                                        </a>
+                        }
+                    }
+                    @*
+                        @if (ViewBag.AllowUri("/Project/Task/StatusChange"))
+                        {
+                            <a class="modal-open stages" title="Change Status" data-TaskId="@row["TaskId"]" data-Milstone="@Milestone" data-ForecastDate="@ForecastDate" data-PlanDate="@PlanDate" data-ActualDate="@ActualDate" data-TargetDate="@TargetDate" data-ProjectId="@row["ProjectId"]" data-toggle="modal" data-target="#ChangeStatus" style="cursor:pointer;">
+                                <span><img src="~/Content/Images/Common/status_x24.png" alt="View Report" style="" /></span>
+                            </a>
+                        }*@
+                    @if (ViewBag.AllowUri("/Project/WorkLog/New"))
+                    {
+                        <a class="worklog" title="Work Log" data-ProjectId="@row["ProjectId"] "data-siteId="@row["SiteId"].ToString()"  data-MilestobeId="@row["TaskId"]" data-LogType="Task" data-toggle="modal" data-target="#LogModal" href="#">
+                            <span><img src="/Content/Images/Common/worklog_x32.png" alt="View Report" style="" /></span>
+                        </a>
+                    }
+
+                    @if (ViewBag.AllowUri("/Project/WorkLog/New"))
+                    {
+                        @*<a class="worklog" title="WorkLog Resources" data-ProjectId="@row["ProjectId"]" data-MilestobeId="@row["TaskId"]" data-LogType="Task" data-toggle="modal" data-target="#WorkLogResourcesModal" href="#">
+                                <span><img height="34" src="~/Content/Images/Common/dot.png" alt="WorkLog Resources" style="margin-right:20px;" /></span>
+                            </a>*@
+
+                        <a class="worklogres" title="Work Log Resources" data-ProjectId="@row["ProjectId"]" data-MilestobeId="@row["TaskId"]"
+                           href="/Project/Dashboard/WorkLogResources" target="_blank" style="margin-left:5px;">
+                            <span><img height="34" src="/Content/Images/Common/resource_x32.png" alt="WorkLog Resources" @*style="margin-right:20px;"*@ /></span>
+                        </a>
+                    }
+                    @if (ViewBag.AllowUri("/Project/Task/TaskAttachments"))
+                    {
+                        
+
+                            <a title="Attachments" class="STAttachments" @*onclick="angular.element(this).scope().OpenAttachmentModal(@row["TaskId"])"*@ data-ProjectId="@row.ItemArray[1]" data-SiteTaskId="@row["TaskId"]" data-MilestobeId="@row.ItemArray[0]" data-LogType="task" @*data-toggle="modal" data-target="#AttachmentModal"*@ href="#">
+                                <span><img src="/Content/Images/icons/file_upload_x32.png" style="" /></span>
+                            </a>
+                       
+                    }
+                    <a id="InnventoryItems" class="modal-open Add-Inventory" data-siteId="@row["SiteId"].ToString()"
+                             data-Title="@row["Task"]" title="Add Inventory" data-Task="@row["Task"]" data-TaskId="@row["TaskId"]"
+                             data-PTaskId="@row["PTaskId"]" data-ProjectId="@row["ProjectId"]" data-toggle="modal" data-target="#InventoryModal" style="cursor:pointer;">
+                        <span><img src="/Content/Images/Common/inventory_32.png" alt="Add Inventory" style="margin-right:20px;" /></span>
+                    </a>
+                    @*<a href="#" class="FloorPlan">
+                            <span><img src="~/Content/Images/Common/edit_x32.png" alt="" style="margin-right:20px;" /></span>
+
+                        </a>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script type="text/javascript">
+   var SSITEID;
+    $(function(){
+        $('.Trackersss').click(function () {
+            let taskId = $(this).attr('data-Task');
+             SSITEID = $(this).attr('data-siteId');
+            let siteId = SSITEID;
+            Strat(taskId,siteId);
+
+        });
+
+    });
+   
+
+    $(function () {
+        $('.Add-Inventory').click(function () {
+            let taskId = $(this).attr('data-Task');
+            let SiteId = $(this).attr('data-siteId');
+            StartInventoryItems(taskId, SiteId);
+        });
+    });
+   
+
+</script>
+
+<script>
+    var worklogdates = '@ViewBag.worklogdays';
+    var selectedDates = [];
+    var currentWeek = [];
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    $(".stages").click(function () {
+        var TskNme = $(this).parent().siblings("td:eq(1)").text();
+        FillLabel($('#lablevalues').attr('data-FACode'), $('#lablevalues').attr('data-SiteName'), TskNme, $('#lablevalues').attr('data-Status'), $('#lablevalues').attr('data-UpdatedBy'), $('#lablevalues').attr('data-UpdatedOn'), $("#btns1").attr('data-text').trim());
+        //$('.labelFacode').html($('#facode').attr('data-FACode'));
+        stages = {
+            ProjectId: $(this).attr('data-ProjectId'), SiteId: $(this).attr('data-siteId'), TaskId: $(this).attr('data-TaskId'), Milestone: $(this).attr('data-Milstone'),
+            ActualEndDate: $(this).attr('data-ActualEndDate'),
+            ActualStartDate: $(this).attr('data-ActualStartDate'),
+            PlannedDate: $(this).attr('data-PlanDate'), ForecastStartDate: $(this).attr('data-ForecastStartDate'), ForecastEndDate: $(this).attr('data-ForecastEndDate'), TargetDate: $(this).attr('data-TargetDate')
+            ,PTaskId: $(this).attr('data-PTaskId'),Title: $(this).attr('data-Title'),Childs: $(this).attr('data-children')
+        }
+        var pId, sId, tskId, AssignTo,TstageId;
+        pId = $(this).attr('data-ProjectId');
+        tskId = $(this).attr('data-TaskId');
+        TaskID = $(this).attr('data-TaskId');
+        sId = $(this).attr('data-siteId');
+        StId = $(this).attr('data-StatusId');
+        TstageId = $(this).attr('data-taskStageId');
+        AssignTo = $(this).attr('data-AssignTo');
+        angular.element(document.getElementById('widget-grid')).scope().getStages(pId, sId, tskId, StId, AssignTo, $(this), TstageId);
+        angular.element(document.getElementById('widget-grid')).scope().GetUsers();
+        angular.element(document.getElementById('widget-grid')).scope().clearfields();
+        angular.element(document.getElementById('widget-grid')).scope().StatusMilestone(stages);
+        angular.element(document.getElementById('widget-grid')).scope().WorkFlowList(parseInt($("#pId").attr("data-ProjectId")), parseInt($(this).attr("data-milstone")), parseInt(TstageId));
+        //$("#PlanningModal").on('shown.bs.modal', function () {
+        //    //$(".TaskStageDropDown").val(TstageId);
+        //    //  $('.TaskStageDropDown option[value="number:' + TstageId + '"]').prop('selected', true);
+
+        //    $(".MilestoneStatus").val($("#MyStatus").val());
+        //    $('.MilestoneStatus option[value="' + $("#MyStatus").val() + '"]').prop('selected', true);
+        //});
+    });
+
+    $('.siteid').click(function () {
+        $('#Issuelbl').text("Task Issue Ticket");
+        var TskNme = $(this).parent().siblings("td:eq(1)").text();
+        FillLabel($('#lablevalues').attr('data-FACode'), $('#lablevalues').attr('data-SiteName'), TskNme, $('#lablevalues').attr('data-Status'), $('#lablevalues').attr('data-UpdatedBy'), $('#lablevalues').attr('data-UpdatedOn'));
+
+        //$('.labelFacode').html($('#facode').attr('data-FACode'));
+        ProjectSiteId = $(this).attr('data-siteId');
+        TaskID = $(this).attr('data-ProjectSiteId');
+        angular.element(document.getElementById('widget-grid')).scope().ResetMultipleAssignids();
+        angular.element(document.getElementById('widget-grid')).scope().GetSiteIssues(TaskID, ProjectSiteId);
+        angular.element(document.getElementById('widget-grid')).scope().GetUsers(@ViewBag.UserId);
+        angular.element(document.getElementById('widget-grid')).scope().GetDefinitions();
+        angular.element(document.getElementById('widget-grid')).scope().GetIssueType();
+        angular.element(document.getElementById('widget-grid')).scope().tickettype("Task Issue");
+        angular.element(document.getElementById('widget-grid')).scope().clearfields();
+
+      
+    });
+
+    $('.worklog').click(function () {
+        $(".worklogdate").val('');
+        $('.dated-input').html("");
+        $('#work-desc').html("");
+        var TskNme = $(this).parent().siblings("td:eq(1)").text();
+        FillLabel2($('#lablevalues').attr('data-FACode'), $('#lablevalues').attr('data-SiteName'), TskNme);
+        //$('.labelFacode').html($('#facode').attr('data-FACode'));
+        angular.element(document.getElementById('widget-grid')).scope().clearfields();
+        workLog = {
+            ProjectId: parseInt($(this).attr('data-ProjectId')), ProjectSiteId: parseInt($(this).attr('data-siteId')), TaskId: parseInt($(this).attr('data-MilestobeId')), LogType: $(this).attr('data-LogType')
+        }
+        angular.element(document.getElementById('widget-grid')).scope().setlogdays(worklogdates);
+        angular.element(document.getElementById('widget-grid')).scope().GetSiteWorkLog($(this).attr('data-MilestobeId'), $(this).attr('data-siteId'), $(this).attr('data-LogType'));
+
+        /* === Current Week  === */
+    
+      
+
+
+
+        /* === Week Button Click Display The Input Field For The Specific Day === */
+        $("body").on("click", ".current-week button", function () {
+            let date = $(this).attr('data-fulldate');
+            date = new Date(date);
+            date = date.getDate() + "-" + monthNames[date.getMonth()] + "-" + date.getFullYear();
+            let hour = $(this).attr('data-hours');
+            let WLogId = $(this).attr('data-WLogId');
+            let WLogType = $(this).attr('data-WLogType');
+            let approval = $(this).attr('data-approved');
+            let description = $(this).attr('data-description');
+            $(".dated-input").find('span').detach();
+            $("#work-desc").find('section').detach();
+            if (approval == "true") {
+                $(".dated-input").append(`<span><i>${date}</i><input required type="number" min="0" max="24"  value="${hour}" data-WLogId="${WLogId}" data-WLogType="${WLogType}"  data-isApproved="${approval}" data-date="${date}" readonly></span>`);
+                $("#work-desc").append(`<section><label class="label">Comment <sup style="color:red">*</sup></label><div class="textarea"><textarea rows="3" maxlength="300" ng-model="Description" placeholder="Description" id="logdes"  class ="form-control ng-pristine ng-untouched ng-valid ng-empty" readonly>${description}</textarea></div></section>`);
+            } else {
+                $(".dated-input").append(`<span><i>${date}</i><input type="number" required min="0" max="24"  value="${hour}" data-WLogId="${WLogId}"   data-WLogType="${WLogType}" data-isApproved="${approval}" data-date="${date}" ></span>`);
+                $("#work-desc").append(`<section><label class="label">Comment <sup style="color:red">*</sup></label><div class="textarea"><textarea required rows="3" maxlength="300" ng-model="Description" placeholder="Description" id="logdes"  class ="form-control ng-pristine ng-untouched ng-valid ng-empty">${description}</textarea></div></section>`);
+            }
+        });
+
+        var selectabledays = 5;
+        /* === PickDate Initialize === */
+        $('.pickdate').datepicker({
+            multidate: selectabledays
+
+        });
+
+        /* === Append Custom Button In The Calendar === */
+        $('.pickdate').datepicker().on("show", function (e) {
+            let length = $(".apply-dates").length;
+            if (length < 1) {
+                $(".datepicker-dropdown").append(`<div class="apply-dates"><p>* Pick upto ${selectabledays} days</p><button  class="btn btn-xs btn-default log-hours" >Log Hours</button></div>`);
+            }
+        });
+
+        /* === Click Log Hours After Selecting Dates From Calendar  === */
+        $("body").on("click", ".log-hours", function () {
+            /* === Get Selected Dates From Calendar  === */
+            var getDates = $('.pickdate').datepicker('getDates');
+            angular.element(document.getElementById('widget-grid')).scope().GetSelectedSiteWorkLog(getDates, $('.worklog').attr('data-logtype'));
+            /* === Dummy JSON In Return From Selected Dates === */
+
+            $('.pickdate').datepicker('hide');
+            $(".dated-input").find('span').detach();
+
+            /* === Paint The Hours Div According To The Result === */
+            $.each(selectedDates, function (i, e) {
+                let date = moment(selectedDates[i].date);
+                date = new Date(date);
+                date = date.getDate() + "-" + monthNames[date.getMonth()] + "-" + date.getFullYear();
+                let approval = selectedDates[i].isApproved;
+                let description = selectedDates[i].description;
+                $("#work-desc").find('section').detach();
+                if (approval == true) {
+                    $(".dated-input").append(`<span><i>${date}</i><input required type="number" min="0" max="24"  value="${selectedDates[i].hours}"   data-WLogType="${selectedDates[i].WLogType}" data-WLogId="${selectedDates[i].WLogId}" data-isApproved="${selectedDates[i].isApproved} " data-date="${selectedDates[i].date} " readonly></span>`);
+                    if (selectedDates.length == 1) {
+                        $("#work-desc").append(`<section><label class="label">Comment <sup style="color:red">*</sup></label><div class="textarea"><textarea rows="3" maxlength="300" ng-model="Description" placeholder="Comment" id="logdes" class ="form-control ng-pristine ng-untouched ng-valid ng-empty" readonly>${description}</textarea></div></section>`);
+                    }
+                } else {
+                    $(".dated-input").append(`<span><i>${date}</i><input required type="number" min="0" max="24"  value="${selectedDates[i].hours}" data-WLogType="${selectedDates[i].WLogType}" data-isApproved="${selectedDates[i].isApproved} " data-date="${selectedDates[i].date} " ></span>`);
+                    if (selectedDates.length == 1) {
+                        $("#work-desc").append(`<section><label class="label">Comment <sup style="color:red">*</sup></label><div class="textarea"><textarea  required rows="3" maxlength="300" ng-model="Description" placeholder="Comment" id="logdes"  class ="form-control ng-pristine ng-untouched ng-valid ng-empty">${description}</textarea></div></section>`);
+                    }
+                }
+            });
+
+        });
+    });
+
+        
+    /* ================= Work Log End ===================== */
+
+
+
+    //$('.customform').click(function () {
+    //   FillLabel2($('#lablevalues').attr('data-FACode'), $('#lablevalues').attr('data-CommonId'));
+    //   var TaskId = parseInt($(this).attr('data-Task'))
+    //    debugger
+    //   angular.element(document.getElementById('widget-grid')).$scope.taskEntrySiteId = $(this).attr('data-siteId');
+    //    //$(".labelFacode").empty();
+    //    //$('.labelFacode').text($('#facode').attr('data-FACode'));
+    //    TskID = TaskId;
+    //    $.ajax({
+    //        url: '/Project/Template/GetFormBuilderRenderedHTML?FormTypeId=Milestone&NodeId=' + TaskId + '&TemplateId=""&SiteId=' + $(this).attr('data-siteId'),
+    //        type: 'Get',
+    //        async: false,
+    //        // dataType: 'text',
+    //        //   processData: false,
+    //        success: function (data) {
+    //           $('#CustomForm').html(data.FormHtml);
+
+    //            $('#FormModal').modal({
+    //                show: 'true'
+    //            });
+    //            if (data == "") {
+    //            }
+    //            else {
+    //                milestone = data;
+    //            }
+    //        }
+    //    });
+
+    //    angular.element(document.getElementById('widget-grid')).scope().GetTaskEntries($(this).attr('data-siteId'), TskID);
+        
+    //});
+
+    var tbl = $(".tbl_@ViewBag.TaskId").DataTable({ "paging": false, "ordering": false, "info": false, "searching": false, Filter: false });
+    $(".tbl_@ViewBag.TaskId").on("click", "td.details-control", function (e) {
+         e.stopImmediatePropagation();
+        var tr = $(this).closest("tr");
+        var row = tbl.row(tr);
+        //console.log(tbl);
+        //console.log($(this).closest("tr"))
+        //console.log(row)
+        if ($(this).closest("tr").hasClass("shown")) {
+            row.child.hide();
+            tr.next().hide();
+            tr.removeClass('shown');
+
+        } else {
+            var temp;
+            temp = format(parseInt($("#pId").attr("data-ProjectId")), $(this).attr("data-MilestobeId"), $(this).attr('data-siteId'));
+            tr.after("<tr> <td colspan='12' style='width:100%'>"+temp+"</td></tr>")
+         //   row.child(temp).show();
+            tr.addClass("shown");
+        }
+        return false;
+    });
+    $('.STAttachments').click(function () {
+        var TskNme = $(this).parent().siblings("td:eq(1)").text();
+        FillLabel2($('#lablevalues').attr('data-FACode'), $('#lablevalues').attr('data-SiteName'), TskNme);
+        $(".projectId").val($("#pId").attr("data-ProjectId"));
+        $(".SiteTaskId").val($(this).attr('TaskId'));
+        $("#AttachmentModal").modal("show");
+        angular.element(document.getElementById('widget-grid')).scope().GetAttachs($(this).attr('data-SiteTaskId'));
+        
+    });
+  
+</script>
+@*$(".MilestoneStatus").val($("#MyStatus").val());*@
+         

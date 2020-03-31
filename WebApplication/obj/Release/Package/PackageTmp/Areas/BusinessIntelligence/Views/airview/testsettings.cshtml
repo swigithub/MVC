@@ -1,0 +1,331 @@
+<div class="row grid muuri page" ng-controller="grids" data-pagename="testsettings">
+	<div class="col-xl-12 col-lg-12" data-position="1">
+		<div class="widget">
+			<div class="title-bar" style="background:{{titlebg}};">
+				<h3><i class="fa fa-exclamation-triangle"></i>
+					<span class="update-name">{{widgetname_01}}</span>
+					<span class="cache-value"></span>
+					<input ng-model="widgetname_01" ng-init="widgetname_01='Test Settings & Configurations'" type="text" />
+				</h3>
+
+				<div class="buttons-sets">
+					<a class="custom-btn icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+					<a class="custom-btn icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+					<a class="custom-btn icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+					<ul class="opt-dropdown" >
+						<li class="has-children"><a href="#" title="">Panel Size</a>
+							<ul class="column-size">
+								<li><a class="fivesixth" href="#" title="">Five Sixth <img src="images/fivesixth.png" alt=""> </a></li>
+								<li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+							</ul>
+						</li>
+						<li class="has-children"><a href="#" title="">Panel Color</a>
+							<ul class="panel-color">
+								<li>
+									<a href="#" title=""><input class="bgcolor"  type="text"  value="#fff" ng-model="titlebg"  ng-init="titlebg = '#fff'"  />
+									<div class="colorpickerwrapper style2"><div colorpicker></div></div></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="content-wrapper">
+				<form action="">
+					<div class="row align-items-start">
+						<div class="col-lg-2 col-md-12">
+							<label>Client</label>
+							<select select2>
+								<option>T-Mobile</option>
+								<option>ATT</option>
+								<option>Verizon</option>
+								<option>Sprint</option>
+								<option>C-Spire</option>
+							</select>
+						</div>
+						<div class="col-lg-2 col-md-12">
+							<label>Market</label>
+							<select select2>
+								<option value="">Tampa</option>
+								<option value="">Orlando</option>
+								<option value="">Mahwah</option>
+								<option value="">New Jersey</option>
+								<option value="">Birmingham</option>
+								<option value="">Atlanta</option>
+								<option value="">JacksonVille</option>
+								<option value="">Dallas</option>
+								<option value="">Memphis</option>
+								<option value="">Houston</option>
+								<option value="">Austin</option>
+								<option value="">Mobile</option>
+								<option value="">Chicago</option>
+								<option value="">Seattle</option>
+								<option value="">Detroit</option>
+								<option value="">Indianapolis</option>
+								<option value="">Cincinnati</option>
+								<option value="">Kansas</option>
+								<option value="">Oklahoma</option>
+								<option value="">Tulsa</option>
+								<option value="">Wichita</option>
+								<option value="">Omaha</option>
+								<option value="">Arkansas</option>
+								<option value="">St. Louis</option>
+								<option value="">Illinois/Wisconsin</option>
+								<option value="">Northern Plains</option>
+								<option value="">Greater Midwest</option>
+								<option value="">NY/NNJ</option>
+								<option value="">Mchigan/Indiana</option>
+								<option value="">E. Pa/S. Nj/De</option>
+								<option value="">Ohio/Western Pennsylvania</option>
+								<option value="">Washington Dc-Baltimore</option>
+								<option value="">Desert Southwest</option>
+								<option value="">Pacific Northwest</option>
+								<option value="">San Diego/Las Vegas</option>
+								<option value="">Rocky Mountain Region</option>
+							</select>
+						</div>
+						<div class="col-lg-2 col-md-12">
+							<label>Network Mode</label>
+							<select  select2>
+								<option value="">-Select NetworkMode-</option>
+								<option value="">WCDMA</option>
+								<option value="">LTE</option>
+								<option value="">NA</option>
+								<option value="">GSM</option>
+							</select>
+						</div>
+						<div class="col-lg-2 col-md-12">
+							<label>Band</label>
+							<select select2>
+								<option value="">-Band-</option>
+								<option value="">UMTS 1900</option>
+								<option value="">UMTS 2100</option>
+							</select>
+						</div>
+					</div>
+				</form>
+
+				<hr>
+
+				<div class="toggle dark" toggle>
+					<div class="toggle-item">
+						<h2>RF THRESHOLD</h2>
+						<div class="content">
+							<div class="table-container big-headings">
+								<table>
+									<thead>
+										<tr>
+											<th>GSM</th>
+											<th>WCDMA</th>
+											<th>LTE</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="tablerow ">
+											<td>
+												<form action="">
+													<div class="row align-items-start">
+														<div class="col-lg-4 col-md-12">
+															<label>RSSI (dBm)</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-4 col-md-12">
+															<label>RxQual</label>
+															<input type="text" />
+														</div>
+													</div>
+												</form>
+											</td>
+											<td>
+												<form action="">
+													<div class="row align-items-start">
+														<div class="col-lg-4 col-md-12">
+															<label>RSCP (dBm)</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-4 col-md-12">
+															<label>Ec/lo</label>
+															<input type="text" />
+														</div>
+													</div>
+												</form>
+											</td>
+											<td>
+												<form action="">
+													<div class="row align-items-start">
+														<div class="col-lg-4 col-md-12">
+															<label>RSCP (dBm)</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-4 col-md-12">
+															<label>RSRQ (dB)</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-4 col-md-12">
+															<label>CINR (dB)</label>
+															<input type="text" />
+														</div>
+													</div>
+												</form>
+
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div><!-- Toggle Item -->
+					<div class="toggle-item">
+						<h2>TEST CONFIGURATION</h2>
+						<div class="content">
+							<div class="table-container big-headings equal-columns">
+								<table>
+									<thead>
+										<tr>
+											<th>Ping / Latency Test</th>
+											<th>Connection Setup</th>
+											<th>MO/MT</th>
+											<th>Throughput</th>
+											<th>VoLTE MO/MT</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="tablerow ">
+											<td>
+												<form action="">
+													<div class="row align-items-start">
+														<div class="col-lg-12 col-md-12">
+															<label>Ping Host</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-12 col-md-12">
+															<label>Ping Rate</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-12 col-md-12">
+															<label>Ping Itrations</label>
+															<input type="text" />
+														</div>
+													</div>
+												</form>
+											</td>
+											<td>
+												<form action="">
+													<div class="row align-items-start">
+														<div class="col-lg-12 col-md-12">
+															<label>Connection Setup Time</label>
+															<input type="text" />
+														</div>
+													</div>
+												</form>
+											</td>
+											<td>
+												<form action="">
+													<div class="row align-items-start">
+														<div class="col-lg-12 col-md-12">
+															<label>Call Number</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-12 col-md-12">
+															<label>Call Duration</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-12 col-md-12">
+															<label>Busy Timeout (sec)</label>
+															<input type="text" />
+														</div>
+													</div>
+												</form>
+											</td>
+											<td>
+												<form action="">
+													<div class="row align-items-start">
+														<div class="col-lg-12 col-md-12">
+															<label>Downlaod Rate</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-12 col-md-12">
+															<label>Upload Rate</label>
+															<input type="text" />
+														</div>
+													</div>
+												</form>
+											</td>
+											<td>
+												<form action="">
+													<div class="row align-items-start">
+														<div class="col-lg-12 col-md-12">
+															<label>Call Number</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-12 col-md-12">
+															<label>Call Duration</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-12 col-md-12">
+															<label>Busy Timeout (sec)</label>
+															<input type="text" />
+														</div>
+													</div>
+												</form>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div><!-- Toggle Item -->
+					<div class="toggle-item">
+						<h2>FTP CONFIGURATION</h2>
+						<div class="content">
+							<div class="table-container big-headings">
+								<table>
+									<thead>
+										<tr>
+											<th>FTP Server Configuraton</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="tablerow ">
+											<td>
+												<form action="">
+													<div class="row align-items-start">
+														<div class="col-lg-3 col-md-12">
+															<label>IP Address</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-3 col-md-12">
+															<label>Port</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-3 col-md-12">
+															<label>User Name</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-3 col-md-12">
+															<label>Password</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-3 col-md-12">
+															<label>Folder Path</label>
+															<input type="text" />
+														</div>
+														<div class="col-lg-3 col-md-12">
+															<label>Downlaod Filename</label>
+															<input type="text" />
+														</div>
+													</div>
+												</form>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div><!-- Toggle Item -->
+				</div><!-- FAQ'S -->
+			</div>
+		</div>
+	</div>
+</div>

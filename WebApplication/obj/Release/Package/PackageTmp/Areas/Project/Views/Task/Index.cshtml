@@ -1,0 +1,716 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+@*<link href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />*@
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+@*<link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />*@
+@*<link rel="stylesheet" href="https://angular-ui.github.io/ui-select/dist/select.css">*@
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+<link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://angular-ui.github.io/ui-select/dist/select.css">
+<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+<link href="~/Areas/Project/Content/Project/groupMultiSelect.css" rel="stylesheet" />
+<link href="~/Areas/Project/Content/skin/skin/ui.dynatree.css" rel="stylesheet" />
+<link href="~/Areas/Project/Content/Project/Style.css" rel="stylesheet" />
+
+
+<script src="~/Content/js/ui-bootstrap-tpls-0.13.0.js"></script>
+
+
+<link href="~/Areas/Project/Content/Project/TaskStyle.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="~/Areas/Project/Content/stylesR/daterangepicker.css">
+
+<script src="~/Content/js/ui-bootstrap-tpls-0.13.0.js"></script>
+
+<script src="~/Areas/Project/Content/ScriptR/vendor.js"></script>
+<script src="~/Areas/Project/Content/ScriptR/multidaterangepicker.js"></script>
+
+<style>
+    .calendar .calendar-table {
+        height: 250px;
+        width: 250px;
+    }
+
+    input[type=checkbox], input[type=radio] {
+        width: auto;
+    }
+
+    .filters.pv button#dateRangePicker1 {
+        float: left;
+        padding: 5px 12px;
+        border-radius: 4px;
+    }
+
+    .dropdown-menu li a {
+        color: #0064a9 !important;
+    }
+
+    .filters.pv button#dateRangePicker1 i {
+        margin-left: 10px;
+        font-weight: 600;
+    }
+
+    .filters.pv button#dateRangePicker1 {
+        font-weight: 600;
+    }
+
+    .SelectedListStatus {
+        height: 29px;
+        border-radius: 4px;
+        min-width: 130px;
+    }
+
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+        border-top:none;
+    }
+
+    /*input.datePicker#PlannedDate1 {
+    margin: 0 -3px;
+    width: calc(100% + 2px);
+    }*/
+
+
+.ui-sortable .light-widget.jarviswidget-sortable>header {
+    box-shadow: none!important;
+    border: 1px solid #c2c2c2;
+    background: #fafafa;
+}
+.light-widget a.collapse-widget {
+    color: #4c4f53;
+}
+.light-widget a.collapse-widget {
+    color: #4c4f53;
+}
+
+.light-widget .widget-toolbar {
+    border: 0!important;
+}
+.light-widget .selected-filters i{color:#333}
+
+
+    .filters-dropdown-wrapper {
+        float: left;
+        position: relative;
+    }
+.filters-dropdown-wrapper a.btn.dropdown-shown {
+color: #37a5dc;
+}
+    .filters-dropdown {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        z-index:1;
+        background: #f9fdff;
+        padding:10px;
+        margin-top: 2px;
+        min-width: 200px;
+        visibility: hidden;
+        opacity: 0;
+        -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        -webkit-border-radius: 0 0 5px 5px;
+        -moz-border-radius: 0 0 5px 5px;
+        border-radius: 0 0 5px 5px;
+        -webkit-transform: scale(0.7);
+        -moz-transform: scale(0.7);
+        transform: scale(0.7);
+        -webkit-transition: all 0.2s linear;
+        -moz-transition: all 0.2s linear;
+        transition: all 0.2s linear;
+    }
+
+        .filters-dropdown.left {
+            right: auto;
+            left: 0;
+        }
+
+        .filters-dropdown.active {
+            visibility: visible;
+            opacity: 1;
+            -webkit-transform: scale(1);
+            -moz-transform: scale(1);
+            transform: scale(1);
+        }
+
+.filters-dropdown-wrapper a.btn {
+    float: left;
+    padding: 4px 5px;
+    background: none;
+    border: 0;
+    color: #4c4f53;
+    font-weight: 500;
+    font-size: 16px;
+    box-shadow: none;
+}
+
+    .filters-dropdown > div {
+        float: left;
+        width: 100%;
+        margin: 0 0 10px !important;
+    }
+
+    .filters-dropdown span.multiselect-native-select, .filters-dropdown span.multiselect-native-select .btn-group {
+        width: 100% !important;
+    }
+
+    .filters-dropdown button {
+        width: 100%;
+        margin: 0;
+    }
+
+    .filters-dropdown .select, .filters-dropdown .groupMultiSelect {
+        width: 100% !important;
+        text-align: center;
+    }
+
+        .filters-dropdown .groupMultiSelect .group-selection {
+            width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
+            line-height: 1;
+            margin: 0 !important;
+            text-align: center;
+        }
+
+    .filters-dropdown .example {
+        width: 100% !important;
+    }
+    span.dynatree-icon{display:none}
+
+</style>
+
+<div id="toast" class="alert alert-danger hidden" role="alert">
+    Please Select Any Row.
+</div>
+
+<section id="widget-grid" ng-app="TaskApp" ng-controller="TaskCtrl">
+    <div class="row">
+        <span hidden id="pId" data-ProjectId="@ViewBag.ProjectId"></span>
+        <span id="userid" data-UserId="@ViewBag.UserId"></span>
+
+
+        <article class="col-sm-12 sortable-grid ui-sortable" style="margin-bottom:-18px;">
+            <!-- new widget -->
+            <div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" role="widget">
+
+                <header role="heading">
+                    <span class="widget-icon"> <i class="glyphicon glyphicon-stats"></i> </span>
+                    <h2>Planning View </h2>
+                    <div class="selected-filters">
+                        <i data-content="selector1"></i>
+                        <i data-content="selector2"></i>
+                        <i data-content="selector3"></i>
+                    </div>
+
+                    <div class="filters-dropdown-wrapper">
+                        <a class="btn btn-default" href="#" title=""><i class="fa fa-filter"></i></a>
+                        <div class="filters-dropdown">
+                            <div class="input-group" style="margin-right:2px;">
+                                <button type="button" class="btn btn-default daterangepicker-field" id="dateRangePicker1"><span class="changingSelector" data-id="selector1">Date range picker</span><i class="fa fa-caret-down"></i></button>
+                            </div>
+                            <div class="example" id="lstProjectMarkets"></div>
+                            <div class="example" id="12">
+
+                                <div id="ListProjectTask" class="dynatree-drop">
+                                    <span class="dynatree-btn">None Selected</span>
+
+                                    <div class="dynatree123" id="dynatreetracking">
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="example" id="lstProjectUsers"></div>*@
+                            <button class="btn btn-default" id="PlanProject" style="background: #37a5dc;color: #fff;margin-left: 0;box-shadow: none;height:30px;border: 0;"><span class="fa fa-filter"></span></button>
+                        </div>
+                    </div>
+
+                    <!-- Program View 3 Filters(DataRange, Markets,Tasks) with filter burtton-->
+                    <div class="widget-toolbar filters">
+                        <!-- End Program View Filters-->
+                        <a href="/Project/Dashboard/Index/@ViewBag.ProjectId" class="btn btn-xs btn-info" style="float:left;margin-left:5px;margin-top:5px;">
+                            Return to Dashboard
+                        </a>
+
+                        <button type="button" id="btnSavePlan" class="btn btn-xs custom-btn1" style="float:left;margin-left:5px;margin-top:5px;">
+                            Save Plan
+                        </button>
+                    </div>
+
+                </header>
+
+                <div role="content" style="width:100%;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row" id="divPlanProject"></div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </article>
+    </div>
+    @*@Html.Action("GroupSitePlaning", "Task", new { area = "Project", ProjectId = 20021 })*@
+</section>
+
+
+<script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+<script src="~/Content/js/Project/jquery-cookie.js"></script>
+<script src="~/Content/js/Plugins/QueryBuilder/js/moment.min.js"></script>
+<script src="~/Content/js/Plugins/angularmultislect/multiselect.js"></script>
+<script src="~/Areas/Project/Content/Project/groupMultiSelect.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-sanitize.js"></script>
+<script src="https://code.jquery.com/ui/1.8.23/jquery-ui.min.js"
+        integrity="sha256-sEFM2aY87nr5kcE4F+RtMBkKxBqHEc2ueHGNptOA5XI="
+        crossorigin="anonymous"></script>
+<script src="~/Areas/Project/Content/jquery.dynatree.min.js"></script>
+<script src="https://angular-ui.github.io/ui-select/dist/select.js"></script>
+<script src="~/Areas/Project/Content/Project/TaskController.js"></script>
+<script src="~/AdminLTE/plugins/datepicker/js/bootstrap-datepicker.js"></script>
+<link href="~/Scale/js/datepicker/datepicker.css" rel="stylesheet" />
+<link href="~/AdminLTE/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminLTE/plugins/sweetalert/sweetalert.js"></script>
+<script type="text/javascript">
+            $("html").on("click", function () {
+                $("div.dynatree123").removeClass("active");
+                $("div.dynatree123").css('z-index', -3001);
+                $(".dynatree-drop").css('z-index', 0);
+
+            });
+            $(".dynatree-btn").on("click", function (e) {
+                $(this).next("div.dynatree123").toggleClass("active");
+                $("div.dynatree123").css('z-index', 3000);
+                $(".dynatree-drop").css('z-index', 10);
+            });
+            $(".dynatree-drop").on("click", function (e) {
+                e.stopPropagation();
+            });
+</script>
+
+<script>
+
+    //---------------setdefault values for daterange picker----------------------
+    $(function () {
+        $.post("/Project/Defination/ToSingle", { Filter: 'ByProjectId', Value: parseInt(@ViewBag.ProjectId) }).then(function (res) {
+            var s = res;
+            var EndDate = "Continue";
+            if (s.EstimateEndDate != null && s.EstimateEndDate != undefined) {
+                EndDate =  moment(s.EstimateEndDate).format('DD MMM, YYYY');
+            }
+            var ProjectInfo = '<span style="font-size: 16px;font-family: inherit;color:#000;"><strong>Project: </strong>' + s.ProjectName + '</span>' +
+                '<span style="margin-left:1%;font-size: 16px;font-family: inherit;color:#000;">' +
+                '<strong style="margin-left:2%;color:#000;">Start Date: </strong><span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;;margin-right: 27px;">' + moment(s.EstimateStartDate).format('DD MMM, YYYY') + ' </span> <strong> Expected End Date: </strong> ' +
+                '<span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;">' + EndDate + '</span>';
+            $('#ProjectInfo').html(ProjectInfo);
+        });
+
+
+
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+        function cb1(start, end) {
+            FromDate = start.format('MM/DD/YY');
+            ToDate = end.format('MM/DD/YY');
+            $('#dateRangePicker1 span').html(start.format('MM/DD/YY') + ' - ' + end.format('MM/DD/YY'));
+        }
+
+        $('#dateRangePicker1').daterangepicker({
+            startDate: start,
+            endDate: end,
+            minDate: moment().add(-5, 'years'),
+            maxDate: moment().add(5, 'years'),
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Custom Range': "custom"
+            }
+        }, cb1);
+        cb1(start, end);
+        if ($.cookie("FromDate") != undefined) {
+            $('#dateRangePicker1 span').html(moment(new Date()).format("MM/DD/YYYY") + ' - ' + moment(new Date()).format("MM/DD/YYYY"));
+        }
+    });
+
+
+    //--------------------------------------------------------------
+    // apply filter to load data for project plan
+
+    var TabFlag = 'Tracking';
+    var protsks = []
+    var TasksList = [];
+    var projecttasks = [];
+    var FromDate, ToDate, PFromDate, PToDate, MFromDate, MToDate, IFromDate, IToDate;
+
+    $('#PlanProject').click(function () {
+
+        var UId = $("#userid").attr("data-UserId");
+
+        var RevisionId = 0;
+        //var fromdate = "2017-06-10";
+        //var todate = "2017-06-30";
+        //var selectedMrkIds = "163408,163409,163410,163411,163412,163413,163414,163415,163416,163405,163406,163407";
+        //var selectedTskId = 50080;
+
+        var selectedDates = $('#dateRangePicker1 span').html();
+        var parts = selectedDates.split("-");
+        var fromdate = parts[0];
+        var todate = parts[1];
+
+        var selectedMrkIds = $('#example-xss-html_Project option:selected').map(function () { return $(this).val(); }).get();
+
+        var SelectedTasks = $.map($("#dynatreetracking").dynatree("getSelectedNodes"), function (node) {
+            return node.data.key;
+        });
+        var MyTasks = '';
+        if (SelectedTasks.length > 0) {
+            MyTasks = SelectedTasks.join(",");
+        }
+        $.removeCookie("ProjectTasks");
+        $.cookie("ProjectTasks", MyTasks, {
+            expires: 2000
+        });
+
+
+       // var selectedTskId = $('#example-multiple-optgroups_Project option:selected').map(function () { return $(this).val(); }).get();
+        var SiteStatus = "";
+        var UserId = UId;
+
+        //$.removeCookie("ProjectTasks");
+        //$.removeCookie("ProjectTasksTitle");
+        //$.removeCookie("ProjectMarkets");
+        //$.removeCookie("FromDate");
+        //$.removeCookie("ToDate");
+
+
+        var marketIds = $("#example-xss-html_Project").val();
+        var protsks = GetTaskIds(projecttasks);
+        $.cookie("ProjectTasksTitle", projecttasks.join(','), {
+            expires: 2000
+        });
+
+
+        // ProjectMarkets Cookie
+        var cookie = $.cookie("ProjectMarkets");
+        var items = cookie ? cookie.split(/,/) : new Array();
+        items.push(marketIds);
+
+
+        var uniqueNames = [];
+        $.each(items, function (i, el) {
+            if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+        });
+
+        items = uniqueNames
+        $.cookie("ProjectMarkets", items.join(','), {
+            expires: 2000
+        });
+
+        // ProjectTasks Cookie
+        var Taskscookie = $.cookie("ProjectTasks");
+        var Tasksitems = Taskscookie ? Taskscookie.split(/,/) : new Array();
+
+        $.cookie("FromDate", PFromDate, {
+            expires: 2000
+        });
+
+        $.cookie("ToDate", PToDate, {
+            expires: 2000
+        });
+
+        uniqueNames = [];
+        $.each(Tasksitems, function (i, el) {
+            if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+        });
+
+        Tasksitems = uniqueNames
+        $.cookie("ProjectTasks", Tasksitems.join(','), {
+            expires: 2000
+        });
+
+        LoadDataToPlanProject(RevisionId, fromdate, todate, selectedMrkIds, MyTasks, SiteStatus, UserId);
+    });
+
+    // End project plan
+
+
+    //--------------------------------------------------------------
+    function LoadDataToPlanProject(RevisionId, fromdate, todate, selectedMrkIds, selectedTskId, SiteStatus, UserId) {
+        var url = '';
+        $.ajax({
+            url: '/Project/Task/PlanProject?Filter=Get_Site_Plan&ProjectId=' + $("#pId").attr("data-ProjectId") + '&RevisionId=' + RevisionId + '&FromDate=' + fromdate + '&ToDate=' + todate + '&LocationIds=' + selectedMrkIds + '&TaskIds=' + selectedTskId + '&SiteStatus=' + SiteStatus + "&UserId=" + UserId,
+
+            type: 'Get',
+            async: false,
+            success: function (data) {
+                debugger;
+                $('#divPlanProject').html(data);
+                $('.datePicker').datepicker({
+                    format: 'mm/dd/yyyy',
+                    autoclose: true
+
+                });
+            },
+            complete: function () {
+                $('.lstUsers').multiselect({
+                    nonSelectedText: 'Select',
+                    enableFiltering: false,
+                    enableCaseInsensitiveFiltering: false,
+                    buttonWidth: '150px'
+                });
+            }
+        });
+    }
+
+    //--------------------------------------------------------------
+    // Fill Task Ids
+    function GetTaskIds(value) {
+        var str_task = []
+        var arr_task = value;
+        for (var i = 0; i < TasksList.length; i++) {
+            if (arr_task.length > 1) {
+                if (arr_task[0] == TasksList[i].Task) {
+                    str_task.push(TasksList[i].TaskId);
+                }
+                if (arr_task[1] == TasksList[i].Task) {
+                    str_task.push(TasksList[i].TaskId);
+                }
+            }
+            else if (arr_task.length > 0) {
+                if (arr_task[0] == TasksList[i].Task) {
+                    str_task.push(TasksList[i].TaskId);
+                }
+            }
+        }
+        return str_task.join(',');
+    }
+
+
+
+    //--------------------------------------------------------------
+    //$(document).ready(function () {
+    //    $('#divPlanProject input[name="PlannedDate1"]').on('blur', function () {
+    //        var vals = $(this).val();
+    //        $('.PlannedDate').each(function () {
+    //            $(this).val(vals);
+    //        });
+    //    });
+    //});
+
+
+
+
+    //$('.planDateCheck input[name="PlannedDate1"]').on("input change", function (e) {
+    //    console.log("Date changed: ", e.target.value);
+    //});
+
+
+    //$('#divPlanProject input[name="PlannedDate1"]').on('blur', function () {
+    //    debugger;
+    //    var vals = $(this).val();
+    //    $('.PlannedDate').each(function () {
+    //        $(this).val(vals);
+    //    });
+    //});
+
+
+    //$(document).on('change', '.planDateCheck', function () {
+    //    var vals = $(this).val();
+    //    $('.PlannedDate').each(function () {
+    //        $(this).val(vals);
+    //    });
+    //});
+
+    //$('.planDateCheck').datepicker({
+    //    onSelect: function (formattedDate, date, inst) {
+    //        $(inst.el).trigger('change');
+    //        console.log('1111');
+    //        console.log(date);
+    //    }
+    //})
+
+    //$(document).on('change dp.change', 'input.datepicker', function () {
+    //    alert('changed');
+    //});
+
+
+
+
+
+
+    //--------------------------------------------------------------
+    // save project plan data to data base
+    $('#btnSavePlan').click(function () {
+        var ProjectId = $("#pId").attr("data-ProjectId");
+        var TaskId = $('#example-multiple-optgroups_Project option:selected').map(function () { return $(this).val(); }).get();
+        debugger;
+        var listOfProjectPlan = [];
+        $('.tblProjectPlan tbody tr').each(function (idx, tr) {
+            if ($(tr).find('.checkAll').is(':checked')) {
+                var lstSelectedUsers = [];
+                lstSelectedUsers = $(tr).find('.SelectedListUsers').val();
+                var subItem = {
+                    ProjectSiteId: $(tr).find('.ProjectSiteId').val(),
+                    TaskId: $(tr).find('.TaskId').val(),
+                    ProjectId: $(tr).find('.ProjectId').val(),
+                    PlannedDate: $(tr).find('.PlannedDate').val(),
+                    EstimatedStartDate: $(tr).find('.EstimatedStartDate').val(),
+                    EstimatedEndDate: $(tr).find('.EstimatedStartDate').val(),
+                    TargetDate: $(tr).find('.TargetDate').val(),
+                    ActualEndDate: $(tr).find('.ActualEndDate').val(),
+                    ActualStartDate: $(tr).find('.ActualStartDate').val(),
+                    StatusId: $(tr).find('.SelectedListStatus').val(),
+                    SelectedListUsers: lstSelectedUsers,
+                };
+
+                listOfProjectPlan.push(subItem);
+            }
+        });
+
+        if (listOfProjectPlan.length <= 0) {
+            showtoast();
+            return false;
+        }
+//-----------------------------
+        swal({
+            title: "Confirm!",
+            text: "Do you want to create project plan?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Save",
+            closeOnConfirm: false
+        },
+          function () {
+              $.ajax({
+                  url: '/Task/SaveProjectPlan',
+                  type: 'POST',
+                  //dataType: "json",
+                  //contentType: false,
+                  //processData: false,
+                  data: { ProjectId: ProjectId, listOfProjectPlan: listOfProjectPlan },
+                  success: function (res) {
+                      console.log(res);
+                      if (res.key == true) {
+                          swal("Information!", "Project Plan Created Successfully!", "success");
+                          $('#divPlanProject').empty();
+                      }
+                      else {
+                          swal("Information!", "Error!", "error");
+                          $('#divPlanProject').empty();
+                      }
+
+                  }
+              });
+          });
+    });
+
+
+    function showtoast() {
+        // Get the snackbar DIV
+        var x = document.getElementById("toast")
+        // Add the "show" class to DIV
+        x.className = "alert alert-danger show";
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { x.className = x.className.replace("alert alert-danger show", "alert alert-danger hidden"); }, 2000);
+    }
+
+
+
+
+    $(".filters-dropdown-wrapper > a").on("click", function () {
+        $(this).toggleClass('dropdown-shown').next('.filters-dropdown').toggleClass('active');
+        return false;
+    });
+    $("body").on("click", function () {
+        if (!$(event.target).is('.filters-dropdown, .filters-dropdown *,.daterangepicker, .daterangepicker *')) {
+            $('.filters-dropdown').removeClass('active');
+            $(".filters-dropdown-wrapper > a").removeClass('dropdown-shown')
+        }
+    });
+
+
+
+</script>
+
+    @*<script>
+        $(window).load(function () {
+            $(".collapse-widget").on("click", function () {
+                $(this).parent('header').next('div[role="content"]').slideToggle();
+                if ($(this).find("i").hasClass("fa fa-minus")) {
+                    $(this).find("i").attr("class", "fa fa-plus");
+                }
+                else if ($(this).find("i").hasClass("fa fa-plus")) {
+                    $(this).find("i").attr("class", "fa fa-minus");
+                }
+                return false;
+            });
+
+
+
+
+            $(".filters-dropdown-wrapper > a").on("click", function () {
+                $(this).next('.filters-dropdown').toggleClass('active');
+                return false;
+            });
+            $("body").on("click", function () {
+                if (!$(event.target).is('.filters-dropdown, .filters-dropdown *')) {
+                    $('.filters-dropdown').removeClass('active');
+                }
+            });
+
+
+
+            $(".multiselect-selected-text").addClass("changingSelector").attr("data-id", "selector2");
+
+            $("body .select").addClass("changingSelector").attr("data-id", "selector3");
+
+
+
+
+            //$("body #ListMapStatus .multiselect").addClass("changingSelector").attr("data-id", "selector4");
+
+            function changingSelector() {
+                $('.changingSelector').each(function () {
+                    var currentId = $(this).attr("data-id");
+                    var currentDate = $(this).text();
+                    $(this).parents('header').find('.selected-filters i[data-content="' + currentId + '"]').text(currentDate);
+                });
+
+                $('.changingSelector').bind("DOMSubtreeModified", function () {
+                    var currentId = $(this).attr("data-id");
+                    var currentDate = $(this).text();
+                    $(this).parents('.jarviswidget').find('header .selected-filters i[data-content="' + currentId + '"]').text(currentDate);
+                });
+            }
+            changingSelector();
+
+
+            var myVar = setInterval(function () { myTimer() }, 100);
+            function myTimer() {
+                if ($("body #ListMapStatus .multiselect").length > 0 && $("body #ListMapType .multiselect").length > 0) {
+                    $("body #ListMapStatus .multiselect").addClass("changingSelector").attr("data-id", "selector4");
+                    $("body #ListMapType .multiselect").addClass("changingSelector").attr("data-id", "selector5");
+                    changingSelector();
+                    clearInterval(myVar);
+                }
+            }
+
+
+
+
+
+        });
+    </script>*@

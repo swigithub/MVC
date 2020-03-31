@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "hierarchy";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Node = jss.Serialize(ViewBag.OC);
+    var Team = jss.Serialize(ViewBag.Team);
+
+}
+<link rel="stylesheet" href="~/Content/treant/Treant.css">
+<link rel="stylesheet" href="~/Content/treant/basic-example.css">
+<div class="box box-solid">
+    @*<div class="box-header with-border" style="background-color:#3c8dbc">
+        <header style="color:white" role="heading">
+            <i class="fa fa-list"></i>&nbsp;
+            <h3 class="box-title">Team Hierarchy</h3>
+           </header>
+    </div>*@
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                 <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><b></b></h3>
+                        <a style="margin-right:5px" href="#" onclick="history.back()" class="btn btn-success btn-sm pull-right">Back</a>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="chart" id="basic-example"></div>
+
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                </div>
+            @*<div class="col-md-3">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><b>My Team</b></h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="chart" id="basic-example2"></div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>*@
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+<script src="~/Content/treant/raphael.js"></script>
+<script src="~/Content/treant/treant.js"></script>
+
+@*<script src="~/Content/treant/basic-example.js"></script>*@
+<script>
+    var Nodes = JSON.parse('@Html.Raw(Node)');
+    var MyTeam = JSON.parse('@Html.Raw(Team)');
+    console.log(Nodes);
+    var chart_config = {
+        chart: {
+            container: "#basic-example",
+
+            connectors: {
+                type: 'step'
+            },
+            node: {
+                HTMLclass: 'nodeExample1'
+            }
+        },
+        nodeStructure: Nodes
+
+    };
+    new Treant(chart_config);
+    var chart_config2 = {
+        chart: {
+            container: "#basic-example2",
+
+            connectors: {
+                type: 'step'
+            },
+            node: {
+                HTMLclass: 'nodeExample1'
+            }
+        },
+        nodeStructure: MyTeam
+
+    };
+    new Treant(chart_config2);
+</script>

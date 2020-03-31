@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewBag.Title = "Tranfer Site Logs";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = Int32.MaxValue;
+    var Bands = jss.Serialize(ViewBag.Bands);
+  
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="box-body">
+                @using (Html.BeginForm("TranferLogs", "SiteTestLog", FormMethod.Post, new { id = "frm-transfer" }))
+                {
+                    <div class="row">
+                        <div class="col-sm-3" style="padding-right: 0px;padding-left: 0px;">
+                            <div class="form-group">
+
+                                @Html.Label("Network Layer", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-8">
+                                    <input class="form-control" style="width:100%" name="SiteLayerId" id="SiteLayerId">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-2" style="padding-right: 0px;padding-left: 0px;">
+                            <div class="form-group">
+                                @Html.Label("Sectors", htmlAttributes: new { @class = "control-label col-md-3" })
+                                <div class="col-md-9">
+                                    @Html.DropDownList("Sectors", new SelectList(ViewBag.Sectors, "SectorId", "SectorCode"), new { @class = "form-control", multiple = "multiple" })
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2" style="padding-right: 0px;padding-left: 0px;">
+                            <div class="form-group">
+                                @Html.Label("Tests", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownList("Tests", new SelectList(ViewBag.Tests, "Text", "Text"), new { @class = "form-control", multiple = "multiple" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2" style="padding-right: 0px;padding-left: 0px;">
+                            <div class="form-group">
+                                @Html.Label("Select Tasks", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownList("Tasks", new SelectList(ViewBag.Tasks, "Value", "Text"), new { @class = "form-control", multiple = "multiple" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2" style="padding-right: 0px;padding-left: 0px;">
+                            <div class="form-group">
+                                @Html.Label("Site Code", htmlAttributes: new { @class = "control-label col-md-3" })
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="SiteCode" id="SiteCode" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-1" style="padding-right: 0px;padding-left: 0px;">
+                            <div class="form-group">
+                            
+                                <div class="col-md-12">
+                                    <button id="btn-search" type="submit" class="btn btn-success">Tranfer </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+                
+
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script src="~/Content/js/Plugins/MultiColumnDropdown/jquery.inputpicker.js"></script>
+    <script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<link href="~/AdminLTE/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminLTE/plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        @if(ViewBag.count == 0) {
+      @:  $(document).ready(function () {
+           @:    swal("Alert !", "No Tests Found of this Site !", "error");
+                    @:     $.notify("Site Tests logs is Empty", {  color: "#ffffff", background: "#D44950", blur: 0.6 });
+       @:  })
+         }
+        var array = JSON.parse('@Html.Raw(Bands)');
+
+
+        $('#SiteLayerId').inputpicker({
+
+            data: array,
+
+            fields: [
+                { name: 'NetworkMode', text: 'Network Mode' },
+                { name: 'BandName', text: 'Band' },
+                { name: 'Carrier', text: 'Carrier' }
+            ],
+
+            headShow: true,
+            filterOpen: true,
+            fieldText: 'Text',
+            fieldValue: 'LayerStatusId',
+        });
+
+        $("select").select2();
+
+        $('#frm-transfer').submit(function () {
+            console.log($('#Sectors').val());
+            $.ajax({
+                url: '/SiteTestLog/TranferLogs',
+                type:'post',
+                data: { SiteLayerId: $('#SiteLayerId').val(), Sectors: $('#Sectors').val(), Tests: $('#Tests').val(),  Tasks: $('#Tasks').val(),SiteCode: $('#SiteCode').val(), SiteId: @ViewBag.SiteId },
+                success: function (res) {
+                    if (res != 'session expired') {
+                        if (res.Status == 'success') {
+                            $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                        } else {
+                            $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    } else {
+                        $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                    //  console.log(res);
+
+                    // alert(res);
+                },
+                error: function (err) {
+                    $.notify(err.statusText, { type:"error", color: "#ffffff", background: "#D44950", blur: 0.6 });
+
+                },
+            });
+
+            return false;
+        });
+
+    </script>
+}
+@section style{
+    <link href="~/Content/js/Plugins/MultiColumnDropdown/jquery.inputpicker.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+}

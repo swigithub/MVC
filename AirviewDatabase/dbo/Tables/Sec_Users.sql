@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[Sec_Users] (
+    [UserId]         NUMERIC (18)   IDENTITY (1, 1) NOT NULL,
+    [FirstName]      NVARCHAR (50)  NOT NULL,
+    [LastName]       NVARCHAR (50)  NULL,
+    [UserName]       NVARCHAR (50)  NOT NULL,
+    [Address]        NVARCHAR (250) NULL,
+    [Contact]        NVARCHAR (50)  NULL,
+    [Password]       NVARCHAR (50)  NOT NULL,
+    [IsAdmin]        BIT            CONSTRAINT [DF_Sec_Users_IsAdmin] DEFAULT ((0)) NOT NULL,
+    [Email]          NVARCHAR (50)  NULL,
+    [IsActive]       BIT            NOT NULL,
+    [Remember_token] NVARCHAR (500) NULL,
+    [Picture]        VARCHAR (MAX)  CONSTRAINT [DF_Sec_Users_Picture] DEFAULT ('/Content/Images/Profile/Default.svg') NULL,
+    [ModifyDate]     DATETIME       NULL,
+    [Color]          NVARCHAR (50)  NULL,
+    [homeLatitude]   FLOAT (53)     NULL,
+    [homeLongitude]  FLOAT (53)     NULL,
+    [Title]          NVARCHAR (50)  NULL,
+    [CompanyId]      NUMERIC (18)   NULL,
+    [ReportToId]     NUMERIC (18)   NULL,
+    [HiringDate]     DATETIME       NULL,
+    [CostCenter]     NVARCHAR (50)  NULL,
+    [Gender]         NVARCHAR (50)  NULL,
+    [Designation]    NVARCHAR (50)  NULL,
+    [IsManager]      BIT            NULL,
+    CONSTRAINT [PK_Sec_Users] PRIMARY KEY CLUSTERED ([UserId] ASC)
+);
+

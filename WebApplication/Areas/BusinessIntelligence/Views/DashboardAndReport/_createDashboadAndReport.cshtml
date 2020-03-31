@@ -1,0 +1,54 @@
+﻿<div id="addnew-panel" class="popup-box">
+    <form name=vm.dashboardAndReportInitialInfo ng-submit="vm.dashboardAndReportInitialInfo.$valid && vm.addDashboardOrReport()" novalidate>
+        <div class="widget-title">
+            <div class="title-text">Add new Template</div>
+            <a class="close-popup" ng-click="vm.cancel()" href="#" title=""><i class="fa fa-times"></i></a>
+        </div><!-- Popup Title -->
+
+        <div class="popup-content">
+
+            <div class="row align-items-start">
+                <div class="col-lg-6 col-md-12 form-group  has-feedback" ng-if="vm.templateTypeStatus==true">
+                    <label>Select From DDL<span class="spanForMandatory">*</span></label>
+                    <div class="form-group" ng-class="{ 'has-error': vm.dashboardAndReportInitialInfo.templateType.$touched || vm.dashboardAndReportInitialInfo.templateType.$invalid }">
+                        <select ng-model="vm.dashbaordInfo.templateType" class="full" name="templateType" required>
+                            <option value="">-- Select --</option>
+                            <option value="Dashboard">Dashboard</option>
+                            <option value="Report">Report</option>
+                        </select>
+                        
+                        <div class="help-block with-errors" ng-messages="vm.dashboardAndReportInitialInfo.templateType.$error" ng-if="vm.dashboardAndReportInitialInfo.templateType.$touched">
+                        </div>
+                    </div>
+                    <div class="help-block with-errors" ng-show="vm.dashboardAndReportInitialInfo.$submitted ||vm.dashboardAndReportInitialInfo.templateType.$touched">
+                        <div ng-show="vm.dashboardAndReportInitialInfo.templateType.$error.required">Mandatory fields<span>*</span></div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 form-group  has-feedback" ng-class={'col-lg-12':!vm.templateTypeStatus}>
+                    <label>Enter Template Name<span class="spanForMandatory">*</span></label>
+                    <div class="form-group" ng-class="{ 'has-error': vm.dashboardAndReportInitialInfo.templateTitle.$touched && vm.dashboardAndReportInitialInfo.templateTitle.$invalid}">
+                        <input placeholder="Enter Template Name" ng-model="vm.dashbaordInfo.templateTitle" type="text" name="templateTitle" ng-minlength="5"
+                               ng-maxlength="50" required>
+                        <div class="help-block with-errors" ng-messages="vm.dashboardAndReportInitialInfo.templateTitle.$error" ng-if="vm.dashboardAndReportInitialInfo.templateTitle.$touched">
+                            <div ng-message-exp="['minlength', 'maxlength']">
+                                Minimum 5 characters required
+                            </div>
+
+                        </div>
+
+                        </div>
+                    <div class="help-block with-errors" ng-show="vm.dashboardAndReportInitialInfo.$submitted ||vm.dashboardAndReportInitialInfo.templateTitle.$touched">
+                        <div ng-show="vm.dashboardAndReportInitialInfo.templateTitle.$error.required">Mandatory fields<span>*</span></div>
+                    </div>
+                        @*<div class="help-block with-errors"></div>*@
+                    </div>
+              
+            </div>
+
+        </div>
+        <div class="popup-footer align-right">
+            <button  type="submit" class="custom-btn medium color1">Save</button>
+            <button type="button" class="custom-btn medium color11" ng-click="vm.cancel()">Cancel</button>
+        </div>
+    </form>
+</div>

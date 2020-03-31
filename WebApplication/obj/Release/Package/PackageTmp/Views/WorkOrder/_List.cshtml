@@ -1,0 +1,308 @@
+﻿@model  IEnumerable<SWI.Libraries.AirView.Entities.AV_Site>
+
+
+<div class="table-responsive">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th class="NoExport"></th>
+                <th>WO Ref#</th>
+                <th>Client</th>
+                <th>Region</th>
+                <th>Market</th>
+                <th>Site</th>
+                <th>Drive Tester</th>
+                <th>Received</th>
+                <th>Submitted</th>
+                <th>Scheduled</th>
+                <th>Drive Completed</th>
+                <th>Report Submitted</th>
+                <th>Approved</th>
+                <th>Status</th>
+                <th class="NoExport"></th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            @foreach (var site in Model)
+            {
+                <tr class="tableRow" data-child-value=@site.SiteId>
+                    <td title="Layers" class="details-control NoExport" data-scope="@site.ScopeId" data-TesterId="@site.TesterId" data-ClientPrefix="@site.ClientPrefix" data-SiteCode="@site.SiteCode" data-test="value"></td>
+                    <td>@site.WoRefNo</td>
+                    <td>@site.Client</td>
+
+                    <td>@site.Region</td>
+                    <td>@site.Market</td>
+                    <td>@site.SiteCode</td>
+
+                    <td>@site.Tester</td>
+
+                    <td>
+                        @if (site.ReceivedOn != null)
+                        {
+                            @site.ReceivedOn.ToString("MM/dd/yyyy")
+                        }
+                    </td>
+                    <td>@site.SubmittedOn.ToString("MM/dd/yyyy HH:mm")</td>
+                   
+                     @if (@site.ScheduledOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                    {
+                        <td>@site.ScheduledOn.ToString("MM/dd/yyyy")</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+
+                    <td>
+                        @if (@site.DriveCompletedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                        {
+                            @site.DriveCompletedOn.ToString("MM/dd/yyyy HH:mm")
+                        }
+                    </td>
+
+                    <td>
+                        @if (@site.ReportSubmittedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                        {
+                            @site.ReportSubmittedOn.ToString("MM/dd/yyyy HH:mm")
+                        }
+                    </td>
+
+                    <td>
+                        @if (@site.CompletedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                        {
+                            @site.CompletedOn.ToString("MM/dd/yyyy HH:mm")
+                        }
+                    </td>
+                    <td id="@site.SiteId-status">
+                        @if (site.Status == "90")
+                        {
+                            <span class="label PENDING_SCHEDULED_COLOR PENDING_SCHEDULED_TITLE">@site.StatusName</span><!--style="background-color:#1c7175!important"-->
+                        }
+                        @if (site.Status == "91")
+                        {
+                            <span class="label SCHEDULED_COLOR SCHEDULED_TITLE">@site.StatusName</span><!--label-warning-->
+                        }
+                        @if (site.Status == "89")
+                        {
+                            if (site.IsDownloaded)
+                            {
+
+                                <span class="label COMPLETED_COLOR COMPLETED_TITLE" style="color:black!important">@site.StatusName</span><!-- label-success-->
+                            }
+                            else
+                            {
+                                <span class="label COMPLETED_COLOR COMPLETED_TITLE">@site.StatusName</span>
+                            }
+                        }
+                        @if (site.Status == "92")
+                        {
+                            <span class="label DRIVE_COMPLETED_COLOR DRIVE_COMPLETED_TITLE ">@site.StatusName</span><!--style="background-color:#6468a8 !important"-->
+                        }
+                        @if (site.Status == "93")
+                        {
+                            <span class="label PENDING_WITH_ISSUE_COLOR PENDING_WITH_TITLE">@site.StatusName</span><!--style="background-color:#dd4b39 !important"-->
+                        }
+                        @if (site.Status == "450")
+                        {
+                            <span class="label IN_PROGRESS_COLOR IN_PROGRESS_TITLE">@site.StatusName</span><!--style="background-color:#dd4b39 !important"-->
+                        }
+                        @if (site.Status == "451")
+                        {
+                            <span class="label REPORT_SUBMITTED_COLOR REPORT_SUBMITTED_TITLE">@site.StatusName</span><!--style="background-color:#dd4b39 !important"-->
+                        }
+                    </td>
+                    <td class="NoExport">
+
+                        <div class="btn-group">
+
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="background-color:#337ab7;color:white;">
+                                <span style="margin: 5px;" class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" style="left:-185px!important;">
+                                @if (ViewBag.AllowUri("/Site/SiteSchedule"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS")
+                                    {
+                                        <li>
+                                            <a href="#" class="GridShedule" data-SiteId="@site.SiteId" data-scope="@site.ScopeId">
+                                                <span><img src="~/Content/Images/Common/schedule_x24.png" alt="" style="margin-right:20px;" /></span>
+                                                Schedule Drive
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/Site/SiteReport"))
+                                {
+                                    if (site.StatusKeyCode == "COMPLETED" || site.StatusKeyCode == "IN_PROGRESS" || site.StatusKeyCode == "DRIVE_COMPLETED" || site.StatusKeyCode == "REPORT_SUBMITTED" || site.StatusKeyCode == "PENDING_WITH_ISSUE")
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("SiteReport", "Site", new { id = site.SiteId,scope=site.ScopeId })" target="_blank">
+                                                <span><img src="~/Content/Images/Common/report_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                Site Report
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                <li>
+                                    <a href="@Url.Action( "ExportSiteToCSV", "site", new { id = site.SiteId })">
+                                        <span><img src="~/Content/Images/Common/export_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                        Export WO
+                                    </a>
+                                </li>
+                                @*@if (site.ScopeId == "TSS")
+                    {
+                        <li>
+                            <a href="@Url.Action( "ContactInfo", "site", new { Id = site.SiteId })">
+                                <span><img src="~/Content/Images/Common/export_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                Contact Info
+                            </a>
+                        </li>
+                    }*@
+
+
+
+                                @if (site.StatusKeyCode == "REPORT_SUBMITTED")
+                                {
+                                    //SitCha
+                                    if (ViewBag.Allow("SitCha"))
+                                    {
+                                        <li>
+                                            <a href="#" class="ApproveWithComment" data-SiteId="@site.SiteId" data-status="COMPLETED">
+                                                <span><img src="~/Content/Images/Common/completed_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                Approve WO
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                @if (ViewBag.AllowUri("/Site/Status"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS")
+                                    {
+
+                                        string Status = "True";
+                                        string Text = "Enable WO";
+                                        if (!site.IsActive)
+                                        {
+                                            Status = "False";
+                                            Text = "Disable WO";
+                                        }
+                                        <li>
+                                            <a data-Id="@site.SiteId" class="SiteInactive" onclick="IsActiveWo('@site.SiteId','@Status'); return false;" href="#">
+                                                <span><img src="~/Content/Images/Common/delete_x32.png" height="24" width="24" alt="View Report" style="margin-right:20px;" /></span>
+                                                @Text
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/WorkOrder/Edit"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS" || site.StatusKeyCode == "DRIVE_COMPLETED")
+                                    {
+                                        <li>
+                                            <a data-Id="@site.SiteId" class="" href="@Url.Action("Edit", "WorkOrder", new { Id = site.SiteId })">
+                                                <span><img src="~/Content/Images/Common/edit_x32.png" height="24" width="24" alt="View Report" style="margin-right:20px;" /></span>
+                                                Edit WO
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/site/WoHold"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS")
+                                    {
+                                        <li>
+                                            <a data-SiteId="@site.SiteId" class="SiteWoHold" href="@Url.Action("Edit", "WoHold", new { Id = site.SiteId })">
+                                                <span><img src="~/Content/Images/Common/hold_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                Hold WO
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/Dashboard/DriveRoute"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS")
+                                    {
+                                        <li>
+                                            <a data-SiteId="@site.SiteId" class="" href="#" onclick=ShowMapWindow('bySiteCode','@site.SiteId','@site.SiteCode',@site.Latitude,@site.Longitude,'@site.ScopeId','@site.ScopeId','@site.ClientPrefix');>
+                                                <span><img src="~/Content/Images/Common/route_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                Plan Route
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/WorkOrder/New"))
+                                {
+
+                                    <li>
+                                        <a class="" href="/WorkOrder/New/@site.SiteId">
+                                            <span><img src="~/Content/Images/Common/clone_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                            Clone WO
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.AllowUri("/NetLayerStatus/Information"))
+                                {
+
+                                    <li>
+                                        <a class="" href="/NetLayerStatus/Information/@site.SiteId">
+                                            <span><img src="~/Content/Images/Common/L3Msg_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                            L3 Messages
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.AllowUri("/NetLayerStatus/LayerActivation"))
+                                {
+                                    <li>
+                                        <a class="" href="#" onclick="LayerActivation(@site.SiteId); return false;">
+                                            <span><img src="~/Content/Images/Common/layerlock_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                            Layer & Sector Status
+                                        </a>
+                                    </li>
+                                }
+                                @if (ViewBag.AllowUri("/SiteTestLog/TranferLogs"))
+                                {
+                                    <li>
+                                        <a class="" href="/SiteTestLog/TranferLogs/@site.SiteId">
+                                            <span><img src="~/Content/Images/Common/transferlogs_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                            Transfer Logs
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.AllowUri("/Optimization/index"))
+                                {
+
+                                    <li>
+                                        <a class="" href="/Optimizations/index/@site.SiteId">
+                                            <span><img src="~/Content/Images/Common/transferlogs_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                            RF Optimization
+                                        </a>
+                                    </li>
+                                }
+
+                                <li>
+                                    <a onclick="OpenStreamWindow(@site.SiteId,'@site.SiteCode')" class="" href="#">
+                                        <span><img src="~/Content/Images/Common/L3Msg_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                        Video Support
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+       
+    </table>
+</div>

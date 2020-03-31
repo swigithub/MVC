@@ -1,0 +1,161 @@
+<div class="table-top">
+        <div class="row align-items-start">
+                <div class="col-lg-auto col-md-12">
+                        <a class="custom-btn color9" href="#" title="">Add New Sites</a>
+                </div>
+                <div class="col-lg-auto ml-auto col-md-12">
+                        <form class="search-form">
+                                <input type="text" placeholder="Search" />
+                                <button><i class="fa fa-search"></i></button>
+                        </form>
+                </div>
+        </div>
+</div>
+<div class="table-container"  ng-controller="sites-table">
+        <table class="sortable" >
+                <thead>
+                        <tr>
+                                <th></th>
+                                <th>FA Code</th>
+                                <th>Common Id</th>
+                                <th>Region</th>
+                                <th>Market</th>
+                                <th>USID</th>
+                                <th>vMME</th>
+                                <th>ControlledIntro</th>
+                                <th>SuperBowl</th>
+                                <th>isDASInBuild</th>
+                                <th>FirstNetRan</th>
+                                <th>Status</th>
+                                <th></th>
+                        </tr>
+                </thead>
+                <tbody>
+                        <tr class="tablerow"  ng-repeat-start="td in sites">
+                                <td><a class="more-table-btn" href="#{{td.dropdownid}}" title="">+</a></td>
+                                <td>{{td.code}}</td>
+                                <td>{{td.id}}</td>
+                                <td>{{td.region}}</td>
+                                <td>{{td.market}}</td>
+                                <td>{{td.usid}}</td>
+                                <td>{{td.vmme}}</td>
+                                <td>{{td.controlledintro}}</td>
+                                <td>{{td.superbowl}}</td>
+                                <td>{{td.isdasinbuild}}</td>
+                                <td>{{td.firstnetran}}</td>
+                                <td><a class="tabledata-status {{td.color}}" href="#" title="">{{td.status}}</a></td>
+                                <td><a class="custom-btn color13 opt-btn icon-btn-only" href="" title=""><i class="fa fa-caret-down"></i></a></td>
+
+                                <td class="options-drop">
+                                        <ul class="opt-dropdown">
+                                                <li><a class="open-popup" href="#site-status" title=""><i class="ion-calendar"></i> Site Status</a></li>
+                                        </ul>
+                                </td>
+                        </tr>
+
+                        <tr  ng-repeat-end  class="child-table" ng-if="td.dropdown">
+                                <td colspan="15">
+                                        <div class="further-table">
+                                                <table>
+                                                        <thead>
+                                                                <tr>
+                                                                        <th></th>
+                                                                        <th>Milestone</th>
+                                                                        <th>Forecast Date</th>
+                                                                        <th>Plan Date</th>
+                                                                        <th>Actual Date</th>
+                                                                        <th>Target Date</th>
+                                                                        <th>Priority</th>
+                                                                        <th>Status</th>
+                                                                        <th></th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                <tr  class="tablerow" ng-repeat-start="row in td.dropdown"  >
+                                                                        <td><a href="#" class="more-table-btn" title="">+</a></td>
+                                                                        <td>{{row.milestone}}</td>
+                                                                        <td>{{row.forecast}}</td>
+                                                                        <td>{{row.plandate}}</td>
+                                                                        <td>{{row.actualdate}}</td>
+                                                                        <td>{{row.targetdate}}</td>
+                                                                        <td><a class="tabledata-status {{row.prioritycolor}} color1" href="#" title="">{{row.priority}}</a></td>
+                                                                        <td><a class="tabledata-status {{row.statuscolor}} color2" href="#" title="">{{row.status}}</a></td>
+                                                                        <td>
+                                                                                <div class="action-btns">
+                                                                                        <a class="open-popup" href="#data-entry" title=""><img src="images/table-icon4.png" alt="" /></a>
+                                                                                        <a class="open-popup" href="#issue-ticket" title=""><img src="images/table-icon5.png" alt="" /></a>
+                                                                                        <a class="open-popup" href="#site-planning" title=""><img src="images/table-icon6.png" alt="" /></a>
+                                                                                        <a class="open-popup" href="#change-status" title=""><img src="images/table-icon2.png" alt="" /></a>
+                                                                                        <a class="open-popup" href="#work-log" title=""><img src="images/table-icon3.png" alt="" /></a>
+                                                                                </div>
+                                                                        </td>
+                                                                </tr>
+                                                                <tr ng-repeat-end class="child-table"  ng-if="row.childdropdownrow">
+                                                                        <td colspan="15">
+                                                                                <div class="further-table">
+                                                                                        <table>
+                                                                                                <thead>
+                                                                                                        <tr>
+                                                                                                                <th></th>
+                                                                                                                <th>Milestone</th>
+                                                                                                                <th>Forecast Date</th>
+                                                                                                                <th>Plan Date</th>
+                                                                                                                <th>Actual Date</th>
+                                                                                                                <th>Target Date</th>
+                                                                                                                <th>Priority</th>
+                                                                                                                <th>Status</th>
+                                                                                                                <th></th>
+                                                                                                        </tr>
+                                                                                                </thead>
+                                                                                                <tbody>
+                                                                                                        <tr class="tablerow"  ng-repeat="childrow in row.childdropdownrow">
+                                                                                                                <td><a class="more-table-btn" href="#" title="">+</a></td>
+                                                                                                                <td>{{childrow.milestone}}</td>
+                                                                                                                <td>{{childrow.forecast}}</td>
+                                                                                                                <td>{{childrow.plandate}}</td>
+                                                                                                                <td>{{childrow.actualdate}}</td>
+                                                                                                                <td>{{childrow.targetdate}}</td>
+                                                                                                                <td><a class="tabledata-status {{childrow.prioritycolor}} color1" href="#" title="">{{childrow.priority}}</a></td>
+                                                                                                                <td><a class="tabledata-status {{childrow.statuscolor}} color2" href="#" title="">{{childrow.status}}</a></td>
+                                                                                                                <td>
+                                                                                                                        <div class="action-btns">
+                                                                                                                                <a class="open-popup" href="#data-entry" title=""><img src="images/table-icon4.png" alt="" /></a>
+                                                                                                                                <a class="open-popup" href="#issue-ticket" title=""><img src="images/table-icon5.png" alt="" /></a>
+                                                                                                                                <a class="open-popup" href="#site-planning" title=""><img src="images/table-icon6.png" alt="" /></a>
+                                                                                                                                <a class="open-popup" href="#change-status" title=""><img src="images/table-icon2.png" alt="" /></a>
+                                                                                                                                <a class="open-popup" href="#work-log" title=""><img src="images/table-icon3.png" alt="" /></a>
+                                                                                                                        </div>
+                                                                                                                </td>
+                                                                                                        </tr>
+                                                                                                </tbody>
+                                                                                        </table>
+                                                                                </div>
+                                                                        </td>
+                                                                </tr>
+                                                        </tbody>
+                                                </table>
+                                        </div>
+                                </td>
+                        </tr>
+                </tbody>
+        </table>
+</div>
+<div class="table-bottom">
+        <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12"> <span>Showing 5 of 60 entries</span> </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                        <ul class="pagination">
+                                <li><a href="#" title="">Previous</a></li>
+                                <li><a class="current" href="#" title="">1</a></li>
+                                <li><a href="#" title="">2</a></li>
+                                <li><a href="#" title="">3</a></li>
+                                <li><a href="#" title="">4</a></li>
+                                <li>...</li>
+                                <li><a href="#" title="">10</a></li>
+                                <li><a href="#" title="">Next</a></li>
+                        </ul><!-- Pagination -->
+                </div>
+        </div>
+</div>

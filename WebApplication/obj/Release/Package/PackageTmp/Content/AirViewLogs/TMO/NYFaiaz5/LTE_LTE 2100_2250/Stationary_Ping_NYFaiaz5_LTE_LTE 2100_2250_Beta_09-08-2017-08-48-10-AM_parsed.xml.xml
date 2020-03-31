@@ -1,0 +1,646 @@
+<drive><test-cat>/home/airview1/ftp/files/airview-layer3/Stationary</test-cat><test-type>Ping</test-type><site>NYFaiaz5</site><net-mode>LTE</net-mode><band>LTE2100</band><carrier>2250</carrier><sector>Beta</sector><time>09-08-2017-08-48-10-AM</time><message-body><time>1504874270219</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504874270129</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504874270162</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874270676</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504874270297</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformation></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformation>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </systemInformation>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874270058</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504874270711</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504874270608</time><channel>DL-CCCH-Message</channel><event>rrcConnectionReestablishment></event><DL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishment>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare6></spare6>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReestablishment>
+        </c1>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504874270436</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504874270449</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874270426</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504874270530</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504874270530</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <etws-Indication><true/></etws-Indication>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504874270374</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000100000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0011001111110011
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><spare1/></reestablishmentCause>
+                        <spare>
+                            11
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504874270361</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874270396</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000101000000000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0011001000110000
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><reconfigurationFailure/></reestablishmentCause>
+                        <spare>
+                            10
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504874271450</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874271448</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0100001110001000
+                            </c-RNTI>
+                            <physCellId>32</physCellId>
+                            <shortMAC-I>
+                                0000000001100010
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><spare1/></reestablishmentCause>
+                        <spare>
+                            11
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504874272149</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874272097</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874272248</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504874273565</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874274440</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874274019</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874276207</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874276380</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874276349</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874276280</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874277613</time><channel>UL-DCCH-Message</channel><event>ulInformationTransfer></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <ulInformationTransfer>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </ulInformationTransfer>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874277217</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874277217</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformation></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformation>
+                <criticalExtensions>
+                    <systemInformation-r8>
+                        <sib-TypeAndInfo>
+                                <sib2>
+                                    <radioResourceConfigCommon>
+                                        <rach-ConfigCommon>
+                                            <preambleInfo>
+                                                <numberOfRA-Preambles><n40/></numberOfRA-Preambles>
+                                                <preamblesGroupAConfig>
+                                                    <sizeOfRA-PreamblesGroupA><n32/></sizeOfRA-PreamblesGroupA>
+                                                    <messageSizeGroupA><b56/></messageSizeGroupA>
+                                                    <messagePowerOffsetGroupB><minusinfinity/></messagePowerOffsetGroupB>
+                                                </preamblesGroupAConfig>
+                                            </preambleInfo>
+                                            <powerRampingParameters>
+                                                <powerRampingStep><dB0/></powerRampingStep>
+                                                <preambleInitialReceivedTargetPower><dBm-120/></preambleInitialReceivedTargetPower>
+                                            </powerRampingParameters>
+                                            <ra-SupervisionInfo>
+                                                <preambleTransMax><n3/></preambleTransMax>
+                                                <ra-ResponseWindowSize><sf2/></ra-ResponseWindowSize>
+                                                <mac-ContentionResolutionTimer><sf8/></mac-ContentionResolutionTimer>
+                                            </ra-SupervisionInfo>
+                                            <maxHARQ-Msg3Tx>1</maxHARQ-Msg3Tx>
+                                        </rach-ConfigCommon>
+                                        <bcch-Config>
+                                            <modificationPeriodCoeff><n2/></modificationPeriodCoeff>
+                                        </bcch-Config>
+                                        <pcch-Config>
+                                            <defaultPagingCycle><rf32/></defaultPagingCycle>
+                                            <nB><fourT/></nB>
+                                        </pcch-Config>
+                                        <prach-Config>
+                                            <rootSequenceIndex>0</rootSequenceIndex>
+                                            <prach-ConfigInfo>
+                                                <prach-ConfigIndex>0</prach-ConfigIndex>
+                                                <highSpeedFlag><false/></highSpeedFlag>
+                                                <zeroCorrelationZoneConfig>0</zeroCorrelationZoneConfig>
+                                                <prach-FreqOffset>0</prach-FreqOffset>
+                                            </prach-ConfigInfo>
+                                        </prach-Config>
+                                        <pdsch-ConfigCommon>
+                                            <referenceSignalPower>-60</referenceSignalPower>
+                                            <p-b>0</p-b>
+                                        </pdsch-ConfigCommon>
+                                        <pusch-ConfigCommon>
+                                            <pusch-ConfigBasic>
+                                                <n-SB>1</n-SB>
+                                                <hoppingMode><interSubFrame/></hoppingMode>
+                                                <pusch-HoppingOffset>0</pusch-HoppingOffset>
+                                                <enable64QAM><false/></enable64QAM>
+                                            </pusch-ConfigBasic>
+                                            <ul-ReferenceSignalsPUSCH>
+                                                <groupHoppingEnabled><false/></groupHoppingEnabled>
+                                                <groupAssignmentPUSCH>0</groupAssignmentPUSCH>
+                                                <sequenceHoppingEnabled><false/></sequenceHoppingEnabled>
+                                                <cyclicShift>0</cyclicShift>
+                                            </ul-ReferenceSignalsPUSCH>
+                                        </pusch-ConfigCommon>
+                                        <pucch-ConfigCommon>
+                                            <deltaPUCCH-Shift><ds1/></deltaPUCCH-Shift>
+                                            <nRB-CQI>0</nRB-CQI>
+                                            <nCS-AN>0</nCS-AN>
+                                            <n1PUCCH-AN>0</n1PUCCH-AN>
+                                        </pucch-ConfigCommon>
+                                        <soundingRS-UL-ConfigCommon>
+                                            <release></release>
+                                        </soundingRS-UL-ConfigCommon>
+                                        <uplinkPowerControlCommon>
+                                            <p0-NominalPUSCH>-126</p0-NominalPUSCH>
+                                            <alpha><al0/></alpha>
+                                            <p0-NominalPUCCH>-127</p0-NominalPUCCH>
+                                            <deltaFList-PUCCH>
+                                                <deltaF-PUCCH-Format1><deltaF-2/></deltaF-PUCCH-Format1>
+                                                <deltaF-PUCCH-Format1b><deltaF1/></deltaF-PUCCH-Format1b>
+                                                <deltaF-PUCCH-Format2><deltaF-2/></deltaF-PUCCH-Format2>
+                                                <deltaF-PUCCH-Format2a><deltaF-2/></deltaF-PUCCH-Format2a>
+                                                <deltaF-PUCCH-Format2b><deltaF-2/></deltaF-PUCCH-Format2b>
+                                            </deltaFList-PUCCH>
+                                            <deltaPreambleMsg3>-1</deltaPreambleMsg3>
+                                        </uplinkPowerControlCommon>
+                                        <ul-CyclicPrefixLength><len1/></ul-CyclicPrefixLength>
+                                    </radioResourceConfigCommon>
+                                    <ue-TimersAndConstants>
+                                        <t300><ms100/></t300>
+                                        <t301><ms100/></t301>
+                                        <t310><ms0/></t310>
+                                        <n310><n1/></n310>
+                                        <t311><ms1000/></t311>
+                                        <n311><n1/></n311>
+                                    </ue-TimersAndConstants>
+                                    <freqInfo>
+                                        <additionalSpectrumEmission>1</additionalSpectrumEmission>
+                                    </freqInfo>
+                                    <timeAlignmentTimerCommon><sf500/></timeAlignmentTimerCommon>
+                                </sib2>
+                            
+                        </sib-TypeAndInfo>
+                    </systemInformation-r8>
+                </criticalExtensions>
+            </systemInformation>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343837343237373231373C2F74696D653E3C6368616E6E656C3E424343482D444C2D5343482D4D6573736167653C2F6368616E6E656C3E3C6576656E743E73797374656D496E666F726D6174696F6E3E3C2F657665</hex></message-body><message-body><time>1504874277415</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874277006</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874278199</time><channel>BCCH-DL-SCH-Message</channel><event>/messageClassExtension></event><BCCH-DL-SCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504874279259</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504874279259</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformation></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformation>
+                <criticalExtensions>
+                    <systemInformation-r8>
+                        <sib-TypeAndInfo>
+                                <sib2>
+                                    <radioResourceConfigCommon>
+                                        <rach-ConfigCommon>
+                                            <preambleInfo>
+                                                <numberOfRA-Preambles><n40/></numberOfRA-Preambles>
+                                                <preamblesGroupAConfig>
+                                                    <sizeOfRA-PreamblesGroupA><n32/></sizeOfRA-PreamblesGroupA>
+                                                    <messageSizeGroupA><b56/></messageSizeGroupA>
+                                                    <messagePowerOffsetGroupB><minusinfinity/></messagePowerOffsetGroupB>
+                                                </preamblesGroupAConfig>
+                                            </preambleInfo>
+                                            <powerRampingParameters>
+                                                <powerRampingStep><dB0/></powerRampingStep>
+                                                <preambleInitialReceivedTargetPower><dBm-120/></preambleInitialReceivedTargetPower>
+                                            </powerRampingParameters>
+                                            <ra-SupervisionInfo>
+                                                <preambleTransMax><n3/></preambleTransMax>
+                                                <ra-ResponseWindowSize><sf2/></ra-ResponseWindowSize>
+                                                <mac-ContentionResolutionTimer><sf8/></mac-ContentionResolutionTimer>
+                                            </ra-SupervisionInfo>
+                                            <maxHARQ-Msg3Tx>1</maxHARQ-Msg3Tx>
+                                        </rach-ConfigCommon>
+                                        <bcch-Config>
+                                            <modificationPeriodCoeff><n2/></modificationPeriodCoeff>
+                                        </bcch-Config>
+                                        <pcch-Config>
+                                            <defaultPagingCycle><rf32/></defaultPagingCycle>
+                                            <nB><fourT/></nB>
+                                        </pcch-Config>
+                                        <prach-Config>
+                                            <rootSequenceIndex>0</rootSequenceIndex>
+                                            <prach-ConfigInfo>
+                                                <prach-ConfigIndex>0</prach-ConfigIndex>
+                                                <highSpeedFlag><false/></highSpeedFlag>
+                                                <zeroCorrelationZoneConfig>0</zeroCorrelationZoneConfig>
+                                                <prach-FreqOffset>0</prach-FreqOffset>
+                                            </prach-ConfigInfo>
+                                        </prach-Config>
+                                        <pdsch-ConfigCommon>
+                                            <referenceSignalPower>-60</referenceSignalPower>
+                                            <p-b>0</p-b>
+                                        </pdsch-ConfigCommon>
+                                        <pusch-ConfigCommon>
+                                            <pusch-ConfigBasic>
+                                                <n-SB>1</n-SB>
+                                                <hoppingMode><interSubFrame/></hoppingMode>
+                                                <pusch-HoppingOffset>0</pusch-HoppingOffset>
+                                                <enable64QAM><false/></enable64QAM>
+                                            </pusch-ConfigBasic>
+                                            <ul-ReferenceSignalsPUSCH>
+                                                <groupHoppingEnabled><false/></groupHoppingEnabled>
+                                                <groupAssignmentPUSCH>0</groupAssignmentPUSCH>
+                                                <sequenceHoppingEnabled><false/></sequenceHoppingEnabled>
+                                                <cyclicShift>0</cyclicShift>
+                                            </ul-ReferenceSignalsPUSCH>
+                                        </pusch-ConfigCommon>
+                                        <pucch-ConfigCommon>
+                                            <deltaPUCCH-Shift><ds1/></deltaPUCCH-Shift>
+                                            <nRB-CQI>0</nRB-CQI>
+                                            <nCS-AN>0</nCS-AN>
+                                            <n1PUCCH-AN>0</n1PUCCH-AN>
+                                        </pucch-ConfigCommon>
+                                        <soundingRS-UL-ConfigCommon>
+                                            <release></release>
+                                        </soundingRS-UL-ConfigCommon>
+                                        <uplinkPowerControlCommon>
+                                            <p0-NominalPUSCH>-126</p0-NominalPUSCH>
+                                            <alpha><al0/></alpha>
+                                            <p0-NominalPUCCH>-127</p0-NominalPUCCH>
+                                            <deltaFList-PUCCH>
+                                                <deltaF-PUCCH-Format1><deltaF-2/></deltaF-PUCCH-Format1>
+                                                <deltaF-PUCCH-Format1b><deltaF1/></deltaF-PUCCH-Format1b>
+                                                <deltaF-PUCCH-Format2><deltaF-2/></deltaF-PUCCH-Format2>
+                                                <deltaF-PUCCH-Format2a><deltaF-2/></deltaF-PUCCH-Format2a>
+                                                <deltaF-PUCCH-Format2b><deltaF-2/></deltaF-PUCCH-Format2b>
+                                            </deltaFList-PUCCH>
+                                            <deltaPreambleMsg3>-1</deltaPreambleMsg3>
+                                        </uplinkPowerControlCommon>
+                                        <ul-CyclicPrefixLength><len1/></ul-CyclicPrefixLength>
+                                    </radioResourceConfigCommon>
+                                    <ue-TimersAndConstants>
+                                        <t300><ms100/></t300>
+                                        <t301><ms100/></t301>
+                                        <t310><ms0/></t310>
+                                        <n310><n1/></n310>
+                                        <t311><ms1000/></t311>
+                                        <n311><n1/></n311>
+                                    </ue-TimersAndConstants>
+                                    <freqInfo>
+                                        <additionalSpectrumEmission>1</additionalSpectrumEmission>
+                                    </freqInfo>
+                                    <timeAlignmentTimerCommon><sf500/></timeAlignmentTimerCommon>
+                                </sib2>
+                            
+                        </sib-TypeAndInfo>
+                    </systemInformation-r8>
+                </criticalExtensions>
+            </systemInformation>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343837343237393235393C2F74696D653E3C6368616E6E656C3E424343482D444C2D5343482D4D6573736167653C2F6368616E6E656C3E3C6576656E743E73797374656D496E666F726D6174696F6E3E3C2F657665</hex></message-body></drive>

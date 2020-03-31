@@ -1,0 +1,2674 @@
+<drive><test-cat>/home/airview1/ftp/files/airview-layer3/Stationary</test-cat><test-type>DL</test-type><site>TSSV251</site><net-mode>WCDMA</net-mode><band>UMTS1900</band><carrier>462</carrier><sector>Gamma</sector><time>09-01-2017-07-38-38-PM</time><message-body><time>1504276673341</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000001101111000011001000
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010110000011011000101000001010
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276673189</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 38 A1 14 8F 39 EE 31 8B 66 6E D5</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276673674</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000111011001010011011001
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276674512</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <etws-Indication><true/></etws-Indication>
+                <nonCriticalExtension>
+                </nonCriticalExtension>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D657373</hex></message-body><message-body><time>1504276674395</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000010010110101100011110
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276674376</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000010010110101100011110
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276674534</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11000000000000100101101101010111
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11101111000111101110000110100101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276675369</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11101101000101101110101110110101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276675492</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11101101000101101110101110110101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276676159</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11101101000101101110101110110101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276676512</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11101101000101101110101110110101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276677051</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11110000000001111100101011100111
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11110000000010000111011011110100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11100000000100110101000001111011
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034323736</hex></message-body><message-body><time>1504276677402</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <csfbParametersResponseCDMA2000-r8>
+                        <rand>
+                            00000000000000000000000001000010
+                        </rand>
+                        <mobilityParameters>00 00</mobilityParameters>
+                    </csfbParametersResponseCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D62</hex></message-body><message-body><time>1504276677495</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11001110000011111011110111110110
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276677425</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11001110000011111011110111110110
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276678293</time><channel>UL-DCCH-Message</channel><event>ulInformationTransfer></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <ulInformationTransfer>
+                <criticalExtensions>
+                    <c1>
+                        <ulInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>
+                                    27 58 51 92 3D 17 D8 83 66 48 33 56 26 C1 25 D0 
+                                    CD 63 EA EB 4A 69 54 11 81 C0 4D 79 DE 38 C6 F0 
+                                    5E 8C 65 7E FB 65 22 43 55 7F 42 DB E5 BB
+                                </dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </ulInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </ulInformationTransfer>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F6479</hex></message-body><message-body><time>1504276678241</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 6C 4E 3B BB 3A AB AD 02 E6 A7</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276678702</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 9F D2 9A F4 3B 66 65 FC B5 58 63 88 29 F1 05</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276678496</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11100010000000100100000111001000
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276678191</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276678522</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 83 91 12 87 3C 86 C6 B4 F7 60 99</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276678136</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276678308</time><channel>DL-DCCH-Message</channel><event>mobilityFromEUTRACommand></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <mobilityFromEUTRACommand>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </mobilityFromEUTRACommand>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504276678319</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11100011000011110010011111000110
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276678498</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <csfbParametersResponseCDMA2000-r8>
+                        <rand>
+                            00000000000000000000111010000000
+                        </rand>
+                        <mobilityParameters>1C 61 E4 F8 C1 64 DA</mobilityParameters>
+                    </csfbParametersResponseCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276679329</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <c1>
+                        <measurementReport-r8>
+                            <measResults>
+                                <measId>7</measId>
+                                <measResultPCell>
+                                    <rsrpResult>56</rsrpResult>
+                                    <rsrqResult>17</rsrqResult>
+                                </measResultPCell>
+                                <measResultNeighCells>
+                                    <measResultListEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>416</physCellId>
+                                            <measResult>
+                                                <rsrpResult>50</rsrpResult>
+                                                <rsrqResult>4</rsrqResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>431</physCellId>
+                                            <measResult>
+                                                <rsrpResult>49</rsrpResult>
+                                                <rsrqResult>4</rsrqResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>501</physCellId>
+                                            <measResult>
+                                                <rsrpResult>93</rsrpResult>
+                                                <rsrqResult>43</rsrqResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>257</physCellId>
+                                            <cgi-Info>
+                                                <cellGlobalId>
+                                                    <plmn-Identity>
+                                                        <mcc>
+                                                            <MCC-MNC-Digit>3</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>9</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>10</MCC-MNC-Digit>
+                                                        </mcc>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>10</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>1</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </plmn-Identity>
+                                                    <cellIdentity>
+                                                        0111001011010011000000000110
+                                                    </cellIdentity>
+                                                </cellGlobalId>
+                                                <trackingAreaCode>
+                                                    1010101101001000
+                                                </trackingAreaCode>
+                                            </cgi-Info>
+                                            <measResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>241</physCellId>
+                                            <measResult>
+                                                <additionalSI-Info-r9>
+                                                </additionalSI-Info-r9>
+                                                <primaryPLMN-Suitable-r12><true/></primaryPLMN-Suitable-r12>
+                                                <measResult-v1250>42</measResult-v1250>
+                                                <rs-sinr-Result-r13>83</rs-sinr-Result-r13>
+                                                <cgi-Info-v1310>
+                                                    <freqBandIndicator-r13>129</freqBandIndicator-r13>
+                                                </cgi-Info-v1310>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>346</physCellId>
+                                            <measResult>
+                                                <rsrpResult>0</rsrpResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                    </measResultListEUTRA>
+                                </measResultNeighCells>
+                            </measResults>
+                        </measurementReport-r8>
+                    </c1>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343237363637393332393C2F74696D653E3C6368616E6E656C3E554C2D444343482D4D6573736167653C2F6368616E6E656C3E3C6576656E743E</hex></message-body><message-body><time>1504276679678</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000001101111000011001000
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276679637</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504276679133</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504276679481</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11001010000100110110100011101111
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000100100101001000001101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276679128</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <spare3></spare3>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504276679559</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11111001000011010101110101100001
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010110000000001010101001101000
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276680443</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276681203</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11111111000011110101111100111101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276681073</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11111111000011110101111100111101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276682283</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11111111000011110101111100111101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276682509</time><channel>UL-DCCH-Message</channel><event>ulInformationTransfer></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <ulInformationTransfer>
+                <criticalExtensions>
+                    <c1>
+                        <ulInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>
+                                    27 2E 0D AB 1A 18 7F 61 B7 02 E7 E3 9A 35 EB 85 
+                                    9E A8 B4 E6 2E 5B 86 32 D6 96 14 F8 63 61 EC EE 
+                                    15 50 0A 86 4C 86 F6 07 1D B8 CC C2 D1 FE
+                                </dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </ulInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </ulInformationTransfer>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F6479</hex></message-body><message-body><time>1504276683624</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 61 A0 6B 9B 3D 4B B7 B3 F0 9E</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276683055</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 4C E9 CB 0E 3E 61 E5 0F F7 37 70 0A AB BA 56</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276683094</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformationBlockType1></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformationBlockType1>
+                <cellAccessRelatedInfo>
+                    <plmn-IdentityList>
+                        <PLMN-IdentityInfo>
+                            <plmn-Identity>
+                                <mnc>
+                                    <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                    <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                </mnc>
+                            </plmn-Identity>
+                            <cellReservedForOperatorUse><reserved/></cellReservedForOperatorUse>
+                        </PLMN-IdentityInfo>
+                    </plmn-IdentityList>
+                    <trackingAreaCode>
+                        0000000000000000
+                    </trackingAreaCode>
+                    <cellIdentity>
+                        0000000000000000000000010001
+                    </cellIdentity>
+                    <cellBarred><notBarred/></cellBarred>
+                    <intraFreqReselection><allowed/></intraFreqReselection>
+                    <csg-Indication><false/></csg-Indication>
+                    <csg-Identity>
+                        000000111111001000100000000
+                    </csg-Identity>
+                </cellAccessRelatedInfo>
+                <cellSelectionInfo>
+                    <q-RxLevMin>-70</q-RxLevMin>
+                </cellSelectionInfo>
+                <freqBandIndicator>1</freqBandIndicator>
+                <schedulingInfoList>
+                    <SchedulingInfo>
+                        <si-Periodicity><rf8/></si-Periodicity>
+                        <sib-MappingInfo>
+                        </sib-MappingInfo>
+                    </SchedulingInfo>
+                </schedulingInfoList>
+                <si-WindowLength><ms1/></si-WindowLength>
+                <systemInfoValueTag>0</systemInfoValueTag>
+            </systemInformationBlockType1>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034323736363833</hex></message-body><message-body><time>1504276719697</time><channel>UL-DCCH-Message</channel><event>ulInformationTransfer></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <ulInformationTransfer>
+                <criticalExtensions>
+                    <c1>
+                        <ulInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>
+                                    27 1E E3 38 3E 20 93 E7 07 00 5A 75 B7 F3 48 3A 
+                                    35 C6 2C 46 CF D1 F8 C3 7C 0F 53 43 46 BD E5 4D 
+                                    04 B5 3C F1 D1 5E 04 2B B9 7C EB 56 1A FA
+                                </dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </ulInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </ulInformationTransfer>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F6479</hex></message-body><message-body><time>1504276719021</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11100110000000010011101000000101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276719679</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 55 70 44 70 55 3D 4E CC 25 5E</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276719566</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 C4 9D DC 8C 56 77 A3 6E B4 4A CA 23 54 CD B9</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276719483</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000101111010101001101110
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010011000111101011111011001000
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276719452</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 38 91 D6 A1 57 21 45 2D B1 FB 4B</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276719688</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11001011000100111110011110100100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><cs/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11000000000100000011110010000011
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276719494</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504276719123</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276720319</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000001111000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0010001111010001
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><spare1/></reestablishmentCause>
+                        <spare>
+                            11
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504276720325</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504276720213</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11110000000001111100101011100111
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11011100000101101110010011010110
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276720539</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504276720448</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276720246</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11001000000000101011110011101011
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276721533</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276721133</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11100000000000110011100010101101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276722574</time><channel>DL-DCCH-Message</channel><event>loggedMeasurementConfiguration-r10></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <loggedMeasurementConfiguration-r10>
+                <criticalExtensions>
+                    <c1>
+                        <spare3></spare3>
+                    </c1>
+                </criticalExtensions>
+            </loggedMeasurementConfiguration-r10>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504276722539</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11111101000000101000111010100111
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000101111011100011011101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276723678</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11000101000000111100100011010101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276724044</time><channel>UL-DCCH-Message</channel><event>ulInformationTransfer></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <ulInformationTransfer>
+                <criticalExtensions>
+                    <c1>
+                        <ulInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>
+                                    27 4D 63 EA E9 A7 21 BA 9A ED C0 3F 5F 8F DB 57 
+                                    96 28 02 0E D4 F1 34 E2 D3 6C A8 AA 59 2C 00 47 
+                                    8A 81 AA 47 3B A3 8B B0 2B 5F FD 96 C7 07
+                                </dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </ulInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </ulInformationTransfer>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F6479</hex></message-body><message-body><time>1504276724315</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 A6 44 85 6B 58 0F E2 E9 8E BE</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276724301</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 02 67 2E 4F 59 B9 24 43 55 AD 95 D7 91 48 3A</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276724284</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276724640</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>3</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <csfbParametersResponseCDMA2000-r8>
+                        <rand>
+                            00000000000000000000000000000000
+                        </rand>
+                        <mobilityParameters></mobilityParameters>
+                    </csfbParametersResponseCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D62</hex></message-body><message-body><time>1504276724712</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11110000000001111101010111101100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><cs/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276724273</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276724582</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 10 E2 A0 C7 5A 98 67 D8 E7 5A DB</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276724518</time><channel>UL-CCCH-Message</channel><event>rrcConnectionRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionRequest>
+                <criticalExtensions>
+                    <rrcConnectionRequest-r8>
+                        <ue-Identity>
+                            <randomValue>
+                                0001100010010000000101110101010011000000
+                            </randomValue>
+                        </ue-Identity>
+                        <establishmentCause><emergency/></establishmentCause>
+                        <spare>
+                            0
+                        </spare>
+                    </rrcConnectionRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276724547</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11110000000000101000101001100000
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276725524</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11100000000010101101110111011100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11001000000000001100011111111011
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276725540</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11000001000010111011011001011101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276725245</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11111001000000000101101111100001
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276726474</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11111001000000000101101111100001
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276726028</time><channel>UL-DCCH-Message</channel><event>counterCheckResponse></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <counterCheckResponse>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </counterCheckResponse>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167</hex></message-body><message-body><time>1504276727614</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11100000000000101100110001001100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276727663</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11100000000000101100110001001100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276728156</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11100000000000101100110001001100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276728332</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276728517</time><channel>DL-DCCH-Message</channel><event>loggedMeasurementConfiguration-r10></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <loggedMeasurementConfiguration-r10>
+                <criticalExtensions>
+                    <c1>
+                        <spare3></spare3>
+                    </c1>
+                </criticalExtensions>
+            </loggedMeasurementConfiguration-r10>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504276728588</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276728419</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000010101010001110000100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11011101000110100110111001001111
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276728683</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000010101010001110000100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11011101000110100110111001001111
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276728350</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000101111011100011011101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11010000000100100101001000001101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11110000000010001111001101111000
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034323736</hex></message-body><message-body><time>1504276728022</time><channel>UL-DCCH-Message</channel><event>ulInformationTransfer></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <ulInformationTransfer>
+                <criticalExtensions>
+                    <c1>
+                        <ulInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>
+                                    27 7D 16 E9 6C 22 60 4C 49 75 A6 CF 70 1F 9D 4F 
+                                    C2 E2 B9 95 B6 2C F4 7F 47 D8 2A 73 06 95 60 4D 
+                                    91 A4 DB 39 42 A4 27 88 65 CB 78 0D C6 13
+                                </dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </ulInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </ulInformationTransfer>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F6479</hex></message-body><message-body><time>1504276728440</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 1F 2E 7E 89 5B E6 C8 57 A6 62</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276728353</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 12 11 09 1D 5C 06 02 25 B6 FE 9D 96 83 2D 03</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276728108</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276729582</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>2</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 40 B8 29 83 5D 34 3F 00 EF AB A1</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276729557</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276729352</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276729303</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11111001000001000001000010111011
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11101001000101110100101100110101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11000101000000111100100011010101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034323736</hex></message-body><message-body><time>1504276729135</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <csfbParametersResponseCDMA2000-r8>
+                        <rand>
+                            00000000000000000001111010000010
+                        </rand>
+                        <mobilityParameters>1F 20 82 17 60 71 D2</mobilityParameters>
+                    </csfbParametersResponseCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276730498</time><channel>UL-CCCH-Message</channel><event>rrcConnectionReestablishmentRequest></event><UL-CCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReestablishmentRequest>
+                <criticalExtensions>
+                    <rrcConnectionReestablishmentRequest-r8>
+                        <ue-Identity>
+                            <c-RNTI>
+                                0000000001111000
+                            </c-RNTI>
+                            <physCellId>0</physCellId>
+                            <shortMAC-I>
+                                0010001111010001
+                            </shortMAC-I>
+                        </ue-Identity>
+                        <reestablishmentCause><spare1/></reestablishmentCause>
+                        <spare>
+                            11
+                        </spare>
+                    </rrcConnectionReestablishmentRequest-r8>
+                </criticalExtensions>
+            </rrcConnectionReestablishmentRequest>
+        </c1>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504276730671</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276730144</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504276730428</time><channel>DL-DCCH-Message</channel><event>mobilityFromEUTRACommand></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <mobilityFromEUTRACommand>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <mobilityFromEUTRACommand-r8>
+                            <cs-FallbackIndicator><false/></cs-FallbackIndicator>
+                            <purpose>
+                                <cellChangeOrder>
+                                    <t304><ms100/></t304>
+                                    <targetRAT-Type>
+                                        <geran>
+                                            <physCellId>
+                                                <networkColourCode>
+                                                    101
+                                                </networkColourCode>
+                                                <baseStationColourCode>
+                                                    000
+                                                </baseStationColourCode>
+                                            </physCellId>
+                                            <carrierFreq>
+                                                <arfcn>64</arfcn>
+                                                <bandIndicator><dcs1800/></bandIndicator>
+                                            </carrierFreq>
+                                        </geran>
+                                    </targetRAT-Type>
+                                </cellChangeOrder>
+                            </purpose>
+                            <nonCriticalExtension>
+                            </nonCriticalExtension>
+                        </mobilityFromEUTRACommand-r8>
+                    </c1>
+                </criticalExtensions>
+            </mobilityFromEUTRACommand>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E3135303432373637</hex></message-body><message-body><time>1504276731526</time><channel>DL-DCCH-Message</channel><event>csfbParametersResponseCDMA2000></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersResponseCDMA2000>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <csfbParametersResponseCDMA2000-r8>
+                        <rand>
+                            00000000000000000000000000000000
+                        </rand>
+                        <mobilityParameters></mobilityParameters>
+                    </csfbParametersResponseCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersResponseCDMA2000>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D62</hex></message-body><message-body><time>1504276732692</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276732269</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11101111000101100011000000010111
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11000111000101100110111000100100
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11000111000110011010000101100110
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E31353034323736</hex></message-body><message-body><time>1504276732342</time><channel>UL-DCCH-Message</channel><event>csfbParametersRequestCDMA2000></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <csfbParametersRequestCDMA2000>
+                <criticalExtensions>
+                    <csfbParametersRequestCDMA2000-r8>
+                    </csfbParametersRequestCDMA2000-r8>
+                </criticalExtensions>
+            </csfbParametersRequestCDMA2000>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504276732426</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11101001000101111011000010111010
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11101111000101100011000000010111
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D65</hex></message-body><message-body><time>1504276732307</time><channel>DL-DCCH-Message</channel><event>rrcConnectionReconfiguration></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReconfiguration>
+                <rrc-TransactionIdentifier>3</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <rrcConnectionReconfiguration-r8>
+                            <measConfig>
+                                <measObjectToAddModList>
+                                    <MeasObjectToAddMod>
+                                        <measObjectId>1</measObjectId>
+                                        <measObject>
+                                            <measObjectEUTRA>
+                                                <carrierFreq>1573</carrierFreq>
+                                                <allowedMeasBandwidth><mbw75/></allowedMeasBandwidth>
+                                                <presenceAntennaPort1><false/></presenceAntennaPort1>
+                                                <neighCellConfig>
+                                                    01
+                                                </neighCellConfig>
+                                                <offsetFreq><dB0/></offsetFreq>
+                                                <cellsToAddModList>
+                                                    <CellsToAddMod>
+                                                        <cellIndex>1</cellIndex>
+                                                        <physCellId>225</physCellId>
+                                                        <cellIndividualOffset><dB0/></cellIndividualOffset>
+                                                    </CellsToAddMod>
+                                                </cellsToAddModList>
+                                            </measObjectEUTRA>
+                                        </measObject>
+                                    </MeasObjectToAddMod>
+                                </measObjectToAddModList>
+                                <reportConfigToAddModList>
+                                    <ReportConfigToAddMod>
+                                        <reportConfigId>7</reportConfigId>
+                                        <reportConfig>
+                                            <reportConfigEUTRA>
+                                                <triggerType>
+                                                    <periodical>
+                                                        <purpose><reportStrongestCells/></purpose>
+                                                    </periodical>
+                                                </triggerType>
+                                                <triggerQuantity><rsrp/></triggerQuantity>
+                                                <reportQuantity><both/></reportQuantity>
+                                                <maxReportCells>6</maxReportCells>
+                                                <reportInterval><ms10240/></reportInterval>
+                                                <reportAmount><r16/></reportAmount>
+                                            </reportConfigEUTRA>
+                                        </reportConfig>
+                                    </ReportConfigToAddMod>
+                                </reportConfigToAddModList>
+                                <measIdToAddModList>
+                                    <MeasIdToAddMod>
+                                        <measId>7</measId>
+                                        <measObjectId>1</measObjectId>
+                                        <reportConfigId>7</reportConfigId>
+                                    </MeasIdToAddMod>
+                                </measIdToAddModList>
+                            </measConfig>
+                        </rrcConnectionReconfiguration-r8>
+                    </c1>
+                </criticalExtensions>
+            </rrcConnectionReconfiguration>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343237363733323330373C2F74696D653E3C6368616E6E656C3E444C2D444343482D4D</hex></message-body><message-body><time>1504276732549</time><channel>UL-DCCH-Message</channel><event>rrcConnectionReconfigurationComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReconfigurationComplete>
+                <rrc-TransactionIdentifier>3</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <rrcConnectionReconfigurationComplete-r8>
+                    </rrcConnectionReconfigurationComplete-r8>
+                </criticalExtensions>
+            </rrcConnectionReconfigurationComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D657373616765</hex></message-body><message-body><time>1504276732067</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <c1>
+                        <measurementReport-r8>
+                            <measResults>
+                                <measId>7</measId>
+                                <measResultPCell>
+                                    <rsrpResult>56</rsrpResult>
+                                    <rsrqResult>17</rsrqResult>
+                                </measResultPCell>
+                                <measResultNeighCells>
+                                    <measResultListEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>416</physCellId>
+                                            <measResult>
+                                                <rsrpResult>50</rsrpResult>
+                                                <rsrqResult>7</rsrqResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>431</physCellId>
+                                            <measResult>
+                                                <rsrpResult>48</rsrpResult>
+                                                <rsrqResult>5</rsrqResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>501</physCellId>
+                                            <measResult>
+                                                <rsrpResult>93</rsrpResult>
+                                                <rsrqResult>43</rsrqResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>1</physCellId>
+                                            <cgi-Info>
+                                                <cellGlobalId>
+                                                    <plmn-Identity>
+                                                        <mcc>
+                                                            <MCC-MNC-Digit>3</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>9</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>10</MCC-MNC-Digit>
+                                                        </mcc>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>12</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>1</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </plmn-Identity>
+                                                    <cellIdentity>
+                                                        0111001011010010100010000110
+                                                    </cellIdentity>
+                                                </cellGlobalId>
+                                                <trackingAreaCode>
+                                                    1010101101001000
+                                                </trackingAreaCode>
+                                            </cgi-Info>
+                                            <measResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>80</physCellId>
+                                            <measResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                        <MeasResultEUTRA>
+                                            <physCellId>239</physCellId>
+                                            <cgi-Info>
+                                                <cellGlobalId>
+                                                    <plmn-Identity>
+                                                        <mcc>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>4</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                        </mcc>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>3</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>3</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>8</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </plmn-Identity>
+                                                    <cellIdentity>
+                                                        0100010001010110100000011011
+                                                    </cellIdentity>
+                                                </cellGlobalId>
+                                                <trackingAreaCode>
+                                                    0010000111011010
+                                                </trackingAreaCode>
+                                                <plmn-IdentityList>
+                                                    <PLMN-Identity>
+                                                        <mcc>
+                                                            <MCC-MNC-Digit>6</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>12</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                        </mcc>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>10</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>15</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </PLMN-Identity>
+                                                    <PLMN-Identity>
+                                                        <mcc>
+                                                            <MCC-MNC-Digit>5</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>7</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>7</MCC-MNC-Digit>
+                                                        </mcc>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>13</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>7</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </PLMN-Identity>
+                                                    <PLMN-Identity>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>2</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </PLMN-Identity>
+                                                    <PLMN-Identity>
+                                                        <mcc>
+                                                            <MCC-MNC-Digit>3</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>9</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>10</MCC-MNC-Digit>
+                                                        </mcc>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>12</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>1</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </PLMN-Identity>
+                                                    <PLMN-Identity>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>12</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>11</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>4</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </PLMN-Identity>
+                                                    <PLMN-Identity>
+                                                        <mcc>
+                                                            <MCC-MNC-Digit>4</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>4</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>3</MCC-MNC-Digit>
+                                                        </mcc>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>10</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>11</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </PLMN-Identity>
+                                                    <PLMN-Identity>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>2</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </PLMN-Identity>
+                                                    <PLMN-Identity>
+                                                        <mcc>
+                                                            <MCC-MNC-Digit>4</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>5</MCC-MNC-Digit>
+                                                        </mcc>
+                                                        <mnc>
+                                                            <MCC-MNC-Digit>11</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>15</MCC-MNC-Digit>
+                                                            <MCC-MNC-Digit>0</MCC-MNC-Digit>
+                                                        </mnc>
+                                                    </PLMN-Identity>
+                                                </plmn-IdentityList>
+                                            </cgi-Info>
+                                            <measResult>
+                                                <rsrpResult>2</rsrpResult>
+                                            </measResult>
+                                        </MeasResultEUTRA>
+                                    </measResultListEUTRA>
+                                </measResultNeighCells>
+                            </measResults>
+                        </measurementReport-r8>
+                    </c1>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74696D653E313530343237363733323036373C2F74696D653E3C6368616E6E656C3E554C2D444343482D4D6573736167653C2F6368616E6E656C3E3C6576656E743E6D6561737572656D656E745265706F72743E3C2F6576656E743E3C554C2D444343482D4D6573736167653E0A202020203C6D6573736167653E0A20202020202020203C63313E0A2020202020202020202020203C6D6561737572656D656E745265706F7274</hex></message-body><message-body><time>1504276732544</time><channel>BCCH-DL-SCH-Message</channel><event>systemInformation></event><BCCH-DL-SCH-Message>
+    <message>
+        <c1>
+            <systemInformation>
+                <criticalExtensions>
+                    <criticalExtensionsFuture>
+                    </criticalExtensionsFuture>
+                </criticalExtensions>
+            </systemInformation>
+        </c1>
+    </message>
+</BCCH-DL-SCH-Message>
+<hex>3C6D65737361</hex></message-body><message-body><time>1504276732484</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276732509</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11111111000011110101111100111101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276733179</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <c1>
+                        <measurementReport-r8>
+                            <measResults>
+                                <measId>2</measId>
+                                <measResultPCell>
+                                    <rsrpResult>56</rsrpResult>
+                                    <rsrqResult>18</rsrqResult>
+                                </measResultPCell>
+                            </measResults>
+                        </measurementReport-r8>
+                    </c1>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276733540</time><channel>UL-DCCH-Message</channel><event>measurementReport></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <measurementReport>
+                <criticalExtensions>
+                    <c1>
+                        <measurementReport-r8>
+                            <measResults>
+                                <measId>2</measId>
+                                <measResultPCell>
+                                    <rsrpResult>56</rsrpResult>
+                                    <rsrqResult>18</rsrqResult>
+                                </measResultPCell>
+                            </measResults>
+                        </measurementReport-r8>
+                    </c1>
+                </criticalExtensions>
+            </measurementReport>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276733307</time><channel>DL-DCCH-Message</channel><event>/messageClassExtension></event><DL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504276733241</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11001110000100001010000000111101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276733333</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+                <pagingRecordList>
+                    <PagingRecord>
+                        <ue-Identity>
+                            <s-TMSI>
+                                <mmec>
+                                    00111000
+                                </mmec>
+                                <m-TMSI>
+                                    11001110000100001010000000111101
+                                </m-TMSI>
+                            </s-TMSI>
+                        </ue-Identity>
+                        <cn-Domain><ps/></cn-Domain>
+                    </PagingRecord>
+                </pagingRecordList>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504276734407</time><channel>UL-DCCH-Message</channel><event>ulInformationTransfer></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <ulInformationTransfer>
+                <criticalExtensions>
+                    <c1>
+                        <ulInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>
+                                    27 17 A0 DE 95 23 99 C5 37 8B EA F7 C5 10 3A 1B 
+                                    56 D4 B3 A7 5E 6A 34 78 4B 19 B1 6D 1E C9 4D 87 
+                                    49 1B 63 0B E7 3D 82 D5 BD 0A 2B DB 4B 3B
+                                </dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </ulInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </ulInformationTransfer>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F6479</hex></message-body><message-body><time>1504276734026</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>3</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 F6 FE BA D9 5E A6 EF AB DE 23</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body><message-body><time>1504276734091</time><channel>DL-DCCH-Message</channel><event>dlInformationTransfer></event><DL-DCCH-Message>
+    <message>
+        <c1>
+            <dlInformationTransfer>
+                <rrc-TransactionIdentifier>3</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <c1>
+                        <dlInformationTransfer-r8>
+                            <dedicatedInfoType>
+                                <dedicatedInfoNAS>27 D9 59 6A 29 5F CD 2F 9B 23 DB FE 16 23 6A F8</dedicatedInfoNAS>
+                            </dedicatedInfoType>
+                        </dlInformationTransfer-r8>
+                    </c1>
+                </criticalExtensions>
+            </dlInformationTransfer>
+        </c1>
+    </message>
+</DL-DCCH-Message>
+<hex>3C6D6573736167652D626F</hex></message-body></drive>

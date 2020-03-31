@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "Error";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+<style>
+    .hh2 {
+    letter-spacing: -1px;
+    font-size: 22px;
+    margin: 20px 0;
+    line-height: normal;
+    font-style: oblique;
+    font-family: -webkit-body;
+    font-variant-caps: small-caps;
+    color: #1e1a1ab0;
+    letter-spacing: inherit;
+    font-weight: bold;
+}
+</style>
+<div style="margin-top: 20%;">
+    @if (TempData["msg_error"] != null)
+    {
+        <center>
+            <h2 class="hh2">@TempData["msg_error"]</h2>
+        </center>
+        TempData["msg_error"] = null;
+    }
+</div>

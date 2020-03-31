@@ -1,0 +1,199 @@
+﻿@*@{Html.RenderPartial("~/View/Market/ReportTemplateView.cshtml");}*@
+@using SWI.Libraries.AD.BLL;
+@using SWI.Libraries.AirView.BLL;
+@{
+    AD_DefinationBL db = new AD_DefinationBL();
+    if (ViewBag.IsAdmin)
+    {
+        ViewBag.Cities = db.SelectedList("AllCities");
+    }
+    else
+    {
+        ViewBag.Cities = db.SelectedList("UserCities", Convert.ToString(ViewBag.UserId));
+    }
+    UserClientsBL ucb = new UserClientsBL();
+    ViewBag.UserClients = ucb.SelectedList("byUserId", Convert.ToString(ViewBag.UserId));
+    ViewBag.Projects = db.SelectedList("UserProjects", Convert.ToString(ViewBag.UserId));
+}
+
+
+<div class="topMenuSetting" ng-controller="TopSectionDashboardAndReport as vm">
+   
+    <div class="row top-market-header">
+        <div class="col-sm-2 col-md-3 col-lg-3" >
+            <label for="ddlClientId">Client</label><br />
+            @Html.DropDownList("ddlClientId", new SelectList(ViewBag.UserClients, "Value", "Text"), new { @class = "form-control select",  required = "required" })
+        </div>
+        <div class="col-sm-2 col-md-3 col-lg-3 ">
+            <label for="ddlProjectId">Projects</label><br />
+            @Html.DropDownList("ddlProjectId", new SelectList(ViewBag.Projects, "Value", "Text"), new { @class = "form-control select", required = "required" })
+        </div>
+        <div class="col-sm-2 col-md-3 col-lg-3">
+            <label for="ddlMarketId">Markets</label><br />
+            @Html.DropDownList("ddlMarketId", new SelectList(ViewBag.Cities, "Value", "Text"), new { @class = "form-control select",  required = "required" })
+        </div>
+        <div class="col-sm-2 col-md-3 col-lg-3" >
+            <label for="ReportTemplateId">Report Templates</label><br />
+            <select class="form-control" ng-model="vm.rt" id="ReportTemplateId"  ng-change="vm.LoadAllDataTemplate()">
+                <option value="0">Select Template Name</option>
+            </select>
+        </div>
+    </div>
+     <a class="ems_shutterBtn" ng-class="vm.shutterUpOrDown" ng-click="vm.changeShutterUpOrDown($event)" ng-if="vm.addTemStatus==false"></a>
+    
+    <div class="quick-settings" ng-if="vm.addTemStatus==true && vm.showpopover== true">
+        <span data-toggle="dropdown"><a href="#" data-toggle="tooltip" data-placement="left" title="Dashboard Settings" class="btn btn-sm color13 text-white" style="cursor:pointer"><i class="fa fa-sliders"></i></a></span>
+        <div class="dropdown-menu">
+            <ul>
+                <li class="Subheading" ng-if="vm.isModeType =='edit'"><p>Configure this dashboard</p></li>
+                <li ng-class="vm.classSetDefault">
+                    <a ng-if="vm.isModeType =='edit'" ng-click="vm.setDefaultTemplate()" href="javascript:;" style="cursor:pointer"><i class="fa fa-check" style="cursor:pointer"></i><span>Set as default</span></a>
+                </li>
+                <li ng-class="vm.classSetPublic">
+                    <a href="javascript:;" ng-if="vm.isModeType =='edit'" ng-click="vm.setPublicTemplate()" style="cursor:pointer"><i class="fa fa-check" style="cursor:pointer"></i><span>Set As Public</span></a>
+                </li>
+                <li class="Subheading"><p>Add new Template</p></li>
+                <li class="buttonDropdownLineWrapper" >
+                    <a href="javascript:;" ng-click="vm.addNewTemplate()" style="cursor:pointer"><i class="fa fa-plus"></i><span>Add New Dashboard</span></a>
+                </li>
+                @*<li>
+                    <a href="javascript:;" style="cursor:pointer"><i class="fas fa-book-reader"></i><span>New dashboard from library</span></a>
+                </li>
+                <li>
+                    <a href="javascript:;" style="cursor:pointer"><i class="far fa-clone"></i><span>Duplicate current dashboard</span></a>
+                </li>*@
+            </ul>
+        </div>
+    </div><!-- Dashboard Settings -->
+
+
+    <div class="more-links">
+
+        @*<img src="images/sub-logo.png" alt="" />*@
+        <ul>
+            @*<li><a class="color1" href="#" title=""><img src="images/icon1.png" alt="" /></a></li>
+                <li><a class="color2" href="#" title=""><img src="images/icon2.png" alt="" /></a></li>
+                <li>
+                    <a class="color3 opt-btn" href="#" title=""><img src="images/icon3.png" alt="" /></a>
+                    <ul class="opt-dropdown">
+                        <li><a class="header-converter" href="#" title="">Sidemenu /  Topmenu</a></li>
+                        <li>
+                            <a href="#" title="">Change Theme</a>
+                            <ul class="themes-list">
+                                <li><a data-theme="theme1" class="active" href="#" title="">Theme 1</a></li>
+                                <li><a data-theme="theme2" href="#" title="">Theme 2</a></li>
+                                <li><a data-theme="theme3" href="#" title="">Theme 3</a></li>
+                                <li><a data-theme="theme4" href="#" title="">Theme 4 </a></li>
+                                <li><a data-theme="theme5" href="#" title="">Theme 5</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a class="color4" href="#" title=""><img src="images/icon4.png" alt="" /></a></li>*@
+            @* <li><a class="color4 text-btn" ng-if="vm.isModeType =='edit'" ng-click="vm.alertDemo()" style="cursor:pointer" title="">alert</a></li>*@
+            <li><a class="btn-danger text-btn" ng-if="vm.isModeType =='view'" ng-click="vm.printDashboardAndReport()" style="cursor:pointer" title=""><i class="fa fa-print"></i> Print</a></li>
+            @*<li><a class="color3 text-btn"  ng-if="vm.addTemStatus==false" ng-click="vm.addNewEntity()" style="cursor:pointer" title=""><i class="fa fa-plus"></i> Add Entity</a></li>*@
+            <li ng-if="vm.coreModeTypeInte == 'EDIT'"><a class="color3 text-btn" ng-click="vm.saveTemplate()" ng-if="vm.isModeType =='edit' &&  vm.coreModeTypeInte == 'EDIT'" style="cursor:pointer" title=""><i class="fa fa-save" ></i> Save</a></li>
+            <li ng-click="vm.viewToEditMode()" ng-if="vm.isModeType =='view' && vm.coreModeTypeInte == 'VIEW' "><a class="color1 text-btn" style="cursor:pointer" title=""><i class="fa fa-edit"></i> Edit</a></li>
+            <li ng-if="vm.isModeType =='edit' &&  vm.coreModeTypeInte == 'EDIT'" ng-click="vm.editToViewMode()"><a class="color7 text-btn" style="cursor:pointer" title=""><i class="fa fa-eye"></i> View</a></li>
+        </ul>
+    </div>
+    <ui-select  ng-if="vm.addTemStatus==true && vm.loadTemp.length>0" ng-change="vm.loadTempFromDb()" style="width: 200px !important;" class="" ng-model="vm.selectTemp" theme="select2" title="Choose a template">
+        <ui-select-match placeholder="Please select Template...">{{$select.selected.TemplateTitle}}</ui-select-match>
+        <ui-select-choices repeat="templ.TemplateId as templ in vm.loadTemp | propsFilter: {TemplateTitle: $select.search}">
+            <div ng-bind-html="templ.TemplateTitle | highlight: $select.search"></div>
+
+        </ui-select-choices>
+    </ui-select>
+
+
+    <div class="profile-pic">
+        <a class="opt-btn" href="#" title=""><img src="@ViewBag.picture" alt="" /> <span>@ViewBag.Name</span></a>
+        <ul class="opt-dropdown">
+            <li>
+                <a href="@Url.Action("Details", "User", new { Id = ViewBag.UserId,area="" })"> <i class="fa fa-user"></i> <u>P</u>rofile</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Logout", "Login",new {area="" })" data-action="userLogout"><i class="fa fa-sign-out-alt"></i> <strong><u>L</u>ogout</strong></a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    var ViewMode = urlParams.get('viewMode');
+    var rptId = urlParams.get('moduleId');
+    $(document).ready(function () {
+        //if (ViewMode != "VIEW") {
+        //    LoadAllReportTemplates();
+        //}
+        $("#ddlMarketId").on("change", function () {
+            LoadAllReportTemplates();
+        });
+        BindDropDowns();
+        
+    });
+    $("body").on("change", "#ddlClientId,#ddlProjectId", function () {
+        LoadAllReportTemplates();
+    })
+    function BindDropDowns() {
+        // check For View Mode
+            // Projects
+            $("#ddlProjectId option").each(function () {
+                if ($(this).text() == "Airview SWI") {
+                    $(this).attr("selected", "selected");
+                }
+            });
+            $("#ddlMarketId option").each(function () {
+                if ($(this).text() == "New Jersey") {
+                    $(this).attr("selected", "selected");
+                    LoadAllReportTemplates()
+                    return false;
+                }
+            });
+        
+    }
+    function LoadAllReportTemplates() {
+        
+        var id = $("#ddlMarketId option:selected").val();
+        var clientID = $("#ddlClientId option:selected").val();
+        var projectID = $("#ddlProjectId option:selected").val();
+        
+        
+        if (id != 0) {
+            $.ajax({
+                url: "/Market/GetReportTemplates",
+                type: "GET",
+                data: {
+                    MarketId: id,
+                    ProjectId:projectID,
+                    ClientId: clientID,
+
+                },
+                success: function (res) {
+                    var rt = $("#ReportTemplateId");
+                    rt.empty();
+                    rt.append("<option value='0'>Select Report Template</option>");
+                    $.each(res, function (i, e) {
+                        if (e.Value==rptId) {
+                            rt.append("<option selected value=" + e.Value + ">" + e.Text + "</option>");
+                        }
+                        else {
+                            rt.append("<option value=" + e.Value + ">" + e.Text + "</option>");
+                        }
+                    });
+                },
+                error: function (e) {
+                    console.log("Error:" + e);
+                },
+                complete: function (msg) {
+
+                }
+            });
+        }
+    }
+
+   
+</script>

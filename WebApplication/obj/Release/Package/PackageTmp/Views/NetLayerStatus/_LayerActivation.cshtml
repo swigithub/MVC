@@ -1,0 +1,90 @@
+﻿@using SWI.Libraries.AirView.Entities;
+@model IEnumerable<BandVM>
+@{ 
+    int count = 0;
+
+    var Sectors = ViewBag.Sectors as List<AV_Sector>;
+}
+<div style="height:500px;overflow:auto">
+    <table class="table table-responsive table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Network Mode</th>
+                <th>Band</th>
+                <th>Carrier</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+                <tr>
+                    <td class="Layer" ><img onclick="LayerClick(this,'@count'); return false;" data-row="@count" src="~/Content/Images/Common/details_open.png" /></td>
+                    <td>@item.NetworkMode</td>
+                    <td>@item.BandName</td>
+                    <td>@item.Carrier</td>
+                    <td>
+                        @if (item.IsActive)
+                        {
+                            <a href="#" title="Disable Layer" onclick="LayerIsActive(@item.LayerStatusId,'false',@ViewBag.SiteId); return false;"><span><img src="/Content/Images/Common/disable_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>
+                        }
+                        else
+                        {
+                            <a href="#" title="Enable Layer" onclick="LayerIsActive(@item.LayerStatusId,'true',@ViewBag.SiteId); return false;"><span><img src="/Content/Images/Common/enable_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>
+                        }
+                    </td>
+                </tr>
+                <tr class="Sector" id="sec-@count">
+                    <td colspan="5">
+                        <table class="table table-responsive" style="width:80%">
+                            <thead>
+                                <tr>
+                                    <th>Sector Id</th>
+                                    <th>Beam Width</th>
+                                    <th>Antenna</th>
+                                    <th>Azimuth</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sec in Sectors.Where(m=>m.NetworkModeId==item.NetworkModeId && m.BandId==item.BandId && m.CarrierId==item.CarrierId))
+                                {
+                                   
+                                    <tr>
+                                        <td>@sec.SectorCode</td>
+                                        <td>@sec.BeamWidth</td>
+                                        <td>@sec.Antenna</td>
+                                        <td>@sec.Azimuth</td>
+                                        <td>
+                                            @if (sec.isActive)
+                                            {
+                                                <a href="#" title="Disable Sector" onclick="SectorIsActive(@sec.SectorId,'false',@ViewBag.SiteId); return false;"><span><img src="/Content/Images/Common/disable_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>
+                                            }
+                                            else
+                                            {
+                                                <a href="#" title="Enable Sector" onclick="SectorIsActive(@sec.SectorId,'true',@ViewBag.SiteId); return false;"><span><img src="/Content/Images/Common/enable_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                              
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            count++;  }
+        </tbody>
+    </table>
+</div>
+<script>
+    $('.Sector').hide();
+    function LayerClick(event, row) {
+        $('#sec-' + row).toggle();
+        if ($('#sec-' + row).is(":visible")) {
+            $(event).attr('src', '/Content/Images/Common/details_close.png')
+        } else {
+            $(event).attr('src', '/Content/Images/Common/details_open.png')
+        }
+    }
+</script>

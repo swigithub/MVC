@@ -1,0 +1,363 @@
+﻿
+<style>
+     table tr{
+        height:30px;
+    }
+    
+</style>
+<ul class="nav nav-tabs" >
+    <li class="active"><a data-toggle="tab" href="#IssueHome">Issue Ticket</a></li>
+    <li><a data-toggle="tab" href="#IssueHistory">History</a></li>
+
+</ul>
+<div class="tab-content" style="margin-top:5px !important">
+    <div id="IssueHome" class="tab-pane fade in active">
+        <form ng-submit="SaveIssue()" role="form" name="myForm" style="margin-top:20px;">
+
+
+
+            <div class="row">
+                    <div class="col-md-9" style="border-right: 1px solid #e5e5e5;">
+                        <div class="form-row" style="margin-left:-11px;">
+
+                            <div class="col-md-3">
+
+                                <label for="inputPassword4">Category</label><label style="color:darkred">*</label>
+                                <select style="height:32px;"  name="IssueCategory" class="form-control" ng-model="Issue.IssueCategoryId" ng-options="x.DefinationId as x.DefinationName for x in IssueCategory" required>
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                @*{{Issue.ReasonId}}*@
+                                <label for="inputPassword4">Type</label><label style="color:darkred">*</label>
+                                @*<select style="height:32px;" name="IssueType" class="form-control" ng-model="Issue.ReasonId" ng-options="x.DefinationId as x.DefinationName for x in IssueType" required></select>*@
+                                <select style="height:32px;" name="IssueType" class="form-control" ng-model="Issue.ReasonId" ng-options="x.DefinationId as x.DefinationName for x in IssueType" required>
+                                    <option value="">--Select--</option>
+                                </select>
+                             
+                            </div>
+                            <div class="form-group col-md-3">
+                                <div><label for="inputEmail4">Organization</label><label style="color:darkred">*</label></div>
+
+                                <select style="width:100%;height:32px;" name="IssueOnwer" ng-model="Issue.IssueById" ng-disabled="DisableIssueBy" ng-options="x.ClientId as x.ClientName for x in projectclients" required>
+                                    <option value="">--Select--</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3" style="margin-top:23px;">
+                                <input ng-checked="Issue.IsUnavoidable" ng-model="Issue.IsUnavoidable" type="checkbox">&nbsp;&nbsp;
+                                <label>Unavoidable</label>
+                            </div>
+                            @*<div class="form-group col-md-3">
+                        <div><label for="inputEmail4">Priority</label></div>
+
+                        <div class="btn-group" style="border:1px solid #efefef;width:100%;">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="width:100%;text-align:left;border:0"> {{SelectedPriority}} <span class="fa fa-caret-down" style="font-size:16px;color:#000;float:right;"></span></a>
+                            <ul class="dropdown-menu pull-right js-status-update" style="width:100%;">
+                                <li ng-repeat="p in Priority" ng-click="setSelected('prio',p)" ng-class="{active: $index===selectedIndex}">
+                                    <a href="javascript:void(0);"><i class="fa fa-circle" style="color:{{ p.ColorCode}}"></i>{{ p.DefinationName}}</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <div><label for="inputEmail4">Severity</label></div>
+                        <select style="border:1px solid #efefef;width:100%;height:32px;" name="IssueOnwer" ng-model="Issue.SeverityId" ng-disabled="DisableIssueBy" ng-options="x.DefinationId as x.DefinationName for x in Severity">
+                            <option value="">--Select--</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <div><label for="inputEmail4">Resoluion Target Date</label></div>
+                        <input type="text" date-picker ng-model="Issue.TargetDate" name="TargetDate" style="border:1px solid #efefef;width:100%;" placeholder="Target Date" class="form-control" required />
+                    </div>*@
+
+                        </div>
+
+                        <div class="form-row" style="margin-left:-13px;">
+                            <div class="form-group col-md-3">
+                                <label for="inputPassword4">Activity Type</label><label style="color:darkred">*</label>
+                                <select style="height:32px;" name="Status" class="form-control" ng-model="Issue.ActivityTypeId" ng-options="x.DefinationId as x.DefinationName for x in ActivityType" required>
+                                    <option value="">--Select--</option>
+                                </select>
+                                <select style="display:none;" name="TicketType" class="form-control" ng-model="Issue.TicketTypeId" ng-options="x.DefinationId as x.DefinationName for x in TicketType">
+                                </select>
+
+                            </div>
+
+                            <div class="form-group col-md-3">
+
+                                <label>Alarms</label>
+                                <select style="height:32px;" name="window" class="form-control" ng-model="Issue.AlarmId" ng-options="x.DefinationId as x.DefinationName for x in Alarm" required></select>
+
+                            </div>
+                            <div class="form-group col-md-3">
+                                <div><label for="inputEmail4">Severity</label><label style="color:darkred">*</label></div>
+                                <select style="width:100%;height:32px;" name="IssueOnwer" ng-model="Issue.SeverityId" ng-disabled="DisableIssueBy" ng-options="x.DefinationId as x.DefinationName for x in Severity" required>
+                                    <option value="">--Select--</option>
+                                </select>
+
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="inputPassword4">Maintenance Window</label>
+                                <select style="height:32px;" name="Window" class="form-control" ng-model="Issue.MSWindowId" ng-options="x.DefinationId as x.DefinationName for x in MilestoneWindow" required></select>
+                            </div>
+                            @*<div class="col-md-3">
+                        <label for="inputPassword4">Issue Category</label>
+                        <select style="border:1px solid #efefef;height:32px;" ng-change="GetIssueType(Issue.IssueCategoryId)" name="IssueCategory" class="form-control" ng-model="Issue.IssueCategoryId" ng-options="x.DefinationId as x.DefinationName for x in IssueCategory" required></select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="inputPassword4">Issue Type</label>
+                        <select style="border:1px solid #efefef;height:32px;" name="IssueType" class="form-control" ng-model="Issue.ReasonId" ng-options="x.DefinationId as x.DefinationName for x in IssueType" required></select>
+                    </div>*@
+
+                            @*<div class="col-md-3">
+
+                    </div>*@
+                        </div>
+                        @*<br /><br /><br /><br /><br /><br /><br /><br />*@
+                        <div class="form-row" style="margin-left:-11px">
+
+                            <div class="form-group col-md-3">
+                                <label for="inputEmail4">Attachment</label>
+                                <select style="height:32px;" ng-change="ShowfileloaderIssue(Issue.ItemTypeId)" class="form-control" name="IssueOnwer" ng-model="Issue.ItemTypeId" ng-disabled="DisableIssueBy" ng-options="x.DefinationId as x.DefinationName for x in ItemType"></select>
+                                <a  ng-show="fileloaderfile"  target="_blank" href="~/Project/Dashboard/File?path={{Issue.ItemFilePath}}"><i class="fa fa-download" aria-hidden="true"></i> <strong>Preview</strong></a>
+                             </div>
+                      
+                            <div class="form-group col-md-3" @*style="margin-top:29px;"*@>
+                                <label ng-show="Showfileloaderissuejpg" >Max 3 mb, jpg,png,jpeg are allowed !</label>
+                                <input type="file" accept=".jpg,.png,.jpeg" ng-show="Showfileloaderissuejpg" onchange="angular.element(this).scope().selectFileforUpload(this)">
+                                <label ng-show="Showfileloaderissuefile">Max 3 mb, .csv is allowed !</label>
+                                <input type="file" accept=".csv" ng-show="Showfileloaderissuefile" onchange="angular.element(this).scope().selectFileforUpload(this)">
+
+                            </div>
+
+                           
+                            @*<div class="form-group col-md-3">
+                        <label for="inputPassword4">Activity Type</label>
+                        <select style="border:1px solid #efefef;height:32px;" name="Status" class="form-control" ng-model="Issue.ActivityTypeId" ng-options="x.DefinationId as x.DefinationName for x in ActivityType" required></select>
+
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label>Issue Status</label>
+                        <select style="border:1px solid #efefef;height:32px;" name="Window" class="form-control" ng-model="Issue.StatusIssueId" ng-options="x.DefinationId as x.DefinationName for x in Status" required></select>
+
+                    </div>
+
+
+
+
+                    <div class="form-group col-md-3">
+
+                        <label>Alarms</label>
+                        <select style="border:1px solid #efefef;height:32px;" name="window" class="form-control" ng-model="issue.Alarmid" ng-options="x.DefinationId as x.DefinationName for x in Alarm" required></select>
+
+                    </div>*@
+                        </div>
+                        <div class="form-group">
+                            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                            <label>Description</label><label style="color:darkred">*</label>
+                            <textarea type="text" rows="5" required ng-model="Issue.Description" style="width:99%;" placeholder="Description" class="form-control"></textarea>
+                        </div>
+
+                        <div class="form-row" style="margin-left:-13px;">
+
+
+                            <div class="form-group col-md-3">
+
+                                <label for="inputEmail4">Assigned To</label><label style="color:darkred">*</label>
+
+
+                                <label class="select" style="width:100%;">
+                                    <ui-select required multiple ng-change="fnProjectResource()"  ng-model="multiple.AssignToId" theme="bootstrap" close-on-select="false" style="width: 100%;">
+                                        <ui-select-match>{{$item.UserName}}</ui-select-match>
+                                        <ui-select-choices repeat="u in User| filter:$select.search">
+                                            {{u.UserName}}
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </label>
+                            </div>
+
+
+                            <div class="form-group col-md-3">
+                                <div><label for="inputEmail4">Priority</label><label style="color:darkred">*</label></div>
+
+                                <div class="btn-group" style="border:1px solid #a9a9a9;width:100%;">
+                                    <a class="btn dropdown-toggle Priority"  data-toggle="dropdown" aria-expanded="false" style="width:100%;text-align:left;border:0"> {{SelectedPriority}} <span class="fa fa-caret-down" style="font-size:16px;color:#000;float:right;"></span></a>
+                                    <ul class="dropdown-menu pull-right js-status-update" style="width:100%;">
+                                        <li ng-repeat="p in Priority" required ng-click="setSelected('prio',p)" ng-class="{active: $index===selectedIndex}">
+                                            <a href="javascript:void(0);"><i class="fa fa-circle" style="color:{{ p.ColorCode}}"></i>{{ p.DefinationName}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <div class="form-group col-md-3">
+                                <div><label for="inputEmail4">Resolution Target Date</label><label style="color:darkred">*</label></div>
+                                <input type="text" date-picker ng-model="Issue.TargetDate" autocomplete="off" id="TargetDate" style="width:100%;" placeholder="Target Date" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <br /><br /><br /><br />
+                        <div class="form-row" style="margin-left:-13px;">
+                            <div class="col-md-3">
+                                <label for="inputPassword4">Requested By</label>
+                                <input type="text" style="height:32px;" name="RequestedBy" class="form-control" ng-model="Issue.RequestedBy" />
+                            </div>
+                            <div class="col-md-3">
+                                <label for="inputPassword4">Requested Date</label><label style="color:darkred">*</label>
+                                <input type="text" required   date-picker ng-model="Issue.RequestedDate" autocomplete="off" id="RequestedDate" style="width:100%;" placeholder="Target Date" class="form-control" />
+                            </div>
+
+                            @*<div class="form-group col-md-3" >
+                        <label for="inputEmail4">Item Type</label>
+                        <select style="border:1px solid #efefef;height:32px;" ng-change="ShowfileloaderIssue()" class="form-control" name="IssueOnwer" ng-model="Issue.ItemTypeId" ng-disabled="DisableIssueBy" ng-options="x.DefinationId as x.DefinationName for x in ItemType"></select>
+                    </div>
+                    <div class="form-group col-md-3" style="margin-top:29px;">
+                        <input type="file" ng-show="Showfileloaderissue" onchange="angular.element(this).scope().selectFileforUpload(this.files)">
+
+                    </div>*@
+                
+
+                        </div>
+
+
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-row" style="margin-left:-13px;">
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">eNB</label>
+                                <input type="text" style="height:32px;" name="eNB" class="form-control" ng-model="Issue.eNB" />
+
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">Extended eNB</label>
+                                <input type="text" style="height:32px;" name="OthereNB" class="form-control" ng-model="Issue.ExtendedeNB" />
+
+                            </div>
+
+
+                        </div>
+                        <div class="form-row" style="margin-left:-13px;">
+
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">Equipment Id</label>
+                                <input type="text" style="height:32px;" name="Equipment" class="form-control" ng-model="Issue.EquipmentId" />
+
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">AOTS CR</label>
+                                <input type="text" style="height:32px;" name="Equipment" class="form-control" ng-model="Issue.AOTSCR" />
+                           
+                            </div>
+
+                        </div>
+                    </div>
+                
+</div>
+            @*<div class="row" style="margin-left:0;">
+
+                </div>*@
+            @*<div class="row" style="margin-left:0;">
+                    <div class="form-row" style="margin-left:-13px;">
+                        <div class="col-md-3" style="width:18.66%;">
+                            <label for="inputPassword4">Requested By</label>
+                            <input type="text" style="height:32px;" name="RequestedBy" class="form-control" ng-model="Issue.RequestedBy" required />
+                        </div>
+                        <div class="col-md-3" style="width:18.66%;">
+                            <label for="inputPassword4">Requested Date</label>
+                            <input type="text" date-picker ng-model="Issue.RequestedDate" name="RequestedDate" style="border:1px solid #efefef;width:100%;" placeholder="Target Date" class="form-control" required />
+                        </div>
+
+                        <div class="form-group col-md-3" style="width:18.66%;">
+                            <label for="inputEmail4">Item Type</label>
+                            <select style="border:1px solid #efefef;height:32px;" ng-change="ShowfileloaderIssue()" class="form-control" name="IssueOnwer" ng-model="Issue.ItemTypeId" ng-disabled="DisableIssueBy" ng-options="x.DefinationId as x.DefinationName for x in ItemType"></select>
+                        </div>
+                        <div class="form-group col-md-3" style="margin-top:29px;width:18.66%;">
+                            <input type="file" ng-show="Showfileloaderissue" onchange="angular.element(this).scope().selectFileforUpload(this.files)">
+
+                        </div>
+
+
+                    </div>
+                </div>*@
+
+            <br />
+
+            @*<div class="row" style="margin-left:0;">
+                    <div class="form-group col-md-4" style="margin-left:-13px;">
+
+                        <label for="inputEmail4">Assigned To</label>
+
+
+                        <label class="select" style="width:100%;">
+                            <ui-select multiple ng-change="fnProjectResource()" ng-model="multiple.AssignToId" theme="bootstrap" close-on-select="false" style="width: 100%;">
+                                <ui-select-match>{{$item.UserName}}</ui-select-match>
+                                <ui-select-choices repeat="u in User| filter:$select.search">
+                                    {{u.UserName}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </label>
+                    </div>
+                </div>*@
+            <div class="modal-footer">
+
+                <button class="btn custom-btn2" data-dismiss="modal">Cancel</button>
+                
+                <input type="submit" id="SaveIssues" class="btn custom-btn1"  value="Save" />
+                
+            </div>
+
+        </form>
+    </div>
+    <div id="IssueHistory" class="tab-pane fade">
+        <table class="table table-bordered table-striped">
+            <thead>
+
+                <tr>
+                    <th></th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Task</th>
+                    <th style="width:25%">Description</th>
+                    <th>AssignedTo</th>
+                    <th>Target</th>
+                    <th>Created On</th>
+                    <th>Attachment</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr  ng-repeat="x in Filtered_Project_Issue">
+
+        <td style="background-color:{{x.PriorityColor}}"></td>
+        <td>{{x.Priority}}</td>
+        <td>{{x.Status}}</td>
+        <td>{{x.Task}}</td>
+        <td>{{x.Description}}</td>
+        <td>{{x.AssingedTo}}</td>
+        <td>{{x.TargetDate}}</td>
+        <td>{{ x.CreatedOn.replace('/Date(','').replace(')/','') | date:"mediumDate" }}</td>
+        <td  style="width:5%" ><a style="font-size:25px;padding:0px 0px 0px 15px" ng-show="x.ItemFilePath" href="{{x.ItemFilePath}}" download><i class="fa centered fa-download center"></i></a>
+            <a style="font-size:25px;padding:0px 0px 0px 15px;color:darkgrey" ng-show="!x.ItemFilePath" href="#"><i ng-disabled="true" class="fa centered fa-download center"></i></a>
+                    </td>
+           
+    </tr>
+            
+    </tbody>
+    </table>
+        <div class="pull-right" ng-show="Project_Issue.length" style="margin-top:-25px !important;margin-bottom:-30px">
+            <pagination ng-model="currentPage"
+                        total-items="Project_Issue.length"
+                        max-size="maxSize"
+                        boundary-links="true">
+            </pagination>
+        </div>
+</div>
+    </div>
+

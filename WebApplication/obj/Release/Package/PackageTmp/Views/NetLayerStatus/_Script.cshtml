@@ -1,0 +1,395 @@
+﻿@{
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Definationsjs = jss.Serialize(ViewBag.definations);
+    var EventsList = ViewBag.Events as List<SWI.Libraries.AD.Entities.AD_Defination>;
+    var Definations = ViewBag.definations as List<SWI.Libraries.AD.Entities.AD_Defination>;
+    var PreviousRecord = ViewBag.PreviousRecord as List<SWI.Libraries.AirView.Entities.AV_SiteScript>;
+}
+<style>
+    .value {
+        color: #ff0000;
+    }
+    .btn {
+    font-size: 16px;
+    }
+</style>
+
+<script src="~/Scale/js/sortable/jquery.sortable.js"></script>
+@*<script src="https://johnny.github.io/jquery-sortable/js/jquery-sortable.js"></script>*@
+
+<script>
+    var DelayId = 0;
+    var BandLockId = 0;
+    var BandResetId = 0;
+    var CarrierLockId = 0;
+    var CarrierResetId = 0;
+    var Definationsjs = JSON.parse('@Html.Raw(Definationsjs)');
+    var count = 0;
+    var RowColor = '#f4f4f4';
+    var TestCount = 0;
+    var UpCount = 0;
+
+    function rgb2hex(orig) {
+        var rgb = orig.replace(/\s/g, '').match(/^rgba?\((\d+),(\d+),(\d+)/i);
+        return (rgb && rgb.length === 4) ? "#" +
+         ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+         ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : orig;
+    }
+
+
+    $(document).on('click', '.li-remove', function () {
+        $(this).closest('li').remove();
+        if ($(this).attr('data-isParent') == 'true') {
+            var cls = $(this).attr('data-child');
+            $('.' + cls).closest('li').remove();
+        }
+        EventTypeIdChange(null);
+       // console.log($(this).attr('data-child'));
+    });
+
+    $(document).on('mouseout', '.myrow', function () {
+
+        Count();
+    });
+
+
+   
+    function EventTypeIdChange(e) {
+        //EventTypeId
+
+
+        $('#tbl-preview').empty();
+
+        var mapcolumn;
+        var Head;
+        var mapclmHeads = {};
+        var data=[];
+        $('.EventTypeId').each(function (i) {
+
+             //console.log($(this).tagName);
+            if ($(this).is("select")) {
+                mapcolumn = $(this).find(':selected').attr('data-mapcolumn');
+              Head=$(this).find(':selected').text();//  console.log($(this).find(':selected').text());
+            } else {
+                mapcolumn = $(this).attr('data-mapcolumn');
+                $(this).find(':selected').text()
+                Head='Ping'
+            }
+            
+            
+            mapcolumn = (mapcolumn == 'null' || mapcolumn == '') ? -1 : mapcolumn;
+            mapcolumn = (mapcolumn == 'undefined' || mapcolumn == undefined) ? -1 : mapcolumn;
+          //  debugger;
+            mapclmHeads = {
+                Col: mapcolumn,
+                Heads:Head,
+            }
+            data.pushIfNotExist(element, function (e) {
+                return e.Col === element.Col && e.Head === element.Head;
+            });
+        })
+        Array.prototype.inArray = function (comparer) {
+            for (var i = 0; i < this.length; i++) {
+                if (comparer(this[i])) return true;
+            }
+            return false;
+        };
+
+        // adds an element to the array if it does not already exist using a comparer 
+        // function
+        Array.prototype.pushIfNotExist = function (element, comparer) {
+            if (!this.inArray(comparer)) {
+                this.push(element);
+            }
+        };
+
+      
+        GetSetting(data)
+        
+    }
+   
+    function SortAble() {
+        $(".sortable").sortable({
+            // group: 'sortable',
+            // pullPlaceholder: false,
+            items: "li:not(.unsortable)",
+            //onDrop: function (item, container, _super) {
+            //    console.log(item);
+            //    console.log('----');
+            //    console.log(container);
+            //    console.log('----');
+
+            //    console.log(_super);
+
+            //}
+        });
+        //$('.sortable').sortable({});
+    }
+
+    function Count() {
+        var bgcolor = '';
+        var Id = '';
+        var tempcount = 1;
+       
+        $('ul.sortable li').each(function (i) {
+
+            if ($(this).attr('class') == 'unsortable') {
+
+                bgcolor = $(this).css("background");
+                Id = $(this).attr('id');
+                $('span', this).text(tempcount);
+                tempcount++;
+            } else {
+                $(this).attr('class', '');
+                $(this).addClass('myrow ' + Id);
+            }
+            $(this).css({ 'background': rgb2hex(bgcolor.substring(0, 18)) });
+            $(this).find("input[name=Color]").val(rgb2hex(bgcolor.substring(0, 18)));
+
+        })
+    }
+
+    function ColorField() {
+        return '<input type="hidden"   name="Color" value="' + RowColor + '"/>';
+    }
+
+    function RemoveRow(isParent) {
+        return '<a href="#" data-isParent="' + isParent + '" data-child="tree-' + TestCount + '" class="pull-right li-remove">x</a>';
+    }
+    function Start_li(Class) {
+        return '<li  Class="myrow" data-row="' + count + '" data-class="' + Class + '"  style="color:#141414;background: ' + RowColor + ';font-size: 16px;font-weight: normal;">';
+    }
+
+    function LoadTest(RowCount,SearchValue) {
+
+        $.each(Definationsjs, function (key, value) {
+            if (value.PDefinationId == SearchValue) {
+                $('#EventTypeId-' + RowCount).append('<option data-mapColumn="' + value.MapColumn + '" value="' + value.DefinationId + '">' + value.DefinationName + '</option>');
+            }
+           
+        });
+    }
+
+    function oTest(TestName, EventId, EventValue, IsL3Enabled, mapColumn) {
+        var IsL3EnabledChecked = (IsL3Enabled == 'True') ? 'checked' : '';
+        var txt = Start_li('test') + '<span class="serial"></span> Attempt ' + TestName + EventTypeId(EventId, count, mapColumn) + ' test. ' +
+                  'Repeat&nbsp;&nbsp;<input class="value" type="number" min="1" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '"/><input type="hidden" value="false" name="IsValue" />&nbsp;&nbsp;Time(s)' +
+                  ' & Enlable L3 <input type="hidden" id="IsL3-' + count + '"  name="IsL3Enabled" value="' + IsL3Enabled + '"/> <input    onchange="ChangeIsL3(this,' + count + '); return false;" ' + IsL3EnabledChecked + ' type="checkbox"/>' + ColorField() +
+                  RemoveRow(false) + '</li>';
+        $('.sortable').append(txt);
+        count++;
+        EventTypeIdChange(null);
+    }
+
+
+    function Test(TestName, SearchValue, EventValue, IsL3Enabled,preSelected) {
+
+        var IsL3EnabledChecked = (IsL3Enabled == 'True') ? 'checked' : '';
+        var txt = Start_li('test') + '<span class="serial"></span> Attempt ' + TestName + '&nbsp;<select onchange="EventTypeIdChange(this)" class="value EventTypeId" data-selected="' + preSelected + '"  id="EventTypeId-' + count + '" name="EventTypeId"></select>&nbsp; test. ' +
+                  'Repeat&nbsp;&nbsp;<input class="value" type="number" min="1" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '"/><input type="hidden" value="false" name="IsValue" />&nbsp;&nbsp;Time(s)' +
+                  ' & Enlable L3 <input type="hidden" id="IsL3-' + count + '"  name="IsL3Enabled" value="' + IsL3Enabled + '"/> <input    onchange="ChangeIsL3(this,' + count + '); return false;" ' + IsL3EnabledChecked + ' type="checkbox"/>' + ColorField() +
+                  RemoveRow(false) + '</li>';
+        $('.sortable').append(txt);
+        LoadTest(count, SearchValue);
+       
+        $('#EventTypeId-' + count).val($('#EventTypeId-' + count).attr('data-selected'));
+        count++;
+        EventTypeIdChange(null);
+    }
+
+    function Wait(ETypeId, EventValue, mapColumn) {
+        var txt = Start_li('wait') + '<span></span> Wait for ' + EventTypeId(ETypeId, count, mapColumn) +
+                  '<input class="value" type="text" id="EventValue-' + count + '" name="EventValue" style="width:50px;"  value="' + EventValue + '" /> <input type="hidden" value="true" name="IsValue" /> &nbsp;second(s)' +
+                  ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                  RemoveRow(false) + '</li>';
+        $('.sortable').append(txt);
+        count++;
+    }
+    function EventTypeId(value, row, mapColumn) {
+        //debugger;
+        return '<input type="hidden" class="EventTypeId" data-mapColumn="' + mapColumn + '" value="' + value + '" name="EventTypeId" id="EventTypeId-' + row + '" />';
+    }
+
+    function RAT(ETypeId, EventValue, mapColumn) {
+        var txt = Start_li('LockAndReset') + '<span class="serial"></span> Attempt ' + EventValue + EventTypeId(ETypeId, count, mapColumn) +
+                  '<input type="hidden" name="EventValue"  value="' + EventValue + '" /> <input type="hidden" value="true" name="IsValue" />' +
+                  ' <input type="hidden" name="IsL3Enabled" value="false" />' + ColorField() +
+                  RemoveRow(false) + '</li>';
+        $('.sortable').append(txt);
+        count++;
+    }
+
+
+
+    function ChangeRowColor() {
+        TestCount++;
+
+        RowColor = (RowColor == '#f4f4f4') ? '#d0e1fb' : '#f4f4f4';
+
+        var txt = '<li class="unsortable" id="tree-' + TestCount + '" style="color:#00acd6;background: ' + RowColor + ';font-size: 19px;"> TEST SEQUENCE # <span> ' + TestCount + '</span>' + RemoveRow(true) + '</li>';
+        $('.sortable').append(txt);
+        count++;
+    }
+
+    function ChangeIsL3(e, rowCount) {
+        if ($(e).is(':checked')) {
+            $('#IsL3-' + rowCount).val('true');
+        } else {
+            $('#IsL3-' + rowCount).val('false');
+        }
+    }
+    function ClearList() {
+        TestCount = 0;
+        $(".sortable").empty();
+        EventTypeIdChange(null);
+        ChangeRowColor();
+    }
+    $(function () {
+     
+        SortAble();
+    });
+</script>
+
+<form method="post" id="frm-script" onsubmit="ScriptSubmit(); return false;">
+    <div style="margin-left:1%">
+
+        @foreach (var item in Definations.Where(m => m.InputType == "button").OrderBy(m=>m.SortOrder))
+        {
+
+            string OnClick = "";
+            if (item.DisplayType == "etest")
+            {
+                OnClick = "Test('"+item.DefinationName+"',"+item.DefinationId+", 1, 'false'); return false;";
+            }
+            else if (item.DisplayType == "otest")
+            {
+                OnClick = "oTest('" + item.DefinationName + "'," + item.DefinationId + ", 1, 'false',"+item.MapColumn+"); return false;";
+            }
+            //else if (item.DisplayType == "rat")
+            //{
+            //    OnClick = "LockAndReset('"+ item.DefinationName+ "'); return false;";
+            //}
+            else if (item.DisplayType == "delay")
+            {
+                OnClick = "Wait("+item.DefinationId+",'5','"+item.MapColumn+"'); return false;";
+            }
+
+            <div class="btn-group">
+                
+                @if (EventsList.Exists(m => m.PDefinationId == item.DefinationId))
+                {
+
+                    <button  style="background-color:@item.ColorCode;color:white" type="button"  class="btn ">@item.DefinationName</button>
+
+                    <button style="background-color:@item.ColorCode;color:white" type="button" class="btn  dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                    @foreach (var item2 in EventsList.Where(m => m.PDefinationId == item.DefinationId))
+                    {
+                        if (item.DisplayType == "etest")
+                        {
+
+                            OnClick = "Test('" + item2.DefinationName + "'," + item2.DefinationId + ", 1, 'false'); return false;";
+                        }
+                        else if (item.DisplayType == "rat")
+                        {
+                            // RAT(ETypeId, type, mapColumn)
+                            OnClick = "RAT('"+item2.DefinationId+"', '" + item2.DefinationName + "','"+@item.MapColumn+"'); return false;";
+                        }
+                        <li><a data-value="@item2.DefinationId" onclick="@OnClick" href="#">@item2.DefinationName</a></li>
+                    }
+
+                    </ul>
+                }
+                else
+                {
+
+                    <button style="background-color:@item.ColorCode;color:white" type="button" onclick="@OnClick" class="btn ">@item.DefinationName</button>
+                }
+
+            </div>
+        }
+        <br />
+        <br />
+      
+          <button type="button" onclick="ChangeRowColor(); return false;" style="margin-bottom: 10px;" class="btn btn-default">Add Test Sequence</button>
+       
+        <label class="pull-right" style="font-size: 20px;margin-right: 22.5%;margin-top: 11px;">Test Script Preview</label>
+    </div>
+
+
+    <script>
+
+        @{ string prevColor=string.Empty; }
+        @foreach (var item in PreviousRecord)
+        {
+            if (prevColor == item.Color)
+            {
+
+            }
+            else
+            {
+                @: ChangeRowColor();
+                        prevColor = item.Color;
+            }
+
+
+            @: RowColor = '@prevColor';
+                    if (item.IsValue)
+            {
+                if (item.DisplayType == "delay")
+                {
+                    @: Wait('@item.EventTypeId', '@item.EventValue', '@item.MapColumn');
+
+                }
+                else if (item.DisplayType == "rat")
+                {
+                   @: RAT('@item.EventTypeId', '@item.DefinationName', '@item.MapColumn');
+                        }
+            }
+            else if (item.IsValue == false)
+            {
+                if (item.DisplayType == "otest")
+                {
+                      @: oTest('@item.DefinationName', '@item.EventTypeId', '@item.EventValue', '@item.IsL3Enabled', '@item.MapColumn');
+                        }
+                else
+                {
+                 @: Test('@item.pDefinationName', '@item.pDefinationId', '@item.EventValue', '@item.IsL3Enabled', '@item.EventTypeId');
+
+                }
+            }
+        }
+
+         EventTypeIdChange(null);
+         if(TestCount==0){
+         ChangeRowColor() ;
+         }
+
+    </script>
+   
+    <div style="height:70vh;overflow:auto">
+       
+        <input type="hidden" value="@ViewBag.LayerId" name="NetLayerId" />
+        <input type="hidden" value="@ViewBag.SiteId" name="SiteId" />
+
+        <div class="col-sm-8">
+            <ul class="todo-list sortable" style="font-weight: bold;"></ul>
+
+        </div>
+        <div class="col-sm-4">
+            <div id="tbl-preview"></div>
+          
+
+        </div>
+
+    </div>
+    <br />
+    <button type="submit" class="btn btn-success pull-right">Save</button>
+    <button onclick="ClearList(); return false;" class="btn btn-danger pull-left">Cancel</button>
+    <br /><br />
+
+</form>

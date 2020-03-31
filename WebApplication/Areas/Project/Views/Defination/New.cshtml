@@ -1,0 +1,642 @@
+﻿
+@{
+    ViewBag.Title = "New";
+    //Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+<style>
+
+</style>
+
+<div ng-app="ProjectManagment" ng-controller="Defination">
+    <div class="jarviswidget jarviswidget-sortable" id="wid-id-3" data-widget-editbutton="false" data-widget-custombutton="false" role="widget">
+        <header role="heading">
+            <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+            @if (ViewBag.Id > 0)
+            {
+                <h2 id="PH">Edit Project</h2>
+            }
+            else
+            {
+                <h2 id="PH">New Project</h2>
+            }
+           
+            <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+            <div class="widget-toolbar">
+                <a href="/project/defination/all" class="btn btn-info btn-xs">Return to Projects</a>
+            </div>
+        </header>
+        <!-- widget div-->
+        <div role="content">
+            <!-- widget content -->
+            <div class="widget-body no-padding">
+
+                <form ng-submit="Save()" class="smart-form" id="frm">
+                    <ul class="nav nav-tabs bordered" id="tabs">
+                        <li class="active"><a href="#create-project" data-toggle="tab">Project Information</a></li>
+                        <li><a href="#holidays" data-toggle="tab">Calender</a></li>
+                        <li><a href="#WG" data-toggle="tab">Work Group(s)</a></li>
+                        <li ng-show="p.IsWorkflowAllowed == true"><a href="#TaskStagesTab" data-toggle="tab">Task Stage(s)</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="create-project">
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col col-lg-6">
+                                        <section>
+                                            <label class="label">Project Title<label style="color:darkred">*</label></label>
+                                            <label class="input">
+                                                <input type="text" ng-model="p.ProjectName" maxlength="15" placeholder="Project Title" required />
+                                            </label>
+                                        </section>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col col-lg-3">
+                                        <section>
+                                            <label class="label">Client<label style="color:darkred">*</label></label>
+                                            <label class="select">
+                                                <select ng-model="p.ClientId" required ng-options="x.ClientId as x.ClientName for x in Clients">
+                                                    <option value="">Client</option>
+                                                </select> <i></i>
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Planned <label style="color:darkred">*</label></label>
+                                            <label class="input">
+                                                <input type="text" autocomplete="off" date-picker required ng-model="p.PlannedDate" placeholder="Planned Date" id="PlannedDate" />
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Forcast Start <label style="color:darkred">*</label></label>
+                                            <label class="input">
+                                                <input type="text" autocomplete="off" date-picker required ng-model="p.ActualStartDate" placeholder="Start Date" id="strtdate" required />
+
+                                                <span>
+                                                    <label id="strtdateerror" style="color:darkred;display:none">
+                                                        Start Date Should not be less then Planned Date
+                                                    </label>
+                                                </span>
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Status<label style="color:darkred">*</label></label>
+                                            <label class="select">
+                                                <select ng-model="p.StatusId" ng-required="x.DefinationId" ng-options="x.DefinationId as x.DisplayText for x in Status">
+                                                    @*<option value="" disabled="">Status</option>*@
+                                                </select> <i></i>
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Budget Cost</label>
+                                            <label class="input">
+                                                <input type="number" ng-model="p.BudgetCost" min="0" max="999999999" placeholder="" />
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Entity<label style="color:darkred">*</label></label>
+                                            <label class="select">
+                                                <select ng-model="p.EntityId" required ng-options="x.Id as x.Title for x in Entity">
+                                                    <option value="">-Project Entities-</option>
+                                                </select> <i></i>
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Category<label style="color:darkred">*</label></label>
+                                            <label class="select">
+                                                <select ng-model="p.CategoryId"  ng-options="x.DefinationId as x.DisplayText for x in Category">
+                                                    <option value="">-Project Category-</option>
+                                                </select> <i></i>
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <div class="col-sm-12">
+                                                <section class="col col-4">
+                                                    <label class="label">Estimate</label>
+                                                    <label class="switch">
+                                                        <input ng-model="p.IsEstimate" type="checkbox">
+                                                        <span class="slider"></span>
+                                                    </label>
+                                                </section>
+                                                <section class="col col-4">
+                                                    <label class="label">Color</label>
+
+                                                    <label class="input">
+                                                        <input type="text" id="Color" color-picker ng-model="p.Color" />
+                                                    </label>
+                                                </section>
+                                                <section class="col col-4">
+                                                    <label class="label">Link Wo</label>
+                                                    <label class="switch">
+                                                        <input ng-model="p.IsWoLinked" type="checkbox">
+                                                        <span class="slider"></span>
+                                                    </label>
+                                                </section>
+                                            </div>
+                                        </section>
+                                    </div>
+
+                                    <div class="col col-lg-3">
+                                        <section>
+                                            <label class="label">End Client</label>
+                                            <label class="select">
+                                                <select ng-model="p.EndClientId" ng-options="x.ClientId as x.ClientName for x in Clients">
+                                                    <option value="">End Client</option>
+                                                </select> <i></i>
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Target</label>
+                                            <label class="input">
+                                                <input type="text" autocomplete="off" date-picker ng-model="p.TargetDate" placeholder="Target Date" />
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Forcast End </label>
+                                            <label class="input">
+                                                <input type="text" autocomplete="off" date-picker ng-model="p.ActualEndDate" placeholder="End Date" />
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Priority</label>
+                                            <label class="select">
+                                                <select ng-model="p.PriorityId " ng-required="x.DefinationId" ng-options="x.DefinationId as x.DefinationName for x in Priorities">
+                                                    @*<option value="" disabled="">Priority</option>*@
+                                                </select> <i></i>
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label" style="display:none">Bill Rate Calculation based on</label>
+                                            <label class="select" style="display:none">
+                                                <select ng-model="p.TaskTypeId" ng-options="x.DefinationId as x.DefinationName for x in TaskTypes">
+                                                    <option value="" disabled="">Task Type</option>
+                                                </select> <i></i>
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Completion Percent</label>
+                                            <label class="input">
+                                                <input type="number" ng-model="p.CompletionPercent" min="0" max="100" placeholder="0" />
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Project Manager</label>
+                                            <label class="select">
+                                                <select ng-model="p.ManagerId" ng-options="x.ManagerId as x.ManagerName for x in Managers">
+                                                    <option value="" disabled="">-Project Managers-</option>
+                                                </select> <i></i>
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Currency</label>
+                                            <label class="select">
+                                                <select ng-model="p.CurrencyId"  required ng-options="x.DefinationId as x.DefinationName for x in Currency">
+                                                    <option value="" disabled="">-Project currency-</option>
+                                                </select> <i></i>
+                                            </label>
+                                        </section>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col col-lg-6">
+                                        <section>
+                                            <label class="label" style="display: unset">Working Days<label style="color:darkred">*</label> :</label>
+                                            @*<div class="inline-group">
+                                    <label class="label">Working Days :</label>
+                                    <label ng-repeat="album in albums" class="checkbox">
+                                        <input type="checkbox" name="checkbox-inline" checked="checked" ng-model="album.selected" value={{album.id}}>
+                                        <i></i>{{album.name}}
+                                    </label>
+                                </div>*@
+
+                                            <label ng-repeat="album in albums" style="font-size: 12px">
+                                                <input class="workday" style="margin-left: 8px;vertical-align: middle;margin-top: 0;" type="checkbox" name="wd" ng-model="album.selected" value={{album.id}} /> {{album.name}}
+                                            </label>
+                                        </section>
+                                        <section>
+                                            <label class="label">Description</label>
+                                            <label class="textarea">
+                                                <textarea rows="3" id="pd" ng-model="p.Description" placeholder="Description"></textarea>
+                                            </label>
+                                        </section>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="tab-pane fade padding-10" id="holidays">
+                            <a href="#" class="add-holiday btn btn-info btn-sm">Add a Holiday</a>
+                            <table class="table holiday-table table-bordered">
+                                @if (ViewBag.Id != 0 && ViewBag.Id < 0)
+                         {
+                                    <thead>
+                                        <tr>
+
+                                            <th>Title</th>
+                                            <th>Date</th>
+                                            <th>Is Off Day</th>
+                                            <th>Delete</th>
+
+                                        </tr>
+
+                                    </thead>
+                         }
+                                <tbody>
+                                    <tr style="display:none">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    @if (ViewBag.Id != 0 && ViewBag.Id <0)
+                                    {
+                                        <tr>
+                                            <td><input type="text" value="" required /></td>
+                                            <td><input autocomplete="off" date_picker type="text" placeholder="Date" /></td>
+                                            <td><input type="checkbox" value="" /></td>
+                                            <td><a href="#" title="Delete Row" class="del-holiday btn bg-color-red txt-color-white"><i class="fa fa-trash-o"></i></a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade padding-10" id="TaskStagesTab">
+                            <a href="#" class="add-TaskStage btn btn-info btn-sm" style="margin-bottom: 10px">Add a Task Stage</a>
+                            <table class="table TS-table table-bordered">
+                                @if (ViewBag.Id != 0 && ViewBag.Id < 0)
+                                {
+                                    <thead>
+                                        <tr>
+
+                                            <th>Title</th>
+                                            <th>Descripion</th>
+                                            <th>Sort Order</th>
+                                            <th style="display: none"></th>
+                                            <th>Delete</th>
+                                        </tr>
+
+                                    </thead>
+                                }
+                                <tbody>
+                                    <tr style="display:none">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    @if (ViewBag.Id != 0 && ViewBag.Id < 0)
+                                    {
+                                        <tr>
+
+                                            <td><input type="text" value="" required /></td>
+                                            <td><input autocomplete="off" type="text" placeholder="Description" required /></td>
+                                            <td><input type="number" min="0" max="9999" value="" required /></td>
+                                            <td style="display: none"><input type="hidden" value="" /></td>
+                                            <td><a href="#" data-isDeleted="false" data-StageId="0" title="Delete Row" class="del-taskStage btn btn-default bg-color-red txt-color-white"><i class="fa fa-trash-o"></i></a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade padding-10" id="WG">
+                            <section>
+                                <label class="label"></label>
+
+                                <div class="inline-group">
+                                    <label ng-repeat="group in WorkGroups" class="checkbox">
+                                        <input type="checkbox" name="wg"  ng-model="group.selected" value={{group.WorkgroupId}}   ng-click="GroupCheckchange(group.WorkgroupId)"n /><i></i> {{group.WorkgroupName}}
+                                    </label> 
+
+                                   
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                    <footer>
+                        <button type="submit" class="btn custom-btn1 aaa">
+                            Save
+                        </button>
+                        <a href="/project/defination/all" class="btn custom-btn2">
+                            Cancel
+                        </a>
+                    </footer>
+                </form>
+            </div>
+            <!-- end widget content -->
+        </div>
+        <!-- end widget div -->
+    </div>
+</div>
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datepicker/js")
+    <script>
+        var ProjectId = @ViewBag.Id;
+        var UserId = @ViewBag.UserId;
+    </script>
+    <script src="~/AdminLTE/plugins/momentjs/js/moment.min.js"></script>
+    <script src="~/Content/js/Plugins/spectrum/spectrum.js"></script>
+    <script src="~/AdminLTE/plugins/datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+    <script src="~/Areas/Project/Content/ProjectDefination.js"></script>
+<script type="text/javascript">
+    //$(document).ready(function () {     $("#strtdate").on('focus', ":input:visible:enabled:first", function () {
+    //    tabIndexForm();
+    //});
+    //    });
+    //jQuery(document).ready(function () {
+    //    jQuery('#frm').validate({
+    //        ignore: ".ignore",
+    //        invalidHandler: function (e, validator) {
+    //            if (validator.errorList.length)
+    //                $('#tabs a[href="#' + jQuery(validator.errorList[0].element).closest(".tab-pane").attr('id') + '"]').tab('show')
+    //        }
+    //    });
+
+    //    jQuery('.aaa').click(function (evt) {
+    //        evt.preventDefault();
+    //        jQuery('#frm').submit()
+
+    //    });
+    //});
+
+    $(document).ready(function () {
+        ProjectTitles();
+        $('#pd').keypress(function () {
+            var maxLength = $(this).val().length;
+            if (maxLength >= 500) {
+                //alert();
+                $.notify('You cannot enter more than ' + maxLength + ' chars', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                return false;
+            }
+        });
+
+    });
+    var xj = 0;
+
+    $('#PlannedDate').change(function () {
+        if ($('#PlannedDate').val() != "" && $('#strtdate').val() != "") {
+            if (dates.compare($('#PlannedDate').val(),$('#strtdate').val()) == 1) {
+                $("#strtdateerror").css("display", "block");
+                $("#strtdate").focus(function () { $(this).addClass("focused") });
+             //   $("#txt1").blur(function () { $(this).removeClass("focused") });
+                //$("#id").css("display", "none");
+            } else {
+                $("#strtdateerror").css("display", "none");
+            }
+        }
+    })
+    $('#strtdate').change(function () {
+        if ($('#PlannedDate').val()!="" && $('#strtdate').val()!="") {
+            if (dates.compare($('#PlannedDate').val(),$('#strtdate').val()) == 1) {
+            $("#strtdateerror").css("display", "block");
+            $("#strtdate").focus(function () { $(this).addClass("focused") });
+        } else {
+            $("#strtdateerror").css("display", "none");
+        }
+        }
+    })
+    var x = 0;
+    $(".add-holiday").on("click", function () {
+        if (x == 0) {
+            var holidaythread = $.parseHTML(`<thead><tr><th>Title</th><th>Date</th><th>Is Off Day</th><th>Delete</th></tr></thead>`);
+            $(".holiday-table ").append(holidaythread);
+            x++;
+        }
+        var holidayRow = $.parseHTML(`<tr><td><input type="text" value="" required  /></td><td><input type="text"  autocomplete="off"  date-picker  required  placeholder="Date" /></td><td><input type="checkbox" value="" /></td><td><a href="#" title="Delete Row" class="del-holiday btn btn-default bg-color-red txt-color-white"><i class="fa fa-trash-o"></i></a></td></tr>`);
+        $(".holiday-table tbody").append(holidayRow);
+        $('input[date-picker]').datepicker({
+            format: 'mm/dd/yyyy',
+            autoclose: true
+        })
+    });
+    var y = 0;
+    $(".add-TaskStage").on("click", function () {
+        if (y == 0) {
+            var holidaythread = $.parseHTML(`<thead><tr><th>Title</th><th>Description</th><th>Sort Order</th><th style="display: none"></th><th>Delete</th></tr></thead>`);
+            $(".TS-table ").append(holidaythread);
+            y++;
+        }
+        var holidayRow = $.parseHTML(`<tr><td><input type="text" value="" required  placeholder="Title"/></td><td><input  autocomplete="off" type="text" required placeholder="Description" /></td><td><input type="number" value="" placeholder="Sort Order" min="0" max="9999" required/></td><td style="display: none"><input type="hidden" value="" /></td><td><a href="#" data-isDeleted="false" data-StageId="0" title="Delete Row" class="del-taskStage btn btn-default bg-color-red txt-color-white"><i class="fa fa-trash-o"></i></a></td></tr>`);
+        $(".TS-table tbody").append(holidayRow);
+    });
+
+    $("body").on("click", ".del-holiday", function () {
+        $(this).parents('tr').remove();
+    });
+
+    $("body").on("click", ".del-taskStage", function () {
+        debugger
+        var StageId = $(this).attr("data-StageId");
+        var context = this;
+        $.ajax({
+            type: "POST",
+            url: "/project/Defination/IsStageUsed?StageId=" + StageId,
+            async: false,
+            success: function (res) {
+                debugger
+                if (res.Status == 'used') {
+                    swal(res.Message, "", "error");
+                } else if (res.Status == 'free') {
+                    $(context).attr("data-isDeleted", "true");
+                    $(context).parents('tr').hide();
+                }
+                else if (res.Status == 'UnwantedStage') {
+                    $(context).parents('tr').remove();
+                } else {
+                    swal(res.Message, "", "error");
+                }
+            },
+            error: function (res) {
+                swal("Unhandle Error!", "", "error");
+            }
+        });
+    });
+
+    var dates = {
+        convert: function (d) {
+            // Converts the date in d to a date-object. The input can be:
+            //   a date object: returned without modification
+            //  an array      : Interpreted as [year,month,day]. NOTE: month is 0-11.
+            //   a number     : Interpreted as number of milliseconds
+            //                  since 1 Jan 1970 (a timestamp)
+            //   a string     : Any format supported by the javascript engine, like
+            //                  "YYYY/MM/DD", "MM/DD/YYYY", "Jan 31 2009" etc.
+            //  an object     : Interpreted as an object with year, month and date
+            //                  attributes.  **NOTE** month is 0-11.
+            return (
+                d.constructor === Date ? d :
+                d.constructor === Array ? new Date(d[0], d[1], d[2]) :
+                d.constructor === Number ? new Date(d) :
+                d.constructor === String ? new Date(d) :
+                typeof d === "object" ? new Date(d.year, d.month, d.date) :
+                NaN
+            );
+        },
+        compare: function (a, b) {
+            // Compare two dates (could be of any type supported by the convert
+            // function above) and returns:
+            //  -1 : if a < b
+            //   0 : if a = b
+            //   1 : if a > b
+            // NaN : if a or b is an illegal date
+            // NOTE: The code inside isFinite does an assignment (=).
+            return (
+                isFinite(a = this.convert(a).valueOf()) &&
+                isFinite(b = this.convert(b).valueOf()) ?
+                (a > b) - (a < b) :
+                NaN
+            );
+        },
+        inRange: function (d, start, end) {
+            // Checks if date in d is between dates in start and end.
+            // Returns a boolean or NaN:
+            //    true  : if d is between start and end (inclusive)
+            //    false : if d is before start or after end
+            //    NaN   : if one or more of the dates is illegal.
+            // NOTE: The code inside isFinite does an assignment (=).
+            return (
+                 isFinite(d = this.convert(d).valueOf()) &&
+                 isFinite(start = this.convert(start).valueOf()) &&
+                 isFinite(end = this.convert(end).valueOf()) ?
+                 start <= d && d <= end :
+                 NaN
+             );
+        }
+    }
+
+    function ProjectTitles(){
+        $.post("/Project/Defination/ToSingle", { Filter: 'ByProjectId', Value: @ViewBag.Id }).then(function (res) {
+            $('#detail').empty();
+            $('#template').empty();
+            $('#setting').empty();
+            $('#Deshboard').empty();
+            var s = res;
+            var EndDate = "Continue";
+            if (s.EstimateEndDate != null && s.EstimateEndDate != undefined) {
+                EndDate = moment(s.EstimateEndDate).format('DD MMM, YYYY');
+            }
+            var ProjectInfo = '<span style="font-size: 16px;font-family: inherit;color:#000;"><strong>Project: </strong>' + s.ProjectName + '</span>' +
+                '<span style="margin-left:1%;font-size: 16px;font-family: inherit;color:#000;">' +
+                '<strong style="margin-left:2%;color:#000;">Start Date: </strong><span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;;margin-right: 27px;">' + moment(s.EstimateStartDate).format('DD MMM, YYYY') + ' </span> <strong> Expected End Date: </strong> ' +
+                '<span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;">' + EndDate+ '</span>';
+            $('#ProjectInfo').html(ProjectInfo);
+
+            var detail = '<span> <a title="Project Timeline" href="/Project/Defination/Details/' + @ViewBag.Id  + '"><i class="fa fa-calendar"></i></a> </span>'
+            $('#detail').html(detail);
+
+            var template = '<span> <a title="Project Template" href="/Project/Template/list?ProjectId=' + @ViewBag.Id  + '"><i class="fa fa-list-alt"></i></a> </span>'
+            $('#template').html(template);
+
+            var seting = '<span> <a  title="Project Chart Settings" href= "/Project/Dashboard/Configuration?Id=' + @ViewBag.Id + '"><i class="fa fa-cog"></i></a> </span>'
+            $('#setting').html(seting);
+            var Deshboard = '<span> <a title="Project Dashboard" href="/Project/Dashboard/Index?Id=' +@ViewBag.Id + '"><i class="fa fa-dashboard"></i></a> </span>'
+  
+            $('#Deshboard').html(Deshboard);
+
+            var _worklogs = '<span> <a title="Worklog" href="/Project/Worklog/Index?projectid=' +@ViewBag.Id + '"><i class="fa fa-tasks"></i></a> </span>'
+  
+            $('#worklogs').html(_worklogs);
+        });
+    }
+</script>
+}
+@section style{
+
+    <link href="~/Content/js/Plugins/spectrum/spectrum.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/datepicker/css/datepicker3.css" rel="stylesheet" />
+
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <style>
+        .sp-preview {
+            height: 28px;
+            width: 35px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .switch input {
+                display: none;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+
+.add-holiday{
+    margin-bottom:10px;
+}
+table.holiday-table input[type="text"] {
+    height: 26px;
+    border: 0;
+    padding: 0 10px;
+    box-sizing: border-box;
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+}
+
+    table.TS-table input[type="text"] {
+    height: 26px;
+    border: 0;
+    padding: 0 10px;
+    box-sizing: border-box;
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+}
+        table.TS-table input[type="number"] {
+    height: 26px;
+    border: 0;
+    padding: 0 10px;
+    box-sizing: border-box;
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+}
+    </style>
+}

@@ -1,0 +1,22 @@
+.group{
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    border: solid 1px #666;
+}
+
+.group-conditions{
+    margin-left: 20px;
+}
+
+.alert-group{
+    margin-top: 10px;
+    margin-bottom:10px;
+    border-color:#e5e5e5;
+   
+}
+
+.condition, .group{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}

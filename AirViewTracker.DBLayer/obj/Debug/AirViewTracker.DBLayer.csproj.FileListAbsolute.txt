@@ -1,0 +1,5 @@
+D:\TFS_Codes\AIrView1\AV_DEV\AirViewTracker.DBLayer\bin\Debug\AirViewTracker.DBLayer.dll
+D:\TFS_Codes\AIrView1\AV_DEV\AirViewTracker.DBLayer\bin\Debug\AirViewTracker.DBLayer.pdb
+D:\TFS_Codes\AIrView1\AV_DEV\AirViewTracker.DBLayer\obj\Debug\AirViewTracker.DBLayer.csprojResolveAssemblyReference.cache
+D:\TFS_Codes\AIrView1\AV_DEV\AirViewTracker.DBLayer\obj\Debug\AirViewTracker.DBLayer.dll
+D:\TFS_Codes\AIrView1\AV_DEV\AirViewTracker.DBLayer\obj\Debug\AirViewTracker.DBLayer.pdb

@@ -1,0 +1,79 @@
+﻿@using SWI.Libraries.Security.Entities
+
+@model UserDateRights
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">User Date Rights</h3>
+                <a href="@Url.Action("All","user")" class="btn btn-sm btn-info btn-flat pull-right">Back</a>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        @using (Html.BeginForm("New", "DateRight", FormMethod.Post, new { Id = "frm-date-rights" }))
+                        {
+
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    @Html.Label("Days Forward", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.HiddenFor(m => m.UserId, new { Value = ViewBag.UserId })
+                                        @Html.EditorFor(model => model.DaysForward, new { htmlAttributes = new { @class = "form-control", Required = "Required", data_parsley_type = "number" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("DaysBack", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => model.DaysBack, null, new { @class = "form-control", Required = "Required", data_parsley_type = "number" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("IsActive", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.CheckBoxFor(model => model.IsActive)
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="reset" value="Reset" class="btn btn-default" />
+                                        <input type="submit" value="Save" class="btn btn-success" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+
+@section scripts{
+<script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script>
+        $(function () {
+            $('#frm-date-rights').parsley();
+        });
+    </script>
+}
+@section style{
+<link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+}

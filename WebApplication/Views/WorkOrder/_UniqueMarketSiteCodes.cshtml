@@ -1,0 +1,16 @@
+﻿
+
+<div class="row" >
+    <div class="col-sm-6">
+        @Html.DropDownList("ddlMarkets", new SelectList(ViewBag.ddCities, "Value", "Text") , new { style = "width:150px;", @class = "form-control select2" })
+    </div>
+    <div class="col-sm-6" id="sec-MarketSites">
+        <select class="form-control select2" style="width:150px;" id="ddlMarketSites"><option>-Sites-</option></select>
+    </div>
+</div>
+<br />
+<center>
+    <button type="button" class="btn btn-success " id="btn-SiteCode" style="">Select</button>
+</center>
+
+

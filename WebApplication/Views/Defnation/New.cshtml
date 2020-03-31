@@ -1,0 +1,366 @@
+﻿@model List<SWI.Libraries.AD.Entities.AD_Defination>
+
+@{
+    ViewBag.Title = "Create Master Defination";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+
+}
+
+<div class="box box-solid">
+    <div class="box-header with-border boxHeader">
+        <h3 class="box-title">@ViewBag.Title</h3>
+        <button class="btn btn-sm btn-info pull-right" id="btn-NewRow">New Row</button>
+    </div>
+    <div class="box-body boxBody">
+        @using (Html.BeginForm("New", "Defnation", FormMethod.Post, new { id = "frm-def" }))
+        {
+        <table class="table table-hover" id="tbl-def">
+            <tr>
+                <th style="width:150px">Defination Type</th>
+
+                <th>Defination Name</th>
+
+                <th style="width:150px">Parent Defination</th>
+                <th style="width:150px">Key Code</th>
+                <th style="width:150px">Display Type</th>
+                <th style="width:70px">Color</th>
+                <th>Input Type</th>
+                <th style="width:70px">Max Length</th>
+                <th style="width:70px">Sort Order</th>
+                <th>Display Text</th>
+                <th style="width:70px">IsActive</th>
+            </tr>
+
+            <tr id="NewRow">
+                <td>
+                    <input data-required="no" type="hidden" class="form-control Row" data-name="DefinationId" name="DefinationId" id="DefinationId" />
+                    @Html.DropDownList("DefinationTypeId", ViewBag.SelectedDefinationTypes as List<SelectListItem>, new { @class = "form-control select Row RowFirst DefinationTypeId", id = "DefinationTypeId-r0", required = "required", data_parsley_min = "1", data_name = "DefinationTypeId", data_row = "r0", name = "DefinationType" })
+                </td>
+                <td><input type="text" class="form-control Row" data-name="DefinationName" name="DefinationName" id="DefinationName" /></td>
+                <td>
+                    <select class="form-control select Row PDefinationId" data-required="no" data-name="PDefinationId" data-parsley-min="1" name="PDefinationId" id="PDefinationId-r0" data-row="r0" >
+                        <option>-Parent Defination-</option>
+                    </select>
+                </td>
+                <td><input type="text" class="form-control Row" style="text-transform: uppercase;" data-name="KeyCode" name="KeyCode" id="KeyCode-r0" data-row="r0" /></td>
+                <td><input type="text" class="form-control Row" data-required="no" data-name="DisplayType" name="DisplayType" id="DisplayType" /></td>
+                <td><input  type="color" class="form-control Row" data-required="no" data-name="ColorCode" name="ColorCode" id="ColorCode" /></td>
+                <td><input type="text" class="form-control Row" data-required="no" data-name="InputType" name="InputType" id="InputType" /></td>
+                <td><input type="number" class="form-control Row" data-required="no" value="0" min="0" data-name="MaxLength" name="MaxLength" id="MaxLength" /></td>
+                <td><input type="number" value="0" min="0" class="form-control Row" data-name="SortOrder" name="SortOrder" id="SortOrder" /></td>
+                <td><input type="text" class="form-control Row" data-required="no" data-name="DisplayText" name="DisplayText" id="DisplayText" /></td>
+                <td>
+                    <input type="checkbox" class="RowLast Row IsActivebox" checked data-name="IsActivebox" data-row="r0" name="IsActivebox" />
+                    <input type="hidden" value="true" data-name="IsActive" id="IsActive-r0" />
+                </td>
+
+
+
+            </tr>
+        </table>
+
+        <div class="form-group pull-right">
+            <div class="">
+                <button type="reset" class="btn btn-default"><i class="fa fa-refresh"></i><b> Reset</b></button>
+                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i><b> Save</b></button>
+
+            </div>
+        </div>
+        }
+    </div>
+
+</div>
+
+<form id="frm-tbltest" method="post">
+    <div class="row">
+        <div id="tblshow" style="display:none" class="col-xs-12">
+            <div class="box">
+                <div class="box-header boxHeader">
+                    <h3 class="box-title">Definations Detail</h3>
+                    @Html.DropDownList("DefinationTypeId", ViewBag.SelectedDefinationTypes as List<SelectListItem>, new { @class = "form-control select Row RowFirst DefinationTypeId", id = "DefinationTypeId", required = "required", data_parsley_min = "1", data_name = "DefinationTypeId1", data_row = "r0", style = "width:200px;float:right", name = "DefinationType1" })
+                </div>
+                <div id="tableid">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+@section scripts{
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+    <script>
+
+        $(function () {
+            var NewRowHTML = $('#NewRow').html();
+            var count = 1;
+            var SelectedDefinationType = 0;
+            var SelectedPDefinationId = 0;
+
+
+
+            function LoadGrid(value) {
+                $.ajax({
+                    url: '/Defnation/Grid?Id=' + value,
+                    success: function (data) {
+                        $('#tableid').empty();
+                        if (data != "") {
+                            $('#tblshow').css({
+                                'display':'block'
+                            });
+                            $('#tableid').html(data);
+                            $('#tbl-definations').dataTable();
+                        }
+                    }
+                })
+            }
+
+
+            $(document).on('click', '#btn-NewRow', function () {
+                NewRow();
+            });
+
+
+            $(document).on('change', '.DefinationTypeId', function () {
+
+
+                var value = $(this).val();
+
+                SelectedDefinationType = value;
+                var row = $(this).attr('data-row');
+                if (SelectedDefinationType==6 || SelectedDefinationType==7) {
+                    LoadPDefinationId(row, value);
+                } else {
+                    LoadPDefinationIdWithNoParent(row, value);
+                }
+
+                LoadGrid(value);
+
+                var deftypeid = '#DefinationTypeId-' + row + ' ' + 'option:selected';
+                var txt = $(deftypeid).text();
+                var a = txt.toUpperCase();
+
+                var keycodeid = '#KeyCode-' + row;
+
+                $(keycodeid).val(a);
+            });
+
+            $(document).on('change', '.PDefinationId', function () {
+                var value = $(this).val();
+                SelectedPDefinationId = value;
+            });
+            function LoadPDefinationIdWithNoParent(row, value) {
+
+                $('#PDefinationId-' + row).empty();
+                $('#PDefinationId-' + row).append(' <option>-Parent Defination-</option></select>');
+
+                $.ajax({
+                    url: '/Defnation/ToList?filter=ParentDefinations&value=' + value,
+                    type: 'post',
+                    success: function (res) {
+                        //$('#PDefinationId-r0').empty();
+                        $.each(res, function (i, v) {
+
+                            $('#PDefinationId-' + row).append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+
+                        });
+                    }
+                });
+
+
+
+
+
+            }
+            function LoadPDefinationId(row, value) {
+
+                $('#PDefinationId-' + row).empty();
+                $('#PDefinationId-' + row).append(' <option>-Parent Defination-</option></select>');
+
+                $.ajax({
+                    url: '/Defnation/ToList?filter=ParentDefinations&value=' + value,
+                    type: 'post',
+                    success: function (res) {
+                        //$('#PDefinationId-r0').empty();
+                        $.each(res, function (i, v) {
+
+                            $('#PDefinationId-' + row).append(' <option value=' + v.DefinationId + '>' + v.DefinationName + ' ' + v.PDefinationName + '</option></select>');
+
+                        });
+                    }
+                });
+
+
+
+
+
+            }
+
+            $(document).on('change', '.IsActivebox', function () {
+                var row = $(this).attr('data-row');
+                if ($(this).is(":checked")) {
+                    $('#IsActive-' + row).val('true');
+                } else {
+                    $('#IsActive-' + row).val('false');
+                }
+            });
+
+            $(document).on('change', '.required', function () {
+                $(this).removeClass('required');
+            });
+
+            $(document).on('keydown', '.RowLast', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (keyCode == 9) {
+                    e.preventDefault();
+                    NewRow();
+                }
+            });
+
+            function NewRow() {
+
+
+                var str = NewRowHTML.replace("Band-r0", "Band-r" + count + "");
+
+                var RowsFields = (str.match(new RegExp("r0", "g")) || []).length;
+
+                for (var i = 0; i < RowsFields; i++) {
+                    str = str.replace("r0", "r" + count + "");
+                }
+
+                $('#tbl-def').append('<tr class="NewRow">' + str + '</tr>');
+                $('.RowFirst').last().focus();
+
+                count++;
+
+
+            }
+
+
+            $(document).on('keydown', '.Row', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (e.keyCode == 46) {
+                    e.preventDefault();
+                    $(this).closest('tr').remove();
+                    $('.RowLast').last().focus();
+                }
+
+            });
+
+            $(document).on('submit', '#frm-def', function () {
+
+                var hit = 0;
+
+                $('.Row').each(function () {
+                    var textBox = $.trim($(this).val())
+
+                    var required = $(this).attr('data-required');
+                    if (required != 'no') {
+                        if (textBox == "") {
+
+
+                            $(this).addClass('required');
+                            hit = 1;
+                            return false;
+                        } else {
+                            $(this).removeClass('required');
+                        }
+                    }
+
+                });
+                $("#tbl-def tr").each(function (i) {
+                    i = i - 1;
+                    $("td input", this).each(function (j) {
+
+                        var name = $(this).attr('data-name');
+                        $(this).attr('name', '[' + i + '].' + name);
+                    });
+
+                    $("td select", this).each(function (j) {
+
+                        var name = $(this).attr('data-name');
+                        $(this).attr('name', '[' + i + '].' + name);
+                    });
+                });
+
+
+                if (hit == 0) {
+
+                    $.ajax({
+                        url: '/Defnation/New',
+                        type: 'post',
+                        async: false,
+                        data: $(this).serialize(),
+                        success: function (res) {
+                            if (res.Status == 'success') {
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                                $('#frm-def')[0].reset();
+                            } else {
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+                        },
+                        error: function (err) {
+                            $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+                        },
+                    });
+                }
+                return false;
+            });
+        });
+    </script>
+    <script>
+
+        $(document).on('click', '.rows', function () {
+            var $row = $(this).closest("tr");
+
+            $("td", $row).each(function (j) {
+
+                var $text = $(this).text();
+                var Id = $(this).attr('data-FieldId');
+                if ($(this).attr('data-DefinationId')!=undefined) {
+                    $('#DefinationId').val($(this).attr('data-DefinationId'));
+                }
+
+                if (Id == "DefinationTypeId-r0" || Id == "PDefinationId-r0") {
+                    $('#' + Id).val($(this).attr('data-Value'));
+                } else {
+                    $('#' + Id).val($text);
+                }
+
+
+            });
+        });
+
+
+
+        $(".rows").click(function () {
+
+
+        });
+
+
+        $('#DefinationTypeId').change(function () {
+
+            var Id = $('#DefinationTypeId').val();
+            LoadGrid(Id);
+        });
+
+    </script>
+
+}
+@section style{
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="~/Content/box.css" rel="stylesheet" />
+    @Styles.Render("~/AdminLTE/plugins/datatables/css")
+    <style>
+        .required {
+            border-color: red;
+        }
+    </style>
+
+}

@@ -1,0 +1,255 @@
+﻿
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    
+}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.min.css">
+
+@*<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>*@
+
+
+
+<div class="row" ng-app="appProject">
+
+    <div class="col-md-12" ng-controller="ngCtrlProject">
+
+        @*@Html.Raw(ViewBag.Id)*@
+        <form name="formProj" id="formProj" ng-submit="Save(project)">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">New Project</h3>
+                    <a href="@Url.Action("All","Defination")" class="btn btn-sm btn-info btn-flat pull-right">List</a>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Project Name</label>
+                                    <div class="col-md-8">
+                                        <input type="hidden" name="ProjectID" ng-model="project.ProjectID" placeholder="Project ID" class="form-control" />
+
+                                        <input type="text" name="ProjectName" ng-model="project.ProjectName" placeholder="Project Name" class="form-control" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    @*<label class="control-label col-md-3 no-padding-right">Project Scope</label>
+                                        <div class="col-md-8">
+                                             <multiselect multiple="true" required="true"
+                                                          ng-model="ProjectScopeID"
+                                                          options="ps.ProjectScopeID as ps.Scope for ps in projScope"
+                                                          change="selected()">
+                                             </multiselect>
+                                         </div>*@
+
+                                    <label class="col-sm-3 control-label no-padding-right">Status</label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" ng-model="project.StatusID" ng-options="s.StatusID as s.Status for s in projStatus" required>
+                                            <option value="">Select Status</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Company</label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" ng-model="project.CompanyID" ng-options="c.CompanyID as c.Company for c in companies" required>
+                                            <option value="">Select Company</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Vendor</label>
+                                    <div class="col-md-8">
+
+                                        @*<select class="form-control select" ng-model="project.VendorID">
+                                                <option ng-value="1">Nokia</option>
+                                                <option ng-value="2">Ericssons</option>
+                                                <option ng-value="3">Sony</option>
+                                            </select>*@
+
+                                        @*@Html.DropDownList("Vendors",new SelectList(ViewBag.Vendors, "ClientId", "ClientName"), "Select Vendor", new { @class = "form-control", id = "ddlVendorID" })*@
+
+                                        @*<select class="form-control" ng-model="project.vendors" >
+                                                <option value=""> Please Select Vendor </option>
+                                                <option ng-repeat="v in vendors" value="{{v.ClientId}}">{{v.ClientName}}</option>
+                                            </select>*@
+
+                                        @*<select class="form-control" id="vendors" ng-model="vendors.ClientId" ng-selected={{vendors.ClientId}}>
+
+                                                <option value="{{v.ClientId}}" ng-repeat="v in vendors">{{v.ClientName}}</option>
+                                            </select>*@
+
+                                        <select class="form-control" ng-model="project.VendorID" ng-options="v.VendorID as v.Vendor for v in vendors" required>
+                                            <option value="">Select Vendor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Start Date</label>
+                                    <div class="col-md-5">
+                                        <input type="date" ng-model="project.StartDate" placeholder="yyyy-MM-dd"  class="form-control" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-6">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">End Date</label>
+                                    <div class="col-md-5">
+                                        <input type="date" ng-model="project.EndDate" placeholder="yyyy-MM-dd"  class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Description</label>
+                                    <div class="col-md-8">
+                                        <textarea name="Description" ng-model="project.Description" placeholder="Description" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-6">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">Color</label>
+                                    <div class="col-md-2">
+                                        <input type="text" name="Color" ng-model="project.Color" placeholder="Color" class="form-control jscolor" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @*<div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label no-padding-right">Active</label>
+                                        <div class="col-md-2">
+                                            <input type="checkbox" name="IsActive" ng-model="project.IsActive" class="checkbox">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>*@
+
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="reset" value="Reset" class="btn btn-default" />
+                                <button type="submit" ng-disable="formProj.$invalid" class="btn btn-primary btn-success">{{btntext}}</button>
+                                @*<button type="submit" ng-disabled="loginform.$invalid">Login</button>*@
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+@section scripts{
+    
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-sanitize.js"></script>
+
+<script src="//npmcdn.com/api-check@latest/dist/api-check.js"></script>
+<script src="//npmcdn.com/angular-formly@latest/dist/formly.js"></script>
+<script src="//npmcdn.com/angular-formly-templates-bootstrap@latest/dist/angular-formly-templates-bootstrap.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.min.js"></script>
+
+
+<script src="~/Areas/Project/Angular/ui-bootstrap-tpls-0.13.4.min.js"></script>
+@*<script src="~/Areas/Project/Angular/angular.js"></script>*@
+
+@*<script src="~/Areas/Project/Angular/jquery-ui.js"></script>
+    <link href="~/Areas/Project/Angular/jquery-ui.css" rel="stylesheet" />*@
+<script src="~/Areas/Project/Angular/jscolor.min.js"></script>
+<script src="~/Scripts/multiselect.js"></script>
+<script src="~/Areas/Project/Angular/Service.js"></script>
+<script src="~/Areas/Project/Angular/ProjectController.js"></script>
+
+<script src="~/Areas/Project/Angular/CustomeFilters.js"></script>
+
+
+
+
+<script>
+    var ProjectID = @ViewBag.Id;
+</script>
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,71 @@
+﻿@using System.Data;
+@section scripts{
+<script src="~/Scale/js/charts/easypiechart/jquery.easy-pie-chart.js"></script>
+<script src="~/AdminLTE/dist/js/app.min.js"></script>
+    }
+<link rel="stylesheet" type="text/css" href="/path/to/jquery.easy-pie-chart.css">
+@*<link href="~/SmartAdmin/css/smartadmin-production.min.css" rel="stylesheet" />*@
+    @foreach (DataRow row in Model.Rows)
+    {
+        float percentage = 0;
+        float ActualSites = float.Parse(@row["ActualSites"].ToString());
+        float TotalSites = float.Parse(@row["TotalSites"].ToString());
+
+        percentage = (ActualSites / TotalSites) * 100;
+        int i = 0;
+        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+
+            <div class="easy-pie-chart txt-color-orangeDark" data-percent="@percentage" data-pie-size="50">
+                <span class="percent percent-sign">33</span>
+                <canvas height="50" width="50"></canvas>
+            </div>
+            <span class="easy-pie-title"> @row["Task"]  </span>
+        
+            <div class="sparkline txt-color-greenLight hidden-sm hidden-md pull-right" data-sparkline-type="line" data-sparkline-height="33px" data-sparkline-width="70px" data-fill-color="transparent"><canvas width="70" height="33" style="display: inline-block; width: 70px; height: 33px; vertical-align: top;"></canvas></div>
+        </div>
+
+    }
+
+
+@*<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+
+        <div class="easy-pie-chart txt-color-orangeDark" data-percent="33" data-pie-size="50">
+            <span class="percent percent-sign">33</span>
+            <canvas height="50" width="50"></canvas>
+        </div>
+        <span class="easy-pie-title"> Pending Schedule <i class="fa fa-caret-up icon-color-bad"></i> </span>
+        <ul class="smaller-stat hidden-sm pull-right">
+            <li>
+                <span class="label bg-color-greenLight"><i class="fa fa-caret-up"></i> 97%</span>
+            </li>
+            <li>
+                <span class="label bg-color-blueLight"><i class="fa fa-caret-down"></i> 44%</span>
+            </li>
+        </ul>
+        <div class="sparkline txt-color-greenLight hidden-sm hidden-md pull-right" data-sparkline-type="line" data-sparkline-height="33px" data-sparkline-width="70px" data-fill-color="transparent"><canvas width="70" height="33" style="display: inline-block; width: 70px; height: 33px; vertical-align: top;"></canvas></div>
+    </div>*@
+    
+
+<script type="text/javascript">
+$(function() {
+    $.fn.easyPieChart && $(".easy-pie-chart").each(function () {
+        var a = $(this),
+            b = a.css("color") || a.data("pie-color"),
+            c = a.data("pie-track-color") || "rgba(0,0,0,0.04)",
+            d = parseInt(a.data("pie-size")) || 25;
+        a.easyPieChart({
+            "barColor": b,
+            "trackColor": c,
+            "scaleColor": !1,
+            "lineCap": "butt",
+            "lineWidth": parseInt(d / 8.5),
+            "animate": 1500,
+            "rotate": -90,
+            "size": d,
+            "onStep": function (a, b, c) {
+                $(this.el).find(".percent").text(Math.round(c))
+            }
+        }), a = null
+    })
+});
+</script>

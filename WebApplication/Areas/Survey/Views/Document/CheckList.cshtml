@@ -1,0 +1,2008 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    ViewBag.CompletePlacesApi = "http://maps.googleapis.com/maps/api/js?key=" + ViewBag.MapApiKey + "&sensor=true&libraries=places";
+    ViewBag.CompleteGeoAPIURL = "https://maps.googleapis.com/maps/api/js?v=3.exp&key="+ ViewBag.MapApiKey + "&sensor=false&libraries=geometry&bogusParam=.js";
+}
+<script src="~/Scale/js/sortable/jquery.sortable.js"></script>
+<script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+<script src="~/Content/js/Plugins/angularmultislect/multiselect.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+<link type="text/css" href="http://keith-wood.name/css/jquery.signature.css" rel="stylesheet">
+<script src=@ViewBag.CompletePlacesApi></script>
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.css" rel="stylesheet">
+
+<script type="text/javascript">
+    var SurveyId = @ViewBag.SiteSurveyId;
+</script>
+<div ng-app="TSS" >
+    <script type="text/ng-template" id="tree_item_renderer.html">
+        <div class="hv-box">
+            <div ng-click="GetSectionQuestions(data)" class="hv-boxname">
+                <h3>
+                    {{data.SectionTitle}}
+                    <span ng-if="data.Sections.length > 0">{{data.Sections.length}}</span>
+                    <span ng-if="data.IsRepeatable && data.RepeatCount=='0'" >{{data.RepeatCount}}</span>
+                    <span ng-if="data.Sections.length == 0 && !data.IsRepeatable">{{data.TotalAnswered}}/{{data.TotalQuestions}}</span>
+
+                    @*<span ng-if="data.Sections.length == 0 && !data.IsRepeatable">{{data.TotalAnswered}}/{{data.DefinationName=='Completed'?data.TotalAnswered:data.TotalQuestions}}</span>*@
+                </h3>
+            </div>
+            <a style="margin-right:6px !important;cursor:pointer" ng-hide="data.DefinationName=='Completed'" title="Make Repeatable Section" ng-if="data.IsRepeatable" class="hv-icon" ng-click="Repeatable(data)"><img src="/AdminLTE/dist/img/icon1.png" /></a>
+            <a style="margin-right:6px !important;cursor:pointer" ng-hide="data.DefinationName=='Completed'  || data.DefinationName== 'Issues'" ng-if="CheckIconForStatus(data.SectionId)" title="Mark Section Pending with Issue" class="hv-icon" ng-click="ShowConfirmStatusPopUp(data.SectionId,'Pending')"><img src="/Areas/Survey/Content/PendingIssueIcon.png" /></a>
+            <a style="margin-right:6px !important;cursor:pointer" ng-hide="data.DefinationName=='Completed'" ng-if="CheckIconForStatus(data.SectionId)" title="Mark Section Completed" class="hv-icon" ng-click="ShowConfirmStatusPopUp(data.SectionId,'Completed')"> <img src="/Areas/Survey/Content/CompleteSection.png" /></a>
+            <a ng-if="data.IsDeletable" ng-hide="data.DefinationName=='Completed'" style="cursor:pointer" ng-click="DeleteChild(data)" title="Delete Section"><span class="glyphicon glyphicon-trash" style="color:red;font-size: 12px;"></span></a>
+            <span class="hv-label" style="background: {{data.ColorCode}}" ng-if="CheckIconForStatus(data.SectionId)">
+                {{ChangeNames(data.DefinationName)}}
+            </span>
+        </div>
+        <ul ng-if="data.Sections.length > 0">
+            <li ng-repeat="data in data.Sections" ng-include src="'tree_item_renderer.html'"></li>
+        </ul>
+
+    </script>
+    <div class="av-custom-page" ng-controller="SiteSurvey" id="angularData" ng-cloak>
+        <div class="row narrow">
+            <div class="col-lg-3 col-md-12">
+                <section class="panel panel-default">
+                    <header class="panel-heading font-bold">Sections <span style="float:right;font-weight: 600;">{{sections[0].SiteCode}}<b> : </b>{{sections[0].SurveyTitle}}</span></header>
+                    <div class="panel-body">
+                        <div class="hierarchy-view">
+                            <ul>
+                                <li ng-repeat="data in sections" ng-class="data.Sections.length > 0 ? 'hasChild' : ''" ng-include src="'tree_item_renderer.html'">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section><!-- Panel -->
+            </div>
+
+            <div class="col-lg-2 col-md-12" id="allquestionspanel" style="display:none;">
+                <section class="panel panel-default">
+                    <header class="panel-heading font-bold">
+                        {{SelectedSection.SectionTitle}} (All Questions)
+                    </header>
+                    <div class="panel-body">
+                        <div class="hierarchy-view allquestions">
+                            <div class="col-md-12" ng-repeat="data in Questions">
+                                <p>
+                                    <span>{{$index + 1}}. </span>
+                                    <a ng-click="ShowQuestion(data.QuestionId)" style="cursor:pointer;">{{data.Question}}</a>
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            
+            <div class="col-lg-9 col-md-12" id="loadquestionspanel">
+                <section class="panel panel-default">
+                    <header class="panel-heading font-bold" style="height: 40px;">
+                        <span>{{SelectedSection.SectionTitle}}</span>
+                        <div class="pull-right header-btns">
+                            <a class="btn btn-primary btn-xs"
+                               ng-if="SelectedSection.SectionTitle != '' && SelectedSection.SectionTitle != null && SelectedSection.SectionTitle != 'Please Select a Section'"
+                               ng-click="ShowAllQuestionPanel($event)" ng-hide="ShowPreview == true" id="HideShowQuestionBtn">
+                                Show All Questions
+                            </a>
+                            <a class="btn btn-primary btn-xs"
+                               ng-if="SelectedSection.SectionTitle != '' && SelectedSection.SectionTitle != null && SelectedSection.SectionTitle != 'Please Select a Section' && SelectedSection.DefinationName!='Completed' && PreviewButtonShow==true"
+                               ng-click="GetSectionQuestions_For_Preview(SelectedSection)">
+                                <img src="~/AdminLTE/dist/img/icon2.png" /> Preview
+                            </a>
+                            @*<a class="btn btn-success btn-xs" ng-click="TestingReplace()">
+                                Test
+                            </a>*@
+                            <div class="btn-group">
+
+                                <button type="button" class="btn btn-primary btn-xs"> <img src="~/AdminLTE/dist/img/icon2.png" /> Report</button>
+                                <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a target="_blank" href="@Url.Action("SurveyReport","Document",new {id = ViewBag.SiteSurveyId })">
+                                            Pdf
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a target="_blank" href="@Url.Action("SurveyReportExcel","Document",new {id = ViewBag.SiteSurveyId })">
+                                            Excel
+                                        </a>
+                                    </li>
+                                    @*<li>
+                                            <a target="_blank" href="@Url.Action("SurveyReportImages","Document",new {id = ViewBag.SiteSurveyId })">
+                                                AMP Pdf
+                                            </a>
+                                        </li>*@
+                                </ul>
+                            </div>
+
+
+
+
+                            <a class="btn btn-warning btn-xs" title="Previous" ng-hide="ShowPreview == true" ng-click="Previous()" ng-if="currentIndex >0"> <i class="fa fa-chevron-left"></i> Prev</a>
+                            <a class="btn btn-info  btn-xs" title="Next"
+                               ng-click="selectedQuestion.SiteQuestionId == null ||selectedQuestion.SiteQuestionId == '' ||selectedQuestion.SiteQuestionId == 0 || BeforeNextOrFinish('Next')"
+                               ng-if="(currentIndex < Questions.length) || (endsurvey == false) || (SelectedSection.SectionTitle != '' && SelectedSection.SectionTitle != null)" ng-hide="endsurvey == true || ShowPreview == true || ShowNext == true">
+                                <i class="fa fa-chevron-right"></i> Next
+                            </a>
+                            <a class="btn btn-info  btn-xs"
+                               ng-if="(currentIndex === Questions.length && Questions.length > 0) || (endsurvey == true)" ng-click="BeforeNextOrFinish('Finish')" ng-hide="endsurvey == false || ShowPreview == true">
+                                Finish
+                            </a>
+                        </div>
+                    </header>
+                    <div class="panel-body">
+                       
+                        <div class="survey-panel" style="opacity: 1 !important" id="PreviewPanel" ng-if="ShowPreview">
+
+
+                            <div class="preview-screen">
+                                <div class="av-survey" ng-repeat="PreviewSectionQuestions in PreviewSections">
+
+                                    <div class="survey-panel">
+                                        <div class="av-questions-panel">
+
+                                            <div class="av-question-box">
+                                                <div class="av-question">
+
+                                                    <h3>{{PreviewSectionQuestions.Question}} <strong style="color: red !important" ng-show="selectedQuestion.IsRequired">*</strong></h3>
+                                                    <p>{{PreviewSectionQuestions.Description}}</p>
+                                                </div>
+                                                <div class="button-set">
+                                                    <a class="icon-btn av-attachment-btn" ng-if="(PreviewSectionQuestions.ReqActions | filter:'Document_Required').length > 0 || (PreviewSectionQuestions.ReqActions | filter:'Audio_Required').length > 0 || (PreviewSectionQuestions.ReqActions | filter:'Document_Required').length > 0" title="Show Attachment Files" ng-click="ShowAttachmentFiles($event)" style="cursor:pointer"> <img src="~/AdminLTE/dist/img/icon8.png" /></a>
+                                                    <a class="icon-btn av-mediafiles-btn" ng-if="(PreviewSectionQuestions.ReqActions | filter : 'Video_Required').length > 0 " title="Show Media Files" ng-click="ShowMediaFiles($event)" style="cursor:pointer"> <img src="~/AdminLTE/dist/img/icon9.png" /></a>
+                                                </div>
+                                            </div>
+
+                                            <div class="av-answer-box">
+                                                <div class="form-group">
+
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId == 63293"
+                                                         ng-repeat="itemresponse in PreviewSectionQuestions.Responses">
+                                                        <div class="checkbox">
+                                                            <label>
+                                                                <input ng-model="itemresponse.IsChecked"
+                                                                       name="{{PreviewSectionQuestions.Question}}"
+                                                                       ng-checked="{{itemresponse.IsChecked}}"
+                                                                       disabled="disabled"
+                                                                       type="radio" />
+                                                                {{itemresponse.ResponseText}}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId == 63294"
+                                                         ng-repeat="itemresponse in PreviewSectionQuestions.Responses">
+                                                        <div class="checkbox">
+                                                            <label>
+                                                                <input ng-model="itemresponse.IsChecked"
+                                                                       ng-init="itemresponse.IsChecked"
+                                                                       name="{{PreviewSectionQuestions.Question}}"
+                                                                       disabled="disabled"
+                                                                       type="checkbox" />
+                                                                {{itemresponse.ResponseText}}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId == 103306">
+                                                        <div ng-repeat="itemresponse in PreviewSectionQuestions.Responses">
+                                                            <input ng-model="itemresponse.ResponseValue"
+                                                                   class="form-control"
+                                                                   type="number" disabled="disabled" value="{{itemresponse.ResponseValue}}" />
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId == 103303">
+                                                        <div ng-repeat="itemresponse in PreviewSectionQuestions.Responses">
+                                                            <input ng-model="itemresponse.ResponseValue"
+                                                                   class="form-control"
+                                                                   type="email"
+                                                                   value="{{itemresponse.ResponseValue}}" disabled="disabled" />
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId == 103302">
+                                                        <div ng-repeat="itemresponse in PreviewSectionQuestions.Responses">
+                                                            <input ng-model="itemresponse.ResponseValue"
+                                                                   class="form-control"
+                                                                   type="datetime-local"
+                                                                   value="{{itemresponse.ResponseValue}}" disabled="disabled" />
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId == 93293">
+                                                        <div ng-repeat="itemresponse in PreviewSectionQuestions.Responses">
+                                                            <input ng-model="itemresponse.ResponseValue" value="{{itemresponse.ResponseValue}}" class="form-control" type="text" disabled="disabled" />
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId == 93294">
+                                                        <div ng-repeat="itemresponse in PreviewSectionQuestions.Responses">
+                                                            <div ng-bind-html="Gethtml(itemresponse.ResponseValue)"></div>
+                                                            @*<textarea ng-model="itemresponse.ResponseValue" value="{{itemresponse.ResponseValue}}" class="form-control" rows="3" cols="8" disabled="disabled"></textarea>*@
+                                                        </div>
+                                                    </div>
+
+                                                    <div ng-if="PreviewSectionQuestions.QuestionType == 'Table'">
+                                                        <table class="table" border="1">
+                                                            <thead style="background-color: #ecf0f5;">
+                                                                <tr>
+                                                                    <th ng-repeat="x in [].constructor(PreviewSectionQuestions.TotalColumn) track by $index">
+                                                                        {{PreviewSectionQuestions.Responses[$index].ResponseText}}
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="row in [].constructor(PreviewSectionQuestions.TotalRows) track by $index">
+                                                                    <td ng-repeat="colresponse in PreviewSectionQuestions.Responses">
+                                                                        <input ng-if="colresponse.ResponseValue=='TextBox'"
+                                                                               ng-model="colresponse.TextBoxList[$parent.$parent.$index].ResponseValue == '' ? colresponse.SelectedValues[$parent.$parent.$index] : colresponse.TextBoxList[$parent.$parent.$index].ResponseValue"
+                                                                               type="text"
+                                                                               class="form-control" disabled="disabled" />
+                                                                        <div ng-if="colresponse.ResponseValue=='DropDownList'">
+                                                                            <select class="form-control"
+                                                                                    ng-model="selectedValue"
+                                                                                    ng-options="item.ResponseValue as item.ResponseValue for item in colresponse.DropDownList"
+                                                                                    ng-init="selectedValue=GetSelectedValue(colresponse.SelectedValues,$parent.$parent.$index) == '' ? '' : GetSelectedValue(colresponse.SelectedValues,$parent.$parent.$index)"
+                                                                                    disabled="disabled">
+                                                                                <option>- Select -</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div ng-if="colresponse.ResponseValue=='RadioButton'">
+                                                                            <span ng-repeat="ca in colresponse.RadioButtonList ">
+                                                                                <input type="radio"
+                                                                                       name="rb{{$parent.$parent.$parent.$index+'q'+(colresponse.QuestionId)}}"
+                                                                                       ng-value="true"
+                                                                                       ng-checked="GetRadioSelectedValue(colresponse.SelectedValues,$parent.$parent.$parent.$index,ca)"
+                                                                                       disabled="disabled" />{{ca.ResponseValue}}
+                                                                                <br />
+                                                                            </span>
+                                                                        </div>
+                                                                        <div ng-if="colresponse.ResponseValue=='CheckBox'">
+                                                                            <span ng-repeat="c in colresponse.CheckBoxList">
+                                                                                <input type="checkbox"
+                                                                                       ng-model="valuess"
+                                                                                       ng-checked="GetCheckSelectedValue(colresponse.SelectedValues,$parent.$parent.$parent.$index,c)"
+                                                                                       value="{{obj.SelectedValues[$parent.$parent.$parent.$index]}}"
+                                                                                       disabled="disabled" />
+                                                                                {{c.ResponseValue}}
+                                                                                <br />
+                                                                            </span>
+                                                                        </div>
+                                                                        <input ng-if="colresponse.ResponseValue=='Map'"
+                                                                               ng-model="colresponse.LatLngList[$parent.$parent.$index].ResponseValue == '' ? colresponse.SelectedValues[$parent.$parent.$index] : colresponse.LatLngList[$parent.$parent.$index].ResponseValue"
+                                                                               type="text"
+                                                                               class="form-control" disabled="disabled" />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId == 103305">
+                                                        <div ng-repeat="res in PreviewSectionQuestions.Responses">
+                                                            <p ng-repeat="item in res.ResponseValue.split('|') track by $index">
+                                                                <span><b>{{$index+1}} Lat,Lng:</b></span> {{item}}<br />
+                                                            </p>
+                                                        </div>
+                                                        <div ng-if="PreviewSectionQuestions.MapImage!=''">
+                                                            <img style="opacity:.9" src="{{PreviewSectionQuestions.MapImage}}" width="500px" height="300px" />
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId==103297 || PreviewSectionQuestions.QuestionTypeId==103298">
+                                                        <div class="slidecontainer">
+                                                            <div ng-repeat="item in PreviewSectionQuestions.Responses">
+                                                                <input disabled type="range" min="{{item.MinValue}}" ng-init="item.ResponseValue=GetValue(item)" ng-model="item.ResponseValue" max="{{item.MaxValue}}" class="slider1" id="myRange">
+                                                                <p>Value: <span id="demo">{{item.ResponseValue}}</span></p>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId==103299">
+                                                        <div class="slidecontainer">
+                                                            <div ng-repeat="item in PreviewSectionQuestions.Responses" ng-init="SaveMinMaxValue(item)">
+                                                                <div slider id="slider-distance" style="width: 100%;margin: auto">
+                                                                    <div>
+                                                                        <div inverse-left style="width:100%;"></div>
+                                                                        <div inverse-right style="width:100%;"></div>
+                                                                        <div range style="left:{{MinPercentage}}%;right:{{MaxRemainingPercentage}}%;"></div>
+                                                                        <span thumb style="left:{{MinPercentage}}%;"></span>
+                                                                        <span thumb style="left:{{MaxPercentage}}%;"></span>
+
+                                                                    </div>
+                                                                    <input disabled type="range" min="{{MinVal[0]}}" ng-init="item.MinValue" ng-model="item.MinValue" max="{{MaxVal[0]}}" oninput="FirstRange(this)" />
+                                                                    <input disabled type="range" min="{{MinVal[0]}}" ng-init="item.MaxValue" ng-model="item.MaxValue" max="{{MaxVal[0]}}" oninput="SecondRange(this)" />
+                                                                 </div>
+                                                                <span>Value: {{item.MinValue}} - {{item.MaxValue}}</span>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="PreviewSectionQuestions.QuestionTypeId==103304">
+                                                        <img src="{{SignatureForQuestion}}" width="300px" height="250px" style="border:1px solid #0000002e;margin-top:5px" />
+                                                    </div>
+
+                                                    @*adil*@
+
+                                                </div>
+                                            </div>
+                                        </div><!-- AV Questions Panel -->
+
+
+                                        <div class="av-custom-accordions">
+                                            <div class="av-acc">
+                                                <div ng-show="PreviewSectionQuestions.IsNoteRequired"
+                                                     class="av-acc-head">
+                                                    <h3>Notes:</h3>
+                                                </div>
+                                                <div class="av-acc-body">
+                                                    <div class="row">
+                                                        <div ng-show="PreviewSectionQuestions.IsNoteRequired"
+                                                             class="col-lg-12 col-md-12">
+                                                            <div class="form-group">
+                                                                <div ng-repeat="itemReqActions in PreviewSectionQuestions.ReqActions | filter:'Notes_Required'">
+                                                                    <textarea ng-model="itemReqActions.RequiredAction" disabled="disabled"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-5 col-md-12"
+                                                             ng-show="PreviewSectionQuestions.IsBarCodeRequired">
+                                                            <div class="form-group">
+                                                                <label>Barcode:</label>
+                                                                <div ng-repeat="itemReqActions in PreviewSectionQuestions.ReqActions | filter:'Barcode_Required'">
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon"><img src="~/AdminLTE/dist/img/barcode icon.png" /></span>
+                                                                        <input type="text" ng-model="itemReqActions.RequiredAction" class="form-control" placeholder="21060686616" disabled="disabled" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="av-acc av-attachments displayhide" ng-if="(PreviewSectionQuestions.ReqActions | filter:'Document_Required').length > 0 || (PreviewSectionQuestions.ReqActions | filter:'Audio_Required').length > 0 || (PreviewSectionQuestions.ReqActions | filter:'Document_Required').length > 0">
+                                                <div class="av-acc-head">
+                                                    <h3>Files:</h3>
+                                                </div>
+                                                <div class="av-acc-body" style="display:block;">
+                                                    <div class="av-files">
+                                                        <div class="row">
+                                                            <div ng-repeat="itemReqActions in PreviewSectionQuestions.ReqActions | filter:'Document_Required'">
+                                                                <div class="col-lg-3">
+                                                                    <a href="{{itemReqActions.RequiredAction}}" target="_blank">
+                                                                        <div class="av-download-filesNew">
+                                                                            <img src="https://www.freeiconspng.com/uploads/document-icon-9.png" width="15.5%" height="auto" />
+                                                                            <div class="file-name">
+                                                                                <strong ng-bind="GetDocTitlePreview(itemReqActions.RequiredAction)">
+                                                                                    {{TextToShowDocpreview}}
+                                                                                </strong>
+
+                                                                                @*<i>60 KB</i>*@
+                                                                            </div>
+                                                                        </div><!-- Av Download File -->
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div ng-repeat="itemReqActions in PreviewSectionQuestions.ReqActions | filter:'Audio_Required'">
+                                                                <div class="col-lg-3">
+                                                                    <a ng-click="ShowPopUpMedia(itemReqActions.RequiredAction,'Audio')">
+                                                                        <div class="av-download-filesNew">
+                                                                            <img src="http://www.builderengine.net/files/be_demo/audioplayer/images/audio_placeholder.png" style="width: 17.5%; height: 40px;" />
+                                                                            <div class="file-name">
+                                                                                <strong ng-bind="GetAudioTitlePreview(itemReqActions.RequiredAction)">
+                                                                                    {{TextToShowAudiopreview}}
+                                                                                </strong>
+
+                                                                                @*<i>60 KB</i>*@
+                                                                            </div>
+                                                                        </div><!-- Av Download File -->
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div><!-- AV Files -->
+                                                </div>
+                                            </div>
+
+                                            <div class="av-acc av-mediafiles displayhide" ng-if="(PreviewSectionQuestions.ReqActions | filter : 'Video_Required').length > 0 ">
+                                                <div class="av-acc-head"> <h3>Media Files:</h3> </div>
+                                                <div class="av-acc-body" style="display: block;">
+                                                    <div class="media-files">
+
+                                                        <div class="media-file" ng-repeat="itemReqActions in PreviewSectionQuestions.ReqActions | filter:'Video_Required'">
+
+
+                                                            <a ng-click="ShowPopUpMedia(itemReqActions.RequiredAction,'Images')" title="{{itemReqActions.RequiredAction}}" ng-if="itemReqActions.ActionTypeId == 2">
+
+                                                                <img style="width: 70px; height: auto" src="{{itemReqActions.RequiredAction}}" />
+                                                            </a>
+
+                                                            <a ng-click="ShowPopUpMedia(itemReqActions.RequiredAction,'Video')" title="{{itemReqActions.name}}" ng-if="itemReqActions.ActionTypeId == 4">
+                                                                <img style="width: 6.5%; height: auto" src="https://www.powerschool.com/wp-content/uploads/2018/02/video-placeholder.png" />
+                                                                @*<video style="width: 7%; height: auto" preload="metadata" controls>
+                                                                        <source src="{{item.RequiredAction}}#t=0.1">
+                                                                        Your browser does not support the video tag.
+                                                                    </video>*@
+                                                            </a>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+
+                                        </div><!-- Question Info -->
+
+                                    </div><!-- Survey Panel -->
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="survey-panel" ng-if="!ShowPreview">
+                            <div class="av-questions-panel">
+                                <div class="av-question-box">
+                                    <div class="av-question">
+
+
+                                        <h3>{{selectedQuestion.Question}} <strong style="color: red !important" ng-show="selectedQuestion.IsRequired">*</strong> </h3>
+                                        <p>{{selectedQuestion.Description}}</p>
+                                    </div>
+                                    <div class="button-set">
+                                        <label class="icon-btn" for="pic_input1" ng-if="selectedQuestion.IsVideoRequired">
+                                            <img title="Video File" src="~/AdminLTE/dist/img/VideoIcon.png" />
+                                            <input type="file"
+                                                   onchange="angular.element(this).scope().UploadFiles(this.files,'Video_Required',4)"
+                                                   id="pic_input1"
+                                                   multiple=""
+                                                   title="Video"
+                                                   accept="Video/*"
+                                                   style="display: none" />
+                                        </label>
+                                        <label class="icon-btn" for="pic_input" ng-if="selectedQuestion.IsImageRequired">
+                                            <img title="Image File" src="~/AdminLTE/dist/img/icon5.png" />
+                                            <input type="file"
+                                                   onchange="angular.element(this).scope().UploadFiles(this.files,'Video_Required',2)"
+                                                   id="pic_input"
+                                                   multiple=""
+                                                   title="Image"
+                                                   accept="image/*"
+                                                   style="display: none" />
+                                        </label>
+                                        <label class="icon-btn" for="audio_input" ng-if="selectedQuestion.IsAudioRequired">
+                                            <img title="Audio File" src="~/AdminLTE/dist/img/icon6.png" />
+                                            <input type="file"
+                                                   onchange="angular.element(this).scope().UploadFiles(this.files,'Audio_Required',6)"
+                                                   id="audio_input"
+                                                   multiple=""
+                                                   accept="audio/*"
+                                                   style="display: none" />
+                                        </label>
+                                        <label class="icon-btn" for="file_input" ng-if="selectedQuestion.IsDocumentRequired">
+                                            <img title="Document File" src="~/AdminLTE/dist/img/icon7.png" />
+                                            <input type="file"
+                                                   onchange="angular.element(this).scope().UploadFiles(this.files,'Document_Required',5)"
+                                                   id="file_input"
+                                                   multiple=""
+                                                   accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf"
+                                                   style="display: none" />
+                                        </label>
+                                        <label class="icon-btn" ng-if="selectedQuestion.QuestionTypeId == 103305">
+                                            <span ng-click="OpenMapPopUp(SelectedSection)"><i class="fa fa-map" aria-hidden="true" style="font-size:20px"></i></span>
+                                            @*<img title="Map" src="~/AdminLTE/dist/img/MapMarker.png" />*@
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="av-answer-box" style="margin-top: 15px">
+                                    <div class="form-group">
+                                        <div ng-if="selectedQuestion.QuestionTypeId == 63293"
+                                             ng-repeat="item in selectedQuestion.Responses">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input ng-click="markSelection(selectedQuestion.Responses,item)"
+                                                           ng-model="item.IsChecked"
+                                                           name="selectedQuestion.Question"
+                                                           ng-value="true"
+                                                           type="radio" />
+                                                    {{item.ResponseText}}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionTypeId == 63294"
+                                             ng-repeat="item in selectedQuestion.Responses">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input ng-model="item.IsChecked"
+                                                           name="selectedQuestion.Question"
+                                                           type="checkbox" />
+                                                    {{item.ResponseText}}
+                                                </label>
+                                            </div>
+                                        </div>
+
+
+                                        <div ng-if="selectedQuestion.QuestionTypeId == 93293">
+                                            <div ng-repeat="item in selectedQuestion.Responses">
+                                                <input ng-model="item.ResponseValue"
+                                                       class="form-control"
+                                                       type="text" value="{{item.ResponseValue}}" />
+                                            </div>
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionTypeId == 103306">
+                                            <div ng-repeat="item in selectedQuestion.Responses">
+                                                <input ng-model="item.ResponseValue"
+                                                       class="form-control"
+                                                       type="text" numbers-only value="{{item.ResponseValue}}" />
+                                            </div>
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionTypeId == 103303">
+                                            <div ng-repeat="item in selectedQuestion.Responses">
+                                                <input ng-model="item.ResponseValue"
+                                                       class="form-control"
+                                                       type="email"
+                                                       placeholder="Email Address" value="{{item.ResponseValue}}" />
+                                            </div>
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionTypeId == 103302">
+                                            <div ng-repeat="item in selectedQuestion.Responses">
+                                                <input ng-model="item.ResponseValue" 
+                                                       ng-init=GetDateTimeControl(selectedQuestion.Responses)
+                                                       class="form-control datetimepicker1"
+                                                       type="text"
+                                                       placeholder="Date Time" />
+                                            </div>
+                                           
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionTypeId == 103300">
+                                            <div ng-repeat="item in selectedQuestion.Responses">
+                                                <input ng-model="item.ResponseValue"
+                                                       class="form-control"
+                                                       type="text"
+                                                       placeholder="Barcode" value="{{item.ResponseValue}}" />
+                                            </div>
+                                        </div>
+                                       
+                                        <div ng-if="selectedQuestion.QuestionTypeId == 93294">
+                                            <div id="editor"></div>
+                                            <script>
+                                                $("#editor").summernote({
+                                                    height: 200,              
+                                                });
+                                            </script>
+                                            <div ng-repeat="item in selectedQuestion.Responses">
+                                               
+                                                @*<textarea  ng-model="item.ResponseValue"
+                                                    class="form-control"
+                                                    rows="5"
+                                                    cols="8" value="{{item.ResponseValue}}"></textarea>*@
+                                                <div ng-if="item.Responsevalue!=''">
+                                                    <span id="currentValue">{{paseValue(item.ResponseValue)}}</span>
+                                                    
+                                                </div>
+                                                
+                                                
+                                            </div>
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionType == 'Table'">
+                                            <button type="button" ng-if="selectedQuestion.DynamicRows" ng-click="selectedQuestion.TotalRows=AddNewDynamicRow(selectedQuestion)" class="btn-success">Add Row </button>
+                                            
+                                            <table class="table" border="1">
+                                                <thead style="background-color: #ecf0f5;">
+                                                    <tr>
+                                                        <th ng-repeat="x in [].constructor(selectedQuestion.TotalColumn) track by $index">
+                                                            {{selectedQuestion.Responses[$index].ResponseText}}
+                                                        </th>
+                                                        <th ng-if="selectedQuestion.DynamicRows" style="width: 10px;"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="row in [].constructor(selectedQuestion.TotalRows) track by $index">
+                                                        <td ng-repeat="col in selectedQuestion.Responses">
+                                                            <input ng-if="col.ResponseValue=='TextBox'"
+                                                                   ng-disabled="col.IsReadOnly"
+                                                                   ng-model="col.TextBoxList[$parent.$parent.$index].ResponseValue"
+                                                                   type="text"
+                                                                   ng-blur="TextBoxChanged(col.TextBoxList[$parent.$parent.$index].ResponseValue,$parent.$parent.$index,col,selectedQuestion.TotalRows)"
+                                                                   class="form-control" />
+
+                                                            <div ng-if="col.ResponseValue=='DropDownList'">
+                                                                <select class="form-control"
+                                                                        ng-model="selectedValue"
+                                                                        ng-change="DropDownChanged(selectedValue,$parent.$parent.$index,col,selectedQuestion.TotalRows)"
+                                                                        ng-options="item.ResponseValue as item.ResponseValue for item in col.DropDownList"
+                                                                        ng-init="selectedValue=GetSelectedValue(col.SelectedValues,$parent.$parent.$index) == '' ? '' : GetSelectedValue(col.SelectedValues,$parent.$parent.$index)"
+                                                                        ng-disabled="col.IsReadOnly">
+                                                                    <option>- Select -</option>
+                                                                </select>
+                                                            </div>
+                                                            <div ng-if="col.ResponseValue=='RadioButton'">
+                                                                <span ng-repeat="c in col.RadioButtonList ">
+                                                                    <input type="radio"
+                                                                           name="rb{{$parent.$parent.$parent.$index}}"
+                                                                           @*ng-click="markSelection(col.RadioButtonList,c)"*@
+                                                                           ng-value="true"
+                                                                           ng-checked="GetRadioSelectedValue(col.SelectedValues,$parent.$parent.$parent.$index,c)"
+                                                                           ng-click="RadioButtonChanged(c,$parent.$parent.$parent.$index,col,selectedQuestion.TotalRows)"
+                                                                           ng-disabled="col.IsReadOnly" />{{c.ResponseValue}}
+                                                                    <br />
+                                                                </span>
+                                                            </div>
+                                                            <div ng-if="col.ResponseValue=='CheckBox'">
+                                                                <span ng-repeat="c in col.CheckBoxList">
+                                                                    <input type="checkbox"
+                                                                           ng-model="valuess"
+                                                                           ng-checked="GetCheckSelectedValue(col.SelectedValues,$parent.$parent.$parent.$index,c)"
+                                                                           value="{{obj.SelectedValues[$parent.$parent.$parent.$index]}}"
+                                                                           ng-disabled="col.IsReadOnly"
+                                                                           ng-click="CheckBoxChanged(c,$parent.$parent.$parent.$index,col,selectedQuestion.TotalRows,valuess)" />
+                                                                    {{c.ResponseValue}}
+                                                                    <br />
+                                                                </span>
+                                                            </div>
+                                                            <div ng-if="col.ResponseValue=='Map'">
+                                                                <div class="inner-addon right-addon">
+                                                                    <i ng-disabled="col.IsReadOnly" ng-click="OpenMapForTableType(col.LatLngList[$parent.$parent.$index].ResponseValue,$parent.$parent.$index,col,selectedQuestion.TotalRows,SelectedSection)" class="glyphicon glyphicon-map-marker" style="font-size:22px;top:-5px"></i>
+                                                                    <input 
+                                                                           ng-blur="MapBoxChanged(col.LatLngList[$parent.$parent.$index].ResponseValue,$parent.$parent.$index,col,selectedQuestion.TotalRows)"
+                                                                           ng-disabled="col.IsReadOnly"
+                                                                           type="text" 
+                                                                           class="form-control" 
+                                                                           ng-model="col.LatLngList[$parent.$parent.$index].ResponseValue" 
+                                                                           id="inlineFormInputGroup" 
+                                                                           placeholder="Lat,Lng">
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td ng-if="selectedQuestion.DynamicRows">
+                                                            <button type="button" ng-if="selectedQuestion.DynamicRows" ng-click="selectedQuestion.TotalRows=DelNewDynamicRow(selectedQuestion,$index)" class="btn-danger"><span class="glyphicon glyphicon-minus"></span></button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionTypeId == 103305">
+                                            <div ng-if="ShowLatLongArea">
+
+                                                <div ng-if="selectedQuestion.SurveyEntity=='Sector Location'">
+                                                    <span><b>Azimuth :</b><input id="AzimuthValueId" ng-model="selectedQuestion.Azimuth" min="0" max="359" type="number" class="form-control" /></span>
+                                                </div>
+                                                <br />
+                                                <div id="mapmap" ng-repeat="res in selectedQuestion.Responses">
+                                                    <p ng-repeat="item in res.ResponseValue.split('|') track by $index">
+
+                                                        <span><b>{{$index+1}} Lat,Lng:</b></span> {{item}}<br />
+                                                    </p>
+                                                </div>
+                                                <div id="showLineAzimuth" class="hidden">
+                                                    <hr />
+                                                    <span><b>Azimuth: </b> <span id="LineAzimuthValue"></span> </span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionTypeId==103297 || selectedQuestion.QuestionTypeId==103298">
+                                            <div class="slidecontainer">
+                                                <div ng-repeat="item in selectedQuestion.Responses">
+                                                    <input type="range" min="{{item.MinValue}}" ng-init="item.ResponseValue=GetValue(item)" ng-model="item.ResponseValue" max="{{item.MaxValue}}" class="slider1" id="myRange">
+                                                    <p>Value: <span id="demo">{{item.ResponseValue}}</span></p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionTypeId==103299">
+                                            <div class="slidecontainer">
+                                                <div ng-repeat="item in selectedQuestion.Responses" ng-init="SaveMinMaxValue(item)">
+
+                                                    <div slider id="slider-distance" style="width: 100%;margin: auto">
+                                                        <div>
+                                                            <div inverse-left style="width:100%;"></div>
+                                                            <div inverse-right style="width:100%;"></div>
+                                                            <div range style="left:{{MinPercentage}}%;right:{{MaxRemainingPercentage}}%;"></div>
+                                                            <span thumb style="left:{{MinPercentage}}%;"></span>
+                                                            <span thumb style="left:{{MaxPercentage}}%;"></span>
+
+                                                        </div>
+                                                        <input type="range" min="{{MinVal[0]}}" ng-init="item.MinValue" ng-model="item.MinValue" max="{{MaxVal[0]}}" oninput="FirstRange(this)" />
+                                                        <input type="range" min="{{MinVal[0]}}" ng-init="item.MaxValue" ng-model="item.MaxValue" max="{{MaxVal[0]}}" oninput="SecondRange(this)" />
+                                                    </div>
+                                                    <span>Value: {{item.MinValue}} - {{item.MaxValue}}</span>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-if="selectedQuestion.QuestionTypeId==103304">
+                                            <div ng-if="ShowSignatureQuestion">
+                                                Signature:
+                                                <img src="{{SignatureForQuestion}}" width="300px" height="250px" style="border:1px solid #0000002e" />
+                                            </div>
+                                            <div ng-if="!ShowSignatureQuestion">
+                                                {{ShowQuestionCanvas()}}
+                                            </div>
+                                        </div>
+                                        <canvas width="500" height="300" id="QuestionCanvas" drawing></canvas>
+                                        {{HideQuestionCanvas()}}
+                                    </div>
+                                </div>
+                            </div><!-- AV Questions Panel -->
+
+                            <div class="av-custom-accordions">
+                                <div class="av-acc">
+                                    <div ng-show="selectedQuestion.IsNoteRequired"
+                                         class="av-acc-head">
+                                        <h3>Notes:</h3>
+                                    </div>
+                                    <div class="av-acc-body">
+                                        <div class="row">
+                                            <div ng-show="selectedQuestion.IsNoteRequired"
+                                                 class="col-lg-12 col-md-12">
+                                                <div class="form-group">
+                                                    <div ng-repeat="item in selectedQuestion.ReqActions | filter:'Notes_Required'">
+                                                        <textarea ng-model="item.RequiredAction"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5 col-md-12"
+                                                 ng-show="selectedQuestion.IsBarCodeRequired">
+                                                <div class="form-group">
+                                                    <label>Barcode:</label>
+                                                    <div ng-repeat="item in selectedQuestion.ReqActions | filter:'Barcode_Required'">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><img src="~/AdminLTE/dist/img/barcode icon.png" /></span>
+                                                            <input type="text" ng-model="item.RequiredAction" class="form-control" placeholder="21060686616">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="av-acc" ng-if="(selectedQuestion.ReqActions | filter:'Document_Required').length > 0 || (selectedQuestion.ReqActions | filter:'Audio_Required').length > 0">
+                                    <div class="av-acc-head">
+                                        <h3>Files:</h3>
+                                    </div>
+                                    <div class="av-acc-body">
+                                        <div class="av-files">
+                                            <div class="row">
+                                                <div class="col-lg-3" ng-repeat="item in selectedQuestion.ReqActions | filter:'Document_Required'">
+
+                                                    <a href="{{item.RequiredAction}}" target="_blank">
+                                                        <div class="av-download-filesNew">
+                                                            <img src="https://www.freeiconspng.com/uploads/document-icon-9.png" width="15.5%" height="auto" />
+                                                            <div class="file-name">
+                                                                <strong ng-bind="GetDocTitle(item.RequiredAction)">
+                                                                    {{TextToShowDoc}}
+                                                                </strong>
+
+                                                                @*<i>60 KB</i>*@
+                                                            </div>
+
+                                                        </div><!-- Av Download File -->
+
+
+                                                    </a>
+                                                    <div style="width: 100%;text-align: center; margin-top: -7px;padding-left: 10px;">
+                                                        <a title="Remove" data-sitequestionid="{{item.SiteQuestionId}}" data-imagepath="{{item.RequiredAction}}" data-actionid="{{item.ActionId}}" data-dbexist="{{item.IsDBExist}}" ng-click="DeleteFiles($event)" style="font-size: 15px;cursor:pointer;"><i class="fa fa-trash ConfirmReqAction" style="color:red;"></i></a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div ng-repeat="item in selectedQuestion.ReqActions | filter:'Audio_Required'" class="col-lg-3">
+
+                                                    <a ng-click="ShowPopUpMedia(item.RequiredAction,'Audio')">
+                                                        <div class="av-download-filesNew">
+                                                            <img src="http://www.builderengine.net/files/be_demo/audioplayer/images/audio_placeholder.png" style="width: 17.5%; height: 40px;" />
+                                                            <div class="file-name">
+                                                                <strong ng-bind="GetAudioTitle(item.RequiredAction)">
+                                                                    {{TextToShowAudio}}
+                                                                </strong>
+                                                                @*<i>60 KB</i>*@
+                                                            </div>
+
+                                                        </div><!-- Av Download File -->
+                                                        <div style="width: 100%;text-align: center; margin-top: -7px;padding-left: 10px;">
+                                                            <a title="Remove" data-sitequestionid="{{item.SiteQuestionId}}" data-imagepath="{{item.RequiredAction}}" data-actionid="{{item.ActionId}}" data-dbexist="{{item.IsDBExist}}" ng-click="DeleteFiles($event)" style="font-size: 15px;cursor:pointer;"><i class="fa fa-trash ConfirmReqAction" style="color:red;"></i></a>
+                                                        </div>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div><!-- AV Files -->
+                                    </div>
+                                </div>
+
+                                <div class="av-acc"
+                                     ng-if="(selectedQuestion.ReqActions | filter : 'Video_Required').length > 0 ">
+                                    <div class="av-acc-body">
+                                        <div class="media-files">
+                                            <div ng-repeat="item in selectedQuestion.ReqActions | filter:'Video_Required'" class="media-file">
+
+                                                <div ng-if="item.ActionTypeId == 2" class="reqactionimages">
+                                                    <div style="width:100%;float: left;">
+                                                        <a ng-click="ShowPopUpMedia(item.RequiredAction,'Images')" id="ShowTooltip" data-toggle="tooltip" title="{{GetToolTipData(item)}}">
+                                                            <img style="width: 70px; height: auto" src="{{item.RequiredAction}}" />
+                                                        </a>
+                                                    </div>
+                                                    <div style="width:100%;float: left;   text-align: center;">
+
+                                                        <a id="{{item.ActionId}}" ng-if="selectedQuestion.IsImageDetailRequired" data-toggle="popover" data-actionid="{{item.ActionId}}" class="popovercls" ng-click="showPopOver($event)"><i class="fa fa-save"></i></a>
+                                                        <a title="Remove" data-sitequestionid="{{item.SiteQuestionId}}" data-imagepath="{{item.RequiredAction}}" data-actionid="{{item.ActionId}}" data-dbexist="{{item.IsDBExist}}" ng-click="DeleteFiles($event)" style="font-size: 15px;cursor:pointer;"><i class="fa fa-trash ConfirmReqAction" style="color:red;"></i></a>
+
+                                                    </div>
+                                                </div>
+
+
+                                                <div ng-if="item.ActionTypeId == 4" class="reqactionvideo">
+                                                    <div style="width:100%;float: left;">
+                                                        <a ng-click="ShowPopUpMedia(item.RequiredAction,'Video')" title="{{item.name}}">
+                                                            <img style="width: 100%; height: auto" src="https://www.powerschool.com/wp-content/uploads/2018/02/video-placeholder.png" />
+                                                        </a>
+                                                    </div>
+                                                    <div style="width:100%;float: left;   text-align: center;">
+                                                        <a title="Remove" data-sitequestionid="{{item.SiteQuestionId}}" data-imagepath="{{item.RequiredAction}}" data-actionid="{{item.ActionId}}" data-dbexist="{{item.IsDBExist}}" ng-click="DeleteFiles($event)" style="font-size: 15px;cursor:pointer;"><i class="fa fa-trash ConfirmReqAction" style="color:red;"></i></a>
+
+                                                    </div>
+                                                </div>
+
+                                                <div id="PopOver_Content_Wrapper" hidden>
+                                                    <div style="font-size:12px">
+                                                        <div class="form-group">
+                                                            <label for="popremarks">Remarks:</label>
+                                                            <input type="text" class="form-control" id="popremarks" style="height: 25px;">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="popazumith">Azimuth:</label>
+                                                            <input type="text" class="form-control" id="popazumith" style="height: 25px;">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="poplatitude">Latitude:</label>
+                                                            <input type="text" class="form-control" id="poplatitude" style="height: 25px;">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="poplongitude">Longitude:</label>
+                                                            <input type="text" class="form-control" id="poplongitude" style="height: 25px;">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="popAltitude">Altitude:</label>
+                                                            <input type="text" class="form-control" id="popAltitude" style="height: 25px;">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="popAccuracy">GPS Accuracy:</label>
+                                                            <input type="text" class="form-control" id="popAccuracy" style="height: 25px;">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="popView">View:</label><br />
+                                                            <label class="radio-inline">
+                                                                <input type="radio" name="popView" value="Front">Front
+                                                            </label>
+                                                            <label class="radio-inline">
+                                                                <input type="radio" name="popView" value="Back">Back
+                                                            </label>
+                                                        </div>
+                                                        <div class="footer">
+                                                            <span id="currentAction" hidden>{{ActionIdToSave}}</span>
+                                                            <a class="btn btn-sm btn-success" onclick="SaveActionData(this)" style="float:right;margin-bottom:7px">Close</a>
+                                                            <br />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="divLoading">
+                                </div>
+                            </div><!-- Question Info -->
+                        </div><!-- Survey Panel -->
+                    </div>
+
+                </section>
+            </div>
+
+
+
+
+        </div>
+
+        <div class="modal" id="Media-popup">
+            <div class="modal-dialog" style="width:100%">
+                <div class="modal-content" style="background: transparent;">
+                    <div class="modal-header" style="border-bottom:0px solid black !important">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: red;font-size: 38px">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="text-align:center;margin-top:5%">
+
+                        <div ng-if="mediaName=='Images'">
+                            <img src="{{mediaSrc}}" alt="Image Not Available" style="max-width:100%;max-height:100%; width: 500px;" />
+                        </div>
+                        <div ng-if="mediaName=='Video'">
+                            <video src="{{mediaSrc}}" style="max-width:100%;max-height:100%" controls />
+                        </div>
+                        <div ng-if="mediaName=='Audio'">
+                            <audio src="{{mediaSrc}}" style="max-width:100%;max-height:100%;margin-top:150px;width:600px" controls />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="ShowMap-popup">
+            <div class="modal-dialog" style="width:70%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Location</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="map_canvasMain">
+                                    <div id="map_canvas" style="height:450px"></div>
+                                    <div ng-if="!SaveButtonShow" style="width: 150px; height: 142px;position: absolute; margin-top: -330px;margin-left: 371px;">
+                                        <img src="~/Content/Images/Application/Logo_Loading.gif" style="background: white;border-radius: 100px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="text" id="MapLatLngArray" ng-model="MapLatLngArray" hidden />
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="button-set">
+
+                            <a class="btn btn-warning btn-sm" title="Fan" ng-if="ShowMapFanButton" ng-click="LoadMapWithFan()">Show Fan</a>
+                            <a class="btn btn-warning btn-sm" title="Fan" ng-if="ShowMapClearButton" ng-click="LoadMapWithoutFan()">Clear Fan</a>
+
+                            <a class="btn btn-danger btn-sm" title="Stay Here" data-dismiss="modal"> Close </a>
+                            <a ng-if="SaveButtonShow" class="btn btn-success btn-sm" title="Save LatLng" ng-click="SaveLatLong()"> Save </a>
+                            <a ng-if="!SaveButtonShow" class="btn btn-success btn-sm" title="Save LatLng" disabled> Save </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="RequiredActions-popup">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Required Action For this Questions<span style="color:red">*</span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Following actions are required for this question.</p>
+                        <p ng-repeat="msg in MessagesForRequiredAction">
+                            <b>{{$index+1}}. {{msg}}</b>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="button-set">
+                            <a class="btn btn-danger btn-sm" title="Stay Here" data-dismiss="modal"> Close </a>
+                            <a class="btn btn-success btn-sm" data-dismiss="modal" title="Continue to next questions" ng-click="CallForRequiredActions(NameToCallFor)"> Continue </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="RequiredQuestions-popup">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Required Questions<span style="color:red">*</span></h4>
+                        <p>Answers are required for the following questions.</p>
+                    </div>
+                    <div class="modal-body">
+                        <div ng-repeat="q in RequiredQuestions" ng-click="ShowQuestion(q.QuestionId)" style="cursor:pointer;color:cornflowerblue">
+                            <h5><b>Q{{q.SortOrder+1}}. {{q.Question}}</b></h5><br />
+                            <p style="color:black">{{q.Description}}</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="button-set">
+                            <a class="btn btn-success btn-sm" data-dismiss="modal" title=""> OK </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+
+        <div class="modal fade" id="repeatable-popup">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">How many Section({{RepeatableCurentSection.SectionTitle}}) you wants to Repeat.</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input class="form-control" ng-model="ChildCount" type="text" numbers-only maxlength="2" />
+                    </div>
+                    <div class="modal-footer">
+                        <div class="button-set">
+                            <a class="btn btn-danger btn-sm" data-dismiss="modal" title=""> Close </a>
+                            <a class="btn btn-success btn-sm" data-dismiss="modal" ng-click="GenerateChild(ChildCount)" title=""> Save </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="singature-popup">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Signature</h4>
+                    </div>
+                    <div class="modal-body">
+                        @*<div class="" data-height="300" data-auto-fit="true"></div>*@
+                        <div ng-if="SectionSignature" style="text-align: center;">
+                            <img src="{{SectionSignature}}" width="300" height="292" />
+                        </div>
+                        <canvas class="js-signature" style="" width="500" height="500" ng-hide="SectionSignature"></canvas>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="button-set">
+                            <a class="btn btn-danger btn-sm" ng-click="ClearSignature()" title=""> Clear </a>
+                            <a class="btn btn-success btn-sm" ng-click="SaveSignature()" style="cursor:pointer;" title=""> Save </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="ShowMapTableType-popup">
+            <div class="modal-dialog" style="width:70%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Location</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="map_canvasMain">
+                                    <div id="map_canvasTableType" style="height:450px"></div>
+                                    <div ng-if="!SaveButtonShow" style="width: 150px; height: 142px;position: absolute; margin-top: -330px;margin-left: 371px;">
+                                        <img src="~/Content/Images/Application/Logo_Loading.gif" style="background: white;border-radius: 100px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="text" id="MapLatLngArrayTableType" ng-model="MapLatLngArrayTableType" hidden />
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="button-set">
+
+
+                            <a class="btn btn-danger btn-sm" title="Stay Here" data-dismiss="modal"> Close </a>
+                            <a ng-if="SaveButtonShow" class="btn btn-success btn-sm" title="Save LatLng" ng-click="SaveMapForTableType()"> Save </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+
+    function SaveActionData(obj){
+        // //debugger;
+        var id=$("#currentAction").text();
+        var remarks= $(obj).closest("div").parent().parent().parent().find("#popremarks").val();
+        var azumith= $(obj).closest("div").parent().parent().parent().find("#popazumith").val();
+        var lat= $(obj).closest("div").parent().parent().parent().find("#poplatitude").val();
+        var long=$(obj).closest("div").parent().parent().parent().find("#poplongitude").val();
+        var objView=$(obj).closest("div").parent().parent().parent().find("input[name='popView']:checked").val();
+        var altitude=$(obj).closest("div").parent().parent().parent().find("#popAltitude").val();
+        var gpsAccuracy=$(obj).closest("div").parent().parent().parent().find("#popAccuracy").val();
+
+        angular.element("#angularData").scope().SaveActionData(id,remarks,azumith,lat,long,objView,altitude,gpsAccuracy);
+    }
+    function hidePopOvers(obj){
+        //debugger;
+        $("#"+obj.offsetParent.id).popover('hide');
+    }
+    function LoadDataManually(remarks,azumith,lat,long,objView,Altitude,GPSAccuracy){
+        //debugger;
+        $("#popremarks").attr("value",remarks);
+        $("#popazumith").attr("value",azumith);
+        $("#poplatitude").attr("value",lat)
+        $("#poplongitude").attr("value",long);
+
+        $("#popAltitude").attr("value",Altitude);
+        $("#popAccuracy").attr("value",GPSAccuracy);
+        var radios=$("input[name='popView']");
+        $.each(radios,function(key,val){
+            if(val.value==objView){
+                $(this).attr("checked","checked")
+
+            }
+            //debugger;
+        });
+    }
+    $(document).ready(function(){
+        $("#ShowTooltip").tooltip({
+            container:'body'
+        });
+        HideQPad();
+    });
+    function HideQPad(){
+        //debugger;
+        $("#QuestionCanvas").hide();
+    }
+    function ShowQPad(){
+        //debugger;
+        $("#QuestionCanvas").show();
+    }
+
+    function FirstRange(val){
+        //debugger;
+        val.value=Math.min(val.value,val.parentNode.childNodes[5].value-1);
+        var value=(100/(parseInt(val.max)-parseInt(val.min)))*parseInt(val.value)-(100/(parseInt(val.max)-parseInt(val.min)))*parseInt(val.min);
+        var children = val.parentNode.childNodes[1].childNodes;
+        children[1].style.width=value+'%';
+        children[5].style.left=value+'%';
+        children[7].style.left=value+'%';children[11].style.left=value+'%';
+        children[11].childNodes[1].innerHTML=val.value;
+    }
+    function SecondRange(val){
+
+
+        val.value=Math.max(val.value,val.parentNode.childNodes[3].value-(-1));
+        var value=(100/(parseInt(val.max)-parseInt(val.min)))*parseInt(val.value)-(100/(parseInt(val.max)-parseInt(val.min)))*parseInt(val.min);
+        var children = val.parentNode.childNodes[1].childNodes;
+        children[3].style.width=(100-value)+'%';
+        children[5].style.right=(100-value)+'%';
+        children[9].style.left=value+'%';children[13].style.left=value+'%';
+        children[13].childNodes[1].innerHTML=val.value;
+    }
+
+
+    </script>
+    @section scripts{
+
+        <script src="~/Content/js/Angular/angular-filter.js"></script>
+        <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+        @*<script src="~/Scale/js/sortable/jquery-sortable2.js"></script>*@
+
+        <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+        <script src="~/Content/js/Plugins/Confirm/js/confirm.min.js"></script>
+
+        <script>
+        var UserId=@ViewBag.UserId;
+        </script>
+        <script>
+        $(document).ready(function () {
+            $(".hierarchy-view ul li ul").parent('li').addClass('hasChild');
+
+            $(".hierarchy-view").on("click", ".hv-boxname", function () {
+                $(this).parents('.hv-box').siblings('ul').slideToggle();
+                $(this).parents('.hierarchy-view').find('.active').removeClass('active');
+                $(this).parents('.hv-box').addClass('active');
+            });
+
+            $('[data-toggle="popover"]').popover({
+                html: true,
+                trigger: 'click',
+                placement: 'bottom',
+                template: '<div class="popover"><div class="arrow"></div><div class="av-popup"><h3>Power Bank</h3> <input type="text" placeholder="No. of PowerBanks" /> <div class="button-set pull-right"> <a class="custom-btn btn-danger" href="#" title="">  Cancel</a> <a class="custom-btn btn-success" href="#" title="">  Ok</a> </div></div></div>'
+            });
+
+
+
+            //$(document).on('show.bs.modal', '.modal', function () {
+            //    setTimeout(function () {
+            //        $('.js-signature').jqSignature({ autoFit: true });
+            //    }, 1000);
+            //});
+
+
+        });
+        </script>
+        <script type="text/javascript" src=@ViewBag.CompleteGeoAPIURL></script>
+        <script src="~/Content/js/MapLabel.js"></script>
+        <script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+        <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+        <script src="~/Content/js/GoogleMapsNTL.js"></script>
+        <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+
+        <script type="text/javascript">
+
+        function LoadMapWithPoly(MapLatLngArray,IsMultiLocation,zoomForMap,AzimuthVal)
+        {
+            var latlngn=MapLatLngArray.split(',');
+            var ll=latlngn[0];
+            var ln=latlngn[1];
+
+            var AzmuthRadius=100;
+            var azimuth=AzimuthVal;
+            var az={};
+            var anglees=[];
+            az.Latitude=ll;
+            az.Longitude = ln;
+            az.Color='#ff0000';
+            az.StartAngle = azimuth - (35 / 2);
+            az.EndAngle = azimuth + (35 / 2);
+
+            if (az.EndAngle == 360)
+            {
+                az.EndAngle = 0;
+            }
+            else if (az.EndAngle > 360)
+            {
+                var tmpEnd = az.EndAngle - 360;
+                if (tmpEnd >= 0 && tmpEnd <= 1)
+                {
+                    az.EndAngle = 1;
+                }
+                else
+                {
+                    az.EndAngle = az.EndAngle - 360;
+                }
+            }
+            anglees.push(az);
+
+            initializeHybrid('map_canvas', ll, ln, 0, null, null, anglees,AzmuthRadius);
+            var nllatlng = new google.maps.LatLng(ll,ln);
+
+            //var path = getArcPath(nllatlng, AzmuthRadius, anglees[0].StartAngle, anglees[0].EndAngle);
+
+            //var arra=[];
+
+            //$.each(path,function(item,key){
+            //    //debugger;
+            //    arra.push(key.lat()+","+key.lng());
+            //});
+            //var finalpoint=arra.join('|');
+        }
+
+        var Path;
+        var id;
+        var MarkersAll=[];
+
+        
+        var Path;
+        var id;
+        var MarkersAll=[];
+        function LoadMap(MapLatLngArray,IsMultiLocation,zoomForMap){
+            if(zoomForMap=="" || zoomForMap== undefined|| zoomForMap==null){
+                zoomForMap=17;
+            }
+
+            var arrayOfLatLng=new Array();
+            var finalArray=new Array();
+            var mylat =  41.14770982031494;//lat;
+            var mylng =-79.55884387499998;//lng;
+            var oldlatlng;
+            var newlatlng;
+            var mapZoom=zoomForMap;
+            var myCenter = new google.maps.LatLng(parseFloat(mylat), parseFloat(mylng));
+            var map = new google.maps.Map(document.getElementById('map_canvas'), {
+                center: myCenter,
+                zoom: mapZoom
+
+            });
+            map.addListener('zoom_changed', function() {
+                mapZoom= map.getZoom();
+                document.getElementById('MapLatLngArray').value=finalArray.toString();
+                var scope = angular.element(document.getElementById("MapLatLngArray")).scope();
+                scope.UpdateRecords(finalArray.toString(),mapZoom);
+            });
+            var locations =MapLatLngArray.split('|');
+            if(locations.length<1){
+                locations=MapLatLngArray;
+            }
+
+            locations.forEach(function(item,a){
+                var latlng=item.split(',');
+                var lat=parseFloat(latlng[0]).toFixed(5);
+                var lng=parseFloat(latlng[1]).toFixed(5);
+                var complete=lat+","+lng;
+                arrayOfLatLng.push(complete);
+            });
+            
+            finalArray=new Array();
+            finalArray= arrayOfLatLng.join("|");
+
+            for (i = 0; i < locations.length; i++){
+                var getLatLng=locations[i].split(',');
+                var getlat=getLatLng[0];
+                var getLng=getLatLng[1];
+
+                var myMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(getlat, getLng),
+                    draggable: true
+                });
+                MarkersAll.push(myMarker);
+
+                google.maps.event.addListener(myMarker, 'dragstart', function (evt) {
+                    oldlatlng=evt.latLng.lat().toFixed(5)+","+evt.latLng.lng().toFixed(5);
+
+                });
+
+                google.maps.event.addListener(myMarker, 'dragend', function (evt) {
+                    newlatlng= evt.latLng.lat().toFixed(5)+","+evt.latLng.lng().toFixed(5);
+                    arrayOfLatLng.forEach(function(item,i){
+                        if(item==oldlatlng){
+                            arrayOfLatLng[i]=newlatlng;
+                        }
+                    });
+                    finalArray=new Array();
+                    finalArray= arrayOfLatLng.join("|");
+                    document.getElementById('MapLatLngArray').value=finalArray.toString();
+                    var scope = angular.element(document.getElementById("MapLatLngArray")).scope();
+                    scope.UpdateRecords(finalArray.toString(),mapZoom);
+                    if(arrayOfLatLng.length==2){
+                            
+                        Path.setMap(null);
+                        $("#showLineAzimuth").addClass("hidden");
+                        drawLineOnMap(map,arrayOfLatLng);
+                    }
+                    else if(arrayOfLatLng.length!=2){
+                        Path.setMap(null);
+                        $("#showLineAzimuth").addClass("hidden");
+                    }
+
+                });
+                google.maps.event.addListener(myMarker, "rightclick", function (point)
+                {
+                    debugger;
+                    var index=arrayOfLatLng.indexOf(point.latLng.lat().toFixed(5)+","+point.latLng.lng().toFixed(5));
+                    arrayOfLatLng.splice(index,1);
+                    //delMarker(myMarker);
+                    delMarker(point.latLng.lat().toFixed(5)+","+point.latLng.lng().toFixed(5));
+                });
+
+
+                map.setCenter(myMarker.position);
+                myMarker.setMap(map);
+                if(arrayOfLatLng.length==2){
+                    try{
+                        Path.setMap(null);
+                        $("#showLineAzimuth").addClass("hidden");
+                    }
+                    catch(err){}
+                    drawLineOnMap(map,arrayOfLatLng);
+                }
+            }
+            // Add Click Listener
+            if(IsMultiLocation){
+                map.addListener('click', function(e) {
+                    addMarker(e.latLng);
+
+                });
+
+                function addMarker(latLng) {
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: latLng,
+                        draggable: true,
+                    });
+                    MarkersAll.push(marker);
+                    google.maps.event.addListener(marker, 'dragstart', function (evt) {
+                        oldlatlng=evt.latLng.lat().toFixed(5)+","+evt.latLng.lng().toFixed(5);
+                    });
+
+                    google.maps.event.addListener(marker, 'dragend', function (evt) {
+                        newlatlng= evt.latLng.lat().toFixed(5)+","+evt.latLng.lng().toFixed(5);
+                        arrayOfLatLng.forEach(function(item,i){
+                            if(item==oldlatlng){
+                                arrayOfLatLng[i]=newlatlng;
+                            }
+                        });
+                        finalArray=new Array();
+                        finalArray= arrayOfLatLng.join("|");
+                        document.getElementById('MapLatLngArray').value=finalArray.toString();
+                        var scope = angular.element(document.getElementById("MapLatLngArray")).scope();
+                        scope.UpdateRecords(finalArray.toString(),mapZoom);
+                        if(arrayOfLatLng.length==2){
+                            
+                            Path.setMap(null);
+                            $("#showLineAzimuth").addClass("hidden");
+                            drawLineOnMap(map,arrayOfLatLng);
+                        }
+                        else if(arrayOfLatLng.length!=2){
+                            Path.setMap(null);
+                            $("#showLineAzimuth").addClass("hidden");
+                        }
+
+                    });
+
+                    google.maps.event.addListener(marker, "rightclick", function (point)
+                    {
+                        var index=arrayOfLatLng.indexOf(point.latLng.lat().toFixed(5)+","+point.latLng.lng().toFixed(5));
+                        arrayOfLatLng.splice(index,1);
+                        delMarker(point.latLng.lat().toFixed(5)+","+point.latLng.lng().toFixed(5));
+                    });
+
+                    arrayOfLatLng.push(latLng.lat().toFixed(5)+","+latLng.lng().toFixed(5));
+                    finalArray=new Array();
+                    finalArray= arrayOfLatLng.join("|");
+                    document.getElementById('MapLatLngArray').value=finalArray.toString();
+                    var scope = angular.element(document.getElementById("MapLatLngArray")).scope();
+                    scope.UpdateRecords(finalArray.toString(),mapZoom);
+
+                    // Draw Line on Map Path
+                    if(arrayOfLatLng.length==2){
+                        drawLineOnMap(map,arrayOfLatLng);
+                    }
+                    else if(arrayOfLatLng.length!=2){
+                        Path.setMap(null);
+                        $("#showLineAzimuth").addClass("hidden");
+                    }
+
+                }
+                var delMarker = function (latlng) {
+                    var m;
+                    $.each(MarkersAll,function(i,e){
+                        if(e.position.lat().toFixed(5)+","+e.position.lng().toFixed(5)==latlng){
+                            m=e;
+                        }
+                    });
+                    m.setMap(null);
+
+                    finalArray=new Array();
+                    finalArray= arrayOfLatLng.join("|");
+                    document.getElementById('MapLatLngArray').value=finalArray.toString();
+                    var scope = angular.element(document.getElementById("MapLatLngArray")).scope();
+                    scope.UpdateRecords(finalArray.toString(),mapZoom);
+                    if(arrayOfLatLng.length==2){
+                        drawLineOnMap(map,arrayOfLatLng);
+                    }
+                    else if(arrayOfLatLng.length!=2){
+                        Path.setMap(null);
+                        $("#showLineAzimuth").addClass("hidden");
+                    }
+                }
+            }
+            // End For Click Listener
+
+
+        }
+        function drawLineOnMap(map,arrayofLatLngs){
+            var PathCoordinates = [];
+
+            $.each(arrayofLatLngs,function(i,e){
+                var newLat=parseFloat(e.split(',')[0]);
+                var newLng=parseFloat(e.split(',')[1]);
+                PathCoordinates.push({
+                    lat:newLat,
+                    lng:newLng
+                });
+                            
+            });
+
+            Path=new google.maps.Polyline({
+                path: PathCoordinates,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            Path.setMap(map);
+
+            var slat=arrayofLatLngs[0].split(',')[0]
+            var slng=arrayofLatLngs[0].split(',')[1]
+            var elat=arrayofLatLngs[1].split(',')[0]
+            var elng=arrayofLatLngs[1].split(',')[1]
+
+            var azimuth=Math.round(bearing(slat,slng,elat,elng));
+            if($("#showLineAzimuth").hasClass("hidden"))
+            {
+                $("#showLineAzimuth").removeClass("hidden");
+                $("#LineAzimuthValue").text(azimuth);
+            } 
+            
+        }
+
+
+        function LoadMapTableType(LatLng,index,col,rows){
+
+            var arrayOfLatLng=new Array();
+            var finalArray=new Array();
+            var mylat =  41.14770982031494;//lat;
+            var mylng =-79.55884387499998;//lng;
+            if(LatLng!="" && LatLng!=undefined){
+                var newLatLng=[];
+                newlatlng=LatLng.split(',');
+                mylat=newlatlng[0];
+                mylng=newlatlng[1];
+            }
+            
+            var oldlatlng="";
+            var newlatlng="";
+            var mapZoom=16;
+            var myCenter = new google.maps.LatLng(parseFloat(mylat), parseFloat(mylng));
+            var map = new google.maps.Map(document.getElementById('map_canvasTableType'), {
+                center: myCenter,
+                zoom: mapZoom,
+                mapTypeId: 'hybrid'
+
+            });
+            var myMarker = new google.maps.Marker({
+                position: new google.maps.LatLng(mylat, mylng),
+                draggable: true
+            });
+            var scope = angular.element(document.getElementById("MapLatLngArrayTableType")).scope();
+            scope.MapLatLngArrayTableType=LatLng;
+                google.maps.event.addListener(myMarker, 'dragstart', function (evt) {
+                    oldlatlng=evt.latLng.lat().toFixed(6)+","+evt.latLng.lng().toFixed(6);
+
+                });
+
+                google.maps.event.addListener(myMarker, 'dragend', function (evt) {
+                    newlatlng= evt.latLng.lat().toFixed(6)+","+evt.latLng.lng().toFixed(6);
+                    
+                    
+                    var LatLngToPass=LatLng;
+                    scope.MapLatLngArrayTableType=LatLng;
+                    if(newlatlng!="")
+                    {
+                        LatLngToPass=newlatlng;
+                    }
+                    scope.UpdateRecordsForTableTypeMap(LatLngToPass,index,col,rows);
+
+
+                });
+                map.setCenter(myMarker.position);
+                myMarker.setMap(map);
+
+        }
+
+        // Converts from degrees to radians.
+        function toRadians(degrees) {
+            return degrees * Math.PI / 180;
+        };
+ 
+        // Converts from radians to degrees.
+        function toDegrees(radians) {
+            return radians * 180 / Math.PI;
+        }
+
+
+        function bearing(startLat, startLng, destLat, destLng){
+            startLat = toRadians(startLat);
+            startLng = toRadians(startLng);
+            destLat = toRadians(destLat);
+            destLng = toRadians(destLng);
+
+            y = Math.sin(destLng - startLng) * Math.cos(destLat);
+            x = Math.cos(startLat) * Math.sin(destLat) -
+                  Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
+            brng = Math.atan2(y, x);
+            brng = toDegrees(brng);
+            return (brng + 360) % 360;
+        }
+        </script>
+
+        <script src="~/AdminLTE/dist/js/signature_pad.min.js"></script>
+        <script src="~/Areas/Survey/Content/SiteSurvey.js"></script>
+        <script type="text/javascript" src="http://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
+    </div>
+
+    @*<script src="~/Content/js/Plugins/pace/pace.js"></script>*@
+}
+@section style{
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/Confirm/css/confirm.min.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" />
+
+    @*<link href="~/Content/js/Plugins/pace/pace.css" rel="stylesheet" />*@
+
+    <style>
+        .nav-tabs-custom > .nav-tabs > li.active > a {
+            color: black !important;
+        }
+
+        .boxShadow {
+            box-shadow: 5px 4px 5px #88887B;
+        }
+
+        .panel-heading {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .sortable {
+            padding-left: 2%;
+            width: 98%;
+        }
+
+        .displayshow {
+            display: block;
+        }
+
+        .displayhide {
+            display: none;
+        }
+
+        .media-file {
+            display: inline;
+        }
+
+        .allquestions p {
+            font-size: 14px;
+            font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+        }
+
+        .allquestions .col-md-12 {
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+
+        .preview-screen .survey-panel {
+            opacity: 1 !important;
+        }
+
+        .hv-box a.hv-icon {
+            border: 1px solid transparent !important;
+            border-radius: 0% !important;
+        }
+
+            .hv-box a.hv-icon img {
+                width: 18px !important;
+            }
+
+        .av-download-filesNew {
+            margin: 0 10px 10px;
+            background: #FFF;
+            display: flex;
+            align-items: center;
+            padding: 5px 5px 5px 5px;
+            width: 100%;
+            position: relative;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+        .reqactionimages {
+            width: 70px;
+            height: auto;
+            display: inline-grid;
+        }
+
+        .reqactionvideo {
+            width: 6.5%;
+            height: auto;
+            display: inline-grid;
+        }
+
+
+        #divLoading {
+            display: none;
+        }
+
+            #divLoading.show {
+                background-image: url('../../../../Content/Images/Application/Logo_Loading.gif');
+                display: block;
+                position: fixed;
+                z-index: 100;
+                background-repeat: no-repeat;
+                background-position: center;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                top: 0;
+            }
+
+        #loadinggif.show {
+            left: 50%;
+            top: 50%;
+            position: absolute;
+            z-index: 101;
+            width: 32px;
+            height: 32px;
+            margin-left: -16px;
+            margin-top: -16px;
+        }
+
+        div.content {
+            width: 1000px;
+            height: 1000px;
+        }
+
+        .tooltip-inner {
+            background-color: whitesmoke !important;
+            /*!important is not necessary if you place custom.css at the end of your css calls. For the purpose of this demo, it seems to be required in SO snippet*/
+            color: #000;
+            text-align: left;
+        }
+
+        .slidecontainer {
+            width: 100%;
+        }
+
+        .slider1 {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+            .slider1:hover {
+                opacity: 1;
+            }
+
+            .slider1::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                background: #000000;
+                cursor: pointer;
+            }
+
+            .slider1::-moz-range-thumb {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                background: #000000;
+                cursor: pointer;
+            }
+
+        #QuestionCanvas {
+            border-bottom: 1px solid rgba(0,0,0,0.3);
+            background-color: #FFF;
+            box-shadow: 0 9px 20px -5px rgba(0,0,0,0.8);
+        }
+
+        #d {
+            text-align: center;
+        }
+
+        [slider] {
+            position: relative;
+            height: 14px;
+            border-radius: 10px;
+            text-align: left;
+            margin: 45px 0 10px 0;
+        }
+
+            [slider] > div {
+                position: absolute;
+                left: 13px;
+                right: 15px;
+                height: 14px;
+            }
+
+                [slider] > div > [inverse-left] {
+                    position: absolute;
+                    left: -16px;
+                    height: 14px;
+                    border-radius: 10px;
+                    background-color: #CCC;
+                    margin: 0 7px;
+                    border-top-right-radius: 0px;
+                    border-bottom-right-radius: 0px;
+                }
+
+                [slider] > div > [inverse-right] {
+                    position: absolute;
+                    right: -16px;
+                    height: 14px;
+                    border-radius: 10px;
+                    background-color: #CCC;
+                    margin: 0 7px;
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                }
+
+                [slider] > div > [range] {
+                    position: absolute;
+                    left: 0;
+                    height: 14px;
+                    border-radius: 14px;
+                    background-color: #3C8DBC;
+                }
+
+                [slider] > div > [thumb] {
+                    position: absolute;
+                    top: -7px;
+                    z-index: 2;
+                    height: 24px;
+                    width: 24px;
+                    text-align: left;
+                    margin-left: -11px;
+                    cursor: pointer;
+                    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+                    background-color: #000000;
+                    border-radius: 50%;
+                    outline: none;
+                }
+
+            [slider] > input[type=range] {
+                position: absolute;
+                pointer-events: none;
+                -webkit-appearance: none;
+                z-index: 3;
+                height: 14px;
+                top: -2px;
+                width: 100%;
+                -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+                filter: alpha(opacity=0);
+                -moz-opacity: 0;
+                -khtml-opacity: 0;
+                opacity: 0;
+            }
+
+        div[slider] > input[type=range]::-ms-track {
+            -webkit-appearance: none;
+            background: transparent;
+            color: transparent;
+        }
+
+        div[slider] > input[type=range]::-moz-range-track {
+            -moz-appearance: none;
+            background: transparent;
+            color: transparent;
+        }
+
+        div[slider] > input[type=range]:focus::-webkit-slider-runnable-track {
+            background: transparent;
+            border: transparent;
+        }
+
+        div[slider] > input[type=range]:focus {
+            outline: none;
+        }
+
+        div[slider] > input[type=range]::-ms-thumb {
+            pointer-events: all;
+            width: 28px;
+            height: 28px;
+            border-radius: 0px;
+            border: 0 none;
+            background: red;
+        }
+
+        div[slider] > input[type=range]::-moz-range-thumb {
+            pointer-events: all;
+            width: 28px;
+            height: 28px;
+            border-radius: 0px;
+            border: 0 none;
+            background: red;
+        }
+
+        div[slider] > input[type=range]::-webkit-slider-thumb {
+            pointer-events: all;
+            width: 28px;
+            height: 28px;
+            border-radius: 0px;
+            border: 0 none;
+            background: red;
+            -webkit-appearance: none;
+        }
+
+        div[slider] > input[type=range]::-ms-fill-lower {
+            background: transparent;
+            border: 0 none;
+        }
+
+        div[slider] > input[type=range]::-ms-fill-upper {
+            background: transparent;
+            border: 0 none;
+        }
+
+        div[slider] > input[type=range]::-ms-tooltip {
+            display: none;
+        }
+
+        [slider] > div > [sign] {
+            opacity: 0;
+            position: absolute;
+            margin-left: -11px;
+            top: -39px;
+            z-index: 3;
+            background-color: #3C8DBC;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 28px;
+            -webkit-border-radius: 28px;
+            align-items: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+            [slider] > div > [sign]:after {
+                position: absolute;
+                content: '';
+                left: 0;
+                border-radius: 16px;
+                top: 19px;
+                border-left: 14px solid transparent;
+                border-right: 14px solid transparent;
+                border-top-width: 16px;
+                border-top-style: solid;
+                border-top-color: #3C8DBC;
+            }
+
+            [slider] > div > [sign] > span {
+                font-size: 12px;
+                font-weight: 700;
+                line-height: 28px;
+            }
+
+        [slider]:hover > div > [sign] {
+            opacity: 1;
+        }
+        .inner-addon { 
+    position: relative; 
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+    </style>
+
+}

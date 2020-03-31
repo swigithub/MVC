@@ -1,0 +1,634 @@
+﻿@model IEnumerable<AirView.DBLayer.Project.Model.MilestoneModel>
+@{
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Myjson = jss.Serialize(Model);
+    var Withouthierarchy = jss.Serialize(ViewBag.Withouthierarchy);
+    string CookiesIdentifierMilestone = ViewBag.UserId + "_" + ViewBag.ProjectId;
+}
+<style>
+    #taskul {
+        display: block;
+        font-size: 15px;
+        margin: 0px 0;
+        padding: 7px 15px;
+        color: #333;
+        text-decoration: none;
+        border: 1px solid #cfcfcf;
+        background: #fbfbfb;
+        height: 47px;
+        margin-top: -1px;
+    }
+    /*=============== Progress Bars ===================*/
+.progress-bars {
+    float: left;
+    width: 100%;
+    height: 100%;
+    padding: 20px 3px 0;
+    background: #fff;
+}
+.pv-progresser {
+    width: 100%;
+    margin:0 0 3px;
+    float: left;
+    position: relative;
+    z-index: 1;
+    padding: 5px;
+}
+.pv-progresser.active {
+    background: #f5f6e0;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.pv-progresser a {
+    width: 16px;
+    height: 16px;
+    color: #FFF;
+    font-size: 10px;
+    text-align: center;
+    margin-right: 3px;
+    vertical-align: middle;
+    line-height: 1.6;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+        .pv-progresser input {
+            vertical-align: middle;
+            margin-right: 10px;
+            line-height: 1;
+            display: inline-block;
+            height: 21px;
+        }
+
+            .pv-progresser input[type=checkbox] {
+                display: none;
+            }
+
+.pv-progresser input[type="checkbox"] + label {
+    padding-left: 16px;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 0;
+}
+
+.pv-progresser input[type="checkbox"] + label:before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-width: 2px;
+    border-style: solid;
+    position: absolute;
+    left: 0;
+    top: 2px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.pv-progresser input[type="checkbox"] + label:after {
+    content: "\f00c";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    font-family: fontawesome;
+    color: inherit;
+    font-size: 8px;
+    line-height: 16px;
+    text-align: center;
+    -webkit-transform: scale(0);
+    -moz-transform: scale(0);
+    transform: scale(0);
+}
+
+.pv-progresser input[type="checkbox"]:checked + label:after {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    transform: scale(1);
+}
+
+.pv-progresser label {
+    min-width: 140px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+    line-height: 1.3;
+    font-size: 14px;
+    padding-right: 15px;
+    width: auto;
+}
+
+.pv-progress {
+    width: 100%;
+    background: #e6e6e5;
+    position: relative;
+    overflow: hidden;
+    height: 13px;
+    -webkit-border-radius: 40px;
+    -moz-border-radius: 40px;
+    border-radius: 40px;
+    float: left;
+    margin: 5px 0 0;
+}
+.progress-fill {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    -webkit-border-radius: 40px;
+    -moz-border-radius: 40px;
+    border-radius: 40px;
+}
+
+.pv-progress span {
+    color: #FFF;
+    position: absolute;
+    left: 50%;
+    font-size: 11px;
+    left: 0;
+    z-index: 2;
+    line-height: 1.2;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+.pv-progresser > span {
+    color: #888888;
+    font-size: 14px;
+    line-height: 1;
+    min-width: 110px;
+    text-align: right;
+    padding: 4px 10px 0;
+    float: right;
+}
+.pv-progresser-dropdown {
+    display: none;
+    padding-left: 3px;
+    padding-top: 15px;
+    float: left;
+    width: 100%;
+}
+a.expend-it {
+    position: absolute;
+    right:0;
+    top:0;
+    width: 25px;
+    line-height: 25px;
+    background: #5484de;
+    text-align: center;
+    color: #FFF;
+    z-index:2;
+}
+.expandable {
+    background: #fff;
+    position: absolute;
+    overflow:auto;
+    transition: all 0.3s linear;
+    right: 0;
+    top: 0;
+}
+.expandable.expanded {
+    width: 100%;
+    position: absolute!important;
+    z-index: 1;
+    right: 0px;
+    top: 0;
+    height: calc(100vh - 93px)!important;
+    z-index: 10000;
+    padding: 0 55% 0 0!important;
+}
+</style>
+<a class="expend-it" href="#" title=""><i class="fa fa-expand"></i></a>
+
+<div class="progress-bars">
+
+
+
+</div>
+
+@*<script src="~/Scale/js/nestable/jquery.nestable.js"></script>*@
+@*<script src="js/plugin/jquery-nestable/jquery.nestable.min.js"></script>*@
+<script>
+    //var RemoveCookie = ($.cookie("BookMark") == undefined) ? null : $.cookie("BookMark");
+    //if (RemoveCookie != null) {
+    //    $.removeCookie("BookMark")
+    //}
+    var CookiesIdentifierMilestoneJ = '@CookiesIdentifierMilestone';
+  //  angular.element(document.getElementById('widget-grid')).scope().CookieIdentifier = CookiesIdentifierMilestoneJ;
+    let progressiveBarGrouping = function (Tasks) {
+        var options = '';
+        for (var i = 0; i < Tasks.length; i++) {
+            if (Tasks[i].Tasks.length > 0) {
+                var option = progressiveBarGrouping(Tasks[i].Tasks);
+                options += Tasks[i].TaskId + "," + option;
+
+            }
+            else {
+                options += Tasks[i].TaskId + ",";
+            }
+        }
+        return options;
+    }
+
+
+    $(document).ready(function () {
+        //  GetMilestonesandStages();
+
+    });
+
+    $('.dd-item').click(function () {
+        var ghgh = $(this).find(".dd-list")
+        var cookie = $.cookie(CookiesIdentifierMilestoneJ + "BookMark");
+        var items = cookie ? cookie.split(/,/) : new Array();
+        $('.BookMark').each(function () {
+            for (var i = 0; i < items.length; i++) {
+                if ($(this).attr('data-bookmark') == items[i]) {
+                    $(this).addClass('Yellow');
+                }
+            }
+        });
+        //$(this).children('li').attr('data-action', 'expand');
+        //$(this).nestable({
+        //    group: 1
+        //}).on('change', updateOutput);
+    });
+
+    //var updateOutput = function (e) {
+    //    var list = e.length ? e : $(e.target), output = list.data('output');
+    //    if (window.JSON) {
+    //        output.val(window.JSON.stringify(list.nestable('serialize')));
+    //        //, null, 2));
+    //    } else {
+    //        output.val('JSON browser support required for this demo.');
+    //    }
+    //};
+
+
+    //$('#nestable2').nestable({
+    //    group: 1, collapsedClass: 'dd-collapsed',
+    //}).on('change', updateOutput).nestable('collapseAll');;
+
+    //updateOutput($('#nestable2').data('output', $('#nestable2-output')));
+    //$("#nestable2 > ol.dd-list > li.dd-item > button").css("margin-top", "23px");
+    //var updateOutput = function (e) {
+
+    //    var list = e.length ? e : $(e.target), output = list.data('output');
+    //    if (window.JSON) {
+    //        output.val(window.JSON.stringify(list.nestable('serialize')));
+    //        //, null, 2));
+    //    } else {
+    //        output.val('JSON browser support required for this demo.');
+    //    }
+    //};
+
+    // TODO: Removed for checking by SAJID
+    //setTimeout(function () {
+
+    //        $.ajax({
+    //            //url: '/Project/Dashboard/GetTaskList?ProjectId=' + $("#pId").attr("data-ProjectId") + '&filterOption=',
+    //            url: '/Project/Dashboard/GetTaskList?Filter=Get_Project_Tasks&ProjectId=' + parseInt($("#pId").attr("data-ProjectId")) + '&Value1=' + '' + '&TaskIds=' + $.cookie('ProjectTasks')
+    //            + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily',
+    //            type: 'Get',
+    //            async: false,
+    //            success: function (data) {
+
+    //                MilestonesandStages = data;
+    //                console.log(data);
+    //            }
+    //        });
+    //    }, 3000);
+
+
+
+    function findstages(value) {
+        for (var i = 0; i < MilestonesandStages.length; i++) {
+            if (MilestonesandStages[i].TaskId == parseInt(value)) {
+                return MilestonesandStages[i].Tasks;
+            }
+        }
+        return 0;
+    }
+    $(window).load(function () {
+        $("body").on('click', '.pv-progresser > a', function () {
+            if ($(this).find('i').hasClass('fa-plus')) {
+                $(this).find('i').removeClass('fa-plus').addClass('fa-minus');
+                $(this).parent().addClass("active");
+            }
+            else if ($(this).find('i').hasClass('fa-minus')) {
+                $(this).find('i').removeClass('fa-minus').addClass('fa-plus');
+                $(this).parent().removeClass("active");
+            }
+            $(this).parent().children('.pv-progresser-dropdown').slideToggle();
+        });
+
+        var BookmarkCookie = $.cookie(CookiesIdentifierMilestoneJ+"BookMark");
+        var items = BookmarkCookie ? BookmarkCookie.split(/,/) : new Array();
+        let BookmarkTasks = [];
+      
+        $.ajax({
+           url: '/Project/Dashboard/GetTasks?filter=Dashboard_Tasks_Summary&ProjectId=' + parseInt($("#pId").attr("data-ProjectId")) + '&Value1=' + items + '&TaskIds=' + $.cookie('ProjectTasks') + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate"),
+            type: 'Get',
+            async: false,
+            success: function (result) {
+                BookmarkTasks = result
+                angular.element(document.getElementById('widget-grid')).scope().BookmarkTasks = BookmarkTasks;
+                console.log(BookmarkTasks);
+                angular.element(document.getElementById('widget-grid')).scope().$apply();
+            }
+        });
+
+
+
+        let DataWithoutHierarchy = JSON.parse('@Html.Raw(Withouthierarchy)');
+        $('body').on("click", ".BookMark", function () {
+            var Checked = this.checked;
+            var values = DataWithoutHierarchy.filter(x=>x.TaskId == $(this).attr('id')); //findstages($(this).attr('data-bookmark'));
+            //var cookie = $.cookie("BookMark");
+            var cookie = ($.cookie(CookiesIdentifierMilestoneJ + "BookMark") == undefined) ? null : $.cookie(CookiesIdentifierMilestoneJ + "BookMark");
+            var items = cookie ? cookie.split(/,/) : new Array();
+            if (values.length > 0) {
+                //  var SelectedChild = progressiveBarGrouping(values[0].Tasks)
+                var SelectedParent = values[0].TaskId;//+ "," + SelectedChild;
+                if (Checked == true) {
+                    var cookie = ($.cookie(CookiesIdentifierMilestoneJ + "BookMark") == undefined) ? null : $.cookie(CookiesIdentifierMilestoneJ + "BookMark");
+                    if (cookie == null || cookie == "") {
+                        //   SelectedParent = SelectedParent.split(",");
+                        //   SelectedParent = SelectedParent.filter(x=>x != "");
+                        $.cookie(CookiesIdentifierMilestoneJ + "BookMark", SelectedParent);
+                    }
+                    else {
+                        var ExistedChecked = $.cookie(CookiesIdentifierMilestoneJ + "BookMark");
+                        if (ExistedChecked != undefined) {
+                            var abc = ExistedChecked.split(",");
+                            //   var Curr = SelectedParent;//.split(",");
+                            if (abc.length > 0) {
+                                // for (var i = 0; i < Curr.length; i++) {
+                                var Existed = abc.filter(x=> x == SelectedParent);
+                                if (Existed.length > 0) {
+
+                                }
+                                else {
+                                    abc.push(SelectedParent);
+                                }
+                                //   }
+                            }
+                            abc = abc.filter(x=>x != "");
+                            $.cookie(CookiesIdentifierMilestoneJ + "BookMark", abc.join(","));
+                            //  console.log(abc);
+                        }
+                        else {
+                            //  SelectedParent = SelectedParent.split(",");
+                            //   SelectedParent = SelectedParent.filter(x=>x != "");
+                            $.cookie(CookiesIdentifierMilestoneJ + "BookMark", SelectedParent);
+                        }
+                    }
+                }
+                else {
+                    var ExistedChecked = $.cookie(CookiesIdentifierMilestoneJ + "BookMark");
+                    if (ExistedChecked != undefined) {
+                        var abc = ExistedChecked.split(",");
+                        //  var Curr = SelectedParent.split(",");
+                        if (abc.length > 0) {
+                            //for (var i = 0; i < Curr.length; i++) {
+
+                            var Existed = abc.filter(x=> x != SelectedParent);
+
+
+                            // }
+                            abc = Existed.filter(x=>x != "");
+                            $.cookie(CookiesIdentifierMilestoneJ+"BookMark", abc.join(","));
+                        }
+
+                        //  console.log(abc);
+                    }
+                    else {
+
+                    }
+                }
+
+
+                var BookmarkCookie = $.cookie(CookiesIdentifierMilestoneJ + "BookMark");
+                var items = BookmarkCookie ? BookmarkCookie.split(/,/) : new Array();
+                BookmarkTasks = [];
+                $.ajax({
+                    url: '/Project/Dashboard/GetTasks?filter=Dashboard_Tasks_Summary&ProjectId=' + parseInt($("#pId").attr("data-ProjectId")) + '&Value1=' + items + '&TaskIds=' + $.cookie('ProjectTasks') + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate"),
+                    type: 'Get',
+                    async: false,
+                    success: function (result) {
+                      BookmarkTasks = result
+                      angular.element(document.getElementById('widget-grid')).scope().BookmarkTasks = BookmarkTasks;
+                      console.log("BookmarkTasks", BookmarkTasks);
+                      angular.element(document.getElementById('widget-grid')).scope().$apply();
+                    }
+                });
+
+                //for (var i = 0; i < values.length; i++) {
+                //    indx = items.indexOf(values[i].TaskId.toString());
+                //    if (indx != -1) items.splice(indx, 1);
+                //    $.cookie("BookMark", items.join(','));
+                //}
+                //indx = items.indexOf($(this).attr('data-bookmark'));
+                //if (indx != -1) items.splice(indx, 1);
+                //$.cookie("BookMark", items.join(','));
+
+            }
+            //if ($(this).hasClass("Yellow")) {
+
+            //    $(this).removeClass("Yellow")
+            //    $(this).addClass("fa-square-o")
+            //    $(this).removeClass("fa-check-square-o")
+            //    indx = items.indexOf($(this).attr('data-bookmark'));
+            //    if (indx != -1) items.splice(indx, 1);
+            //    $.cookie("BookMark", items.join(','));
+            //}
+            //else {
+            //    var values = findstages($(this).attr('data-bookmark'));
+            //    //$(this).addClass("fa-check-square-o")
+            //    //$(this).removeClass("fa-square-o")
+            //   // $('.R-' + $(this).attr('data-bookmark')).removeClass("fa-square-o");
+            //   // $('.R-' + $(this).attr('data-bookmark')).addClass("fa-check-square-o")
+
+            //    if (values.length > 0) {
+            //        items.push($(this).attr('data-bookmark'));
+            //        for (var i = 0; i < values.length; i++) {
+            //            items.push(values[i].TaskId);
+            //        }
+
+
+
+            //    }
+            //    else {
+            //        $('.P-' + $(this).attr('data-parentId')).removeClass("fa-square-o");
+            //        $('.P-' + $(this).attr('data-parentId')).addClass("fa-check-square-o")
+            //        var string = '.P-' + $(this).attr('data-parentId');
+            //        var spl = string.split('-');
+            //        if (spl[1] != undefined) {
+            //            items.push(spl[1]);
+            //            items.push($(this).attr('data-bookmark'));
+            //        }
+
+            //    }
+
+            //    var uniqueNames = [];
+            //    $.each(items, function (i, el) {
+            //        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+            //    });
+            //    items = uniqueNames
+            //    $.cookie("BookMark", items.join(','), {
+            //        expires: 2000
+            //    });
+            //    $(this).addClass("Yellow")
+            //}
+        });
+        let MyData = JSON.parse('@Html.Raw(Myjson)');
+
+        let progresser = '';
+        function percentage(partialValue, totalValue) {
+            return ((100 * partialValue) / totalValue).toFixed(0);
+        }
+        let TasksGrouping = function (Tasks) {
+            var optgroup2 = '';
+            var options = '';
+            for (var i = 0; i < Tasks.length; i++) {
+                if (Tasks[i].Tasks.length > 0) {
+                    var option = TasksGrouping(Tasks[i].Tasks);
+                    var Per = percentage(Tasks[i].ActualSites, Tasks[i].TotalSites)
+                    var BlockChecked = BookmarkTasks.filter(x=>x.TaskId == Tasks[i].TaskId);
+                    var Chk = "";
+                    if (BlockChecked.length > 0) {
+                        Chk = "checked";
+                    }
+
+                    options += `<div class ="pv-progresser">
+            <a style="background:${Tasks[i].Color}" href="#" title=""><i class ="fa fa-plus"></i></a> <input class ="BookMark" id="${Tasks[i].TaskId}" ${Chk} type="checkbox"><label style="color:${Tasks[i].Color};border:${Tasks[i].Color}" for="${Tasks[i].TaskId}">${Tasks[i].Title}</label>
+            <span>${Tasks[i].ActualSites} / ${Tasks[i].TotalSites}</span>
+            <div class ="pv-progress"><span>${Per}%</span> <div class="progress-fill" style="width:${Per}%;background:${Tasks[i].Color}"></div> </div>
+            <div class ="pv-progresser-dropdown">
+                 ${option}
+            </div>
+        </div>`;
+
+                }
+                else {
+                    var Per = percentage(Tasks[i].ActualSites, Tasks[i].TotalSites)
+                    var BlockChecked = BookmarkTasks.filter(x=>x.TaskId == Tasks[i].TaskId);
+                    var Chk = "";
+                    if (BlockChecked.length > 0) {
+                        Chk = "checked";
+                    }
+                    options += `<div class="pv-progresser">
+
+    <input class="BookMark" id="${Tasks[i].TaskId}" ${Chk} type="checkbox">
+    <label style="color:${Tasks[i].Color};border:${Tasks[i].Color}" for="${Tasks[i].TaskId}">${Tasks[i].Title}</label>
+    <span>${Tasks[i].ActualSites}/${Tasks[i].TotalSites}</span>
+    <div class ="pv-progress"><span>${Per}%</span> <div class="progress-fill" style="width:${Per}%;background:${Tasks[i].Color}"></div> </div>
+</div>`;
+                }
+            }
+            return options;
+        }
+        for (var i = 0; i < MyData.length; i++) {
+            var ParentOption = ''
+            var option = TasksGrouping(MyData[i].Tasks);
+            if (MyData[i].Tasks.length > 0) {
+                var Per = percentage(MyData[i].ActualSites, MyData[i].TotalSites)
+                var BlockChecked = BookmarkTasks.filter(x=>x.TaskId == MyData[i].TaskId);
+                var Chk = "";
+                if (BlockChecked.length > 0) {
+                    Chk = "checked";
+                }
+                progresser += `
+                <div class ="pv-progresser">
+            <a style="background:${MyData[i].Color}" href="#" title=""><i class ="fa fa-plus"></i></a> <input id="${MyData[i].TaskId}" type="checkbox" ${Chk} class ="BookMark" ><label style="color:${MyData[i].Color};border:${MyData[i].Color}" for="${MyData[i].TaskId}">${MyData[i].Title}</label>
+            <span>${MyData[i].ActualSites} / ${MyData[i].TotalSites}</span>
+            <div class ="pv-progress"><span>${Per}%</span> <div class="progress-fill" style="width:${Per}%;background:${MyData[i].Color}"></div> </div>
+            <div class ="pv-progresser-dropdown">
+              ${option}
+            </div>
+        </div>
+           `;
+            }
+            else {
+                var Per = percentage(MyData[i].ActualSites, MyData[i].TotalSites)
+                var BlockChecked = BookmarkTasks.filter(x=>x.TaskId == MyData[i].TaskId);
+                var Chk = "";
+                if (BlockChecked.length > 0) {
+                    Chk = "checked";
+                }
+               
+                progresser += `<div class="pv-progresser">
+
+    <input class="BookMark" id="${MyData[i].TaskId}" ${Chk} type="checkbox">
+    <label style="color:${MyData[i].Color};border:${MyData[i].Color}" for="${MyData[i].TaskId}">${MyData[i].Title}</label>
+    <span>${MyData[i].ActualSites} / ${MyData[i].TotalSites}</span>
+    <div class ="pv-progress"><span>${Per}%</span> <div class="progress-fill" style="width:${Per}%;background:${MyData[i].Color}"></div> </div>
+</div>`;
+            }
+        }
+        $(".progress-bars").append(progresser);
+
+        $('.expend-it').on("click", function () {
+            $(this).parents('.expandable').toggleClass('expanded');
+        });
+        var MilestonesandStages = [];
+
+        function GetMilestonesandStages() {
+            $.ajax({
+                //url: '/Project/Dashboard/GetTaskList?ProjectId=' + $("#pId").attr("data-ProjectId") + '&filterOption=',
+                url: '/Project/Dashboard/GetTaskList?Filter=Get_Project_Tasks&ProjectId=' + parseInt($("#pId").attr("data-ProjectId")) + '&Value1=' + '' + '&TaskIds=' + $.cookie("ProjectTasks")
+                + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily',
+                type: 'Get',
+                async: false,
+                success: function (data) {
+
+                    MilestonesandStages = data;
+                    //  console.log(data);
+                }
+            });
+        }
+    });
+</script>
+
+@*<div class="pv-progresser">
+        <a style="background:#8a70b1" href="#" title=""><i class="fa fa-plus"></i></a>
+        <input id="prg-tss" type="checkbox">
+        <label style="color:#8a70b1;border:#8a70b1" for="prg-tss">TSS</label>
+        <span>17726/18259</span>
+        <div class="pv-progress"><span>60%</span> <div class="progress-fill" style="width:60%;background:#8a70b1"></div> </div>
+    </div>
+
+    <div class="pv-progresser">
+        <a style="background:#ff9742" href="#" title=""><i class="fa fa-plus"></i></a> <input id="prg-epl" type="checkbox"> <label style="color:#ff9742;border:#ff9742" for="prg-epl">EPL</label>
+        <span>9452/9452</span>
+        <div class="pv-progress"><span>70%</span> <div class="progress-fill" style="width:70%;background:#ff9742"></div></div>
+        <div class="pv-progresser-dropdown">
+            <div class="pv-progresser">
+                <a style="background:#7a9eff" href="#" title=""><i class="fa fa-plus"></i></a> <input id="prg-ordered" type="checkbox"> <label style="color:#7a9eff;border:#7a9eff" for="prg-ordered">Ordered</label>
+                <span>3592/3700</span>
+                <div class="pv-progress"><span>30%</span> <div class="progress-fill" style="width:30%;background:#7a9eff"></div> </div>
+            </div>
+            <div class="pv-progresser">
+                <a style="background:#009de4" href="#" title=""><i class="fa fa-plus"></i></a> <input id="prg-calledout" type="checkbox"><label style="color:#009de4;border:#009de4" for="prg-calledout">Called Out</label>
+                <span>4763/4902</span>
+                <div class="pv-progress"><span>80%</span> <div class="progress-fill" style="width:80%;background:#009de4"></div> </div>
+                <div class="pv-progresser-dropdown">
+                    <div class="pv-progresser">
+                        <a style="background:#3b8655" href="#" title=""><i class="fa fa-plus"></i></a> <input id="prg-ordered" type="checkbox"> <label style="color:#3b8655;border:#3b8655" for="prg-ordered">Ordered</label>
+                        <span>3592/3700</span>
+                        <div class="pv-progress"><span>30%</span> <div class="progress-fill" style="width:30%;background:#3b8655"></div> </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pv-progresser">
+                <a style="background:#f0b828" href="#" title=""><i class="fa fa-plus"></i></a> <input id="prg-delivered" type="checkbox"><label style="color:#f0b828;border:#f0b828" for="prg-delivered">Delivered</label>
+                <span>3592/3700</span>
+                <div class="pv-progress"><span>60%</span> <div class="progress-fill" style="width:60%;background:#f0b828"></div> </div>
+            </div>
+        </div>
+    </div>*@

@@ -1,0 +1,86 @@
+﻿<div class="row" >
+    <div class="col-md-2">
+        <span>Stages</span>
+        <select ng-model="StageStatusId" class="form-control" ng-change="fnStageStatusId()" ng-options="x.TaskId as x.Stage for x in Stages"></select>
+    </div>
+    <div class="col-md-2">
+        <span>Status</span>
+        <select ng-model="statusChange.StatusId" class="form-control" ng-options="x.DefinationId as x.DisplayText for x in ProjectStatus"></select>
+    </div>
+</div>
+<br />
+<br />
+<table class="table table-striped">
+    <thead>
+        <tr>
+
+            <td>Milestone</td>
+            <td>Actual Date</td>
+            <td>Forecast Date</td>
+            <td>Plan Date</td>
+            <td>Target Date</td>
+        </tr>
+    </thead>
+    <tbody>
+
+        @*<tr ng-repeat="stg in Stages">
+                <td>{{stg.Stage}}</td>
+                <td>{{stg.ActualDate | date :  "dd.MM.y"}}</td>
+                <td>{{stg.ForecastDate | date :  "dd.MM.y"}}</td>
+                <td>{{stg.PlanDate | date :  "dd.MM.y"}}</td>
+                <td>{{stg.TargetDate | date :  "dd.MM.y"}}</td>
+            </tr>*@
+        <tr>
+            <td>{{StatusMilestone.Milestone}}</td>
+            <td>{{StatusMilestone.Milestone}}</td>
+            <td>{{StatusMilestone.ForecastDate}}</td>
+            <td>{{StatusMilestone.PlannedDate}}</td>
+            <td>{{StatusMilestone.TargetDate}}</td>
+        </tr>
+    </tbody>
+</table>
+<table class="table table-striped" ng-show="Description">
+    <thead>
+        <tr>
+
+            <td>Stage</td>
+            <td>Actual Date</td>
+            <td>Forecast Date</td>
+            <td>Plan Date</td>
+            <td>Target Date</td>
+        </tr>
+    </thead>
+    <tbody>
+
+        @*<tr ng-repeat="stg in Stages">
+            <td>{{stg.Stage}}</td>
+            <td>{{stg.ActualDate | date :  "dd.MM.y"}}</td>
+            <td>{{stg.ForecastDate | date :  "dd.MM.y"}}</td>
+            <td>{{stg.PlanDate | date :  "dd.MM.y"}}</td>
+            <td>{{stg.TargetDate | date :  "dd.MM.y"}}</td>
+        </tr>*@
+        <tr ng-show="Description">
+            <td>{{statusChange.Stage}}</td>
+            <td><input type="text" date-picker ng-model="statusChange.ActualStartDate"  /></td>
+            <td><input type="text" date-picker ng-model="statusChange.ForecastDate" /></td>
+            <td><input type="text" date-picker ng-model="statusChange.PlannedDate" /></td><!-- ng-value="stg.PlanDate | date :  'MM.dd.y'"-->
+            <td><input type="text" date-picker ng-model="statusChange.TargetDate" /></td>
+        </tr>
+    </tbody>
+</table>
+<div ng-show="Description">
+    <label class="label">Description</label>
+    <label class="textarea" style="width:100%">
+        <textarea rows="4" style="width:100%"  ng-model="statusChange.MapColumn" placeholder="Description"></textarea>
+    </label>
+    <br />
+    <br />
+    <button class="btn btn-danger" data-dismiss="modal" style="float:right;">
+        Cancel
+    </button>
+    <button type="submit" ng-click="SaveStatus()" style="float:right;margin-right:5px;" class="btn btn-primary pull-right">
+        Save
+    </button>
+    <div class="clear"></div>
+</div>
+<br />

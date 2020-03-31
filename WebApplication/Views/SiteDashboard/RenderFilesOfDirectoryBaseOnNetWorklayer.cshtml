@@ -1,0 +1,30 @@
+﻿@using walkDirectory
+@model IEnumerable<GetDirctoryinformation>
+@if (Model.Count() > 0)
+{
+<table class="table directorytbl table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th><input id="select_all" type="checkbox" name="name" value="" /></th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Size in kb</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+    {
+        <tr>
+            <td><input type="checkbox" class="GetPathOfDirectory checkbox" name="name" data-id="@item.directoryPath" value="" /></td>
+            <td>@item.fileName</td>
+            <td>@item.createDate</td>
+            <td>@item.fileType</td>
+            <td>@item.size</td>
+        </tr>
+    }
+    </tbody>
+   
+
+</table>
+}

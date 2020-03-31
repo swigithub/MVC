@@ -1,0 +1,1045 @@
+﻿
+@{
+    ViewBag.Title = "Reports";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+<style>
+    .isDisabled {
+  color: currentColor;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
+</style>
+<div class="row split-me">
+    <div class="col-sm-3">
+        <div class="panel panel-default ">
+            <header class="panel-heading font-bold">Fleet Reports </header>
+            <div class="panel-body">
+                <div class="accordions">
+                    <div class="acc-box">
+                        <div class="acc-title"><h4>Positioning Statement</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li id="dtp"><a  href="#" title="">
+                                                 <img src="~/Content/Images/icons/fleetreports/fleet_detailed_trip_report.png" /> Detailed Trip Report</a> </li>
+                                <li id="lpr"><a  href="#" title="">
+                                                 <img src="~/Content/Images/icons/fleetreports/fleet_last_position_report.png" /> Last Position Report</a> </li>
+                                @*<li id="hprpt"><a href="#" title=""><i class="fa fa-file-o"></i> Historic Photo Report</a> </li>*@
+                                <li id="pblr"><a href="#" title="">
+                                                  <img src="~/Content/Images/icons/fleetreports/fleet_passer_by_location_report.png" /> Passer-by Location Report</a> </li>
+                                <li id="pr"><a href="#" title="" class="isDisabled">
+                                                <img src="~/Content/Images/icons/fleetreports/fleet_parking_report.png" /> Parking Report</a> </li>
+                                <li id="lmtprkrpt"><a href="#" title="" class="isDisabled">
+    <img src="~/Content/Images/icons/fleetreports/fleet_limit_park_report.png" /> Limit Park Report
+</a> </li>
+                                <li id="drrpt"><a href="#" title="" class="isDisabled">
+                                                   <img src="~/Content/Images/icons/fleetreports/fleet_driving_report.png" /> Driving Report</a> </li>
+                                <li id="wghrpt"><a href="#" title="" class="isDisabled">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_working_hours_report.png" /> Working Hours Report</a> </li>
+                                <li id="dystrpt"><a href="#" title="">
+<img src="~/Content/Images/icons/fleetreports/fleet_daily_stat_report.png" /> Daily Stat Report</a> </li>
+                            </ul>
+                        </div>
+                    </div><!-- Acc Box -->
+
+                    @*<div class="acc-box">
+                        <div class="acc-title"><h4>OBD</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Detailed Trip Report</a> </li>
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Last Position Report</a> </li>
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Historic Photo Report</a> </li>
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Passer-by Location Report</a> </li>
+                            </ul>
+                        </div>
+                    </div>*@<!-- Acc Box -->
+
+                    @*<div class="acc-box">
+                        <div class="acc-title"><h4>RFID Report</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Working Hours Report</a> </li>
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Daily Stat Report</a> </li>
+                            </ul>
+                        </div>
+                    </div>*@<!-- Acc Box -->
+
+                    <div class="acc-box">
+                        <div class="acc-title"><h4>Speed Report</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li id="speedstatchrt"><a href="#" title="" class="isDisabled">
+                                                           <img src="~/Content/Images/icons/fleetreports/fleet_speed_stat_chart.png" /> Speed stat. chart</a> </li>
+                                <li id="spdstrpt"><a href="#" title="">
+                                                      <img src="~/Content/Images/icons/fleetreports/fleet_speed_stat_report.png" /> Speed stat. Report</a> </li>
+                                <li id="fdrpt"><a href="#" title="">
+                                                   <img src="~/Content/Images/icons/fleetreports/fleet_fatigue_driving_report.png" /> Fatigue Driving Report</a> </li>
+                                <li id="eidlrpt"><a href="#" title="">
+                                                     <img src="~/Content/Images/icons/fleetreports/fleet_engine_idle_report.png" /> Engine Idle Report</a> </li>
+                            </ul>
+                        </div>
+                    </div><!-- Acc Box -->
+
+                    <div class="acc-box">
+                        <div class="acc-title"><h4>Asset Status</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li id="eoor"><a href="#" title="">
+                                                  <img src="~/Content/Images/icons/fleetreports/fleet_engine_on_off_report.png" /> Engine On/Off Report</a> </li>
+                                <li id="docr"><a href="#" title="">
+<img src="~/Content/Images/icons/fleetreports/fleet_Door_Open_close_report.png" /> Door Open/Close Report</a> </li>
+                                <li id="sr"><a href="#" title="">
+<img src="~/Content/Images/icons/fleetreports/fleet_shock_report-20.png" /> Shock Report</a> </li>
+                                <li id="bthval"><a href="#" title=""> Battery Voltage High Alert</a> </li>
+                            </ul>
+                        </div>
+                    </div><!-- Acc Box -->
+
+
+                    <div class="acc-box">
+                        <div class="acc-title"><h4>Mileage Report</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li><a href="#" title="" class="isDisabled">
+                                        <img src="~/Content/Images/icons/fleetreports/fleet_total_mileage_stat_chart.png" /> Total Mileage stat.chart</a> </li>
+                                <li><a href="#" title="" class="isDisabled">
+                                        <img src="~/Content/Images/icons/fleetreports/fleet_daily_mileage_stat_chart.png" /> Daily Mileage stat.chart</a> </li>
+                                <li id="mvfc"><a href="#" title="">
+                                                  <img src="~/Content/Images/icons/fleetreports/fleet_mileage_vs_fuel_cost.png" /> Mileage vs fuel cost</a> </li>
+                                
+                            </ul>
+                        </div>
+                    </div><!-- Acc Box -->
+
+                    <div class="acc-box">
+                        <div class="acc-title"><h4>Fuel Report</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                @*<li><a href="#" title=""><i class="fa fa-file-o"></i> Fuel add/leak stat.report</a> </li>*@
+                                <li id="fcrp100k"><a href="#" title="">
+                                                      <img src="~/Content/Images/icons/fleetreports/fleet_fuel_stat_report_per_100km.png" /> Fuel stat. report per 100km</a> </li>
+                                <li id="fr"><a href="#" title="">
+                                                <img src="~/Content/Images/icons/fleetreports/fleet_fuel_report-05.png" /> Fuel report</a> </li>
+                                <li id="fcvmr"><a href="#" title="">
+                                                   <img src="~/Content/Images/icons/fleetreports/fleet_fuel_consumption_vs_mileage_report.png" /> Fuel consumption vs mileage report</a> </li>
+                            </ul>
+                        </div>
+                    </div><!-- Acc Box -->
+
+
+                    <div class="acc-box">
+                        <div class="acc-title"><h4>Temprature Report</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li><a href="#" title="" class="isDisabled">
+                                        <img src="~/Content/Images/icons/fleetreports/fleet_temprature_stat_chart.png" /> Temp. stat. chart</a> </li>
+                                <li id="tempstatrpt"><a href="#" title="">
+<img src="~/Content/Images/icons/fleetreports/fleet_temprature_stat_report.png" /> Temp. stat. report</a> </li>
+                            </ul>
+                        </div>
+                    </div><!-- Acc Box -->
+
+                    <div class="acc-box">
+                        <div class="acc-title"><h4>GEO-fence Report</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li id="mialrpt"><a href="#" title="">
+                                                     <img src="~/Content/Images/icons/fleetreports/fleet_moving_In_alarm_report-25.png" /> Moving-In Alarm Report</a> </li>
+                                <li id="moalrpt"><a href="#" title="">
+                                                     <img src="~/Content/Images/icons/fleetreports/fleet_moving_out_alarm_report.png" /> Moving-Out Alarm Report</a> </li>
+                                <li id="iofalrpt"><a href="#" title=""> In/Out Fence Alarm Report</a> </li>
+                                <li id="iosdrpt"><a href="#" title="">
+                                                     <img src="~/Content/Images/icons/fleetreports/fleet_in_out_station_detailed_report.png" /> In/Out Station Detailed Report</a> </li>
+                                <li id="iossrpt"><a href="#" title="">
+<img src="~/Content/Images/icons/fleetreports/fleet_in_out_station_stats_report.png" /> In/Out Station Stats Report</a> </li>
+                            </ul>
+                        </div>
+                    </div><!-- Acc Box -->
+
+                    <div class="acc-box">
+                        <div class="acc-title"><h4>Detailed Alarms Report</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li id="amhrpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_alarm_ manage_history_report.png" /> Alarm Manage History Report</a> </li>
+                                <li id="aarpt"><a href="#" title="">
+                                                   <img src="~/Content/Images/icons/fleetreports/fleet_allalarmsreport.png" /> All Alarms Report</a> </li>
+                                <li id="eamrpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_Emergency_alarm_report.png" /> Emergency Alarm Report</a> </li>
+                                <li id="osarpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_over_speed_alarm_report.png" /> Over-speed Alarm Report</a> </li>
+                                <li id="ptarpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_power_tamper_alarm_report.png" /> Power Tamper Alarm Report</a> </li>
+                                <li id="ocarpt"><a href="#" title="">
+<img src="~/Content/Images/icons/fleetreports/fleet_oil leakage_alarm_report.png" /> Oil Cut Alarm Report</a> </li>
+                                <li id="ptrrpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_power_tamper_alarm_report.png" /> Power Tamper Alert Report</a> </li>
+                                <li id="caarpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_crash_accident_alert_report.png" /> Crash Accident Alert Report</a> </li>
+                                <li id="blvarpt"><a href="#" title="">
+                                                     <img src="~/Content/Images/icons/fleetreports/fleet_battery_low-voltage_alert_report.png" /> Battery Low Voltage Alert Report</a> </li>
+                                <li id="ehrpt"><a href="#" title="">
+                                                   <img src="~/Content/Images/icons/fleetreports/fleet_Emergency_help_report.png" /> Emergency Help Report</a> </li>
+                                <li id="ishrpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_Information_service_help_report.png" /> Information Service Help Report</a> </li>
+                                <li id="ocaarpt"><a href="#" title="">
+                                                     <img src="~/Content/Images/icons/fleetreports/fleet_original_car_alarm_alert_report.png" /> Original Car Alarm Alert Report</a> </li>
+                                <li id="fdralrpt"><a href="#" title="">
+                                                      <img src="~/Content/Images/icons/fleetreports/fleet_fatigue_driving_alarm_report.png" /> Fatigue Driving Alarm Report</a> </li>
+                                <li id="eiarpt"><a href="#" title=""> 
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_engine_idle_alert_report.png" />Engine Idle Alert Report</a> </li>
+                                <li id="trtrpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_towing_alert_report.png" /> Towing Alert Report</a> </li>
+                                <li id="diftrpt"><a href="#" title="">
+                                                     <img src="~/Content/Images/icons/fleetreports/fleet_driving_in_forbidden_time_report.png" /> Driving In Forbidden Time Report</a> </li>
+                                <li id="tharpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_temp_high_alert_report.png" /> Temp High Alert Report</a> </li>
+                                <li id="tlarpt"><a href="#" title="">
+<img src="~/Content/Images/icons/fleetreports/fleet_temp_low_alert_report.png" /> Temp Low Alert Report</a> </li>
+                                <li id="fsrpt"><a href="#" title=""> 
+                                                   <img src="~/Content/Images/icons/fleetreports/fleet_fuel_steal_report.png" />Fuel Steal Report</a> </li>
+                                <li id="iesrpt"><a href="#" title="">
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_illegal_engine_started_report.png" /> Illegal Engine Started Report</a> </li>
+                                <li id="iarpt"><a href="#" title="">
+                                                   <img src="~/Content/Images/icons/fleetreports/fleet_ignition_alarm_report.png" /> Ignition Alarm Report</a> </li>
+                                <li id="dorpt"><a href="#" title=""> 
+                                                   <img src="~/Content/Images/icons/fleetreports/fleet_door_open_alarm_report-61.png" />Door Open Alarm Report</a> </li>
+                                <li id="sarpt"><a href="#" title=""> 
+                                                   <img src="~/Content/Images/icons/fleetreports/fleet_shock_alarm_report.png" />Shock Alarm Report</a> </li>
+                                @*<li id="ca1rpt"><a href="#" title=""><i class="fa fa-file-o"></i> Custom Alarm1 Report</a> </li>
+                                <li id="ca2rpt"><a href="#" title=""><i class="fa fa-file-o"></i> Custom Alarm2 Report</a> </li>
+                                <li id="ca3rpt"><a href="#" title=""><i class="fa fa-file-o"></i> Custom Alarm3 Report</a> </li>
+                                <li id="ca4rpt"><a href="#" title=""><i class="fa fa-file-o"></i> Custom Alarm4 Report</a> </li>*@
+                                <li id="salrpt"><a href="#" title=""> 
+                                                    <img src="~/Content/Images/icons/fleetreports/fleet_steal_alarm_report.png" />Steal Alarm Report</a> </li>
+                                <li id="arrrpt"><a href="#" title=""> Arearage Report</a> </li>
+                                <li id="exealrpt"><a href="#" title="">
+                                                      <img src="~/Content/Images/icons/fleetreports/fleet_exhuast_emission_alarm_report.png" /> Exhuast Emission Alarm Report</a> </li>
+                                <li id="hdaclalrpt"><a href="#" title="">
+                                                        <img src="~/Content/Images/icons/fleetreports/fleet_hard_acceleration_alarm_report.png" /> Hard Acceleration Alarm Report</a> </li>
+                                <li id="hddclalrpt"><a href="#" title=""> 
+                                                        <img src="~/Content/Images/icons/fleetreports/fleet_hard_deceleration_alarm_report.png" />Hard Deceleration Alarm Report</a> </li>
+                                <li id="egtpalrpt"><a href="#" title=""> 
+                                                       <img src="~/Content/Images/icons/fleetreports/fleet_engine_temprature_alarm_report.png" />Engine Temperature Alarm Report</a> </li>
+                                <li id="sptnalrpt"><a href="#" title="">
+                                                       <img src="~/Content/Images/icons/fleetreports/fleet_sharp_turn_alarm_report.png" /> Sharp Turn Alarm Report</a> </li>
+                                <li id="qlcalrpt"><a href="#" title=""> 
+                                                      <img src="~/Content/Images/icons/fleetreports/fleet_quick lane_change_alarm_report.png" />QuickLane Change Alarm Report</a> </li>
+                                <li id="pronalrpt"><a href="#" title="">
+                                                       <img src="~/Content/Images/icons/fleetreports/fleet_power_on_alarm_report.png" /> Power On Alarm Report</a> </li>
+                                <li id="hgrpmalrpt"><a href="#" title="">
+                                                        <img src="~/Content/Images/icons/fleetreports/fleet_high_rpm_alarm_report.png" /> High RPM Alarm Report</a> </li>
+                                <li id="mlalrpt"><a href="#" title="">
+                                                     <img src="~/Content/Images/icons/fleetreports/fleet_mil_alarm_report.png" /> MIL Alarm Report</a> </li>
+                                <li id="ngpsalrpt"><a href="#" title=""> 
+                                                       <img src="~/Content/Images/icons/fleetreports/fleet_no_gps_alarm_report.png" />No GPS Alarm Report</a> </li>
+                                <li id="prstalrpt"><a href="#" title=""> 
+                                                       <img src="~/Content/Images/icons/fleetreports/fleet_privacy_status_alarm_report.png" />Privacy Status Alarm Report</a> </li>
+                                <li id="dgdralrpt"><a href="#" title=""> 
+                                                       <img src="~/Content/Images/icons/fleetreports/fleet_dangerous_driving_alarm_report.png" />Dangerous Driving Alarm Report</a> </li>
+                                <li id="nocrdalrpt"><a href="#" title="">
+                                                        <img src="~/Content/Images/icons/fleetreports/fleet_no_card_alarm_report.png" /> No Card Alarm Report</a> </li>
+                                <li id="unlkalrpt"><a href="#" title="">
+                                                       <img src="~/Content/Images/icons/fleetreports/fleet_unlock_alarm_report.png" /> Unlock Alarm Report</a> </li>
+                                <li id="igntnoffalrpt"><a href="#" title=""> 
+                                                           <img src="~/Content/Images/icons/fleetreports/fleet_ignition_off_alarm_report.png" />IgnitionOff Alarm Report</a> </li>
+                                
+                                
+                                
+                                
+                                
+                                
+
+                            </ul>
+                        </div>
+                    </div><!-- Acc Box -->
+
+                    @*<div class="acc-box">
+                        <div class="acc-title"><h4>Management Report</h4></div>
+                        <div class="acc-body">
+                            <ul class="reports-lists">
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Detailed Trip Report</a> </li>
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Last Position Report</a> </li>
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Historic Photo Report</a> </li>
+                                <li><a href="#" title=""><i class="fa fa-file-o"></i> Daily Stat Report</a> </li>
+                            </ul>
+                        </div>
+                    </div>*@<!-- Acc Box -->
+
+
+                </div><!-- Accordion -->
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+       @* Positioning Reports *@
+        <span id="detailtriprpt">
+            @{ Html.RenderPartial("_DetailTripReport");}
+        </span>
+        <span id="lastpositionrpt">
+            @{ Html.RenderPartial("_LastPositionReport");}
+        </span>
+        <span id="historicphotorpt">
+            @{ Html.RenderPartial("_HistoricPhotoReport");}
+        </span>
+        <span id="passerbylocationrpt">
+            @{ Html.RenderPartial("_PasserByLocationReport");}
+        </span>
+        <span id="parkingrpt">
+            @{ Html.RenderPartial("_ParkingReport");}
+        </span>
+        <span id="limitparkingrpt">
+            @{ Html.RenderPartial("_LimitParkReport");}
+        </span>
+        <span id="drivingrpt">
+            @{ Html.RenderPartial("_DrivingReport");}
+        </span>
+        <span id="workinghoursrpt">
+            @{ Html.RenderPartial("_WorkingHoursReport");}
+        </span>
+        <span id="dailystatrpt">
+            @{ Html.RenderPartial("_DailyStatReport");}
+        </span>
+        @* Speed Reports *@
+        <span id="speedstatchart">
+            @{ Html.RenderPartial("_SpeedStatChart");}
+        </span>
+        <span id="spdstatrpt">
+            @{ Html.RenderPartial("_SpeedStatReport");}
+        </span>
+        <span id="fatiguedrivingrpt">
+            @{ Html.RenderPartial("_FatigueDrivingReport");}
+        </span>
+        <span id="engineidlerpt">
+            @{ Html.RenderPartial("_EngineIdleReport");}
+        </span>
+
+        @* AssetStatus *@
+
+        <span id="engineonoffrpt">
+            @{ Html.RenderPartial("_EngineOnOffReport");}
+        </span>
+        <span id="dooropencloserpt">
+            @{ Html.RenderPartial("_DoorOpenCloseReport");}
+        </span>
+        <span id="shockrpt">
+            @{ Html.RenderPartial("_ShockReport");}
+        </span>
+        <span id="batteryvoltagehighalert">
+            @{ Html.RenderPartial("_BatteryVoltageHighAlert");}
+        </span>
+
+        @* Mileage Reports *@
+
+        <span id="milagevsfuelcostrpt">
+            @{Html.RenderPartial("_MileageVsFuelCost");}
+        </span>
+
+        @* Fuel Reports *@
+
+        <span id="fuelstatrptper100km">
+            @{Html.RenderPartial("_FuelStatReportPer100Km");}
+        </span>
+       <span id="fuelrpt">
+           @{Html.RenderPartial("_FuelReport");}
+       </span>
+        <span id="fuelconsumptionvsmileagerpt">
+            @{ Html.RenderPartial("_FuelConsumptionVsMileageReport");}
+        </span>
+
+        @* Temprature Report *@
+
+       <span id="tempraturestatrpt">
+           @{ Html.RenderPartial("_TempratureStatReport");}
+       </span>
+        
+        @* Geo-fence Report *@
+        
+        <span id="movinginalarmrpt">
+            @{ Html.RenderPartial("_MovingInAlarmReport");}
+        </span>
+        <span id="movingoutalarmrpt">
+            @{ Html.RenderPartial("_MovingOutAlarmReport");}
+        </span>
+        <span id="inoutfencealarmrpt">
+            @{ Html.RenderPartial("_InOutFenceAlarmReport");}
+        </span>
+        <span id="inoutstationdetailedrpt">
+            @{ Html.RenderPartial("_InOutStationDetailedReport");}
+        </span>
+        <span id="inoutstationstatsrpt">
+            @{ Html.RenderPartial("_InOutStationStatReport");}
+        </span>
+
+        @* Detailed Alarm reports section *@
+        <span id="alarmmanagehistoryrpt">
+            @{ Html.RenderPartial("_AlarmManageHistoryReport");}
+        </span>
+        
+        <span id="allalarmsrpt">
+            @{ Html.RenderPartial("_AllAlarmsReport");}
+        </span>
+        <span id="emergencyalarmrpt">
+            @{ Html.RenderPartial("_EmergencyAlarmReport");}
+        </span>
+        <span id="overspeedalarmrpt">
+            @{ Html.RenderPartial("_OverSpeedAlarmReport");}
+        </span>
+        <span id="powertamperalarmrpt">
+            @{ Html.RenderPartial("_PowerTamperAlarmReport");}
+        </span>
+        <span id="oilcutalarmrpt">
+            @{ Html.RenderPartial("_OilCutAlarmReport");}
+        </span>
+        <span id="powertamperalertrpt">
+            @{ Html.RenderPartial("_PowerTamperAlertReport");}
+        </span>
+        <span id="crashaccidentalalertrpt">
+            @{ Html.RenderPartial("_CrashAccidentAlertReport");}
+        </span>
+        <span id="batterylowvolatgealertrpt">
+            @{ Html.RenderPartial("_BatteryLowVoltageAlertReport");}
+        </span>
+        <span id="emergencyhelprpt">
+            @{ Html.RenderPartial("_EmergencyHelpReport");}
+        </span>
+        <span id="informationservicehelprpt">
+            @{ Html.RenderPartial("_InformationServiceHelpReport");}
+        </span>
+        <span id="originalcaralarmalertrpt">
+            @{ Html.RenderPartial("_OriginalCarAlarmReport");}
+        </span>
+        <span id="fatiguedrivingalalarmrpt">
+            @{ Html.RenderPartial("_FatigueDrivingAlarmReport");}
+        </span>
+        <span id="engineidlealertrpt">
+            @{ Html.RenderPartial("_EngineIdleAlertReport");}
+        </span>
+        <span id="towingalertrpt">
+            @{ Html.RenderPartial("_TowingAlertReport");}
+        </span>
+        <span id="drivinginforbiddentimerpt">
+            @{ Html.RenderPartial("_DrivingInForbiddenTimeReport");}
+        </span>
+        <span id="temphighalertrpt">
+            @{ Html.RenderPartial("_TempHighAlertReport");}
+        </span>
+        <span id="templowalertrpt">
+            @{ Html.RenderPartial("_TempLowAlertReport");}
+        </span>
+        <span id="fuelstealrpt">
+            @{ Html.RenderPartial("_FuelStealReport");}
+        </span>
+        <span id="illegalenginestartedrpt">
+            @{ Html.RenderPartial("_IllegalEngineStartedReport");}
+        </span>
+        <span id="ignitionalarmrpt">
+            @{ Html.RenderPartial("_IgnitionAlarmReport");}
+        </span>
+        <span id="dooropenalarmrpt">
+            @{ Html.RenderPartial("_DoorOpenAlarmReport");}
+        </span>
+        <span id="shockalarmrpt">
+            @{ Html.RenderPartial("_ShockAlarmReport");}
+        </span>
+        <span id="stealalarmrpt">
+            @{ Html.RenderPartial("_StealAlarmReport");}
+        </span>
+        <span id="arrearangealarmrpt">
+            @{ Html.RenderPartial("_ArrearageAlarmReport");}
+        </span>
+        <span id="exhuastemissionalarmrpt">
+            @{ Html.RenderPartial("_ExhaustEmissionAlarmReport");}
+        </span>
+        <span id="hardaccelerationalarmrpt">
+            @{ Html.RenderPartial("_HardAccelerationAlarmReport");}
+        </span>
+        <span id="harddecelerationalarmrpt">
+            @{ Html.RenderPartial("_HardDecelerationAlarmReport");}
+        </span>
+        <span id="enginetempraturealarmrpt">
+            @{ Html.RenderPartial("_EngineTempratureAlarmReport");}
+        </span>
+        <span id="sharpturnalarmrpt">
+            @{ Html.RenderPartial("_SharpTurnAlarmReport");}
+        </span>
+        <span id="quicklanechangealarmrpt">
+            @{ Html.RenderPartial("_QuickLaneChangeReport");}
+        </span>
+        <span id="poweronalarmrpt">
+            @{ Html.RenderPartial("_PowerOnAlarmReport");}
+        </span>
+        <span id="highrpmalarmrpt">
+            @{ Html.RenderPartial("_HighRPMAlarmReport");}
+        </span>
+        <span id="milalarmrpt">
+            @{ Html.RenderPartial("_MILAlarmReport");}
+        </span>
+        <span id="nogpsalarmrpt">
+            @{ Html.RenderPartial("_NoGPSAlarmReport");}
+        </span>
+        <span id="privacystatusalarmrpt">
+            @{ Html.RenderPartial("_PrivacyStatusAlarmReport");}
+        </span>
+        <span id="dangerousdrivingalarmrpt">
+            @{ Html.RenderPartial("_DangerousDrivingAlarmReport");}
+        </span>
+        <span id="nocardalarmrpt">
+            @{ Html.RenderPartial("_NoCardAlarmReport");}
+        </span>
+        <span id="unlockalarmrpt">
+            @{ Html.RenderPartial("_UnlockAlarmReport");}
+        </span>
+        <span id="ignitionoffalarmrpt">
+            @{ Html.RenderPartial("_IgnitionOffAlarmReport");}
+        </span>
+        
+        
+        @*
+        <span id="customalarm1rpt">
+            @{ Html.RenderPartial("");}
+        </span>
+        <span id="customalarm2rpt">
+            @{ Html.RenderPartial("");}
+        </span>
+        <span id="customalarm3rpt">
+            @{ Html.RenderPartial("");}
+        </span>
+        <span id="customalarm4rpt">
+            @{ Html.RenderPartial("");}
+        </span>
+        *@
+
+    </div>
+</div>
+
+<link href="~/Scripts/easy-auto-complete/easy-autocomplete.min.css" rel="stylesheet" />
+<link href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+<link href="~/Scripts/datatable/datatable.css" rel="stylesheet" />
+
+<script src="~/Scripts/easy-auto-complete/jquery.easy-autocomplete.min.js"></script>
+<script src="~/AdminLTE/plugins/daterangepicker/js/moment.min.js"></script>
+<script src="~/AdminLTE/plugins/daterangepicker/js/daterangepicker.js"></script>
+<script src="~/Scripts/datatable/datatable.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+<script src="~/Content/js/splitter.js"></script>
+<script>
+    
+    $(document).on("ready", function () {
+        var myvar = null;
+        // Split Panel
+        if ($(window).width() < 767) {
+            splitter = $('.split-me').touchSplit({
+                leftMin: 250,
+                rightMin: 0,
+                thickness: "5px",
+                dock: "left",
+                bp: 1
+            });
+        }
+        else {
+            splitter = $('.split-me').touchSplit({
+                leftMin: 250,
+                rightMin: 0,
+                thickness: "5px",
+                dock: "left",
+                bp: 0.1
+            });
+        }
+
+
+
+        // Custom Accordions
+        $(".acc-box:first-child").find('.acc-body').slideDown();
+        $(".acc-title").on("click", function () {
+            $(this).next('.acc-body').slideToggle();
+            $(this).parents('.acc-box').siblings('.acc-box').find('.acc-body').slideUp();
+        });
+
+        //get Device
+        $.ajax({
+            url: window.location.origin + "/swi/Fleet/GetDevice",
+            type: 'GET',
+            async : false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data) {
+                myvar = data;
+            }
+            
+        });
+        // Easy Autocomplete Plugin Initialization
+       
+        var options = {
+            
+            data:myvar,
+
+            list: {
+                match: {
+                    enabled: true,
+                }
+            },
+            
+            theme: "square"
+        };
+        
+        $(".assets").easyAutocomplete(options);
+        
+        // Date & Time Range Picker
+        $('.daterange').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,
+            timePickerSeconds:true,
+            
+            locale: {
+                format: 'MM/DD/YYYY HH:mm:ss'
+            }
+           
+        });
+        $(function () {
+            $('.workhour_date-range').daterangepicker({
+                timePicker: true,
+                singleDatePicker: true,
+                timePicker24Hour: true,
+                timePickerIncrement: 1,
+                timePickerSeconds: true,
+                locale: {
+                    format: 'HH:mm:ss'
+                }
+            }).on('show.daterangepicker', function (ev, picker) {
+                picker.container.find(".calendar-table").hide();
+            });
+        })
+    });
+
+    //create index column Datatable
+
+    function createIndex(table) {
+        table.on('draw', function () {
+            //var info = table.page.info();
+            table.column(0, { search: 'applied', order: 'applied', page:'applied' }).nodes().each(function (cell, i) {
+                //cell.innerHTML = i + 1 +info.start;
+                cell.innerHTML = i + 1;
+                table.cell(cell).invalidate('dom');
+            });
+        }).draw();
+
+    }
+
+    
+
+    
+    //Add DataTable Filters
+    function addDataTableFilters() {   
+            $(".custom-filters .top").remove();
+            $($(".report-table .top")).appendTo(".custom-filters")
+          
+    }
+    
+    // handle hide/show partialview
+
+    hideallpartial();
+    
+    $("#dtp").click(function () {
+        hideallpartial();
+        $("#detailtriprpt").show();
+
+    });
+    $("#lpr").click(function () {
+        hideallpartial();
+        $("#lastpositionrpt").show();
+    });
+    $("#hprpt").click(function () {
+        hideallpartial();
+        $("#historicphotorpt").show();
+    });
+
+    $("#pblr").click(function () {
+        hideallpartial();
+        $("#passerbylocationrpt").show();
+    });
+    $("#wghrpt").click(function () {
+        hideallpartial();
+        $("#workinghoursrpt").show();
+    });
+    $("#dystrpt").click(function () {
+        hideallpartial();
+        $("#dailystatrpt").show();
+    });
+    $("#hprpt").click(function () {
+        hideallpartial();
+        $("#").show();
+    });
+    
+    $("#speedstatchrt").click(function () {
+        hideallpartial();
+        $("#speedstatchart").show();
+    });
+    $("#spdstrpt").click(function () {
+        hideallpartial();
+        $("#spdstatrpt").show();
+    });
+    $("#fdrpt").click(function () {
+        hideallpartial();
+        $("#fatiguedrivingrpt").show();
+    });
+    $("#eidlrpt").click(function () {
+        hideallpartial();
+        $("#engineidlerpt").show();
+    });
+    
+    $("#eoor").click(function () {
+        hideallpartial();
+        $("#engineonoffrpt").show();
+    });
+    $("#docr").click(function () {
+        hideallpartial();
+        $("#dooropencloserpt").show();
+    });
+    $("#sr").click(function () {
+        hideallpartial();
+        $("#shockrpt").show();
+    });
+    $("#bthval").click(function () {
+        hideallpartial();
+        $("#batteryvoltagehighalert").show();
+    });
+
+    
+    $("#mvfc").click(function () {
+        hideallpartial();
+        $("#milagevsfuelcostrpt").show();
+    });
+    $("#fcrp100k").click(function () {
+        hideallpartial();
+        $("#fuelstatrptper100km").show();
+    });
+    $("#fr").click(function () {
+        hideallpartial();
+        $("#fuelrpt").show();
+    });
+    $("#tempstatrpt").click(function () {
+        hideallpartial();
+        $("#tempraturestatrpt").show();
+    });
+    $("#fcvmr").click(function () {
+        hideallpartial();
+        $("#fuelconsumptionvsmileagerpt").show();
+    });
+   
+    $("#pr").click(function () {
+        hideallpartial();
+        $("#parkingrpt").show();
+    });
+    $("#lmtprkrpt").click(function () {
+        hideallpartial();
+        $("#limitparkingrpt").show();
+    });
+    $("#drrpt").click(function () {
+        hideallpartial();
+        $("#drivingrpt").show();
+    });
+    $("#mialrpt").click(function () {
+        hideallpartial();
+        $("#movinginalarmrpt").show();
+    });
+    $("#moalrpt").click(function () {
+        hideallpartial();
+        $("#movingoutalarmrpt").show();
+    });
+    $("#iofalrpt").click(function () {
+        hideallpartial();
+        $("#inoutfencealarmrpt").show();
+    });
+    $("#iosdrpt").click(function () {
+        hideallpartial();
+        $("#inoutstationdetailedrpt").show();
+    });
+    $("#iossrpt").click(function () {
+        hideallpartial();
+        $("#inoutstationstatsrpt").show();
+    });
+
+
+
+    //DetailedAlarmReport
+   
+    $("#amhrpt").click(function () {
+        hideallpartial();
+        $("#alarmmanagehistoryrpt").show();
+    });
+    $("#aarpt").click(function () {
+        hideallpartial();
+        $("#allalarmsrpt").show();
+    });
+    $("#eamrpt").click(function () {
+        hideallpartial();
+        $("#emergencyalarmrpt").show();
+    });
+    $("#osarpt").click(function () {
+        hideallpartial();
+        $("#overspeedalarmrpt").show();
+    });
+    $("#ptarpt").click(function () {
+        hideallpartial();
+        $("#powertamperalarmrpt").show();
+    });
+    $("#ocarpt").click(function () {
+        hideallpartial();
+        $("#oilcutalarmrpt").show();
+    });
+    $("#ptrrpt").click(function () {
+        hideallpartial();
+        $("#powertamperalertrpt").show();
+    });
+    $("#caarpt").click(function () {
+        hideallpartial();
+        $("#crashaccidentalalertrpt").show();
+    });
+    $("#blvarpt").click(function () {
+        hideallpartial();
+        $("#batterylowvolatgealertrpt").show();
+    });
+    $("#ehrpt").click(function () {
+        hideallpartial();
+        $("#emergencyhelprpt").show();
+    });
+    $("#ishrpt").click(function () {
+        hideallpartial();
+        $("#informationservicehelprpt").show();
+    });
+    $("#ocaarpt").click(function () {
+        hideallpartial();
+        $("#originalcaralarmalertrpt").show();
+    });
+    $("#fdralrpt").click(function () {
+        hideallpartial();
+        $("#fatiguedrivingalalarmrpt").show();
+    });
+   
+    $("#eiarpt").click(function () {
+        hideallpartial();
+        $("#engineidlealertrpt").show();
+    });
+    $("#trtrpt").click(function () {
+        hideallpartial();
+        $("#towingalertrpt").show();
+    });
+    $("#diftrpt").click(function () {
+        hideallpartial();
+        $("#drivinginforbiddentimerpt").show();
+    });
+    $("#tharpt").click(function () {
+        hideallpartial();
+        $("#temphighalertrpt").show();
+    });
+    $("#tlarpt").click(function () {
+        hideallpartial();
+        $("#templowalertrpt").show();
+    });
+    $("#fsrpt").click(function () {
+        hideallpartial();
+        $("#fuelstealrpt").show();
+    });
+    $("#iesrpt").click(function () {
+        hideallpartial();
+        $("#illegalenginestartedrpt").show();
+    });
+    $("#iarpt").click(function () {
+        hideallpartial();
+        $("#ignitionalarmrpt").show();
+    });
+    $("#dorpt").click(function () {
+        hideallpartial();
+        $("#dooropenalarmrpt").show();
+    });
+    $("#sarpt").click(function () {
+        hideallpartial();
+        $("#shockalarmrpt").show();
+
+    });
+    $("#ca1rpt").click(function () {
+        hideallpartial();
+        $("#customalarm1rpt").show();
+    });
+    $("#ca2rpt").click(function () {
+        hideallpartial();
+        $("#customalarm2rpt").show();
+    });
+    $("#ca3rpt").click(function () {
+        hideallpartial();
+        $("#customalarm3rpt").show();
+    });
+    $("#ca4rpt").click(function () {
+        hideallpartial();
+        $("#customalarm4rpt").show();
+    });
+    $("#salrpt").click(function () {
+        hideallpartial();
+        $("#stealalarmrpt").show();
+    });
+    $("#arrrpt").click(function () {
+        hideallpartial();
+        $("#arrearangealarmrpt").show();
+    });
+    $("#exealrpt").click(function () {
+        hideallpartial();
+        $("#exhuastemissionalarmrpt").show();
+    });
+    $("#hdaclalrpt").click(function () {
+        hideallpartial();
+        $("#hardaccelerationalarmrpt").show();
+    });
+    $("#hddclalrpt").click(function () {
+        hideallpartial();
+        $("#harddecelerationalarmrpt").show();
+    });
+    $("#egtpalrpt").click(function () {
+        hideallpartial();
+        $("#enginetempraturealarmrpt").show();
+    });
+    $("#sptnalrpt").click(function () {
+        hideallpartial();
+        $("#sharpturnalarmrpt").show();
+    });
+    $("#qlcalrpt").click(function () {
+        hideallpartial();
+        $("#quicklanechangealarmrpt").show();
+    });
+    $("#pronalrpt").click(function () {
+        hideallpartial();
+        $("#poweronalarmrpt").show();
+    });
+    $("#hgrpmalrpt").click(function () {
+        hideallpartial();
+        $("#highrpmalarmrpt").show();
+    });
+    $("#mlalrpt").click(function () {
+        hideallpartial();
+        $("#milalarmrpt").show();
+    });
+    $("#ngpsalrpt").click(function () {
+        hideallpartial();
+        $("#nogpsalarmrpt").show();
+    });
+    $("#prstalrpt").click(function () {
+        hideallpartial();
+        $("#privacystatusalarmrpt").show();
+    });
+    $("#dgdralrpt").click(function () {
+        hideallpartial();
+        $("#dangerousdrivingalarmrpt").show();
+    });
+    $("#nocrdalrpt").click(function () {
+        hideallpartial();
+        $("#nocardalarmrpt").show();
+    });
+    $("#unlkalrpt").click(function () {
+        hideallpartial();
+        $("#unlockalarmrpt").show();
+    });
+    $("#igntnoffalrpt").click(function () {
+        hideallpartial();
+        $("#ignitionoffalarmrpt").show();
+    });
+    
+    
+    
+    
+    //hide allpartial Function
+    function hideallpartial() {
+        $("#detailtriprpt").hide();
+        $("#lastpositionrpt").hide();
+        $("#historicphotorpt").hide();
+        $("#workinghoursrpt").hide();
+        $("#dailystatrpt").hide();
+        $("#spdstatrpt").hide();
+        $("#engineidlerpt").hide();
+        $("#fatiguedrivingrpt").hide();
+        $("#passerbylocationrpt").hide();
+        $("#engineonoffrpt").hide();
+        $("#dooropencloserpt").hide();
+        $("#shockrpt").hide();
+        $("#batteryvoltagehighalert").hide();
+        $("#milagevsfuelcostrpt").hide();
+        $("#fuelstatrptper100km").hide();
+        $("#fuelrpt").hide();
+        $("#tempraturestatrpt").hide();
+        $("#fuelconsumptionvsmileagerpt").hide();
+        $("#speedstatchart").hide();
+        $("#parkingrpt").hide();
+        $("#limitparkingrpt").hide();
+        $("#drivingrpt").hide();
+        $("#movinginalarmrpt").hide();
+        $("#movingoutalarmrpt").hide();
+        $("#inoutfencealarmrpt").hide();
+        $("#inoutstationdetailedrpt").hide();
+        $("#inoutstationstatsrpt").hide();
+        //detailedalarmreport
+        $("#alarmmanagehistoryrpt").hide();
+        $("#allalarmsrpt").hide();
+        $("#emergencyalarmrpt").hide();
+        $("#overspeedalarmrpt").hide();
+        $("#powertamperalarmrpt").hide();
+        $("#oilcutalarmrpt").hide();
+        $("#powertamperalertrpt").hide();
+        $("#crashaccidentalalertrpt").hide();
+        $("#batterylowvolatgealertrpt").hide();
+        $("#emergencyhelprpt").hide();
+        $("#informationservicehelprpt").hide();
+        $("#originalcaralarmalertrpt").hide();
+        $("#fatiguedrivingalalarmrpt").hide();
+        $("#engineidlealertrpt").hide();
+        $("#towingalertrpt").hide();
+        $("#drivinginforbiddentimerpt").hide();
+        $("#temphighalertrpt").hide();
+        $("#templowalertrpt").hide();
+        $("#fuelstealrpt").hide();
+        $("#illegalenginestartedrpt").hide();
+        $("#ignitionalarmrpt").hide();
+        $("#dooropenalarmrpt").hide();
+        $("#shockalarmrpt").hide();
+        $("#customalarm1rpt").hide();
+        $("#customalarm2rpt").hide();
+        $("#customalarm3rpt").hide();
+        $("#customalarm4rpt").hide();
+        $("#stealalarmrpt").hide();
+        $("#arrearangealarmrpt").hide();
+        $("#exhuastemissionalarmrpt").hide();
+        $("#hardaccelerationalarmrpt").hide();
+        $("#harddecelerationalarmrpt").hide();
+        $("#enginetempraturealarmrpt").hide();
+        $("#sharpturnalarmrpt").hide();
+        $("#quicklanechangealarmrpt").hide();
+        $("#poweronalarmrpt").hide();
+        $("#highrpmalarmrpt").hide();
+        $("#milalarmrpt").hide();
+        $("#nogpsalarmrpt").hide();
+        $("#privacystatusalarmrpt").hide();
+        $("#dangerousdrivingalarmrpt").hide();
+        $("#nocardalarmrpt").hide();
+        $("#unlockalarmrpt").hide();
+        $("#ignitionoffalarmrpt").hide();
+        
+        
+    }
+    $("ul.reports-lists li").on("click", function () {
+        $(".acc-body ul.reports-lists li").removeClass('active');
+        $(this).addClass('active');
+    });
+    $("#dtp").trigger("click");
+ 
+    
+</script>
+
+<style>
+    .row.split-me{height:calc(100vh - 140px)}
+
+</style>

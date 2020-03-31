@@ -1,0 +1,175 @@
+﻿
+<header class="main-header">
+    <a href="@ViewBag.DefaultUrl" class="logo">
+        <span class="logo-mini"><img width="40" height="40" src="~/Content/Images/Application/swi_logo_globe.png" alt="Logo" /></span>
+        <span class="logo-lg">
+            <img width="40" height="40" src="~/Content/Images/Application/swi_logo_globe.png" alt="Logo" />
+            <b>AirView</b>
+        </span>
+    </a>
+    <nav class="navbar navbar-static-top" role="navigation">
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <span id="breadcrumspan" style="font-size:large;visibility:hidden">
+            <span class="label "><label class="DashboardStatus"><span id="date-filter-title-txt">Date </span> : <span id="date-filter-txt">This Month</span></label></span>
+
+            <span class="label  "><label class="DashboardStatus">Work Order Status: <span id="wo-status">Total Sites</span> </label></span>
+            <span class="label  "><label class="DashboardStatus"><span id="Region-txt">Market View : All</span> </label></span>
+            <span class="label  "><label class="DashboardStatus"><span id="tester-txt">Drive Tester View : All</span></label></span>
+        </span>
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-bell-o"></i>
+                        <span class="label label-warning" id="NotifyBellCount">10</span>
+                    </a>
+                    <div class="dropdown-menu av-notifications">
+                        <ul id="NotifyBellInfo">
+
+                        </ul>
+                        <div class="dropdown-footer">
+                            <a href="@Url.Action("All", "Notification", new { Area = "Alert" })">See All Notifications</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="@ViewBag.picture" class="user-image" alt="User Image" />
+                        <span class="hidden-xs">@ViewBag.Name</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="user-header">
+                            <img src="@ViewBag.picture" class="img-circle" alt="User Image" />
+                            <p>
+                                <small>@ViewBag.Email</small>
+                            </p>
+                        </li>
+                        <li class="user-footer">
+                            <div class="pull-left">
+                                <a href="@Url.Action("Details", "User", new { Id = ViewBag.UserId })" class="btn btn-default btn-flat">Profile</a>
+                            </div>
+                            <div class="pull-right">
+                                <a href="@Url.Action("Logout", "Login",new {area="" })" class="btn btn-default btn-flat">Sign out</a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<script>
+    //$('#NotifyBellCount').text();
+    //$('#NotifyBellInfo').append();
+
+    /* Info Node For Notification Bell with Image */
+    //var ImageNode = '<li>'
+    //'<div class="av-not">'+
+    //'<div class="not-img"><img src="http://placehold.it/60x60" /></div>'+
+    //'<div class="not-detail">'+
+    //'<h5>Support Team <i>3 mins ago</i></h5>'+
+    //'<p>Great for dashboards and sidebars!</p>'+
+    //'</div>'+
+    //'</div>'+
+    //'</li>';
+
+    /* Info Node For Notification Bell with Icon */
+    //var ImageNode = '<li>'
+    //'<div class="av-not">'+
+    //'<div class="not-img"><i class="fa fa-line-chart"></i></div>'+
+    //'<div class="not-detail">'+
+    //'<h5>Support Team <i>3 mins ago</i></h5>'+
+    //'<p>Great for dashboards and sidebars!</p>'+
+    //'</div>'+
+    //'</div>'+
+    //'</li>';
+    $(document).ready(function () {
+
+        $($('#NotifyBellCount').parents().find('li.dropdown').eq(0)).click(function(){
+            $('#NotifyBellCount').hide();
+            /* == Send Ajax call to Set IsPushRead == */
+            var ModelObject = [];
+            for(var x=0;x<$('#NotifyBellInfo').children('li').length; x++){
+
+                if($('#NotifyBellInfo').children('li').eq(x).attr('data-IsPushAlertRead')!="true"){
+                    var ModelAlert = {
+                        AlertId: $('#NotifyBellInfo').children('li').eq(x).attr('data-AlertId'),
+                        IsPushAlertRead: true,
+                        AlertRecieverId: @ViewBag.UserId,
+                    };
+                    ModelObject.push(ModelAlert);
+                }
+            }
+
+            /* == ModelObject is ready Now send to update values == */
+            if(ModelObject.length>1){
+                $.ajax({
+                    url: "/swi/NotificationBellUpdate",
+                    type: "POST",
+                    data: JSON.stringify(ModelObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        ModelObject = [];
+                    }
+                });
+            }
+        });
+
+        if("@ViewBag.UserId"!=""){
+            $.ajax({
+                url: "/swi/NotificationBell",
+                type: "POST",
+                data: JSON.stringify({"AlertRecieverId": @ViewBag.UserId}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+
+                    $('#NotifyBellInfo').empty();
+                    var UnReadCounter = 0;
+                    result.forEach(function (e, i) {
+                        var TempDate = new Date(e.CreatedOn);
+                        /* Info Node For Notification Bell with Icon */
+                        console.log(JSON.stringify(e));
+                        if(e.IsPushAlertRead!=true){
+                            UnReadCounter++;
+                            var ImageNode = '<li data-AlertId="'+e.AlertId+'" data-IsPushAlertRead="'+e.IsPushAlertRead+'">'+
+                               '<div class="av-not">'+
+                               '<div class="not-img"><img src="'+e.Picture+'" /></div>'+
+                               '<div class="not-detail">'+
+                               '<h5>'+e.UserName+' <i>'+timeSince(TempDate)+'</i></h5>'+
+                               '<p>'+e.Notification+'</p>'+
+                               '</div>'+
+                               '</div>'+
+                               '</li>';
+
+                            $('#NotifyBellInfo').append(ImageNode);
+                        }
+                        else{
+                        
+                            var ImageNode = '<li data-AlertId="'+e.AlertId+'" data-IsPushAlertRead="'+e.IsPushAlertRead+'">'+
+                               '<div class="av-not new-not">'+
+                               '<div class="not-img"><img src="'+e.Picture+'" /></div>'+
+                               '<div class="not-detail">'+
+                               '<h5>'+e.UserName+' <i>'+timeSince(TempDate)+'</i></h5>'+
+                               '<p>'+e.Notification+'</p>'+
+                               '</div>'+
+                               '</div>'+
+                               '</li>';
+
+                            $('#NotifyBellInfo').append(ImageNode);
+                        }
+
+                    });
+                    $('#NotifyBellCount').text(UnReadCounter);
+                }
+            });
+        }
+        
+
+
+
+    });
+</script>

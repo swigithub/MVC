@@ -1,0 +1,54 @@
+﻿<style>
+    input {
+        text-align: center;
+    }
+
+    .smart-form footer .btn {
+        padding: 0px 10px 0px 10px !important;
+        margin: 0px !important;
+    }
+</style>
+
+
+<form ng-submit="Save()" class="smart-form">
+    <fieldset>
+        <div class="row form-group">
+            <br />
+            <label>Date</label>
+            <div class="input-group" style="width:30%">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input type="text" id="txtDate" value="@DateTime.Now.ToString("dd/MM/yyyy")" disabled class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <br />
+            <label>Description</label> <br />
+            <textarea id="taDescription" rows="4" cols="62" required></textarea>
+        </div>
+        <footer>
+            <button type="submit" onclick="submitForm()" class="btn btn-primary pull-right">
+                Save
+            </button>
+        </footer>
+    </fieldset>
+
+
+</form>
+
+<script>
+    function submitForm() {
+        var Description = $('#taDescription').val();
+        var iDate = $('#txtDate').val();
+
+        $.ajax({
+            url: "/Equipment/AddUEIssues",
+            data: { UEId: myUEId, UserId: myUserId, Description: Description, Date: iDate },
+            type: 'post',
+            success: function () {
+                //window.location.reload();
+            }
+        });
+    }
+</script>

@@ -1,0 +1,237 @@
+﻿@*<select ng-model="flag" class="form-control TypeSelected" ng-change="checkPlanType()" style="margin-bottom:5px" ng-options="x.name for x in choseoption">
+    <option value="">Select Option</option>
+</select>*@
+
+<table class="table table-striped Milestones" >
+    <thead>
+        <tr style="font-weight:bold">
+
+            <th>Task</th>
+            <th>Plan</th>
+            <th>Target</th>
+            <th>Forecast Start</th>
+            <th>Forecast End</th>
+            <th>Actual Start</th>
+            <th>Actual End</th>
+           
+            <th>Status</th>
+            <th>Stage</th>
+            <th>Resources</th>
+            
+            <th></th>
+
+        </tr>
+        <tr></tr>
+    </thead>
+    <tbody>
+
+
+
+        <tr>
+            <td>
+                {{Milstone.Title}} <input type="hidden" id="MyStatus" value="{{Milstone.StatusId}}" />
+                <input type="hidden" id="Assigned" value="{{Milstone.AssignTo}}" />
+                <input type="hidden" id="TaskStageId" value="{{Milstone.TaskStageId}}" />
+            </td>
+
+            <td ng-if="!isMilestoneEdit">{{Milstone.PlannedDate | date :  "MM/DD/YYYY"}}</td>
+            <td ng-if="isMilestoneEdit">   <input autocomplete="off" ng-disabled="Milstone.Childs > 0"  id="PlannedDate" type="text" date-picker ng-model="Milstone.PlannedDate" style="border:1px solid #efefef;width:96PX;" placeholder="Plan Date" class="form-control" /></td>
+            <td ng-if="!isMilestoneEdit">{{Milstone.TargetDate | date :  "MM/DD/YYYY"}}</td>
+            <td ng-if="isMilestoneEdit">   <input autocomplete="off" ng-disabled="Milstone.Childs > 0" type="text" id="TargetDatee" date-picker ng-model="Milstone.TargetDate" style="border:1px solid #efefef;width:96PX;" placeholder="Target Date" class="form-control" /></td>
+
+
+            <td ng-if="!isMilestoneEdit">{{Milstone.ForecastStartDate | date :  "MM/DD/YYYY"}}</td>
+            <td ng-if="isMilestoneEdit">   <input autocomplete="off" ng-disabled="Milstone.Childs > 0" id="ForecastStartDate" type="text" date-picker ng-model="Milstone.ForecastStartDate" style="border:1px solid #efefef;width:96PX;" placeholder="Forecast Start Date" class="form-control" /></td>
+
+            <td ng-if="!isMilestoneEdit">{{Milstone.ForecastEndDate | date :  "MM/DD/YYYY"}}</td>
+            <td ng-if="isMilestoneEdit">   <input autocomplete="off" ng-disabled="Milstone.Childs > 0" id="ForecastEndDate" type="text" date-picker ng-model="Milstone.ForecastEndDate" style="border:1px solid #efefef;width:96PX;" placeholder="Forecast End Date" class="form-control" /></td>
+
+            <td ng-if="!isMilestoneEdit">{{Milstone.ActualStartDate | date :  "MM/DD/YYYY"}}</td>
+            <td ng-if="isMilestoneEdit">   <input autocomplete="off" ng-disabled="Milstone.Childs > 0" id="ActualStartDate" type="text" date-picker ng-model="Milstone.ActualStartDate" style="border:1px solid #efefef;width:96PX;" placeholder="Actual Start Date" class="form-control" /></td>
+
+            <td ng-if="!isMilestoneEdit">{{Milstone.ActualEndDate | date :  "MM/DD/YYYY"}}</td>
+            <td ng-if="isMilestoneEdit">   <input autocomplete="off" ng-disabled="Milstone.Childs > 0"  id="ActualEndDate" type="text" date-picker ng-model="Milstone.ActualEndDate" style="border:1px solid #efefef;width:96PX;" placeholder="Actual End Date" class="form-control" /></td>
+
+            <td ng-if="!isMilestoneEdit">
+                <select id="StatusId" class="form-control MilestoneStatus" ng-model="Milstone.StatusId">
+                    <option ng-value="{{x.DefinationId}}" ng-repeat="x in ProjectStatus">{{x.DisplayText}}</option>
+                </select>
+            </td>
+
+            <td ng-if="isMilestoneEdit">
+                <select class="form-control MilestoneStatus" ng-model="Milstone.StatusId">
+                    <option ng-value="{{x.DefinationId}}" ng-repeat="x in ProjectStatus">{{x.DisplayText}}</option>
+                </select>
+            </td>
+            <td>
+                <select ng-model="Milstone.TaskStageId" class="form-control planningTaskStages" ng-options="x.StageId as x.Title for x in TaskStagesList">
+                    <option ng-selected="true" value=""></option>
+                </select>
+                @*<select ng-model="Milstone.TaskStageId" class="form-control TaskStageDropDown">
+                    
+                    <option ng-value="{{x.StageId}}" ng-repeat="x in TaskStagesList" ng-selected="{{ x.Selected == true }}">{{x.Title}}</option>
+                </select>*@
+            </td>
+            <td ng-if="!isMilestoneEdit"><multiselect class="input-xlarge Assigned" multiple="true" ng-model="Milstone.AssignTo" options="x.UserId as x.UserName for x in User"></multiselect></td>
+            <td ng-if="isMilestoneEdit"><multiselect class="input-xlarge Assigned" multiple="true" ng-model="Milstone.AssignTo" options="x.UserId as x.UserName for x in User"></multiselect> </td>
+
+            <td >
+                
+            </td>
+        </tr>
+
+        
+    </tbody>
+</table>
+
+<div class="button-set align-right">
+    <button class="btn custom-btn2" data-dismiss="modal">
+        Cancel
+    </button>
+    <button ng-if="isMilestoneEdit" ng-click="SavePlan($index,Milstone,Stages)" class="btn custom-btn1">Save</button>
+</div>
+
+<table  class="table table-striped" ng-show="TaskChildLength > 0">
+    <thead>
+        <tr style="font-weight:bold">
+
+            <th>Task</th>
+            <th>Plan</th>
+            <th>Target</th>
+            <th>Forecast Start</th>
+            <th>Forecast End</th>
+            <th>Actual Start</th>
+            <th>Actual End</th>
+            <th>Status</th>
+            <th>Stage</th>
+            <th>Resources</th>
+           
+            <th></th>
+            <th ng-if="isStageEdit"></th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+        <tr ng-disabled="isMilestoneEdit" ng-repeat="stg in Stages">
+            <td>{{stg.Stage}}</td>
+
+            <td ng-if="!stg.isEdit"><span>{{stg.PlanDate | date :  "MM/DD/YYYY"}}</span></td>
+            <td ng-if="stg.isEdit">      <input ng-if="stg.isEdit" type="text" data-indexer="{{$index}}_PlannedDate" date-picker ng-model="stg.PlanDate" style="border:1px solid #efefef;width:96PX;" placeholder="Plan Date" class="form-control PlanDate" /></td>
+
+            <td ng-if="!stg.isEdit"><span>{{stg.TargetDate | date :  "MM/DD/YYYY"}}</span></td>
+            <td ng-if="stg.isEdit">    <input ng-if="stg.isEdit" type="text" data-indexer="{{$index}}_TargetDate" date-picker ng-model="stg.TargetDate" style="border:1px solid #efefef;width:96PX;" placeholder="Target Date" class="form-control TargetDate" /></td>
+
+            <td ng-if="!stg.isEdit"><span>{{stg.ForecastStartDate | date :  "MM/DD/YYYY"}}</span> </td>
+            <td ng-if="stg.isEdit"> <input ng-if="stg.isEdit" type="text" data-indexer="{{$index}}_ForecastStartDate" date-picker ng-model="stg.ForecastStartDate" style="border:1px solid #efefef;width:96PX;" placeholder="Forecast Start Date" class="form-control ForecastStartDate" /></td>
+
+            <td ng-if="!stg.isEdit"><span>{{stg.ForecastEndDate | date :  "MM/DD/YYYY"}}</span> </td>
+            <td ng-if="stg.isEdit"> <input data-indexer="{{$index}}_ForecastEndDate" ng-if="stg.isEdit" type="text" date-picker ng-model="stg.ForecastEndDate" style="border:1px solid #efefef;width:96PX;" placeholder="Forecast End Date" class="form-control ForecastEndDate" /></td>
+
+
+            <td ng-if="!stg.isEdit"><span>{{stg.ActualStartDate | date :  "MM/DD/YYYY"}} </span></td>
+            <td ng-if="stg.isEdit">   <input ng-if="stg.isEdit" type="text" date-picker  data-indexer="{{$index}}_ActualStartDate" ng-model="stg.ActualStartDate" style="border:1px solid #efefef;width:96PX;" placeholder="Actual Start Date" class="form-control ActualStartDate" /></td>
+
+            <td ng-if="!stg.isEdit"><span>{{stg.ActualEndDate | date :  "MM/DD/YYYY"}} </span></td>
+            <td ng-if="stg.isEdit">   <input ng-if="stg.isEdit" type="text" date-picker data-indexer="{{$index}}_ActualEndDate" ng-model="stg.ActualEndDate" style="border:1px solid #efefef;width:96PX;" placeholder="Actual End Date" class="form-control ActualEndDate" /></td>
+
+          
+            
+                 <td ng-if="!isMilestoneEdit"><select ng-disabled="isMilestoneEdit"  ng-model="stg.StatusId" class="form-control" ng-options="x.DefinationId as x.DisplayText for x in ProjectStatus"></select></td>
+            <td ng-if="isMilestoneEdit"> <select ng-disabled="false"  ng-model="stg.StatusId" class="form-control" ng-options="x.DefinationId as x.DisplayText for x in ProjectStatus"></select></td>
+
+            <td>
+                <select style="width: 92%;" ng-disabled="false" ng-model="stg.TaskStageId" class="form-control childTaskStages" ng-options="x.StageId as x.Title for x in stg.TaskStagesList" data-indexer="{{$index}}_TaskStage">
+                    <option ng-selected="true" value=""></option>
+                </select>
+            </td>
+
+            <td ng-disabled="isMilestoneEdit" ng-if="!isMilestoneEdit"><multiselect ng-disabled="isMilestoneEdit" class="input-xlarge" multiple="true" ng-model="stg.AssignTo" options="x.UserId as x.UserName for x in User"></multiselect></td>
+            <td ng-disabled="isMilestoneEdit" ng-if="isMilestoneEdit"><multiselect ng-disabled="isMilestoneEdit" class="input-xlarge" multiple="true" ng-model="stg.AssignTo" options="x.UserId as x.UserName for x in User"></multiselect></td>
+
+
+            <td ng-if="isStageEdit && !stg.isEdit"><button ng-click="MilestoneEdit($index)" class="btn btn-sm btn-Default"><span class="fa fa-pencil"></span> </button></td>
+           
+            <td>@*<button ng-if="stg.isEdit" ng-click="SavePlan($index,stg)"class="btn btn-sm btn-primary">Save</button>*@</td>
+            @*<td ng-if="stg.isEdit && isStagePlane">fsfsd</td>*@
+         
+        </tr>
+
+
+    </tbody>
+</table>
+<script>
+    var TargetDate = [];
+    var PlanDate = [];
+    var ForecastEnd  = [];
+    var ForecastStart  = [];
+    var ActualEnd = [];
+    var ActualStart = [];
+
+    $(document).on('change', '.PlanDate', function () {
+        var maxDate;
+        var minDate;
+        PlanDate.push(new Date($(this).val()));
+        maxDate = new Date(Math.max.apply(null, PlanDate));
+        minDate = new Date(Math.min.apply(null, PlanDate));
+        var $datepicker = $('#PlannedDate');
+        $datepicker.datepicker('setDate', minDate);
+    });
+
+    $(document).on('change', '.TargetDate', function () {
+        debugger
+        var maxDate;
+        var minDate;
+        TargetDate.push(new Date($(this).val()));
+        maxDate = new Date(Math.max.apply(null, TargetDate));
+        minDate = new Date(Math.min.apply(null, TargetDate));
+        var $datepicker = $('#TargetDatee');
+        $datepicker.datepicker('setDate', maxDate);
+    });
+
+    $(document).on('change', '.ForecastStartDate', function () {
+        var maxDate;
+        var minDate;
+        ForecastStart.push(new Date($(this).val()));
+        maxDate = new Date(Math.max.apply(null, ForecastStart));
+        minDate = new Date(Math.min.apply(null, ForecastStart));
+        var $datepicker = $('#ForecastStartDate');
+        $datepicker.datepicker('setDate', minDate);
+    });
+
+    $(document).on('change', '.ForecastEndDate', function () {
+        var maxDate;
+        var minDate;
+        ForecastEnd.push(new Date($(this).val()));
+        maxDate = new Date(Math.max.apply(null, ForecastEnd));
+        minDate = new Date(Math.min.apply(null, ForecastEnd));
+        var $datepicker = $('#ForecastEndDate');
+        $datepicker.datepicker('setDate', maxDate);
+    });
+
+    $(document).on('change', '.ActualStartDate', function () {
+        var maxDate;
+        var minDate;
+        ActualStart.push(new Date($(this).val()));
+        maxDate = new Date(Math.max.apply(null, ActualStart));
+        minDate = new Date(Math.min.apply(null, ActualStart));
+        var $datepicker = $('#ActualStartDate');
+        $datepicker.datepicker('setDate', minDate);
+    });
+
+    $(document).on('change', '.ActualEndDate', function () {
+        var maxDate;
+        var minDate;
+        ActualEnd.push(new Date($(this).val()));
+        maxDate = new Date(Math.max.apply(null, ActualEnd));
+        minDate = new Date(Math.min.apply(null, ActualEnd));
+        var $datepicker = $('#ActualEndDate');
+        $datepicker.datepicker('setDate', maxDate);
+    });
+
+    
+
+</script>
+<style>
+.align-right{text-align:right}
+</style>

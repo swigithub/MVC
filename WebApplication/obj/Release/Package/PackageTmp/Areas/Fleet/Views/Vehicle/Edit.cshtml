@@ -1,0 +1,480 @@
+﻿@model AirView.DBLayer.Fleet.Model.FM_Vehicle
+@{
+    ViewBag.Title = "Edit Vehicle";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+        var GID =  @Html.Raw(Model.VehicleGroupId);
+        var TID =  @Html.Raw(Model.TypeId);
+        var MID =  @Html.Raw(Model.ManuId);
+        var ModID =  @Html.Raw(Model.ModelId);
+        var SubModID =  @Html.Raw(Model.SubModelId);
+        @*var IMEI =  '@Html.Raw(Model.IMEI)';
+        var IMEIID = 0;*@
+       
+        debugger;
+        if ("@ViewBag.EditResponse" == "Success") {
+            $.notify("Successfully Updated", { color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+        }
+        else if("@ViewBag.EditResponse" == "CreatedSuccessfully"){
+            $.notify("Successfully Created", { color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+        }
+
+        @*if (@Html.Raw(Model.IMEIId) != 'undefined' || @Html.Raw(Model.IMEIId) != null || @Html.Raw(Model.IMEIId) !='')
+        {           
+           IMEIID=  @Html.Raw(Model.IMEIId);
+        }*@      
+        
+        var counterEdit = 0;
+
+       
+
+        $("#ManuName").append($("<option selected disabled></option>").val(null).html('-Manufacturer-'));
+        $("#ManuName").prop("disabled", true);
+
+        $("#ModelName").append($("<option selected disabled></option>").val(null).html('-Model-'));
+        $("#ModelName").prop("disabled", true);
+
+        $("#SubModelName").append($("<option selected disabled></option>").val(null).html('-Sub Model-'));
+        $("#SubModelName").prop("disabled", true);
+
+        $.ajax({
+            url: "/Fleet/Vehicle/ListGroup",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+
+                $("#VehicleGroupName").append($("<option selected disabled></option>").val(null).html('-Group-'));
+
+                $(result).each(function () {
+                    $("#VehicleGroupName").append($("<option></option>").val(this.VehicleGroupId).html(this.VehicleGroupName));
+                });
+                $('#VehicleGroupName').val(GID);
+            },
+            error: function (data) { }
+        });
+
+        $.ajax({
+            url: "/Fleet/Vehicle/ListType",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+
+                $("#TypeName").append($("<option selected disabled></option>").val(null).html('-Type-'));
+
+                $(result).each(function () {
+                    $("#TypeName").append($("<option></option>").val(this.TypeId).html(this.TypeName));
+                });
+
+                $('#TypeName').val(TID);
+
+                $.ajax({
+                    url: "/Fleet/Vehicle/ListManufacturer/" + TID,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+
+                        if (result != "") {
+
+                            $("#ManuName").prop("disabled", false);
+
+                            $(result).each(function () {
+                                $("#ManuName").append($("<option></option>").val(this.ManuId).html(this.ManuName));
+                            });
+
+                            $('#ManuName').val(MID);
+
+                            $.ajax({
+                                url: "/Fleet/Vehicle/ListModel/?id=" + MID + "&TypeId=" + TID,
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                datatype: JSON,
+                                success: function (result) {
+
+                                    if (result != "") {
+
+                                        $("#ModelName").prop("disabled", false);
+
+                                        $(result).each(function () {
+                                            $("#ModelName").append($("<option></option>").val(this.ModelId).html(this.ModelName));
+                                        });
+
+                                        $('#ModelName').val(ModID);
+
+                                        $.ajax({
+                                            url: "/Fleet/Vehicle/ListSubModel/?id=" + ModID + "&ManuId=" + MID,
+                                            type: "POST",
+                                            contentType: "application/json; charset=utf-8",
+                                            datatype: JSON,
+                                            success: function (result) {
+                                                console.log('result:' + result);
+                                                if (result != "") {
+
+                                                    $("#SubModelName").prop("disabled", false);
+
+                                                    $(result).each(function (key, index) {
+                                                        $("#SubModelName").append($("<option></option>").val(this.SubModelId).html(this.SubModelName));
+                                                    });
+                                                    $('#SubModelName').val(SubModID);
+                                                }
+
+                                            },
+                                            error: function (data) { }
+                                        });
+                                    }
+
+                                },
+                                error: function (data) { }
+                            });
+                        }
+                    },
+                    error: function (data) { }
+                });
+            },
+            error: function (data) { }
+        });
+
+        //$.ajax({
+        //    url: "/Fleet/Vehicle/ListIMEIAll",
+        //    type: "Get",
+        //    contentType: "application/json; charset=utf-8",
+        //    datatype: JSON,
+        //    success: function (result) {
+
+        //        if (result != "") {
+        //            $("#IMEIId").append($("<option selected disabled></option>").val(0).html('-IMEI Number-'));
+        //            $("#IMEIId").append($("<option></option>").val("0").html('None'));
+        //            $(result).each(function (key, index) {
+        //                $("#IMEIId").append($("<option></option>").val(this.IMEIId).html(this.IMEI));
+        //            });
+        //            console.log('IMEIID:'+IMEIID);
+        //            $('#IMEIId').val(IMEIID);
+        //        }
+        //    },
+        //    error: function (data) { }
+        //});
+
+        $('#TypeName').change(function (e) {
+
+            $('#ManuName').empty();
+            $("#ManuName").append($("<option selected disabled></option>").val(null).html('-Manufacturer-'));
+            $("#ManuName").prop("disabled", true);
+
+            $('#ModelName').empty();
+            $("#ModelName").append($("<option selected disabled></option>").val(null).html('-Model-'));
+            $("#ModelName").prop("disabled", true);
+
+            $('#SubModelName').empty();
+            $("#SubModelName").append($("<option selected disabled></option>").val(null).html('-Sub Model-'));
+            $("#SubModelName").prop("disabled", true);
+
+
+            TypeId = $('#TypeName').select().val();
+
+            $.ajax({
+                url: "/Fleet/Vehicle/ListManufacturer/" + TypeId,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+
+                    if (result != "") {
+
+                        $("#ManuName").prop("disabled", false);
+
+                        $(result).each(function () {
+                            $("#ManuName").append($("<option></option>").val(this.ManuId).html(this.ManuName));
+                        });
+
+                    }
+                },
+                error: function (data) { }
+            });
+
+        });
+
+        $('#ManuName').change(function (e) {
+
+            $('#ModelName').empty();
+            $("#ModelName").append($("<option selected disabled></option>").val(null).html('-Model-'));
+            $("#ModelName").prop("disabled", true);
+            
+            $('#SubModelName').empty();
+            $("#SubModelName").append($("<option selected disabled></option>").val(null).html('-Sub Model-'));
+            $("#SubModelName").prop("disabled", true);
+
+            ManuId = $('#ManuName').select().val();
+            TypeId = $('#TypeName').select().val();
+
+            $.ajax({
+                url: "/Fleet/Vehicle/ListModel/?id=" + ManuId + "&TypeId=" + TypeId,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+
+                    if (result != "") {
+
+                        $("#ModelName").prop("disabled", false);
+
+                        $(result).each(function () {
+                            $("#ModelName").append($("<option></option>").val(this.ModelId).html(this.ModelName));
+                        });
+                    }
+
+                },
+                error: function (data) { }
+            });
+
+        });
+
+        $('#ModelName').change(function (e) {
+
+            $('#SubModelName').empty();
+            $("#SubModelName").append($("<option selected disabled></option>").val(null).html('-Sub Model-'));
+            $("#SubModelName").prop("disabled", true);
+
+            ModelId = $('#ModelName').select().val();
+
+            console.log('ManuId:' + ManuId + ' ModelId:' + ModelId);
+
+            $.ajax({
+                url: "/Fleet/Vehicle/ListSubModel/?id=" + ModelId + "&ManuId=" + ManuId,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    console.log('result:' + result);
+                    if (result != "") {
+
+                        $("#SubModelName").prop("disabled", false);
+
+                        $(result).each(function (key, index) {
+                            $("#SubModelName").append($("<option></option>").val(this.SubModelId).html(this.SubModelName));
+                        });
+
+                    }
+
+                },
+                error: function (data) { }
+            });
+
+        });
+
+        $('#save').click(function () {
+            debugger;
+            $('#VehicleGroupId').val($('#VehicleGroupName').select().val());
+            $('#TypeId').val($('#TypeName').select().val());
+            $('#ManuId').val($('#ManuName').select().val());
+            $('#ModelId').val($('#ModelName').select().val());
+            $('#SubModelId').val($('#SubModelName').select().val());
+            //$('#IMEIId').val($('#IMEIId').select().val());
+
+            //var SubModID =  @Html.Raw(Model.VehicleId);
+
+            var CN = $('#ChassisNumber').val();
+            var RN = $('#RegistrationNumber').val();
+            var VehicleID = $('#VehicleID').val();
+
+            if (CN != "" && RN != "") {
+                $('[data-valmsg-for="ChassisNumber"]').text('');
+                $('[data-valmsg-for="RegistrationNumber"]').text('');
+                $.ajax({
+                    url: "/Fleet/Vehicle/ValidateChassisNumberOnUpdate/?id=" + CN + "&RN=" + RN + "&VID=" + VehicleID,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        console.log("result:" + JSON.stringify(result.ChassisNumber));
+                        //result.RegistrationNumber
+                        if (result.ChassisNumber == 1) {
+                            $('[data-valmsg-for="ChassisNumber"]').text('Vehicle with VIN ' + CN + ' already exists');
+                        }
+
+                        if (result.RegistrationNumber == 1) {
+                            $('[data-valmsg-for="RegistrationNumber"]').text('Vehicle with registeration number ' + RN + ' already exists');
+                        }
+
+                        if (result.ChassisNumber != 1 && result.RegistrationNumber != 1) {
+                            $('#PostSubmit').click();
+                        }
+
+                    },
+                    error: function (data) {
+                        console.log("ChassisNumber error:" + data);
+                    }
+                });
+            }
+            else {
+                       $('#PostSubmit').click();
+            }
+
+
+
+            //$('#PostSubmit').click();
+        });
+
+
+    });
+
+    var loadFile = function (event) {
+        var output = document.getElementById('ImagePreview');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        $("#ImagePreview").show();
+    };
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+
+<section class="panel panel-default">
+    <header class="panel-heading font-bold">
+        Edit Vehicle
+    </header>
+    @using (Html.BeginForm("", "", FormMethod.Post, new { @class = "form-horizontal", id = "frm-User", enctype = "multipart/form-data" }))
+    {
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-8 col-md-12">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.VehicleId, new { id = "VehicleID" })
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">Group<sup style="color:darkred">*</sup></label>
+                                <div class="col-sm-9">
+                                    @Html.HiddenFor(model => model.VehicleGroupId)
+                                    @Html.ValidationMessageFor(model => model.VehicleGroupId, "", new { @style = "color:red" })
+                                    @Html.DropDownList("VehicleGroupName", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">Type<sup style="color:darkred">*</sup></label>
+                                <div class="col-sm-9">
+                                    @Html.HiddenFor(model => model.TypeId)
+                                    @Html.ValidationMessageFor(model => model.TypeId, "", new { @style = "color:red" })
+                                    @Html.DropDownList("TypeName", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">Manufacturer<sup style="color:darkred">*</sup></label>
+                                <div class="col-sm-9">
+                                    @Html.HiddenFor(model => model.ManuId)
+                                    @Html.ValidationMessageFor(model => model.ManuId, "", new { @style = "color:red" })
+                                    @Html.DropDownList("ManuName", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">Model<sup style="color:darkred">*</sup></label>
+                                <div class="col-sm-9">
+                                    @Html.HiddenFor(model => model.ModelId)
+                                    @Html.ValidationMessageFor(model => model.ModelId, "", new { @style = "color:red" })
+                                    @Html.DropDownList("ModelName", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">Sub Model<sup style="color:darkred">*</sup></label>
+                                <div class="col-sm-9">
+                                    @Html.HiddenFor(model => model.SubModelId)
+                                    @Html.ValidationMessageFor(model => model.SubModelId, "", new { @style = "color:red" })
+                                    @Html.DropDownList("SubModelName", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-lg-3 col-from-label">Year<sup style="color:darkred">*</sup></label>
+                                <div class="col-lg-9 col-md-12">
+                                    @Html.ValidationMessageFor(model => model.Year, "", new { @style = "color:red" })
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.Year, new { @class = "form-control pull-right datepicker" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">VIN #<sup style="color:darkred">*</sup> </label>
+                                <div class="col-sm-9">
+                                    @Html.ValidationMessageFor(model => model.ChassisNumber, "", new { @style = "color:red" })
+                                    @Html.TextBoxFor(model => model.ChassisNumber, new { @class = "form-control", autocomplete = "off", maxlength = "16", onkeypress = "return isNumber(event)" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">Reg #<sup style="color:darkred">*</sup> </label>
+                                <div class="col-sm-9">
+                                    @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @style = "color:red" })
+                                    @Html.TextBoxFor(model => model.RegistrationNumber, new { @class = "form-control", autocomplete = "off", maxlength = "16"})
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">Vehicle Image</label>
+                                <div class="col-sm-9">
+                                    <input id="uploadFile" type="file" accept="image/*" name="image" class="img form-control" onchange="loadFile(event)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 col-form-label">Image Preview</label>
+                                <div class="col-sm-9">
+                                    <img id="ImagePreview" src="/Content/Images/Vehicles/Original/@Html.Raw(Model.VehicleImage)" width="200px" height="200px" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="box-footer">
+            <div style="float: right;">
+                <input type="submit" style="display:none" id="PostSubmit" />
+                <a href="/Fleet/Vehicle/List" class="btn btn-warning" type="button">Cancel</a>
+                <button id="save" class="btn btn-success" type="button">Save</button>
+            </div>
+        </div>
+    }
+</section>
+
+<link href="~/Styles/datepicker.css" rel="stylesheet" />
+<script src="~/Scripts/datepicker.js"></script>
+<script>
+    $(document).on("ready", function () {
+        //Date picker
+        $('.datepicker').datepicker({
+            format: " yyyy",
+            viewMode: "years",
+            minViewMode: "years"
+        });
+    });
+</script>
+

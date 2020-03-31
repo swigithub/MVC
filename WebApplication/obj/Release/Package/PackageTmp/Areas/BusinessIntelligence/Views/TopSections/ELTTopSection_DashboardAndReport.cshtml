@@ -1,0 +1,83 @@
+﻿<div class="topMenuSetting" ng-controller="ETLTopSectionDashboardAndReport as vm">
+    <div class="quick-settings">
+        <span data-toggle="dropdown"><a href="#" data-toggle="tooltip" data-placement="left" title="Dashboard Settings" class="btn btn-sm color1 text-white" style="cursor:pointer"><i class="fas fa-sliders-h"></i></a></span>
+        <div class="dropdown-menu">
+            <ul>
+                @*<li class="Subheading" ng-if="vm.isModeType =='edit'"><p>Configure this dashboard</p></li>*@
+                @*<li ng-class="vm.classSetDefault">
+                    <a ng-if="vm.isModeType =='edit'" ng-click="vm.setDefaultTemplate()" href="javascript:;" style="cursor:pointer"><i class="fa fa-check" style="cursor:pointer"></i><span>Set as default</span></a>
+                </li>*@
+                <li ng-class="vm.classSetPublic">
+                    <a href="javascript:;"  ng-click="vm.setPublicTemplate()" style="cursor:pointer"><i class="fa fa-check" style="cursor:pointer"></i><span>Set As Public</span></a>
+                    @*<a href="javascript:;" ng-if="vm.isModeType =='edit'" ng-click="vm.setPublicTemplate()" style="cursor:pointer"><i class="fa fa-check" style="cursor:pointer"></i><span>Set As Public</span></a>*@
+                </li>
+                <li class="Subheading"><p>Add new ETL</p></li>
+                <li class="buttonDropdownLineWrapper">
+                    <a href="javascript:;" ng-click="vm.addNewEtl()" style="cursor:pointer"><i class="fa fa-plus"></i><span>ETL</span></a>
+                </li>
+                @*<li>
+                    <a href="javascript:;" style="cursor:pointer"><i class="fas fa-book-reader"></i><span>New dashboard from library</span></a>
+                </li>
+                <li>
+                    <a href="javascript:;" style="cursor:pointer"><i class="far fa-clone"></i><span>Duplicate current dashboard</span></a>
+                </li>*@
+            </ul>
+        </div>
+    </div><!-- Dashboard Settings -->
+
+
+    <div class="more-links">
+
+        @*<img src="images/sub-logo.png" alt="" />*@
+        <ul>
+            @*<li><a class="color1" href="#" title=""><img src="images/icon1.png" alt="" /></a></li>
+                <li><a class="color2" href="#" title=""><img src="images/icon2.png" alt="" /></a></li>
+                <li>
+                    <a class="color3 opt-btn" href="#" title=""><img src="images/icon3.png" alt="" /></a>
+                    <ul class="opt-dropdown">
+                        <li><a class="header-converter" href="#" title="">Sidemenu /  Topmenu</a></li>
+                        <li>
+                            <a href="#" title="">Change Theme</a>
+                            <ul class="themes-list">
+                                <li><a data-theme="theme1" class="active" href="#" title="">Theme 1</a></li>
+                                <li><a data-theme="theme2" href="#" title="">Theme 2</a></li>
+                                <li><a data-theme="theme3" href="#" title="">Theme 3</a></li>
+                                <li><a data-theme="theme4" href="#" title="">Theme 4 </a></li>
+                                <li><a data-theme="theme5" href="#" title="">Theme 5</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a class="color4" href="#" title=""><img src="images/icon4.png" alt="" /></a></li>*@
+            @* <li><a class="color4 text-btn" ng-if="vm.isModeType =='edit'" ng-click="vm.alertDemo()" style="cursor:pointer" title="">alert</a></li>*@
+            @*<li><a class="color4 text-btn" ng-click="vm.printDashboardAndReport()" style="cursor:pointer" title="">Print</a></li>*@
+            @*<li><a class="color4 text-btn" ng-if="vm.isModeType =='edit'" ng-click="vm.saveTemplate()" style="cursor:pointer" title="">Save</a></li>*@
+            <li><a class="color4 text-btn" ng-if="vm.isEtlModeType =='edit' || vm.isEtlModeType =='new'"  ng-click="vm.saveTemplate()" style="cursor:pointer" title="">Save</a></li>
+            <li ng-click="vm.etlJobEdit()" ng-if="vm.isEtlModeType =='edit'"><a class="color4 text-btn" style="cursor:pointer" title="">Edit</a></li>
+            <li ng-if="vm.isModeType =='edit'" ng-click="vm.editToViewMode()"><a class="color4 text-btn" style="cursor:pointer" title="">View</a></li>
+        </ul>
+    </div>
+    @*<ui-select ng-change="vm.loadTempFromDb()" style="width: 200px !important;" class="" ng-model="vm.selectTemp" theme="select2" title="Choose a person">
+        <ui-select-match placeholder="Please select Template...">{{$select.selected.TemplateTitle}}</ui-select-match>
+        <ui-select-choices repeat="templ.TemplateId as templ in vm.loadTemp | propsFilter: {TemplateTitle: $select.search}">
+            <div ng-bind-html="templ.TemplateTitle | highlight: $select.search"></div>
+
+        </ui-select-choices>
+    </ui-select>*@
+
+
+    <div class="profile-pic">
+        <a class="opt-btn" href="#" title=""><img src="@ViewBag.picture" alt="" /> <span>@ViewBag.Name</span></a>
+        <ul class="opt-dropdown">
+            <li>
+                <a href="@Url.Action("Details", "User", new { Id = ViewBag.UserId,area="" })"> <i class="fa fa-user"></i> <u>P</u>rofile</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Logout", "Login",new {area="" })" data-action="userLogout"><i class="fa fa-sign-out-alt"></i> <strong><u>L</u>ogout</strong></a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+

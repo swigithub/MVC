@@ -1,0 +1,82 @@
+﻿@using SWI.Libraries.Security.Entities
+
+@model Sec_Role
+
+@{
+    ViewBag.Title = "New Role";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">New Role</h3>
+                <a href="@Url.Action("All","Role")" class="btn btn-sm btn-info btn-flat pull-right">Back</a>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        @using (Html.BeginForm("New", "Role", FormMethod.Post, new { Id = "frm-role" }))
+                        {
+
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.HiddenFor(m => m.RoleId)
+                                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", Required = "Required" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Default Url", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.DefaultUrl, new { htmlAttributes = new { @class = "form-control", Value = "/", Required = "Required" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", Required = "Required" })
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="reset" value="Reset" class="btn btn-default" />
+                                        <input type="submit" value="Save" class="btn btn-success" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+
+@section scripts{
+<script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script>
+        $(function () {
+            $('#frm-role').parsley();
+        });
+    </script>
+}
+@section style{
+<link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+}

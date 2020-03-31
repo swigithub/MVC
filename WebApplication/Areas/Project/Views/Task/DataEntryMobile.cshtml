@@ -1,0 +1,476 @@
+﻿@model AirView.DBLayer.Project.Model.PM_TaskDataEntry
+
+@{
+    ViewBag.Title = "DataEntryMobile";
+    Layout = null;
+}
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/font-awesome.min.css">
+    <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
+
+    <link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/smartadmin-skins.min.css">
+    <!-- SmartAdmin RTL Support  -->
+    <link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/smartadmin-rtl.min.css">
+    <link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Areas/Project/Content/Project/Style.css" rel="stylesheet" />
+    <script src="~/SmartAdmin/js/libs/jquery-2.1.1.min.js"></script>
+
+    <script src="~/SmartAdmin/js/libs/jquery-ui-1.10.3.min.js"></script>
+    <style>
+label{
+font-weight: 100 !important;
+}
+.sweet-alert {
+z-index: 100000000000;
+}
+
+option:checked {
+display: none;
+}
+
+.comboTreeWrapper {
+position: relative;
+text-align: left !important;
+width: 150px;
+}
+
+div.comboTreeDropDownContainer {
+z-index: 1;
+}
+
+.calendar .calendar-table {
+height: 250px;
+width: 250px;
+}
+
+.options {
+z-index: 2 !important;
+}
+
+.fc-content {
+margin-top: -12px;
+}
+
+span#sizing-addon2 {
+display: table-cell;
+height: 30px;
+padding: 5px 10px;
+}
+
+.input-group-sm {
+display: table;
+}
+
+.modal-body {
+position: relative;
+padding: 5px 20px 20px !important;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x- ng-cloak {
+display: none !important;
+}
+
+.daterangepicker {
+z-index: 10000000001 !important;
+}
+
+
+/*.multiselect-selected-text {
+font-size: 10px !important;
+}
+
+.multiselect {
+width: 100px;
+}*/
+/*.dd-item > button {
+margin-top: 16px !important;
+}*/
+.dd-item > button {
+/*margin: 0;*/
+margin-left: 15px;
+font-size: 24px;
+height: 24px;
+margin-top: 15px !important;
+}
+
+#regionviewchart > .canvasjs-chart-container > .canvasjs-chart-canvas {
+width: 100%;
+}
+
+.canvasjs-chart-container {
+width: 100%;
+}
+
+#legend {
+font-family: Arial, sans-serif;
+background: #fff;
+padding: 10px;
+right: 10px;
+top: 50%;
+position: absolute;
+border: 3px solid #000;
+transform: translateY(-50%);
+max-height: 270px;
+max-width: 170px;
+overflow: auto;
+z-index: 200;
+/*2000000000000*/
+}
+
+.map-filters {
+position: absolute;
+left: 0;
+top: 8px;
+bottom: auto !important;
+width: calc(100% - 40px);
+z-index: 200;
+}
+
+#legend3 {
+font-family: Arial, sans-serif;
+background: #fff;
+padding: 10px;
+margin: 10px;
+border: 3px solid #000;
+}
+
+#legend h3 {
+margin-top: 0;
+}
+
+#legend img {
+vertical-align: middle;
+}
+
+.chart-heading {
+margin-top: 0;
+float: left;
+max-width: 50%;
+margin-bottom: 10px;
+position: relative;
+z-index: 1;
+}
+
+.chart-heading h4 {
+float: left;
+background: #57889c !important;
+height: auto;
+font-size: 12px;
+font-weight: 600;
+border: 0;
+border-radius: 4px;
+overflow: hidden;
+}
+
+.chart-heading h4:last-child {
+margin: 0;
+}
+
+.chart-heading h4 span {
+float: left;
+height: auto;
+background: none !important;
+border: 0;
+padding: 3px 10px;
+color: #FFF;
+font-weight: 500;
+}
+
+.chart-heading h4 span:last-child {
+border: 0;
+background: rgba(0,0,0,0.2) !important;
+}
+
+#legend img {
+vertical-align: middle;
+}
+
+
+.modal {
+z-index: 999000000000000 !important;
+}
+
+
+.header-btns {
+float: left;
+margin-left: 15px;
+}
+
+.header-btns > a {
+float: left;
+line-height: 1;
+padding: 6px 10px;
+margin-top: 2px;
+}
+
+.header-btns > form {
+float: left;
+margin-left: 5px;
+}
+
+.header-btns > form button {
+color: #333;
+padding: 6px 10px;
+font-family: arial;
+margin-top: 2px;
+margin-left: 5px;
+border: 0;
+float: left;
+border-radius: 2px;
+line-height: 1;
+}
+
+.header-btns > form button i {
+float: left;
+margin-right: 5px;
+}
+/*-----------------------------------*/
+
+a.collapse-widget {
+float: right;
+width: 22px;
+height: 34px;
+text-align: center;
+line-height: 34px;
+margin-top: -1px;
+color: #FFF;
+margin-right: 5px;
+}
+
+.filters-dropdown-wrapper {
+float: left;
+position: relative;
+}
+
+.filters-dropdown-wrapper a.btn.dropdown-shown {
+color: #37a5dc;
+}
+
+.filters-dropdown {
+position: absolute;
+right: 0;
+top: 100%;
+z-index: 2;
+background: #f9fdff;
+padding: 10px;
+margin-top: 2px;
+min-width: 200px;
+visibility: hidden;
+opacity: 0;
+-webkit-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+-moz-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+box-shadow: 0 0 20px rgba(0,0,0,0.1);
+-webkit-border-radius: 0 0 5px 5px;
+-moz-border-radius: 0 0 5px 5px;
+border-radius: 0 0 5px 5px;
+-webkit-transform: scale(0.7);
+-moz-transform: scale(0.7);
+transform: scale(0.7);
+-webkit-transition: all 0.2s linear;
+-moz-transition: all 0.2s linear;
+transition: all 0.2s linear;
+}
+
+.filters-dropdown.left {
+right: auto;
+left: 0;
+}
+
+.filters-dropdown.active {
+visibility: visible;
+opacity: 1;
+-webkit-transform: scale(1);
+-moz-transform: scale(1);
+transform: scale(1);
+}
+
+.filters-dropdown-wrapper a.btn {
+float: left;
+padding: 4px 5px;
+background: none;
+border: 0;
+color: #4c4f53;
+font-weight: 500;
+font-size: 16px;
+box-shadow: none;
+}
+
+.filters-dropdown > div {
+float: left;
+width: 100%;
+margin: 0 0 10px !important;
+}
+
+.filters-dropdown span.multiselect-native-select, .filters-dropdown span.multiselect-native-select .btn-group {
+width: 100% !important;
+}
+
+.filters-dropdown button {
+width: 100%;
+margin: 0;
+}
+
+.filters-dropdown .select, .filters-dropdown .groupMultiSelect {
+width: 100% !important;
+text-align: center;
+}
+
+.filters-dropdown .groupMultiSelect .group-selection {
+width: 100%;
+padding: 0 10px;
+box-sizing: border-box;
+line-height: 1;
+margin: 0 !important;
+text-align: center;
+}
+
+.filters-dropdown .example {
+width: 100% !important;
+}
+
+
+body .dataTables_wrapper table.childstages {
+margin: 5px auto !important;
+border: 1px solid #ddd !important;
+width: calc(100% - 10px);
+}
+
+.text-dropdown {
+float: left;
+margin-left: 5px;
+position: relative;
+}
+
+.map-filters .filters-dropdown-wrapper a.btn {
+background: #fff;
+}
+
+span.dynatree-icon {
+display: none;
+}
+
+table.dataTable td, table.dataTable th {
+vertical-align: middle;
+}
+
+.dt-toolbar, .dt-toolbar-footer {
+background: none;
+}
+
+.dt-toolbar {
+padding: 0;
+margin: -3px 0 0;
+}
+
+div.ColVis {
+margin-bottom: 5px !important;
+}
+
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+vertical-align: middle;
+}
+
+.table > tbody > tr > td:last-child {
+white-space: nowrap;
+}
+
+.table-bottom {
+display: flex;
+align-items: center;
+padding-top: 7px;
+}
+
+.table-bottom .simple-pagination {
+margin: 0;
+margin-left: auto;
+padding: 0;
+}
+
+.simple-pagination li a, .simple-pagination li span {
+box-shadow: none !important;
+}
+
+.box-body .simple-pagination li a {
+background: #FFF;
+color: #3a3633;
+border-color: #ddd;
+}
+
+.box-body .simple-pagination li a span {
+background: #974545;
+}
+
+.simple-pagination li span.current {
+background: #e7e7e7;
+}
+    </style>
+</head>
+<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.css" />
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.min.js" integrity="sha256-sEFM2aY87nr5kcE4F+RtMBkKxBqHEc2ueHGNptOA5XI=" crossorigin="anonymous"></script>
+    <script src="~/Areas/Project/Content/jquery.dynatree.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+   
+    <div id="TaskEntryForm" class="tab-pane fade in active">
+        <form class="form-inline" id="frmTaskEntry" action="#" >
+            <div id="CustomForm">
+            </div>
+
+            <div class="modal-footer">
+                @*<button id="saveBtn" class="btn custom-btn1">Save</button>*@
+                <input type="button" value="Save" id="saveBtn" class="btn custom-btn1" />
+            </div>
+        </form>
+    </div>
+   
+   
+    <script>
+        $(document).ready(function () {
+            $(".Message").hide();
+            var url = '/Project/Template/GetFormBuilderRenderedHTMLMobile?FormTypeId=Milestone&NodeId=@Model.TaskId'+ '&TemplateId=""&SiteId=@Model.ProjectSiteId'+"&Key=@ViewBag.MobileKey";
+            console.log(url);
+            var TaskId = parseInt($(this).attr('data-Task'))
+            TskID = TaskId;
+            $.ajax({
+                url: url,
+                type: 'Get',
+                async: false,
+                success: function (data) {
+                    if(data.FormHtml == `<table class='table'> <tbody> </tbody>  </table>`){
+                        $("#frmTaskEntry").html(` <div id="Message" class="text-center" style="margin-top: 10px">No Parameter(s)</div>`);
+                    }else{
+                        $('#CustomForm').html(data.FormHtml);
+                    }
+                    
+                }
+            });
+    });
+    </script>
+   
+</body>
+</html>
+<script>
+    $('#saveBtn').click(function (e) {
+        
+            var TaskEntry = [];
+            $(".frm-dynamic").each(function () {
+                TaskEntry.push({ FormId: $(this).attr('data-formid'), ProjectSiteId: @Model.ProjectSiteId, TaskId: @Model.TaskId, FormValue: $(this).val(), ProjectId: @Model.ProjectId, UserID: @Model.UserId });
+            });
+            $.ajax({
+                url: '/Project/Task/TaskEntryMobile',
+                type: 'post',
+                data: {data: JSON.stringify(TaskEntry), Key: '@ViewBag.MobileKey'},
+
+                success: function (res) {
+                    $.notify("Entry Updated Succesfully!", "success");
+                },
+                error: function (e) {
+                     $.notify("There is an error. Please try again!", "error");
+                }
+            });
+            return false;
+        });
+</script>

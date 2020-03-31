@@ -1,0 +1,20 @@
+﻿<div  class="angular-multiselect">
+    <button  class="opt-btn" ng-click="toggleSelect()" ng-disabled="disabled" ng-class="{'error': !valid()}">
+        <span>{{header}}</span>
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <ul class="opt-dropdown">
+        <li>
+            <input class="input-block-level" type="text" ng-model="searchText.label" autofocus="autofocus" placeholder="Filter" />
+        </li>
+        <li ng-show="multiple" class="am-toggle-all">
+            <label ng-click="checkAll()"><i class="fa fa-check"></i> Check all</label>
+            <label ng-click="uncheckAll()"><i class="fa fa-times"></i> Uncheck all</label>
+        </li>
+        <li ng-repeat="i in items | filter:searchText">
+            <a ng-click="select(i); focus()">
+                <i ng-class="{'fa fa-check': i.checked, 'fa fa-times': !i.checked}"></i>{{i.label}}
+            </a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,60 @@
+span.multiselect-native-select{position:relative}span.multiselect-native-select select{border:0!important;clip:rect(0 0 0 0)!important;height:1px!important;margin:-1px -1px -1px -3px!important;overflow:hidden!important;padding:0!important;position:absolute!important;width:1px!important;left:50%;top:30px}.multiselect-container{position:absolute;list-style-type:none;margin:0;padding:0}.multiselect-container .input-group{margin:5px}.multiselect-container .multiselect-reset .input-group{width:93%}.multiselect-container>li{padding:0}.multiselect-container>li>a.multiselect-all label{font-weight:700}.multiselect-container>li.multiselect-group label{margin:0;padding:3px 20px;height:100%;font-weight:700}.multiselect-container>li.multiselect-group-clickable label{cursor:pointer}.multiselect-container>li>a{padding:0}.multiselect-container>li>a>label{margin:0;height:100%;cursor:pointer;font-weight:400;padding:3px 20px 3px 40px}.multiselect-container>li>a>label.checkbox,.multiselect-container>li>a>label.radio{margin:0}.multiselect-container>li>a>label>input[type=checkbox]{margin-bottom:5px}.btn-group>.btn-group:nth-child(2)>.multiselect.btn{border-top-left-radius:4px;border-bottom-left-radius:4px}.form-inline .multiselect-container label.checkbox,.form-inline .multiselect-container label.radio{padding:3px 20px 3px 40px}.form-inline .multiselect-container li a label.checkbox input[type=checkbox],.form-inline .multiselect-container li a label.radio input[type=radio]{margin-left:-20px;margin-right:0}
+
+.multiselect-container .input-group{ margin:0 0 10px }
+.input-group input{ background: #FFF; border: 1px solid rgba(0,0,0,.15); margin:0!important}
+.btn.multiselect{ background: #FFF; border: 1px solid #ddd; font-size: 14px; width: 100%; text-align: left; }
+span.multiselect-native-select {float:left; width: 100% }
+.multiselect-native-select .btn-group { width: 100% }
+.dropdown-toggle::after { float: right; margin-top: 7px; border-top-color: #8b8b8b; }
+ul.multiselect-container.dropdown-menu.show{ width: 100%; left: -5px!important; max-height: 400px; overflow-y: auto; overflow-x: hidden }
+li.multiselect-item.multiselect-filter { margin: -1px -2px 0 }
+
+.multiselect-container>li>a>label{ padding-left: 21px; font-size: 13px; font-weight: 500 }
+.multiselect-container>li.multiselect-group { border-top: 1px solid #DDD; display: inline-block; width: 100%; padding-top: 10px; margin-top: 10px }
+.multiselect-container>li>a.multiselect-all label { padding-left: 20px!important }
+.multiselect-container>li input { margin: 0 4px 0 0px }
+.multiselect-container>li { padding: 5px }
+.multiselect-container>li>a.multiselect-all label { font-weight: 600!important; font-size: 13px }
+.multiselect-container>li.multiselect-group label { font-weight: 600}
+.multiselect-selected-text{float:left}
+
+
+
+.compact-multiselect ~ .btn-group .btn.multiselect {
+    font-size: 11px;
+    padding: 7px;
+    border-radius: 0px;
+    outline: none!important;
+    color: #616161;
+    box-shadow: none!important;
+}
+.compact-multiselect ~ .btn-group .btn.multiselect:before{right: 0}
+.compact-multiselect ~ .btn-group .dropdown-toggle::after {position: absolute;right: 7px;top: 5px;}
+.compact-multiselect ~ .btn-group  .multiselect-container>li{padding: 0}
+.compact-multiselect ~ .btn-group .multiselect-container>li .input-group{margin: 0 0 5px}
+.compact-multiselect ~ .btn-group .multiselect-container>li .input-group i{font-size: 10px}
+.compact-multiselect ~ .btn-group .multiselect-container>li a.multiselect-all label{
+    font-weight: 400!important;
+    font-size: 12px;
+}
+.compact-multiselect ~ .btn-group .multiselect-container>li a label input {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+.compact-multiselect ~ .btn-group .multiselect-container>li a label {
+    padding: 2px 10px!important;
+    font-size: 12px;
+    font-weight: 400;
+    color: #6a6a6a;
+}
+.compact-multiselect ~ .btn-group .multiselect-container>li.multiselect-group {
+    padding-top: 5px;
+    margin-top: 5px;
+}
+.compact-multiselect ~ .btn-group 
+ ul.multiselect-container.dropdown-menu.show {
+    top: -2px!important;
+    border-radius: 0;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-color: #ddd;
+}

@@ -1,0 +1,410 @@
+﻿
+@using System.Data;
+<script src="~/Content/js/Project/canvasjs.min.js"></script>
+
+
+@*<div class="filterbuttons">
+    <button class="btn btn-chart btn-default" id="BackToMarket" style="float: right;margin-left: 10px;width:40px;"><span class="fa fa-arrow-left"></span></button>
+
+    <button class="btn btn-chart" style="float:right;" onclick="FilterbyDateandTime('Yearly','Get_DateWise_WO')">Yearly</button>
+    <button class="btn btn-chart" style="float:right;margin-right:1px;" onclick="FilterbyDateandTime('Quaterly','Get_DateWise_WO')">Quaterly</button>
+    <button class="btn btn-chart" style="float:right;margin-right:2px;" onclick="FilterbyDateandTime('Monthly','Get_DateWise_WO')">Monthly</button>
+    <button class="btn btn-chart" style="float:right;margin-right:2px;" onclick="FilterbyDateandTime('Weekly','Get_DateWise_WO')">Weekly</button>
+    <button class="btn btn-chart" style="float:right;margin-right:2px;" onclick="FilterbyDateandTime('Daily','Get_DateWise_WO')">Daily</button>
+</div>*@
+<div id="datewisemarkets" class="vector-map" style="min-width: 310px; height: 300px; margin: 0px auto; overflow: hidden;"></div>
+
+
+<script>
+    //$('#SearchMarket').click(function () {
+    //    debugger
+    //    ets = $("#example-xss-html_Market").val();
+    //    var issuetasks = $("#example-multiple-optgroups_Market").val();
+    //    var issuemarkets = $("#example-xss-html_Market").val();
+    //    mfromdate = FromDate;
+    //    mtodate = ToDate;
+    //    //mmarketid = $("#example-xss-html_Market").val();
+    //    mmarketid = issuemarkets.join(',');
+    //    mtaskid = $("#example-multiple-optgroups_Market").val();
+    //    $.ajax({
+    //        url: '/Project/Dashboard/GetMarkets?filter=' + 'Get_RegionView_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=null',
+
+    //        type: 'get',
+    //        async: false,
+    //        success: function (data) {
+
+    //            $('#regionviewchart').empty();
+    //            $('#regionviewchart').html(data);
+    //        }
+    //    })
+
+
+
+    //});
+
+
+    $(".datewise").show();
+    IssueViewName = 'Datewise';
+    var marketveiwdata = [];
+    //$('#marketviewchart').hide();
+    //$('#regionviewchart').hide();
+    //$('#regionviewchart').show();
+    var Forecast = [];
+    var Planned = [];
+    var Actual = [];
+    var Target = [];
+    var CumActual = [];
+    var CumForecast = [];
+    var CumTarget = [];
+    var RunRate = [];
+    array = [];
+    var url;
+    var actularcolor, forecastcolor, plancolor, targetcolor, runratecolor, cumactualcolor, cumforecastcolor, cumtargetcolor;
+    
+    if (mmarketid != null) {
+        var url = '/Project/Dashboard/GetDashboardCharts?filter=Get_DateWise_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + MarketId + '&TaskIds=' + $.cookie(CookiesIdentifier + 'MarketTasks')
+   + '&LocationIds=' + $.cookie(CookiesIdentifier + "MarketMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + "MarketFromDate") + '&ToDate=' + $.cookie(CookiesIdentifier + "MarketToDate") + '&SearchFilter=' + TimeFilter
+
+    }
+    else {
+        url = '/Project/Dashboard/GetDashboardCharts?filter=Get_DateWise_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + MarketId + '&TaskIds=' + $.cookie(CookiesIdentifier + 'MarketTasks')
+              + '&LocationIds=' + $.cookie(CookiesIdentifier + "MarketMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + "MarketFromDate") + '&ToDate=' + $.cookie(CookiesIdentifier + "MarketToDate") + '&SearchFilter=' + TimeFilter
+
+    }
+
+
+    $.ajax({
+        //url: '/Project/Dashboard/GetMarketRegionMap?filter=Get_DateWise_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=' + MarketId,
+  //      url: '/Project/Dashboard/GetDashboardCharts?filter=Get_DateWise_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + MarketId + '&TaskIds' + $.cookie("ProjectTasks")
+  //+ '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily',
+        url:url,
+        type: 'Get',
+        async: false,
+        success: function (data) {
+            array = data;
+            Forecast = [];
+            Planned = [];
+            Actual = [];
+            Target = [];
+            var sd = {};
+            for (var i = 0; i < data.length ; i++) {
+
+
+                if (data[i].DefinationName != null) {
+                    if (TimeFilter == 'Daily') {
+                        var date = new Date(moment.utc(data[i].DefinationName));
+                        data[i].DefinationName = (date.getMonth() + 1) + '/' + date.getDate();
+                    }
+
+                    sd = { label: data[i].DefinationName, y: data[i].TotalSites };
+                    if (data[i].Type == 'Forecast') {
+                        if (forecastcolor == null) {
+                            forecastcolor = data[i].ColorCode;
+                        }
+                        Forecast.push(sd);
+                    }
+                    else if (data[i].Type == 'CumForecast') {
+                        if (cumforecastcolor == null) {
+                            cumforecastcolor = data[i].ColorCode;
+                        }
+                        CumForecast.push(sd);
+                    }
+                    else if (data[i].Type == 'Actual') {
+                        if( actularcolor == null){
+                            actularcolor = data[i].ColorCode;
+                        }
+                        Actual.push(sd);
+                    }
+                    else if (data[i].Type == 'CumActual') {
+                        if (cumactualcolor == null) {
+                            cumactualcolor = data[i].ColorCode;
+                        }
+                        CumActual.push(sd);
+                    }
+                    else if (data[i].Type == 'Target') {
+                        if (targetcolor == null) {
+                            targetcolor = data[i].ColorCode;
+                        }
+                        Target.push(sd);
+                    }
+                    else if (data[i].Type == 'CumTarget') {
+                        if (cumtargetcolor == null) {
+                            cumtargetcolor = data[i].ColorCode;
+                        }
+                         CumTarget.push(sd);
+                    }
+
+                    else if (data[i].WoType == 'RunRate') {
+                        if (runratecolor == null) {
+                            runratecolor = data[i].ColorCode;
+                        }
+                        RunRate.push(sd);
+                    }
+                }
+
+            }
+
+        }
+    });
+    setTimeout(function(){
+        var chart = new CanvasJS.Chart("regionviewchart1", {
+            animationEnabled: false,
+            exportEnabled: true,
+        theme: "light2",
+        height: "280",
+        title: {
+            text: ""
+        },
+        axisX: {
+            interval: 1,
+            valueFormatString: "MMM"
+        },
+        //axisY: {
+        //    labelFormatter: addSymbols,
+        //    //interval: 50
+        //},
+        //axisY2: {
+        //    interval: 500
+        //},
+        toolTip: {
+            shared: true
+        },
+        legend: {
+            cursor: "pointer",
+            itemclick: toggleDataSeries
+        },
+        data: [
+    {
+        type: "column",
+        name: "Actual",
+        axisYType: "primary",
+        showInLegend: true,
+        //color: "#0070c0",
+        color: actularcolor,
+        //click: CallDatewise,
+        dataPoints: Actual
+    },
+        {
+            type: "line",
+            name: "Cum. Actual",
+            axisYType: "secondary",
+            connectNullData: true,
+            color: cumactualcolor,
+            showInLegend: true,
+            markerBorderThickness: 2,
+            dataPoints: CumActual
+
+        },
+        {
+            type: "column",
+            axisYType: "primary",
+            axisYindex: 0,
+            exportEnabled: true,
+            name: "Forecast",
+            color: forecastcolor,
+            //click: CallMarket1,
+            markerBorderColor: "white",
+            markerBorderThickness: 2,
+            showInLegend: true,
+
+            dataPoints: Forecast
+        },
+        {
+            type: "line",
+            axisYType: "secondary",
+            axisYindex: 1,
+            //color: "#70ad47",
+            connectNullData: true,
+            name: 'Cum. Forecast',
+            color: cumforecastcolor,
+            markerBorderColor: "white",
+            markerBorderThickness: 2,
+            showInLegend: true,
+            yValueFormatString: "#,##0",
+            dataPoints: CumForecast
+        }, {
+            type: "column",
+            axisYType: "primary",
+            axisYindex: 0,
+            exportEnabled: true,
+            name: "Target",
+            //color: "#70ad47",
+            color: targetcolor,
+            markerBorderColor: "white",
+            markerBorderThickness: 2,
+            showInLegend: true,
+            yValueFormatString: "#,##0",
+            dataPoints: Target
+        }, {
+            type: "line",
+            axisYType: "secondary",
+            axisYindex: 1,
+            //color: "#70ad47",
+            connectNullData: true,
+            color: cumtargetcolor,
+            exportEnabled: true,
+            name: "Cum. Target",
+            showInLegend: true,
+            yValueFormatString: "#,##0",
+            dataPoints: CumTarget
+
+        },
+          {
+              type: "line",
+              axisYType: "primary",
+              axisYindex: 1,
+              connectNullData: true,
+              //color: "#e51427",
+              color: runratecolor,
+              exportEnabled: true,
+              name: "Run Rate",
+              showInLegend: true,
+              yValueFormatString: "#,##0",
+              dataPoints: RunRate
+
+          }]
+        });
+    chart.options.title.text = TitleText + ' ' + 'Market View';
+    chart.options.title.horizontalAlign = "center";
+    //chart.options.title.fontSize = 16;
+    function addSymbols(e) {
+        var suffixes = ["", "K", "M", "B"];
+        var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+
+        if (order > suffixes.length - 1)
+            order = suffixes.length - 1;
+
+        var suffix = suffixes[order];
+        return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+    }
+
+    function toggleDataSeries(e) {
+        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+        } else {
+            e.dataSeries.visible = true;
+        }
+        e.chart.render();
+    }
+
+
+    function toolTipFormatter(e) {
+        var str = "";
+        var total = 0;
+        var str3;
+        var str2;
+        for (var i = 0; i < e.entries.length; i++) {
+            var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong> <br/>";
+            total = e.entries[i].dataPoint.y + total;
+            str = str.concat(str1);
+        }
+        str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br/>";
+        str3 = "<span style = \"color:Tomato\">Total: </span><strong>" + total + "</strong><br/>";
+        return (str2.concat(str)).concat(str3);
+    }
+
+    function toggleDataSeries(e) {
+        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+        }
+        else {
+            e.dataSeries.visible = true;
+        }
+        chart.render();
+    }
+    chart.render();
+    }, 2000);
+    function CallRegion(e) {
+        $.ajax({
+            url: '/Project/Dashboard/GetMarkets?filter=' + 'Get_RegionView_WO&ProjectId=' + $("#pId").attr("data-ProjectId"),
+            type: 'get',
+            async: false,
+            success: function (data) {
+                $('#region').show()
+                $('#market').hide()
+                $('#regionviewchart1').empty();
+                $('#regionviewchart1').html(data);
+                for (var i = 0; i < data.length; i++) {
+                    sd = { label: data[i].Region, y: data[i].TotlaRegion };
+                    regionveiwdata.push(sd);
+                }
+                $('#regionviewchart1').show();
+            }
+        })
+
+    }
+    $("#BackToMarket").click(function () {
+        
+        $.ajax({
+            url: '/Project/Dashboard/GetMarkets?filter=' + 'Get_MarketView_WO' + '&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=' + RegionId,
+            type: 'get',
+            async: false,
+            success: function (data) {
+                $('#region').hide()
+                $('#market').show()
+                $('#regionviewchart1').empty();
+                $('#regionviewchart1').html(data);
+                $('#regionviewchart1').show()
+            }
+        })
+    })
+    function FilterbyDateandTime(SearchFilter, filter) {
+        
+        TimeFilter = SearchFilter;
+        // if (mmarketid != null) {
+        //     var url = '/Project/Dashboard/GetDashboardCharts?filter=Get_DateWise_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + MarketId + '&TaskIds=' + mtaskid
+        //+ '&LocationIds=' + mmarketid + '&FromDate=' + mfromdate + '&ToDate=' + mtodate + '&SearchFilter=' + SearchFilter
+
+        // }
+        // else {
+        //     url = '/Project/Dashboard/GetDashboardCharts?filter=Get_DateWise_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + MarketId + '&TaskIds=' + $.cookie('ProjectTasks')
+        //           + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=' + SearchFilter
+
+        // }
+        $.ajax({
+            url: '/Project/Dashboard/GetMarkets?filter=' + 'Get_DateWise_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=' + MarketId,
+            //url:url,
+        type: 'get',
+        async: false,
+        success: function (data) {
+            $('#region').show()
+            $('#market').hide()
+            $('#regionviewchart1').empty();
+            $('#regionviewchart1').html(data);
+            debugger
+            for (var i = 0; i < data.length; i++) {
+                sd = { label: data[i].Region, y: data[i].TotlaRegion };
+                regionveiwdata.push(sd);
+            }
+            $('#regionviewchart1').show();
+        }
+    })
+
+       // if (mmarketid != null) {
+       //     var url = '/Project/Dashboard/GetDashboardCharts?filter=Get_DateWise_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + MarketId + '&TaskIds=' + mtaskid
+       //+ '&LocationIds=' + mmarketid + '&FromDate=' + mfromdate + '&ToDate=' + mtodate + '&SearchFilter=' + SearchFilter
+
+       // }
+       // else {
+       //     url = '/Project/Dashboard/GetDashboardCharts?filter=Get_DateWise_WO&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + MarketId + '&TaskIds=' + $.cookie('ProjectTasks')
+       //           + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=' + SearchFilter
+
+       // }
+
+       // $.ajax({
+       //     //url: '/Project/Dashboard/GetDashboardCharts?Filter=' + filter + '&ProjectId=' + parseInt($("#pId").attr("data-ProjectId")) + '&Value1=' + MarketId + '&TaskIds=' + $.cookie("ProjectTasks") + '&LocationIds=' + $.cookie("ProjectMarkets")
+       //     //+ '&FromDate=' + FromDate + '&ToDate=' + ToDate + '&SearchFilter=' + SearchFilter,
+       //     url:url,
+       //     type: 'Get',
+       //     async: false,
+       //     success: function (data) {
+       //         debugger
+       //         var res = ChartGroupData(data,SearchFilter);
+       //         loadChart("regionviewchart", res.Actual, res.Planned, res.Forecast, res.Target, "257");
+       //     }
+       // });
+    }
+
+
+
+</script>

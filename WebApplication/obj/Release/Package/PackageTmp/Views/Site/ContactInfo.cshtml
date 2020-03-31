@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "Contact Info";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="box box-solid" ng-app="AV" ng-controller="ContantInfo">
+    <div id="divLoading">
+    </div>
+    <div class="box-header with-border boxHeader">
+        <h3 class="box-title">Access Info</h3>
+
+    </div>
+
+    <div class="box-body" ng-cloak>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Access Type</th>
+                    <th ng-if="AccessInfo.IsSpecialAccess==1">Date Time</th>
+                    <th>Access Instruction</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        
+                        <input id="standard" value="0" ng-model="AccessInfo.IsSpecialAccess" name="access" ng-change="DeldateTime()" type="radio" ng-checked="AccessInfo.IsSpecialAccess==0" />
+                        <label for="standard" style="font-weight:600">Standard Access</label><br />
+
+                        <input id="special" value="1" ng-model="AccessInfo.IsSpecialAccess" name="access" type="radio" ng-checked="AccessInfo.IsSpecialAccess==1" />
+                        <label for="special" style="font-weight:600">Special Access</label>
+                    </td>
+                    <td ng-if="AccessInfo.IsSpecialAccess==1">
+                        <input type="text" 
+                               ng-model="AccessInfo.AccessDateTime"
+                                ng-init=GetDateTimeControl(AccessInfo.AccessDateTime)
+                                                       class="form-control datetimepicker1"
+                                />
+                    </td>
+                    <td>
+                        <textarea class="form-control" rows="2" cols="20" ng-model="AccessInfo.AccessInstructions"  style="resize:none"></textarea>
+                    </td>
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="box-header with-border boxHeader">
+        <h3 class="box-title">@ViewBag.Title</h3>
+
+    </div>
+
+    <div class="box-body" ng-cloak>
+        <form ng-submit="Submit()">
+            <table class="table" ng-init="GetContactInfo()">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        @*<th>Gender</th>*@
+                        <th>Full Name</th>
+                        <th>Gate No</th>
+                        <th>Contact No</th>
+                        <th>Contact Type</th>
+                        <th>Designation </th>
+                        <th>Is Holding Keys</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="FirstRow" ng-repeat="c in Contacts">
+                        <td>
+
+                            <select required class="form-control" ng-model="c.Title">
+                                <option value="">-Title-</option>
+                                <option value="Mr">Mr</option>
+                                <option value="Miss">Miss</option>
+                                <option value="Ms">Ms</option>
+                                <option value="Mrs">Mrs</option>
+                            </select>
+                        </td>
+                        @*<td>
+                                <select class="form-control" required ng-model="c.Gender">
+                                    <option value="">-Gender-</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </td>*@
+                        <td>
+                            <input type="text" ng-model="c.FullName" class="form-control" />
+                        </td>
+                        <td>
+                            <input type="text" ng-model="c.GateNo" numbers-only maxlength="3" class="form-control" />
+                        </td>
+                        <td>
+                            <input type="text" ng-model="c.ContactNo" numbers-only class="form-control" />
+                        </td>
+                        <td>
+                            <select class="form-control" ng-model="c.ContactTypeID">
+                                <option value="0">-Contact Type-</option>
+                                <option ng-repeat="item in ContactTypes" value="{{item.DefinationId}}">{{item.DefinationName}}</option>
+                            </select>
+
+                        </td>
+                        <td>
+                            <select class="form-control" ng-model="c.DesignationID">
+                                <option value="0">-Contact Designation-</option>
+                                <option ng-repeat="item in ContactDesignations" value="{{item.DefinationId}}">{{item.DefinationName}}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="checkbox" ng-model="c.IsHoldingKeys" />
+                        </td>
+                        <td>
+                            @*<input type="text" ng-model="c.Comment" ng-keydown="NewRow()" class="form-control"/>*@
+                            <textarea class="form-control" rows="2" cols="20" ng-model="c.Comment" ng-keydown="NewRow()" style="resize:none"></textarea>
+                        </td>
+                        <td>
+                            <i ng-if="Contacts.length>1" class="fa fa-trash" style="color:red;vertical-align:-webkit-baseline-middle;font-size:20px" title="Delete" ng-click="DelRow($index)"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-success pull-right">Save</button>
+        </form>
+    </div>
+   
+</div>
+
+@section scripts{
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+    <script src="~/Content/js/SiteContactInfo.js"></script>
+<script src="~/Content/js/Plugins/Confirm/js/confirm.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+}
+
+@section style{
+    <link href="~/Content/box.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/Confirm/css/confirm.min.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" />
+    <style>
+        #divLoading {
+            display: none;
+        }
+
+            #divLoading.show {
+                background-image: url('../../../../Content/Images/Application/Logo_Loading.gif');
+                display: block;
+                position: fixed;
+                z-index: 100;
+                background-repeat: no-repeat;
+                background-position: center;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                top: 0;
+            }
+    </style>
+
+}

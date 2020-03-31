@@ -1,0 +1,16 @@
+﻿@model IEnumerable<SWI.Libraries.AirView.Entities.BandVM>
+@foreach (var band in Model)
+{
+    var NetLayer = band.SiteCode + "/" + band.NetworkMode + "_" + band.BandName + "_" + band.Carrier;
+    var netlayerID = band.NetworkModeId + "_" + band.BandId + "_" + band.CarrierId;
+    <div class="table-wrapper">
+        <div class="table-title">
+            <h3>Net Mode:@band.NetworkMode</h3><h3>Band:@band.BandName</h3><h3>Carrier: @band.Carrier</h3>
+            <a data-NetLayer="@NetLayer" data-NetLayerId="@band.LayerStatusId" data-child-value='@band.BandId' data-NetworkModeId="@band.NetworkModeId" data-BandId="@band.BandId" data-CarrierId="@band.CarrierId" data-ScopeId="@band.ScopeId" data-SiteId="@ViewBag.SiteIds" class="collapse-table @netlayerID" href="#" title=""><i class="fa fa-plus"></i></a>
+        </div>
+        <div class="table-container" style="display:none">
+            
+        </div>
+    </div>
+}
+

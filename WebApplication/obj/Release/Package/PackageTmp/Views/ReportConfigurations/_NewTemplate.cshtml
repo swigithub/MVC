@@ -1,0 +1,114 @@
+﻿@using SWI.Libraries.AirView.Entities
+
+@model IEnumerable<AD_ReportConfiguration>
+<div class="row">
+    <div class="col-sm-12">
+
+        <div class="box box-solid">
+            <div class="box-header with-border boxHeader">
+                <h3 class="box-title">Report Configurations</h3>
+            </div>
+            <div class="box-body boxBody">
+                <div class="box-group" id="accordion">
+                    @foreach (var sec in ViewBag.sections)
+                    {
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <b> <a data-toggle="collapse" data-parent="#accordion" href="#@sec.SectionId" aria-expanded="false" class="collapsed">@sec.SectionName</a></b>
+                                </h4>
+                            </div>
+                            <div id="@sec.SectionId" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                <div class="panel-body" style="max-width:100%; overflow-x:auto;overflow-y:hidden">
+                                    <table class="table">
+
+                                        <tr>
+                                            @{
+                                                var SectionRecord = Model.Where(m => m.SectionId == sec.SectionId && m.KeyId > 0).ToList();
+                                            }
+                                            @foreach (var item in SectionRecord)
+                                            {
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="KeyId" value="@item.KeyId" />
+                                                        @{ string[] InputTypes = item.InputType.Split(','); }
+                                                        @if (InputTypes.Length > 1)
+                                                        {
+                                                            bool KeyName = false;
+                                                            foreach (var type in InputTypes)
+                                                            {
+
+                                                                if (type == "BOOLEAN")
+                                                                {
+                                                                    <label>
+                                                                        <input type="checkbox" class="checkboxcontroll" data-KeyId="@item.KeyId" id="ch-@item.KeyId">
+                                                                        <input type="hidden" name="KeyValue" value="false" id="chvalue-@item.KeyId" />@item.KeyName
+                                                                    </label>
+                                                                    KeyName = true;
+                                                                }
+                                                                else if (type == "STRING")
+                                                                {
+                                                                    if (!KeyName)
+                                                                    {
+                                                                        <label>@item.KeyName</label>
+                                                                        KeyName = true;
+                                                                    }
+
+                                                                    <input type="text" class="form-control" style="width:100px;" name="KeyValue" id="txt-@item.KeyId" />
+
+                                                                }
+                                                                else if (type == "COLOR")
+                                                                {
+                                                                    if (!KeyName)
+                                                                    {
+                                                                        <label>@item.KeyName</label>
+                                                                        KeyName = true;
+                                                                    }
+                                                                    <input type="color" class="form-control" style="width:50px;" name="fontColor" id="clr-@item.KeyId" />
+                                                                }
+
+                                                                <input type="hidden" name="fontColor" value="000000" id="clr-@item.KeyId" />
+
+
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            if (item.InputType == "BOOLEAN")
+                                                            {
+                                                                <div class="checkbox">
+                                                                    <label>
+                                                                        <input type="checkbox" class="checkboxcontroll" data-KeyId="@item.KeyId" id="ch-@item.KeyId">
+                                                                        <input type="hidden" name="KeyValue" value="false" id="chvalue-@item.KeyId" />@item.KeyName
+                                                                    </label>
+                                                                </div>
+                                                            }
+                                                            else if (item.InputType == "STRING")
+                                                            {
+                                                                <label>@item.KeyName</label>
+                                                                <input type="text" class="form-control" style="width:100px;" name="KeyValue" id="@item.KeyId" />
+                                                            }
+                                                            else if (item.InputType == "COLOR")
+                                                            {
+                                                                <label>@item.KeyName</label>
+                                                                <input type="color" class="form-control" style="width:50px;" name="fontColor" id="@item.KeyId" />
+                                                            }
+                                                        }
+
+
+                                                    </div>
+                                                </td>
+                                                            }
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                                                            }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

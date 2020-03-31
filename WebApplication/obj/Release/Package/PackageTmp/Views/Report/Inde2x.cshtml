@@ -1,0 +1,121 @@
+﻿@using SWI.Libraries.AD.Entities
+
+@model IEnumerable<AD_Defination>
+@{
+    ViewBag.Title = "Testing";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    
+}
+@helper GetTreeView(List<AD_Defination> Per, long ParentId)
+{
+
+foreach (var item in Per.Where(m => m.PDefinationId.Equals(ParentId)))
+{
+    var subItems = Per.Where(m => m.PDefinationId.Equals(item.DefinationId)).Count();
+
+        <li Id="@item.DefinationId" class="control">
+           
+          <a href="@item.DisplayText">  @item.DefinationName</a>
+            @if (subItems > 0)
+            {
+            
+                <ul>
+                    @GetTreeView(Per, item.DefinationId)
+                </ul>
+            }
+        </li>
+}
+}
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+
+                    <h3 class="box-title">Reports</h3>
+                </div>
+                <div class="box-body">
+                    <div id="tree">
+
+                        <ul>
+                            @if (Model != null && Model.Count() > 0)
+
+
+                            {
+
+                                @GetTreeView(Model.ToList(), Model.OrderBy(m => m.DefinationId).Where(m=>m.PDefinationId==33229).FirstOrDefault().PDefinationId)
+
+                            }
+                         
+
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-10" id="panl" style="display:none;">
+
+            <div class="box box-primary">
+                @*<div class="box-header with-border">
+
+                    <h3 class="box-title">Report Criteria</h3>
+                </div>*@
+                <div class="box-body">
+                    <iframe id="iframereport" class="new skin-blue" style="height:auto; min-height:800px;  width:100%;" src="" frameborder="0"></iframe>
+                </div>
+
+               </div>
+              </div>
+
+            </div>
+
+
+
+</section>
+
+@section scripts{
+ 
+<script src="~/AdminLTE/bootstrap/js/bootstrap.js"></script>
+<script src="~/Content/js/Plugins/treeView/ui.custom.js"></script>
+<script src="~/Content/js/Plugins/treeView/dynatree.js"></script>
+
+
+<script type="text/javascript">
+  $(function(){
+      $("#tree").dynatree({
+          onClick: function (node, event) {
+              if (node.data.href!='#') {          
+                  $("#iframereport").attr("src",node.data.href);
+                  $('#panl').show();   
+              } 
+              else if (node.data.href='#') {
+                  $('#panl').hide();     
+              }  
+          },
+         
+          onSelect: function (flag, node) {
+             
+              var selectedNodes = node.tree.getSelectedNodes();
+              var selectedKeys = $.map(selectedNodes, function (node) {
+                  return node.data.key;
+              });
+              arr = selectedKeys;
+             
+              
+          }
+      });
+  });
+</script>
+   
+    }
+
+@section style{
+    
+<link href="~/Content/js/Plugins/treeView/skin-vista/ui.dynatree.css" rel="stylesheet" />
+    }

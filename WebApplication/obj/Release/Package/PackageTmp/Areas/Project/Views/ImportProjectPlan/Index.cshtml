@@ -1,0 +1,318 @@
+﻿@using AirView.DBLayer.Project.Model
+
+@model IEnumerable<AirView.DBLayer.Project.Model.PM_ImportProjectPlan>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+
+<link href="~/Scale/js/datepicker/datepicker.css" rel="stylesheet" />
+
+<style>
+    .jarviswidget {
+        margin-bottom: 5px;
+    }
+
+    select#ImportData {
+        margin: 0 0 20px;
+        width: 190px;
+        height: 24px;
+        font-size: 13px;
+        padding: 0 10px;
+        margin-left: 5px;
+    }
+
+        select#ImportData option {
+            border: 0;
+        }
+
+    button#btnPlan {
+        margin-left: 10px;
+    }
+
+    div#divId {
+        float: left;
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .make-selection {
+        float: left;
+        margin-right: 20px;
+    }
+
+    .upload-btn {
+        height: 24px;
+        line-height: 1;
+    }
+</style>
+
+<div id="toast" class="alert alert-danger hidden" role="alert">
+    Select valid data file for import!
+</div>
+
+<div class="row col-sm-12 col-md-12 col-lg-12">
+
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="jarviswidget jarviswidget-color-blueDark jarviswidget-sortable" id="wid-id-2" role="widget" style="">
+            <header role="heading">
+                <div class="btn-group" role="menu" style="float:left; line-height:30px;">
+                    <label style="font-weight:bold;">&nbsp;&nbsp;Import Data</label>
+                </div>
+
+                <a href="/Project/Dashboard/Index/@ViewBag.Project" class="btn btn-xs btn-success pull-right" style="margin-right:5px;margin-top:5px;">
+                    Return to Dashboard
+                </a>
+            </header>
+
+            <div class="box box-solid">
+
+                <div class="make-selection">
+                    &nbsp;<label><strong>Select Template: </strong></label>
+                    <select id="ImportData" name="ImportData">
+                        <option name="abc" selected="selected" value="0">-- Select --</option>
+                        <option name="p_plan" value="1">Project Plan</option>
+                        <option name="p_issues" value="2">Issues Log</option>
+                        <option name="p_sites" value="3">Site Dispositions</option>
+                    </select>
+                </div>
+
+                <!---------part 1: plan---------->
+                <div id="plan" class="" style="padding:0 5px 20px;">
+                    <div class="pull-left">
+                        <input type="hidden" name="ProjectId" id="ProjectId" value="@ViewBag.Project" />
+                       <input type="file" name="UploadPlan" accept=".csv,xlsx" id="fileplan" class="pull-right btn btn-info btn-xs" style="height:24px;min-width: 272px;" />
+                    </div>
+                    <button type="button" id="btnPlan" class="btn btn-xs btn-info upload-btn upload-btn" style="margin-left:5px;">
+                        Get Data
+                    </button>
+
+                    <a href="~/Content/templates/PROJECT_PLAN_IMPORT.csv" class="btn btn-xs btn-success" style="margin-left:5px; height:24px;">
+                        Download Template
+                    </a>
+
+                    <br />
+                    <div class="row" id="divId" style="overflow:hidden;">
+                    </div>
+
+                </div>
+
+                <!---------part 2:issues---------->
+                <div id="issues" class="pull-left" style="padding:0 5px 20px;">
+                    @using (Html.BeginForm("UploadWRIssues", "ImportProjectPlan", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-UploadWRIssues" }))
+                    {
+                        <div class="pull-left">
+                            <input type="file" name="UploadIssues" accept=".csv,xlsx" id="fileissue" required class="pull-right btn btn-info btn-xs" style="height:24px;min-width: 272px;" />
+                        </div>
+                        <button type="submit" id="btnIssue" class="btn btn-xs btn-info upload-btn hidden" style="margin-left:5px;">
+                            Upload
+                        </button>
+                        <button type="button" id="btnIssueClient" class="btn btn-xs btn-info upload-btn" style="margin-left:5px;">
+                            Upload
+                        </button>
+                        <a href="~/Content/templates/WR_LOG_ISSUES.csv" class="btn btn-xs btn-success" style="margin-left:5px; height:24px;">
+                            Download Template
+                        </a>
+                        <br />
+                    }
+                </div>
+
+                <!---------part 3:sites---------->
+                <div id="sites" class="" style="padding:0 5px 20px;">
+                    @using (Html.BeginForm("UploadWRSite", "ImportProjectPlan", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-UploadWRSite" }))
+                    {
+                        <div class="pull-left">
+                            <input type="file" name="UploadSites" accept=".csv,xlsx" id="filesite" required class="pull-right btn btn-info btn-xs" style="height:24px;min-width: 272px;" />
+                        </div>
+                        <button type="submit" id="WRSite" class="btn btn-xs btn-info upload-btn hidden" style="margin-left:5px;">
+                            Upload
+                        </button>
+                        <button type="button" id="WRSiteClient" class="btn btn-xs btn-info upload-btn" style="margin-left:5px;">
+                            Upload
+                        </button>
+                        <a href="~/Content/templates/WR_LOG_SITES.csv" class="btn btn-xs btn-success" style="margin-left:5px; height:24px;">
+                            Download Template
+                        </a>
+                        <br />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div id="mytable"></div>*@
+
+<script src="~/Scale/js/datepicker/bootstrap-datepicker.js"></script>
+<link href="~/AdminLTE/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminLTE/plugins/sweetalert/sweetalert.js"></script>
+
+
+<script>
+    $(function () {
+        $('#issues').hide();
+        $('#sites').hide();
+        $('#plan').hide();
+
+        $('#ImportData').change(function () {
+            if ($('#ImportData').val() == '1') {
+                $('#plan').show();
+                $('#issues').hide();
+                $('#sites').hide();
+            } else if ($('#ImportData').val() == '2') {
+                $('#plan').hide();
+                $('#issues').show();
+                $('#sites').hide();
+
+                $('#divId').empty();
+                $("#fileplan").val("");
+            }
+            else if ($('#ImportData').val() == '3') {
+                $('#plan').hide();
+                $('#issues').hide();
+                $('#sites').show();
+                $('#divId').empty();
+                $("#fileplan").val("");
+            }
+            else {
+                $('#issues').hide();
+                $('#sites').hide();
+                $('#plan').hide();
+            }
+        });
+    });
+    //--------------------------------------------------------------
+    function showtoast() {
+        // Get the snackbar DIV
+        var x = document.getElementById("toast")
+        // Add the "show" class to DIV
+        x.className = "alert alert-danger show";
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { x.className = x.className.replace("alert alert-danger show", "alert alert-danger hidden"); }, 2000);
+    }
+    //--------------------------------------------------------------
+    // display project plan data in table
+    $('#btnPlan').click(function () {
+        var file = $('#fileplan').get(0).files;
+        var formdata = new FormData();
+        formdata.append('UploadPlan', file[0]);
+
+        if (file.length > 0) {
+
+            $.ajax({
+                url: '/ImportProjectPlan/UploadProjectPlan',
+                type: 'POST',
+                data: formdata,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $('#divId').html(data);
+                    $('.datePicker').datepicker({
+                        format: 'mm/dd/yyyy'
+                    });
+                }
+            });
+        }
+        else {
+            showtoast();
+            return false;
+        }
+    });
+
+    //--------------------------------------------------------------
+    // save project plan (sheet) to data base
+    function SavePlan() {
+        swal({
+            title: "Confirm!",
+            text: "Do you want to upload project plan?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Upload",
+            closeOnConfirm: false
+        },
+          function () {
+              var formdata = $('#frm-script').serialize();
+              $.ajax({
+                  url: '/ImportProjectPlan/SaveUploadPlan',
+                  type: 'post',
+                  data: formdata,
+                  success: function (res) {
+                      swal("Information!", "Project Plan Successfully Updated!", "success");
+                      $('#divId').empty();
+                      $('#ImportData').val(0);
+                      $("#fileplan").val("");
+                      $('#plan').hide();
+                  }
+              });
+          });
+    }
+
+    //--------------------------------------------------------------
+    //upload Issue logs file
+    $("#btnIssueClient").click(function () {
+
+        var file = $('#fileissue').get(0).files;
+        if (file.length > 0) {
+            swal({
+                title: "Confirm!",
+                text: "Do you want to upload Issues log?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Upload",
+                closeOnConfirm: false
+            },
+            function () {
+                $("#btnIssue").trigger("click");
+                swal("Information!", "Issue Successfully Uploaded!", "success");
+                $('#ImportData').val(0);
+                $("#fileissue").val("");
+                $('#issues').hide();
+            });
+        }
+        else {
+            showtoast();
+            return false;
+        }
+    });
+
+    //--------------------------------------------------------------
+    //upload site disposition file
+    $("#WRSiteClient").click(function () {
+
+        var file = $('#filesite').get(0).files;
+        if (file.length > 0) {
+            swal({
+                title: "Confirm!",
+                text: "Do you want to upload site disposition",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Upload",
+                closeOnConfirm: false
+            },
+            function () {
+                $("#WRSite").trigger("click");
+                swal("Information!", "Site Disposition Successfully Uploaded!", "success");
+                $('#ImportData').val(0);
+                $("#filesite").val("");
+                $('#sites').hide();
+            });
+        }
+        else {
+            showtoast();
+            return false;
+        }
+    });
+   
+</script>
+
+
+

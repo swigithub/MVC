@@ -1,0 +1,13 @@
+﻿.boxHeader {
+    background-color: rgba(53, 124, 165, 0.89);
+    color: white;
+}
+
+.boxBody {
+    background-color: #eeeeee !important;
+    color: #4063b9;
+}
+
+.boxBody li a{
+    color: #4063b9;
+}

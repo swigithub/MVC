@@ -1,0 +1,30 @@
+﻿@using SWI.Libraries.AD.Entities
+@model IEnumerable< AD_Defination>
+     
+@{
+    ViewBag.Title = "Colors";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<table class="table table-hover table-striped" style="width:50%"> 
+    <thead>
+        <tr>
+        <th>Id</th>
+
+        <th>Name</th>
+        <th>Code</th>
+        <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DefinationId</td>
+                <td>@item.DefinationName</td>
+                <td>@item.ColorCode</td>
+                <td style="height: 22px;width: 22px;color: white;border: solid 1px;border-color: black;margin-bottom: -7px;background-color:@item.ColorCode"></td>
+            </tr>
+        }
+    </tbody>
+</table>

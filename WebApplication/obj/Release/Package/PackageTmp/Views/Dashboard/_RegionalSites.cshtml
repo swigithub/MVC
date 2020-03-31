@@ -1,0 +1,71 @@
+﻿@using SWI.Libraries.AirView.Entities;
+@model IEnumerable<RegionsVM>
+@{
+    string style = string.Empty;
+}
+
+
+
+<div class="col-md-12">
+   
+
+    <!--Regional view-->
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title" id="RegionalSiteTitle">Market View</h3>
+            <div class="box-tools pull-right">
+                <div class="btn-group">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="background-color:#337ab7;color:white;" aria-expanded="false">
+                        <span style="margin: 5px;" class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="RegionalSiteTitle" data-filter="Market View" data-value="1">Market View</a></li>
+
+                        <li><a class="RegionalSiteTitle" data-filter="Regional View" data-value="2">Regional View</a></li>
+
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+
+        </div>
+        <div class="box-body">
+            <div id="RegionalScroll">
+                <ul class="products-list product-list-in-box">
+
+                    @foreach (var region in Model)
+                    {
+                        <li class="item">
+                            <div>
+                                <a href="#" onclick="javascript: BtnFilterSitesGrid_Click('RegionFilterValue', '@region.ID',''); return false;" class="product-title region-val-txt">
+                                    @region.RegionName
+                                </a>
+                                <span class="product-description">
+                                    <span class="label COMPLETED_COLOR">@region.CompletedSites</span><!-- label-success -->
+                                    <span class="label REPORT_SUBMITTED_COLOR">@region.ReportSubmited</span><!-- label-success -->
+                                    <span class="label PENDING_SCHEDULED_COLOR">@region.PendingSites</span><!--style="background-color:#1c7175 !important"-->
+                                    <span class="label SCHEDULED_COLOR">@region.InProcessSites</span><!-- label-warning-->
+                                    <span class="label IN_PROGRESS_COLOR">@region.InProgress</span><!-- label-warning-->
+                                    <span class="label DRIVE_COMPLETED_COLOR">@region.DriveCompleted</span><!--style="background-color:#6468a8 !important"-->
+                                    <span class="label PENDING_WITH_ISSUE_COLOR">@region.PendingWithIssues</span><!-- label-danger-->
+                                    <span class="label TOTAL_SITES_COLOR">@region.TotalSites</span><!-- label-info-->
+                                </span>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#RegionalScroll').slimScroll({
+            height: '300px'
+        });
+    });
+</script>

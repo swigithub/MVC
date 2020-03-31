@@ -1,0 +1,952 @@
+﻿@using SWI.Libraries.Common
+@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.AD.Entities
+
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    Layout = null;
+    int RowSpan = Model.Count() + 1;
+    int TempCount = 0;
+    DirectoryHandler dh = new DirectoryHandler();
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+    var Lts= jss.Serialize(Model.Select(x=>x.NLatitude));
+    var Lns = jss.Serialize(Model.Select( y=> y.NLongitude));
+    var CDistance = jss.Serialize(Model.ToList().Select(y => y.CoverageDistance).FirstOrDefault());
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Layer Report</title>
+
+    <link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Content/NetLayreReport.css" rel="stylesheet" />
+
+    @Scripts.Render("~/AdminLTE/plugins/jquery/js")
+    <script src="~/Scripts/angular.js"></script>
+
+    <script src="~/Content/js/Project/canvasjs.min.js"></script>
+    <script src="~/Content/js/NIReport.js"></script>
+    <style type="text/css">
+
+/*.footer{visibility: hidden;}*/
+
+
+    </style>
+    <style>
+        .tbl-heading-charttable {
+    background-color: #004B99;
+    color: white;
+    font-size:small;
+}
+            table#sectorcharttable td{
+        font-family:Arial;
+          /*background-color: #dbdbdd;*/
+          background-color:#ebebef;
+            color: #2332de;
+            text-align:center;
+            font-size:x-small;
+           
+    }
+        .footer {
+    position:absolute;
+    width: 100%;
+    display:none;
+    height: auto;
+    bottom: -20px !important;
+     margin-bottom: -20px !important;
+}
+        .footer3{
+    display:none;
+}
+     
+        /*.footer {
+    position: fixed;
+    width: 100%;
+    height: auto;
+    bottom: 0;
+}*/
+       @@page :first {
+  
+}
+@@media print {
+   .footer {visibility: visible;
+            position:fixed;
+            bottom:12px !important;
+            margin-bottom:12px !important;
+            display:none;
+   }
+   
+    .footer3 {visibility: visible;
+            position:fixed;
+            bottom:12px !important;
+            margin-bottom:12px !important;
+             display:block;
+             right:7px;
+   }
+     
+  }
+             @@media print and (color) {
+                    * {
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+                     @@bottom-center { content: element(FTtableHeading) }
+                    }
+
+
+                @@page {
+                    /* size: 7in 9.25in;*/
+                    size: 794px 1122px landscape;
+                    /*size: A4 landscape;*/
+                    position: relative;
+                   
+                    //margin: 0mm 2mm 0mm 2mm;
+                    /*border: dotted 1px;*/
+                }
+
+
+
+
+            .FTtableHeading {
+                background-color: #FFD966;
+            }
+
+
+            .colorBox {
+                height: 22px;
+                width: 22px;
+                color: white;
+                border: solid 1px;
+                border-color: black;
+                margin-bottom: -7px;
+            }
+
+            table {
+                page-break-inside: auto;
+            }
+
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+
+            #pan-settingsNI {
+                position: fixed;
+                left: 10px;
+                top: 50px;
+                background-color: #333;
+                color: white;
+                width: 190px;
+                display: none;
+                box-shadow: 3px 4px 9px 8px rgba(135, 135, 135, 0.95);
+                -moz-box-shadow: 3px 4px 9px 8px rgba(135, 135, 135, 0.95);
+                -webkit-box-shadow: 3px 4px 9px 8px rgba(135, 135, 135, 0.95);
+            }
+
+
+            .settingHeading {
+                font-size: 20px;
+                height: auto;
+                font-family: arial;
+                text-align: left;
+                padding: 0;
+            }
+
+            div#pan-settings {
+                padding: 15px;
+                border-radius: 7px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.68);
+                border: 2px solid #FFF;
+                position: fixed;
+                left: 10px;
+                top: 50px;
+                background-color: rgb(0, 75, 153);
+                color: white;
+                width: 300px;
+                display: none;
+                overflow-x: hidden;
+                overflow-y: auto;
+                max-height: 900px;
+            }
+
+            .settingFooter {
+                padding-top: 5px;
+                height: auto;
+            }
+
+            .btn-group {
+                background-color: #004B99;
+            }
+
+            .multiselect-container > li > a > label {
+                margin: 0;
+                height: 100%;
+                cursor: pointer;
+                font-weight: 400;
+                padding: 8px 20px 8px 10px !important;
+                float: left;
+                box-sizing: border-box;
+            }
+
+            .multiselect-container > li {
+                padding: 0 0 0 20px;
+                float: left;
+                width: 100%;
+            }
+
+                .multiselect-container > li.multiselect-group.active, .multiselect-container > li.multiselect-all {
+                    padding: 0;
+                }
+
+            .multiselect-container {
+                width: 100%;
+                display: none;
+                position: relative;
+                float: left;
+                background: #FFF;
+                margin: -1px 0 10px 0px;
+                border-radius: 0 0 5px 5px;
+            }
+
+            .divTimeStamp {
+                width: 100%;
+                display: block;
+                background-color: #004B99;
+                padding-bottom: 10px;
+            }
+
+            .divNetLayersName {
+                width: 100%;
+                position: relative;
+                display: block;
+                background-color: #004B99;
+                padding-bottom: 10px;
+            }
+
+            .divNetLayers {
+                width: 100%;
+                display: block;
+                /*position: relative;*/
+                background-color: #004B99;
+                padding-bottom: 10px;
+            }
+
+            .divAngleDistance {
+                width: 100%;
+                float: left;
+                /*position: relative;*/
+                display: block;
+                margin: 5px 0px 5px;
+            }
+
+            .multiselect-container > li.multiselect-group {
+                padding: 0 !important;
+            }
+
+            button.multiselect.dropdown-toggle.btn.btn-default {
+                width: 100%;
+                padding: 12px 8px;
+                font-size: 16px;
+                text-align: left;
+                font-weight: 600;
+                border-radius: 4px;
+                border: 0;
+                background: linear-gradient(#eee,#c2c2c2);
+            }
+
+            .multiselect-container > li > a {
+                color: #333;
+                font-family: arial;
+            }
+
+            .page {
+			
+                height: auto !important;
+            }
+
+    </style>
+</head>
+
+
+
+<body>
+
+    @if (Model != null && Model.Count() > 0)
+    {
+
+        var Pcis = (ViewBag.PciDisLagend as List<AV_NetLayerReportPlot>);
+        int pciscount = Pcis.Count;
+
+
+        //var CwPcis = Pcis.Where(m => m.TestType == "CW").ToList();
+        //var CcwPcis = Pcis.Where(m => m.TestType == "CCW").ToList();
+
+        @functions{
+
+            public string SectorColor(string key)
+            {
+                try
+                {
+                    var LagentPCI = ViewBag.Sectors as ICollection<AD_Defination>;
+                    return LagentPCI.Where(m => m.DefinationName == key).FirstOrDefault().ColorCode;
+                }
+                catch
+                {
+
+                    return null;
+                }
+
+            }
+
+            public List<Azmiuth> GetAzimuth(List<AV_SiteTestSummary> list)
+            {
+                Azmiuth az;
+                List<Azmiuth> azlst = new List<Azmiuth>();
+                foreach (var item in list)
+                {
+                    az = new Azmiuth();
+                    az.Latitude = Convert.ToDouble(item.Latitude);
+                    az.Longitude = Convert.ToDouble(item.Longitude);
+                    az.Site = item.Site;
+                    az.Sector = item.Sector;
+                    az.PCI = item.PciId.ToString();
+                    az.Color = item.SectorColor;
+                    az.StartAngle = item.Azimuth - (item.BeamWidth / 2);
+                    az.EndAngle = item.Azimuth + (item.BeamWidth / 2);
+
+                    if (az.EndAngle == 360)
+                    {
+                        az.EndAngle = 0;
+                    }
+                    else if (az.EndAngle > 360)
+                    {
+                        double tmpEnd = az.EndAngle - 360;
+                        if (tmpEnd >= 0 && tmpEnd <= 1)
+                        {
+                            az.EndAngle = 1;
+                        }
+                        else
+                        {
+                            az.EndAngle = Convert.ToInt32(az.EndAngle - 360);
+                        }
+                    }
+                    azlst.Add(az);
+                }
+
+                var temp = azlst.Distinct().ToList();
+                return azlst;
+            }
+
+        }
+
+
+        var First = Model.FirstOrDefault();
+        int TotalRecord = Model.Count();
+        string NetworkMode = First.NetworkMode;
+
+        ViewBag.ClientLogo = First.ClientLogo;
+        ViewBag.VendorLogo = First.VendorLogo;
+        var Layers = Model.GroupBy(m => new { m.Band, m.Carrier }).Select(grp => grp.First()).OrderBy(m => m.NetworkMode).ToList();
+
+        <div class="container" id="pdf" style="width:1400px;margin: auto;padding:2px;">
+            <a href="#" style="float:right; position: fixed; right: 100px" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+
+
+            @if (ViewBag.RoleName != "Client POC")
+            {
+                <a href="#" style="float:right; position: fixed; left: 135px" id="btn-setting" class="clear">
+                    <img src="~/Content/Images/Common/kpi_x24.png" />
+                </a>
+            }
+
+            <!-- ~/Content/js/NIReportjs  <=== NetLayerCtrl Path -->
+
+            <div id="pan-settings" display:none; ng-app="NetLayerApp" ng-controller="NetLayerCtrl">
+
+                @*@if (ViewBag.svrTimeStamp != null)
+                    {
+                        <div>
+                            <hr />
+                            <div class="settingHeading">Remove Drive</div>
+                            <form action="#" method="post" id="frm-removeDrive">
+                                <div style="margin-left: 10px;">
+                                    @foreach (var ts in ViewBag.svrTimeStamp)
+                                    {
+                                        <h4>@ts.NetLayer</h4>
+                                        <label>
+                                            <input type="checkbox" value="@ts.serverTimeStamp" class="ch-Timestamp"> @ts.serverTimeStamp
+                                        </label>
+                                    }
+                                </div>
+                                <div class="settingFooter">
+                                    <a class="btn-RemoveDrive" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                                    <a class="btn-RemoveDrive" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                                </div>
+                            </form>
+
+                        </div>
+                    }*@
+
+
+                <div class="divTimeStamp">
+                    <div class="settingHeading">Remove Drive</div>
+                    <div class="NetLayersTimeStamp clear" id="lstNetLayersTimeStamp"></div>
+                    <div class="settingFooter clear">
+
+                        <a class="btn-RemoveDrive" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                        <a class="btn-RemoveDrive" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                    </div>
+                </div>
+
+
+                <div class="divNetLayersName">
+                    <hr />
+                    <div class="settingHeading">Report Filter</div>
+                    <div class="NetLayersName clear" id="lstNetLayersName"></div>
+                </div>
+
+
+                <div class="divNetLayers">
+                    <div class="NetLayersPci clear" id="lstNetLayersPci"></div>
+                </div>
+
+                <div class="divAngleDistance">
+                    <div class="settingHeading clear">Angle to Site</div>
+                    <div style="background-color:#004B99;margin:5px 0px 5px;">
+                        From: <input type="text" name="from" id="txtAngleFrom" style="width:80px;padding:4px 0px 4px;" />
+                        To: <input type="text" name="to" id="txtAngleTo" style="width:80px;padding:4px 0px 4px;" />
+                    </div>
+
+
+                    <div class="settingHeading">Distance from Site</div>
+                    <div style="background-color:#004B99;margin:5px 0px 5px;">
+                        From: <input type="text" name="from" id="txtDistnaceFrom" style="width:80px;padding:4px 0px 4px;" />
+                        To: <input type="text" name="to" id="txtDistanceTo" style="width:80px;padding:4px 0px 4px;" />
+                    </div>
+
+                    <div class="settingFooter">
+                        <a class="btn-RemovePci" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                        <a class="btn-RemovePci" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+
+            <!-- End Report Settings-->
+
+            <div id="print" class="clear">
+                <div class="page">
+                    <div id="WelcomePage" class="bgcolor WELCOME_PAGE_COLOR " data-type="BGCOLOR" style="color: white;padding-top:201px;height: 801px;margin-left: -20px;margin-right: -20px;margin-bottom: -26px;">
+                        <img src="~/Content/Images/ClientLogo/nokia_logo.png" class="" style="top: -239px;position: relative;   width: 600px;" />
+
+                        <div style="font-size:xx-large;font-family:Arial, Verdana;margin-top:-202px;text-align:center;">
+                            <h1 class="" data-type="BOOLEAN,STRING" style="font-size:2em;margin-top:-35px;">Integration Test Report</h1>
+                            <h1 style="font-size:2em;margin-top:-35px;">@First.Site</h1>
+                            <h1 style="font-size:1.5em;margin-top:4px;">@First.SiteScheduleDate.Value.ToString("MMM dd, yyyy")</h1>
+
+                        </div>
+
+                        <div class="" style="margin-left:4%; font-family: Arial,Verdana;">
+                            <div>
+                                <div class="left" style="font-size: 23px;">
+
+                                </div>
+                                <div class="left"></div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+
+                        <img src="~/Content/Images/ClientLogo/TEL_logo.png" style="position: relative;left: 65%;bottom: -200px;height: 150px;text-align:left;" />
+                    </div>
+
+                </div>
+                <div class="page" style="height: 1000px !important">
+                    <h1 id="SiteLocation" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading">@First.Site Site Location</h1>
+                    <br/>
+                    <div class="" id="site_data_map" style="width:auto;height:80%;"></div>
+                   
+                </div>
+                <!--Site Data-->
+
+@foreach (var layer in Layers)
+{
+	
+    <div class="page" >
+        <!--SITE DATA-->
+        <div class="" style="color:#3b39e2;padding-top:5px;clear: left;width: 100%;display: table;">
+            
+            <h1 id="SITE_DATA" data-type=""   data-preValue="@First.Site" class="heading">@First.Site @layer.Band _ @layer.Carrier Site Data</h1>
+            
+            @Html.Partial("~/views/site/_TelenorSiteDataNI.cshtml", Model.Where(m => m.Band == layer.Band && m.Carrier == layer.Carrier))
+            
+        </div>
+       
+        <!--SITE DATA END-->
+        <!--Field Test-->
+<br/><br/>
+        <div class="page"  >
+            <div id="pan-FIELD_TEST">
+                <h1 id="FIELD_TEST" data-type="" class="heading" data-preValue="@First.Site">@First.Site @layer.Band _ @layer.Carrier Stationary Test Results</h1>
+               
+                @{
+                    var LayerModel = Model.Where(m => m.Band == layer.Band && m.Carrier == layer.Carrier).ToList();
+                    @Html.Partial("~/views/site/_TelenorFieldTestNI.cshtml", LayerModel)
+                }
+                
+               
+            </div>
+        </div>
+        <div class="footer" @*style="margin-bottom:20px;"*@>
+
+            @if (!string.IsNullOrEmpty(ViewBag.VendorLogo))
+            {
+                <img src="@ViewBag.VendorLogo" class="right" style="height: 40px;" />
+            }
+
+            <img src="@ViewBag.ClientLogo" class="right" style="height: 40px;" />
+            <div class="clear"></div>
+        </div>
+        
+
+       @*
+      
+        @if (pciscount > 0)
+        {
+        //foreach (var layer in Layers)
+        {
+            NetworkMode = layer.NetworkMode;
+        <!-- PCI Plot-->
+
+        <div class="">
+            <div id="pan-PCI_PLOT-@layer.SummaryId" data-type="BOOLEAN" style="position:relative">
+                <h1 id="PCI_PLOT" data-type="BOOLEAN" data-preValue="@First.Site" class="heading">
+                    @First.Site
+
+                    <span> Mobility Test @layer.Band _ @layer.Carrier</span>
+                </h1>
+
+                <div class="pan-map googlemap" id="PCI_Plot-@layer.SummaryId"></div>
+                <div class="PciLegend">
+                    <div class="lagendHeader">
+                        <span> Mobility Plot </span>
+                    </div>
+                    <table style="">
+                        @{
+
+                            var LayerModel3 = Model.Where(m => m.Band == layer.Band).ToList();
+                            foreach (var item in LayerModel3)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="colorbox" style="background-color:@item.SectorColor;height:22px;width: 22px;color: white;border: solid 1px;border-color: black;margin-bottom: -7px;"></div>
+                                    </td>
+                                    <td><span>@item.PciId </span></td>
+                                </tr>
+                            }
+
+                        }
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+
+        }
+        }
+*@
+        @*//field test end*@
+    </div>
+
+			
+              
+
+
+
+                <!--Stationary Test-->
+
+                 bool ImageStatus = false;
+                    bool Heading = false;
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.StationaryTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                
+
+                <center>
+                    @if (ImageStatus)
+                    {
+                        TempCount = 0;
+                        ImageStatus = false;
+
+                        //foreach (var layer in Layers)
+                        {
+                            var LayerModel4 = Model.Where(m => m.Band == layer.Band && m.Carrier == layer.Carrier).ToList();
+
+                            foreach (var item in LayerModel4)
+                            {
+                                if (dh.FileExist(Server.MapPath(item.StationaryTestFilePath)))
+                                {
+                                    ImageStatus = true;
+                                    break;
+                                }
+                            }
+
+                            if (ImageStatus)
+                            {
+                                <div class="page"  style="padding-top:5px">
+
+                                    @foreach (var item in LayerModel4)
+                                    {
+
+
+                                        if (dh.FileExist(Server.MapPath(item.StationaryTestFilePath)))
+                                        {
+                                            if (Heading == false)
+                                            {
+                                                <h1 class="heading" style="padding-top:5px">@First.Site @item.Band _ @item.Carrier Stationary Test</h1>
+                                                Heading = true;
+                                            }
+                                            if (TempCount == 3)
+                                            {
+                                                TempCount = 0;
+                                                <br />
+                                            }
+                                            <img src="@item.StationaryTestFilePath" class="ooklaImages" />
+
+                                            TempCount++;
+                                        }
+                                    }
+									
+                                    <div class="footer" @*style="margin-bottom:20px;"*@>
+                                       
+                                        @if (!string.IsNullOrEmpty(ViewBag.VendorLogo))
+                                        {
+                                            <img src="@ViewBag.VendorLogo" class="right" style="height: 40px;" />
+                                        }
+
+                                        <img src="@ViewBag.ClientLogo" class="right" style="height: 40px;" />
+                                        <div class="clear"></div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                Heading = false;
+                                ImageStatus = false;
+                            }
+
+                        }
+                        TempCount = 0;
+                    }
+
+                </center>
+                <!--Stationary Test-->
+@*
+                {  ImageStatus = false;
+                    Heading = false;
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.CwTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                }
+                <center>
+                    @if (ImageStatus)
+                    {
+                        TempCount = 0;
+                        ImageStatus = false;
+
+                        
+                        {
+                            var LayerModel5 = Model.Where(m => m.Band == layer.Band && m.Carrier == layer.Carrier).ToList();
+
+                            foreach (var item in LayerModel5)
+                            {
+                                if (dh.FileExist(Server.MapPath(item.CwTestFilePath)))
+                                {
+                                    ImageStatus = true;
+                                    break;
+                                }
+                            }
+
+                            if (ImageStatus)
+                            {
+                                <div class="page">
+
+                                    @foreach (var item in LayerModel5)
+                                    {
+
+
+                                        if (dh.FileExist(Server.MapPath(item.CwTestFilePath)))
+                                        {
+                                            if (Heading == false)
+                                            {
+                                                <h1 class="heading">@First.Site @item.Band _ @item.Carrier Mobility Test</h1>
+                                                Heading = true;
+                                            }
+                                            if (TempCount == 3)
+                                            {
+                                                TempCount = 0;
+                                                <br />
+                                            }
+                                            <img src="@item.CwTestFilePath" class="ooklaImages" />
+
+                                            TempCount++;
+                                        }
+                                    }
+                                   
+                                   
+                                       
+                                </div>
+                                Heading = false;
+                                ImageStatus = false;
+                            }
+
+                        }
+                        TempCount = 0;
+                    }
+
+                </center>
+
+				*@
+
+
+                <!-- SECTOR SWAP CHARTS BEGIN-->
+                            <div class="page" id="@("SectorCharts_" + @layer.NetworkModeId + '_' + @layer.BandId + '_' +@layer.CarrierId)">
+
+                                <div class="footer" @*style="margin-bottom:20px;"*@>
+
+                                    @if (!string.IsNullOrEmpty(ViewBag.VendorLogo))
+                                    {
+                                        <img src="@ViewBag.VendorLogo" class="right" style="height: 40px;" />
+                                    }
+
+                                    <img src="@ViewBag.ClientLogo" class="right" style="height: 40px;" />
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="footer3" @*style="margin-bottom:20px;"*@>
+
+                                    @if (!string.IsNullOrEmpty(ViewBag.VendorLogo))
+                                    {
+                                        <img src="@ViewBag.VendorLogo" class="right" style="height: 40px;" />
+                                    }
+
+                                    <img src="@ViewBag.ClientLogo" class="right" style="height: 40px;" />
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                           
+
+                    }
+                                <div class="page" id="SectorChartsend"></div>
+                                <!-- SECTOR SWAP CHARTS END-->
+                                <!--
+                                                <div class="page">
+                                                    <div class="WELCOME_PAGE_COLOR" id="thank-you" style="background:#004B99;padding-top:150px;height:800px;margin-left: -50px;margin-right: -20px;margin-top: 10px;padding-bottom: 50px;">
+                                                        <img src="~/Content/Images/Report/Nokia-bg.png" style="margin-top: 215px;margin-left: 381px;" />
+                                                    </div>
+                                                </div>
+                                                -->
+                            </div>
+           @* <div class="bottom-print">
+                <a href="" style="float:right;" class="print clear">
+                    <img src="~/Content/Images/Common/print.png" />
+                </a>
+
+            </div>*@
+
+
+        </div>
+		
+		
+       <div style="display:none" id="Azimuth_Circle">0</div>
+
+        <script src="~/Content/js/Plugins/DateTimePicker/dtpicker.js"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAdDzJ4ggDZu4WAguesEjYlVEl1Y80YYDI&sensor=false&libraries=geometry&bogusParam=.js"></script>
+        <script src="~/Content/js/MapLabel.js"></script>
+        <script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+        <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+        <script src="~/Content/js/GoogleMapsNTL.js"></script>
+        <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script><!--loading-->
+                    <script>
+
+                        var SiteId = '@First.SiteId';
+
+                        var NetworkModeId = '@First.NetworkModeId';
+                        var BandId = '@First.BandId';
+                        var CarrierId = '@First.CarrierId';
+                        var ScopeId = '@First.ScopeId';
+                        @{
+                                            var hybridAz = jss.Serialize(GetAzimuth(Model.Where(m => m.NetworkMode=="LTE").ToList()));
+                                            string NetLayer = First.ActualSiteCode+ "/"+First.NetworkMode + "_" +First.Band + "_" +First.Carrier;
+                                         }
+
+                        var SiteLatitude = '@First.Latitude';
+                        var SiteLongitude = '@First.Longitude';
+                        var SiteCode = '@First.Site';
+                        var NetLayer = '@NetLayer';
+                        var AfterDate = '@ViewBag.AfterDate';
+                        var domain = document.location.origin;
+
+                        var AzmuthRadius = '@ViewBag.AzmuthRadius';
+                        var ReportConfiguration = JSON.parse('@Html.Raw(ReportConfiguration)');
+                        var CoverageDistance = JSON.parse('@Html.Raw(CDistance)')
+                        var Lats= JSON.parse('@Html.Raw(Lts)');
+                        var Longs= JSON.parse('@Html.Raw(Lns)');
+                        var hybridAz = JSON.parse('@Html.Raw(hybridAz)');
+                        console.log(hybridAz);
+                        initializeHybrid('site_data_map', SiteLatitude, SiteLongitude, SiteCode, null, null, hybridAz, AzmuthRadius, Lats, Longs, CoverageDistance);
+                       
+
+
+
+
+                        //GetSectorSwapCharts(SiteId);
+
+                        //$('.btn-RemoveDrive').click(function () {
+                        //    debugger;
+                        //    var IsActive = $(this).attr('data-value');
+                        //    // alert(isActive);
+                        //    var selected = [];
+                        //    $('#frm-removeDrive input:checked').each(function () {
+                        //        selected.push($(this).val());
+                        //    });
+                        //    alert(selected);
+                        //    $.ajax({
+                        //        url: '/Site/RemoveDrive',
+                        //        type: 'POST',
+                        //        data: { SiteId: SiteId, IsActive: IsActive, selectedVal: selected },
+                        //        success: function (res) {
+
+                        //        }
+                        //    });
+                        //});
+                        //------------------------------------------------
+
+
+
+
+                        //---------------------------------
+                        $('.btn-RemoveDrive').click(function () {
+                            var selectedTimeStamps = $('#example-xss-html_NetLayersTimeStamp option:selected').map(function () { return $(this).val(); }).get();
+                            var slTimeStamp = selectedTimeStamps.join(',');
+                            //alert(selectedTimeStamps);
+                            var IsActive = $(this).attr('data-value');
+                            DisableServerTimestamp(SiteId, IsActive, slTimeStamp);
+                        });
+                        function DisableServerTimestamp(SiteId, IsActive, slTimeStamp) {
+                            $.ajax({
+                                url: '/Site/DisableServerTimestamp',
+                                type: 'POST',
+                                data: { SiteId: SiteId, IsActive: IsActive, selectedVal: slTimeStamp },
+                                success: function (res) {
+                                    //console.log(res);
+                                    //alert("Success");
+                                }
+                            });
+                        }
+
+                        //----------------------------------
+                        $('.btn-RemovePci').click(function () {
+                            var IsActive = $(this).attr('data-value');
+
+                            var selectedLayers = $('#example-xss-html_NetLayersName option:selected').map(function () { return $(this).val(); }).get();
+                            var selectedPcis = $('#example--xss-html_NetLayersPci option:selected').map(function () { return $(this).val(); }).get();
+
+                            var slLyr = selectedLayers.join(',');
+                            var slPci = selectedPcis.join(',');
+
+                            var AngleFrom = 0;
+                            var AngleTo = 0;
+                            var DistanceFrom = 0;
+                            var DistanceTo = 0;
+
+                            AngleFrom = $('#txtAngleFrom').val();
+                            AngleTo = $('#txtAngleTo').val();
+                            DistanceFrom = $('#txtDistnaceFrom').val();
+                            DistanceTo = $('#txtDistanceTo').val();
+
+                            if (selectedLayers.length > 0) {
+                                DisablePcis(SiteId, IsActive, slLyr, slPci, AngleFrom, AngleTo, DistanceFrom, DistanceTo);
+                            }
+                            else {
+                                alert("Please Select Layer to enable/disable Pcis.");
+                                return false;
+                            }
+                        });
+                        function DisablePcis(SiteId, IsActive, slLyr, slPci, AngleFrom, AngleTo, DistanceFrom, DistanceTo) {
+                            var objs = {
+                                SiteId: SiteId,
+                                IsActive: IsActive,
+                                selectedLayers: slLyr,
+                                selectedPcis: slPci,
+                                AngleFrom: AngleFrom,
+                                AngleTo: AngleTo,
+                                DistanceFrom: DistanceFrom,
+                                DistanceTo: DistanceTo
+                            };
+                            $.ajax({
+                                url: '/Site/DisableNIPcis',
+                                type: 'POST',
+                                dataType: 'json',
+                                contentType: 'application/json; charset=utf-8',
+
+                                data: JSON.stringify(objs),
+                                success: function (res) {
+                                    //console.log(res);
+                                    //alert("Success");
+                                }, error: function (a, b, c) {
+                                    console.log(a);
+                                    console.log(b);
+                                    console.log(c);
+                                }
+                            });
+                        }
+                        //----------------------------------
+
+                    </script>
+
+                    <span data-siteid="@First.SiteId" id="siteId" hidden></span>
+
+                    <script src="~/Content/js/Plugins/QueryBuilder/js/moment.min.js"></script>
+                    <script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+                    <script src="~/Content/js/Plugins/angularmultislect/multiselect.js"></script>
+                    <script src="/Content/js/SiteReportNI.js"></script>
+
+    }
+</body>
+
+</html>
+@*<script>
+        $(window).load(function () {
+            $(".multiselect").on("click", function () {
+                $(this).parent(".btn-group").find(".dropdown-menu").slideToggle();
+            });
+        })
+    </script>*@

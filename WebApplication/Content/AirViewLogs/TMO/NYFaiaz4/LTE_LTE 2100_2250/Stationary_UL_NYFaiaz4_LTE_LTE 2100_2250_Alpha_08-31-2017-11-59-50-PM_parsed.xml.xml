@@ -1,0 +1,153 @@
+<drive><test-cat>/home/airview1/ftp/files/airview-layer3/Stationary</test-cat><test-type>UL</test-type><site>NYFaiaz4</site><net-mode>LTE</net-mode><band>LTE2100</band><carrier>2250</carrier><sector>Alpha</sector><time>08-31-2017-11-59-50-PM</time><message-body><time>1504238376470</time><channel>UL-DCCH-Message</channel><event>rrcConnectionReconfigurationComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReconfigurationComplete>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <rrcConnectionReconfigurationComplete-r8>
+                        <nonCriticalExtension>
+                            <nonCriticalExtension>
+                                <rlf-InfoAvailable-r10><true/></rlf-InfoAvailable-r10>
+                            </nonCriticalExtension>
+                        </nonCriticalExtension>
+                    </rrcConnectionReconfigurationComplete-r8>
+                </criticalExtensions>
+            </rrcConnectionReconfigurationComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64</hex></message-body><message-body><time>1504238376571</time><channel>UL-DCCH-Message</channel><event>rrcConnectionReconfigurationComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReconfigurationComplete>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <rrcConnectionReconfigurationComplete-r8>
+                        <nonCriticalExtension>
+                            <nonCriticalExtension>
+                                <logMeasAvailable-r10><true/></logMeasAvailable-r10>
+                                <nonCriticalExtension>
+                                    <connEstFailInfoAvailable-r11><true/></connEstFailInfoAvailable-r11>
+                                </nonCriticalExtension>
+                            </nonCriticalExtension>
+                        </nonCriticalExtension>
+                    </rrcConnectionReconfigurationComplete-r8>
+                </criticalExtensions>
+            </rrcConnectionReconfigurationComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504238376440</time><channel>UL-DCCH-Message</channel><event>rrcConnectionReconfigurationComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReconfigurationComplete>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <rrcConnectionReconfigurationComplete-r8>
+                        <nonCriticalExtension>
+                            <nonCriticalExtension>
+                                <logMeasAvailable-r10><true/></logMeasAvailable-r10>
+                                <nonCriticalExtension>
+                                    <connEstFailInfoAvailable-r11><true/></connEstFailInfoAvailable-r11>
+                                </nonCriticalExtension>
+                            </nonCriticalExtension>
+                        </nonCriticalExtension>
+                    </rrcConnectionReconfigurationComplete-r8>
+                </criticalExtensions>
+            </rrcConnectionReconfigurationComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504238376229</time><channel>UL-DCCH-Message</channel><event>rrcConnectionReconfigurationComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReconfigurationComplete>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <rrcConnectionReconfigurationComplete-r8>
+                        <nonCriticalExtension>
+                            <nonCriticalExtension>
+                                <logMeasAvailable-r10><true/></logMeasAvailable-r10>
+                                <nonCriticalExtension>
+                                    <connEstFailInfoAvailable-r11><true/></connEstFailInfoAvailable-r11>
+                                </nonCriticalExtension>
+                            </nonCriticalExtension>
+                        </nonCriticalExtension>
+                    </rrcConnectionReconfigurationComplete-r8>
+                </criticalExtensions>
+            </rrcConnectionReconfigurationComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504238376456</time><channel>PCCH-Message</channel><event>paging></event><PCCH-Message>
+    <message>
+        <c1>
+            <paging>
+            </paging>
+        </c1>
+    </message>
+</PCCH-Message>
+<hex>3C6D65</hex></message-body><message-body><time>1504238376164</time><channel>UL-DCCH-Message</channel><event>rrcConnectionReconfigurationComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReconfigurationComplete>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <rrcConnectionReconfigurationComplete-r8>
+                        <nonCriticalExtension>
+                            <nonCriticalExtension>
+                                <logMeasAvailable-r10><true/></logMeasAvailable-r10>
+                                <nonCriticalExtension>
+                                    <connEstFailInfoAvailable-r11><true/></connEstFailInfoAvailable-r11>
+                                </nonCriticalExtension>
+                            </nonCriticalExtension>
+                        </nonCriticalExtension>
+                    </rrcConnectionReconfigurationComplete-r8>
+                </criticalExtensions>
+            </rrcConnectionReconfigurationComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504238376554</time><channel>UL-DCCH-Message</channel><event>rrcConnectionReconfigurationComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReconfigurationComplete>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <rrcConnectionReconfigurationComplete-r8>
+                        <nonCriticalExtension>
+                            <nonCriticalExtension>
+                                <logMeasAvailable-r10><true/></logMeasAvailable-r10>
+                                <nonCriticalExtension>
+                                    <connEstFailInfoAvailable-r11><true/></connEstFailInfoAvailable-r11>
+                                </nonCriticalExtension>
+                            </nonCriticalExtension>
+                        </nonCriticalExtension>
+                    </rrcConnectionReconfigurationComplete-r8>
+                </criticalExtensions>
+            </rrcConnectionReconfigurationComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body><message-body><time>1504238376676</time><channel>UL-DCCH-Message</channel><event>rrcConnectionReconfigurationComplete></event><UL-DCCH-Message>
+    <message>
+        <c1>
+            <rrcConnectionReconfigurationComplete>
+                <rrc-TransactionIdentifier>0</rrc-TransactionIdentifier>
+                <criticalExtensions>
+                    <rrcConnectionReconfigurationComplete-r8>
+                        <nonCriticalExtension>
+                            <nonCriticalExtension>
+                                <logMeasAvailable-r10><true/></logMeasAvailable-r10>
+                                <nonCriticalExtension>
+                                    <connEstFailInfoAvailable-r11><true/></connEstFailInfoAvailable-r11>
+                                </nonCriticalExtension>
+                            </nonCriticalExtension>
+                        </nonCriticalExtension>
+                    </rrcConnectionReconfigurationComplete-r8>
+                </criticalExtensions>
+            </rrcConnectionReconfigurationComplete>
+        </c1>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C</hex></message-body></drive>

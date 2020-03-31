@@ -1,0 +1,41 @@
+<drive><test-cat>/home/airview1/ftp/files/airview-layer3/Stationary</test-cat><test-type>UL</test-type><site>NYFaiaz4</site><net-mode>LTE</net-mode><band>LTE2100</band><carrier>2250</carrier><sector>Alpha</sector><time>09-01-2017-12-05-44-AM</time><message-body><time>1504238740617</time><channel>UL-DCCH-Message</channel><event>messageClassExtensionFuture-r11></event><UL-DCCH-Message>
+    <message>
+        <messageClassExtension>
+            <messageClassExtensionFuture-r11>
+            </messageClassExtensionFuture-r11>
+        </messageClassExtension>
+    </message>
+</UL-DCCH-Message>
+<hex>3C6D6573</hex></message-body><message-body><time>1504238743036</time><channel>UL-CCCH-Message</channel><event>c2></event><UL-CCCH-Message>
+    <message>
+        <messageClassExtension>
+            <c2>
+                <rrcConnectionResumeRequest-r13>
+                    <criticalExtensions>
+                        <rrcConnectionResumeRequest-r13>
+                            <resumeIdentity-r13>
+                                <resumeID-r13>
+                                    0000001100100000001000000000000000000000
+                                </resumeID-r13>
+                            </resumeIdentity-r13>
+                            <shortResumeMAC-I-r13>
+                                0000000000000000
+                            </shortResumeMAC-I-r13>
+                            <resumeCause-r13><emergency/></resumeCause-r13>
+                            <spare>
+                                0
+                            </spare>
+                        </rrcConnectionResumeRequest-r13>
+                    </criticalExtensions>
+                </rrcConnectionResumeRequest-r13>
+            </c2>
+        </messageClassExtension>
+    </message>
+</UL-CCCH-Message>
+<hex>3C6D6573736167652D626F64793E3C74</hex></message-body><message-body><time>1504238744638</time><channel>DL-CCCH-Message</channel><event>/messageClassExtension></event><DL-CCCH-Message>
+    <message>
+        <messageClassExtension>
+        </messageClassExtension>
+    </message>
+</DL-CCCH-Message>
+<hex>3C6D65</hex></message-body></drive>

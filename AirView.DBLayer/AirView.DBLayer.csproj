@@ -1,0 +1,622 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{36A4BD59-C505-4062-9471-BDE94EAA2123}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AirView.DBLayer</RootNamespace>
+    <AssemblyName>AirView.DBLayer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="walkDirectory">
+      <HintPath>..\WebApplication\bin\walkDirectory.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActiveDirectory\BLL\AD_DefinationBL.cs" />
+    <Compile Include="ActiveDirectory\BLL\AD_FilterQueryBL.cs" />
+    <Compile Include="ActiveDirectory\BLL\AD_UEMovementBL.cs" />
+    <Compile Include="ActiveDirectory\BLL\AD_UserEquipmentsBL.cs" />
+    <Compile Include="ActiveDirectory\DAL\AD_DefinationDL.cs" />
+    <Compile Include="ActiveDirectory\DAL\AD_FilterQueryDL.cs" />
+    <Compile Include="ActiveDirectory\DAL\AD_UEMovementDL.cs" />
+    <Compile Include="ActiveDirectory\DAL\AD_UserEquipmentDL.cs" />
+    <Compile Include="ActiveDirectory\Entities\AD_Defination.cs" />
+    <Compile Include="ActiveDirectory\Entities\AD_FilterQuery.cs" />
+    <Compile Include="ActiveDirectory\Entities\AD_UEMovement.cs" />
+    <Compile Include="ActiveDirectory\Entities\AD_UserEquipment.cs" />
+    <Compile Include="AirView\BLL\AD_ApplicationsBL.cs" />
+    <Compile Include="AirView\BLL\AD_ClientAddressBL.cs" />
+    <Compile Include="AirView\BLL\AD_ClientContactsBL.cs" />
+    <Compile Include="AirView\BLL\AD_DefinationTypesBL.cs" />
+    <Compile Include="AirView\BLL\AD_HelpBL.cs" />
+    <Compile Include="AirView\BLL\AD_ReportConfigurationBL.cs" />
+    <Compile Include="AirView\BLL\AD_StoreBL.cs" />
+    <Compile Include="AirView\BLL\AD_SurveyBL.cs" />
+    <Compile Include="AirView\BLL\AL_AlertBL.cs" />
+    <Compile Include="AirView\BLL\AV_DeviceLockCommandsBL.cs" />
+    <Compile Include="AirView\BLL\AV_DriveRoutesBL.cs" />
+    <Compile Include="AirView\BLL\AV_GetEmailsBL.cs" />
+    <Compile Include="AirView\BLL\AV_GetRoutePlanBL.cs" />
+    <Compile Include="AirView\BLL\AV_GetScannerSettingTemplateBL.cs" />
+    <Compile Include="AirView\BLL\AV_GetSettingTemplateBL.cs" />
+    <Compile Include="AirView\BLL\AV_GetSiteDashboardInfoBL.cs" />
+    <Compile Include="AirView\BLL\AV_GetSiteReportBL.cs" />
+    <Compile Include="AirView\BLL\AV_MarketConfigurationBL.cs" />
+    <Compile Include="AirView\BLL\AV_MarketSitesBL.cs" />
+    <Compile Include="AirView\BLL\AV_NetLayerReportExportBL.cs" />
+    <Compile Include="AirView\BLL\AV_NetLayerStatusBL.cs" />
+    <Compile Include="AirView\BLL\AV_OptimizationBL.cs" />
+    <Compile Include="AirView\BLL\AV_ParserBL.cs" />
+    <Compile Include="AirView\BLL\AV_ReportBL.cs" />
+    <Compile Include="AirView\BLL\AV_RFPlotLegendsBL.cs" />
+    <Compile Include="AirView\BLL\AV_ScopeTestsBL.cs" />
+    <Compile Include="AirView\BLL\AV_SectorBL.cs" />
+    <Compile Include="AirView\BLL\AV_SectorColorBL.cs" />
+    <Compile Include="AirView\BLL\AV_SiteScannerConfigurationsBL.cs" />
+    <Compile Include="AirView\BLL\AV_SiteConfigurationsBL.cs" />
+    <Compile Include="AirView\BLL\AV_SiteIssueTrackerBL.cs" />
+    <Compile Include="AirView\BLL\AV_SitesBL.cs" />
+    <Compile Include="AirView\BLL\AV_SiteScriptBL.cs" />
+    <Compile Include="AirView\BLL\AV_SiteScriptFormEntry.cs" />
+    <Compile Include="AirView\BLL\AV_SiteScriptScannerConfigurationsBL.cs" />
+    <Compile Include="AirView\BLL\AV_SiteTestLogBL.cs" />
+    <Compile Include="AirView\BLL\AV_SiteTestSummaryBL.cs" />
+    <Compile Include="AirView\BLL\AV_TestBL.cs" />
+    <Compile Include="AirView\BLL\AV_UEPbxBL.cs" />
+    <Compile Include="AirView\BLL\AV_WidgetsBL.cs" />
+    <Compile Include="AirView\BLL\AV_WoDevicesBL.cs" />
+    <Compile Include="AirView\BLL\AV_WoTrackerBL.cs" />
+    <Compile Include="AirView\BLL\INV_UEIssuesBL.cs" />
+    <Compile Include="AirView\BLL\PM_ProjectSitesBL.cs" />
+    <Compile Include="AirView\DAL\AD_ApplicationsDL.cs" />
+    <Compile Include="AirView\DAL\AD_HelpDL.cs" />
+    <Compile Include="AirView\DAL\AD_Store.cs" />
+    <Compile Include="AirView\DAL\AD_SurveyDL.cs" />
+    <Compile Include="AirView\DAL\AL_AlertDL.cs" />
+    <Compile Include="AirView\DAL\AV_GetScannerSettingTemplateDL.cs" />
+    <Compile Include="AirView\DAL\AV_MarketConfigurationDL.cs" />
+    <Compile Include="AirView\DAL\AV_ParserDL.cs" />
+    <Compile Include="AirView\DAL\AV_RfOptimizationDL.cs" />
+    <Compile Include="AirView\DAL\AV_SectorColorDL.cs" />
+    <Compile Include="AirView\DAL\AV_SiteScannerConfigurationsDL.cs" />
+    <Compile Include="AirView\DAL\AV_SiteScriptDL.cs" />
+    <Compile Include="AirView\DAL\AV_SiteScriptScannerConfigurationsDL.cs" />
+    <Compile Include="AirView\DAL\AV_TransferSiteLogsDL.cs" />
+    <Compile Include="AirView\DAL\FloorPlan_DL.cs" />
+    <Compile Include="AirView\DAL\INV_UEIssuesDL.cs" />
+    <Compile Include="AirView\DAL\ScannerConfigurationsDL.cs" />
+    <Compile Include="AirView\DAL\SiteScannerConfigurationDL.cs" />
+    <Compile Include="AirView\Entities\AD_Applications.cs" />
+    <Compile Include="AirView\DAL\PM_ProjectSitesDL.cs" />
+    <Compile Include="AirView\Entities\AD_ClusterScheduleVM.cs" />
+    <Compile Include="AirView\Entities\AD_Help.cs" />
+    <Compile Include="AirView\Entities\AD_Survey.cs" />
+    <Compile Include="AirView\Entities\AL_AlertSubscriptionUser.cs" />
+    <Compile Include="AirView\Entities\AL_GetAlertConfiguration.cs" />
+    <Compile Include="AirView\Entities\AL_GetAlertSubscription.cs" />
+    <Compile Include="AirView\Entities\AL_GetNotification.cs" />
+    <Compile Include="AirView\Entities\AL_Notification.cs" />
+    <Compile Include="AirView\Entities\AL_SetNotification.cs" />
+    <Compile Include="AirView\Entities\AL_Subscription.cs" />
+    <Compile Include="AirView\Entities\AL_UserHubModel.cs" />
+    <Compile Include="AirView\Entities\ApiE911ConfirmStatus.cs" />
+    <Compile Include="AirView\Entities\ApiE911Status.cs" />
+    <Compile Include="AirView\Entities\AV_BeamTestLog.cs" />
+    <Compile Include="AirView\Entities\AV_CLSScheduleVM.cs" />
+    <Compile Include="AirView\Entities\AV_FloorPlan.cs" />
+    <Compile Include="AirView\Entities\AV_GetScannerSettingTemplate.cs" />
+    <Compile Include="AirView\Entities\AV_NemoFiles.cs" />
+    <Compile Include="AirView\Entities\AV_Search.cs" />
+    <Compile Include="AirView\Entities\AV_SectorColor.cs" />
+    <Compile Include="AirView\Entities\AV_SiteScannerConfigurations.cs" />
+    <Compile Include="AirView\Entities\AV_SiteScript.cs" />
+    <Compile Include="AirView\Entities\AV_SiteScriptScannerConfigurations.cs" />
+    <Compile Include="AirView\Entities\ClusterVM.cs" />
+    <Compile Include="AirView\Entities\INV_UEIssues.cs" />
+    <Compile Include="AirView\Entities\OrgChart.cs" />
+    <Compile Include="AirView\Entities\PM_Projects.cs" />
+    <Compile Include="AirView\Entities\PM_ProjectSites.cs" />
+    <Compile Include="AirView\Entities\RFOptimize.cs" />
+    <Compile Include="AirView\Entities\ScannerConfiguration.cs" />
+    <Compile Include="AirView\Entities\SiteCluster.cs" />
+    <Compile Include="AirView\Entities\TempDataset.cs" />
+    <Compile Include="AirView\Entities\WoMapView.cs" />
+    <Compile Include="AirView\Entities\WoSummary.cs" />
+    <Compile Include="AirView\BLL\ClientsBL.cs" />
+    <Compile Include="AirView\BLL\ColorCollection.cs" />
+    <Compile Include="AirView\BLL\DashboardBL.cs" />
+    <Compile Include="AirView\BLL\SitesBL.cs" />
+    <Compile Include="AirView\BLL\UserCityBL.cs" />
+    <Compile Include="AirView\BLL\UserClientsBL.cs" />
+    <Compile Include="AirView\BLL\WorkOrderBL.cs" />
+    <Compile Include="AirView\DAL\AD_ClientAddressDL.cs" />
+    <Compile Include="AirView\DAL\AD_ClientContactsDL.cs" />
+    <Compile Include="AirView\DAL\AD_DefinationTypesDL.cs" />
+    <Compile Include="AirView\DAL\AD_GetQueryResultDL.cs" />
+    <Compile Include="AirView\DAL\AD_ReportConfigurationDL.cs" />
+    <Compile Include="AirView\DAL\AV_DeviceLockCommandsDL.cs" />
+    <Compile Include="AirView\DAL\AV_DriveRoutesDL.cs" />
+    <Compile Include="AirView\DAL\AV_GetEmailsDL.cs" />
+    <Compile Include="AirView\DAL\AV_GetRoutePlanDL.cs" />
+    <Compile Include="AirView\DAL\AV_GetSettingTemplateDL.cs" />
+    <Compile Include="AirView\DAL\AV_GetSiteDashboardInfoDL.cs" />
+    <Compile Include="AirView\DAL\AV_GetSiteReportDL.cs" />
+    <Compile Include="AirView\DAL\AV_MarketSitesDL.cs" />
+    <Compile Include="AirView\DAL\AV_NetLayerReportExportDL.cs" />
+    <Compile Include="AirView\DAL\AV_NetLayerStatusDL.cs" />
+    <Compile Include="AirView\DAL\AV_ReportDL.cs" />
+    <Compile Include="AirView\DAL\AV_RFPlotLegendsDL.cs" />
+    <Compile Include="AirView\DAL\AV_ScopeTestsDL.cs" />
+    <Compile Include="AirView\DAL\AV_SectorDL.cs" />
+    <Compile Include="AirView\DAL\AV_SiteConfigurationsDL.cs" />
+    <Compile Include="AirView\DAL\AV_SiteIssueTrackerDL.cs" />
+    <Compile Include="AirView\DAL\AV_SitesDL.cs" />
+    <Compile Include="AirView\DAL\AV_SiteTestLogDL.cs" />
+    <Compile Include="AirView\DAL\AV_SiteTestSummaryDL.cs" />
+    <Compile Include="AirView\DAL\AV_TestDL.cs" />
+    <Compile Include="AirView\DAL\AV_UEPbxDL.cs" />
+    <Compile Include="AirView\DAL\AV_WidgetsDL.cs" />
+    <Compile Include="AirView\DAL\AV_WoDevicesDL.cs" />
+    <Compile Include="AirView\DAL\AV_WoTrackerDL.cs" />
+    <Compile Include="AirView\DAL\ClientsDL.cs" />
+    <Compile Include="AirView\DAL\DashboardDL.cs" />
+    <Compile Include="AirView\DAL\ReDriveDL.cs" />
+    <Compile Include="AirView\DAL\SiteConfigurationDL.cs" />
+    <Compile Include="AirView\DAL\SitesDL.cs" />
+    <Compile Include="AirView\DAL\TestConfigurationsDL.cs" />
+    <Compile Include="AirView\DAL\UserCityDL.cs" />
+    <Compile Include="AirView\DAL\UserClientsDL.cs" />
+    <Compile Include="AirView\DAL\WorkOrderDL.cs" />
+    <Compile Include="AirView\Entities\AD_ClientAddress.cs" />
+    <Compile Include="AirView\Entities\AD_ClientContacts.cs" />
+    <Compile Include="AirView\Entities\AD_Clients.cs" />
+    <Compile Include="AirView\Entities\AD_DefinationTypes.cs" />
+    <Compile Include="AirView\Entities\AD_ReportConfiguration.cs" />
+    <Compile Include="AirView\Entities\ApiHandoverStatus.cs" />
+    <Compile Include="AirView\Entities\ApiImagePath.cs" />
+    <Compile Include="AirView\Entities\AV_DeviceLockCommands.cs" />
+    <Compile Include="AirView\Entities\AV_DriveRoutes.cs" />
+    <Compile Include="AirView\Entities\AV_GetEmails.cs" />
+    <Compile Include="AirView\Entities\AV_GetRoutePlan.cs" />
+    <Compile Include="AirView\Entities\AV_GetSettingTemplate.cs" />
+    <Compile Include="AirView\Entities\AV_GetSiteDashboardInfo.cs" />
+    <Compile Include="AirView\Entities\AV_MarketSites.cs" />
+    <Compile Include="AirView\Entities\AV_NetLayerStatus.cs" />
+    <Compile Include="AirView\Entities\AV_RFPlotLegends.cs" />
+    <Compile Include="AirView\Entities\AV_ScopeTests.cs" />
+    <Compile Include="AirView\Entities\AV_Sector.cs" />
+    <Compile Include="AirView\Entities\AV_Site.cs" />
+    <Compile Include="AirView\Entities\AV_SiteConfigurations.cs" />
+    <Compile Include="AirView\Entities\AV_SiteIssueTracker.cs" />
+    <Compile Include="AirView\Entities\AV_SiteTestLog.cs" />
+    <Compile Include="AirView\Entities\AV_SiteTestSummary.cs" />
+    <Compile Include="AirView\Entities\AV_Test.cs" />
+    <Compile Include="AirView\Entities\AV_TSSCheckList.cs" />
+    <Compile Include="AirView\Entities\AV_UEPbx.cs" />
+    <Compile Include="AirView\Entities\AV_Widgets.cs" />
+    <Compile Include="AirView\Entities\AV_WoDevices.cs" />
+    <Compile Include="AirView\Entities\AV_WoTracker.cs" />
+    <Compile Include="AirView\Entities\Band.cs" />
+    <Compile Include="AirView\Entities\BandVM.cs" />
+    <Compile Include="AirView\Entities\Carrier.cs" />
+    <Compile Include="AirView\Entities\ClientSitesVM.cs" />
+    <Compile Include="AirView\Entities\ClientVM.cs" />
+    <Compile Include="AirView\Entities\DashboardStatusVM.cs" />
+    <Compile Include="AirView\Entities\DashboardVM.cs" />
+    <Compile Include="AirView\Entities\GetWorkOrder.cs" />
+    <Compile Include="AirView\Entities\GetWorkOrderAssign.cs" />
+    <Compile Include="AirView\Entities\NetLayerReport.cs" />
+    <Compile Include="AirView\Entities\NetworkMode.cs" />
+    <Compile Include="AirView\Entities\ReDrive.cs" />
+    <Compile Include="AirView\Entities\RegionsVM.cs" />
+    <Compile Include="AirView\Entities\SectorsVM.cs" />
+    <Compile Include="AirView\Entities\SiteReportPlotVM.cs" />
+    <Compile Include="AirView\Entities\SiteReportVM.cs" />
+    <Compile Include="AirView\Entities\SitesVM.cs" />
+    <Compile Include="AirView\Entities\TestCategoryVM.cs" />
+    <Compile Include="AirView\Entities\TestConfiguration.cs" />
+    <Compile Include="AirView\Entities\TestKpiVM.cs" />
+    <Compile Include="AirView\Entities\TestResultVm.cs" />
+    <Compile Include="AirView\Entities\TestTypeVM.cs" />
+    <Compile Include="AirView\Entities\UserCity.cs" />
+    <Compile Include="AirView\Entities\UserClients.cs" />
+    <Compile Include="AirView\Entities\Workorder.cs" />
+    <Compile Include="AirView\Entities\WoStatus.cs" />
+    <Compile Include="Common\Conversion.cs" />
+    <Compile Include="Common\ObjectShredder.cs" />
+    <Compile Include="Common\CustomDataTable.cs" />
+    <Compile Include="Common\DataContext.cs" />
+    <Compile Include="Common\DataType.cs" />
+    <Compile Include="Common\DateFunctions.cs" />
+    <Compile Include="Common\dbDataTable.cs" />
+    <Compile Include="Common\DirectoryHandler.cs" />
+    <Compile Include="Common\Email.cs" />
+    <Compile Include="Common\Encryption.cs" />
+    <Compile Include="Common\FireBase.cs" />
+    <Compile Include="Common\myFile.cs" />
+    <Compile Include="Common\KML.cs" />
+    <Compile Include="Common\myDataTable.cs" />
+    <Compile Include="Common\MyString.cs" />
+    <Compile Include="Common\ObjectProperties.cs" />
+    <Compile Include="Common\SelectedList.cs" />
+    <Compile Include="Common\TempData.cs" />
+    <Compile Include="EFModel\AirViewConnectionString.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AirViewConnectionString.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EFModel\AirViewConnectionString.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AirViewConnectionString.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EFModel\AirViewConnectionString.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AirViewConnectionString.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="EFModel\AV_LogsInfo.cs">
+      <DependentUpon>AirViewConnectionString.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EFModel\AV_NemoSiteLogs.cs">
+      <DependentUpon>AirViewConnectionString.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EFModel\AV_ProcessNemoLogs_Result.cs">
+      <DependentUpon>AirViewConnectionString.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fleet\BLL\FM_FleetReportBL.cs" />
+    <Compile Include="Fleet\BLL\FM_TrackerAlarmConfigurationBL.cs" />
+    <Compile Include="Fleet\BLL\FM_VehicleBL.cs" />
+    <Compile Include="Fleet\DAL\FM_FleetReportDL.cs" />
+    <Compile Include="Fleet\DAL\FM_TrackerAlarmConfigurationDL.cs" />
+    <Compile Include="Fleet\DAL\FM_VehicleDL.cs" />
+    <Compile Include="Fleet\Model\FleetReplayCriteria.cs" />
+    <Compile Include="Fleet\Model\FM_FleetReplay_VM.cs" />
+    <Compile Include="Fleet\Model\FM_PositioningReport.cs" />
+    <Compile Include="Fleet\Model\FleetRptCriteria.cs" />
+    <Compile Include="Fleet\Model\FM_KML_VM.cs" />
+    <Compile Include="Fleet\Model\FM_ManageTracker.cs" />
+    <Compile Include="Fleet\Model\FM_Permissions.cs" />
+    <Compile Include="Fleet\Model\FM_RouteKML.cs" />
+    <Compile Include="Fleet\Model\FM_TrackerAlarmConfiguration.cs" />
+    <Compile Include="Fleet\Model\FM_TrackerTrip.cs" />
+    <Compile Include="Fleet\Model\FM_TrackerWifiSetting.cs" />
+    <Compile Include="Fleet\Model\FM_Tracker_AlarmVal.cs" />
+    <Compile Include="Fleet\Model\FM_Tracker_AssetStatus.cs" />
+    <Compile Include="Fleet\Model\FM_Tracker_InputOutputStatus.cs" />
+    <Compile Include="Fleet\Model\FM_Tracker_VM.cs" />
+    <Compile Include="Fleet\Model\FM_Vehicle.cs" />
+    <Compile Include="Fleet\Model\FM_VehicleGroup.cs" />
+    <Compile Include="Fleet\Model\FM_VehicleStates.cs" />
+    <Compile Include="Fleet\Model\FM_VehicleTrackerHistory.cs" />
+    <Compile Include="Fleet\Model\FM_Vehicle_Assignment.cs" />
+    <!--<Compile Include="EFModel\flieInformation.cs">
+      <DependentUpon>AirViewConnectionString.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EFModel\tsvFileInformation.cs">
+      <DependentUpon>AirViewConnectionString.tt</DependentUpon>
+    </Compile>-->
+    <Compile Include="KPI\VM\KPIDATA_VM.cs" />
+    <Compile Include="Project\BLL\AD_ChartSettings_BL.cs" />
+    <Compile Include="Project\BLL\AD_ProjectsBL.cs" />
+    <Compile Include="Project\BLL\PM_DashboardBL.cs" />
+    <Compile Include="Project\BLL\PM_EntityBL.cs" />
+    <Compile Include="Project\BLL\PM_GazetteHolidaysBL.cs" />
+    <Compile Include="Project\BLL\PM_ImportProjectPlanBL.cs" />
+    <Compile Include="Project\BLL\PM_IssueBL.cs" />
+    <!--<Compile Include="Project\BLL\PM_KPI_BL.cs" />-->
+    <Compile Include="Project\BLL\PM_KPI_BL.cs" />
+    <Compile Include="Project\BLL\PM_ProjectBL.cs" />
+    <Compile Include="Project\BLL\PM_ProjectResourceBL.cs" />
+    <Compile Include="Project\BLL\PM_SiteTaskAttachment_BL.cs" />
+    <Compile Include="Project\BLL\PM_TargetsBL.cs" />
+    <Compile Include="Project\BLL\PM_TaskBL.cs" />
+    <Compile Include="Project\BLL\PM_TaskEntryBL.cs" />
+    <Compile Include="Project\BLL\PM_TaskStagesBL.cs" />
+    <Compile Include="Project\BLL\PM_TodoBL.cs" />
+    <Compile Include="Project\BLL\PM_TrackerBL.cs" />
+    <Compile Include="Project\BLL\PM_WorkGroupsBL.cs" />
+    <Compile Include="Project\BLL\PM_WorkLogBL.cs" />
+    <Compile Include="Project\BLL\PM_TrackerGroupsBL.cs" />
+    <Compile Include="Project\DAL\AD_ChartSettings_DL.cs" />
+    <Compile Include="Project\DAL\AD_ProjectsDL.cs" />
+    <Compile Include="Project\DAL\PM_DashboardDL.cs" />
+    <Compile Include="Project\DAL\PM_EntityDL.cs" />
+    <Compile Include="Project\DAL\PM_GazetteHolidaysDL.cs" />
+    <Compile Include="Project\DAL\PM_ImportProjectPlanDL.cs" />
+    <Compile Include="Project\DAL\PM_IssueDL.cs" />
+    <Compile Include="Project\DAL\PM_KPI_DL.cs" />
+    <Compile Include="Project\DAL\PM_ProjectDL.cs" />
+    <Compile Include="Project\DAL\PM_ProjectResourceDL.cs" />
+    <Compile Include="Project\DAL\PM_Report_DL.cs" />
+    <Compile Include="Project\DAL\PM_SiteTaskAttachment_DL.cs" />
+    <Compile Include="Project\DAL\PM_SiteTaskTrackersDL.cs" />
+    <Compile Include="Project\DAL\PM_TaskStagesDL.cs" />
+    <Compile Include="Project\DAL\PM_TrackerDL.cs" />
+    <Compile Include="Project\DAL\PM_TargetsDL.cs" />
+    <Compile Include="Project\DAL\PM_TaskDL.cs" />
+    <Compile Include="Project\DAL\PM_TaskEntryDL.cs" />
+    <!--<Compile Include="Project\DAL\PM_KPI_DL.cs" />-->
+    <Compile Include="Project\DAL\PM_TodoDL.cs" />
+    <Compile Include="Project\DAL\PM_TrackerGroupsDL.cs" />
+    <Compile Include="Project\DAL\PM_WorkGroupsDAL.cs" />
+    <Compile Include="Project\DAL\PM_WorkLogDL.cs" />
+    <Compile Include="Project\DTO\PM_ProjectEntityFilters_DTO.cs" />
+    <Compile Include="Project\DTO\PM_ProjectEntity_DTO.cs" />
+    <Compile Include="Project\DTO\PM_ProjectEventFilters_DTO.cs" />
+    <Compile Include="Project\DTO\PM_Projects_DTO.cs" />
+    <Compile Include="Project\Model\AD_Projects.cs" />
+    <Compile Include="Project\Model\ChartSettings.cs" />
+    <Compile Include="Project\Model\MP_Import_WR_Issues.cs" />
+    <Compile Include="Project\Model\MP_Import_WR_Site.cs" />
+    <Compile Include="Project\Model\PM_CompanyHierarchy.cs" />
+    <Compile Include="Project\Model\PM_Entity.cs" />
+    <Compile Include="Project\Model\PM_GazetteHolidays.cs" />
+    <Compile Include="Project\Model\PM_ImportProjectPlan.cs" />
+    <Compile Include="Project\Model\MilestoneModel.cs" />
+    <Compile Include="Project\Model\PM_Attachments.cs" />
+    <Compile Include="Project\Model\PM_Dashboard.cs" />
+    <Compile Include="Project\Model\PM_ImportProjectPlans.cs" />
+    <Compile Include="Project\Model\PM_Issues.cs" />
+    <Compile Include="Project\Model\PM_IssuesLog.cs" />
+    <!--<Compile Include="Project\Model\PM_KPI.cs" />-->
+    <Compile Include="Project\Model\PM_KPI.cs" />
+    <Compile Include="Project\Model\PM_Project.cs" />
+    <Compile Include="Project\Model\PM_ProjectFACode.cs" />
+    <Compile Include="Project\Model\PM_ProjectLookup.cs" />
+    <Compile Include="Project\Model\PM_ProjectResource.cs" />
+    <Compile Include="Project\Model\PM_ProjectSite.cs" />
+    <Compile Include="Project\Model\PM_SiteTaskAttachment.cs" />
+    <Compile Include="Project\Model\PM_SiteTaskInventory.cs" />
+    <Compile Include="Project\Model\PM_SiteTaskInventoryAttachments.cs" />
+    <Compile Include="Project\Model\PM_SiteTaskInventoryHeader.cs" />
+    <Compile Include="Project\Model\PM_SiteTaskParents.cs" />
+    <Compile Include="Project\Model\PM_SiteTasks.cs" />
+    <Compile Include="Project\Model\PM_SiteTaskTracker.cs" />
+    <Compile Include="Project\Model\PM_Targets.cs" />
+    <Compile Include="Project\Model\PM_Task.cs" />
+    <Compile Include="Project\Model\PM_TaskDataEntry.cs" />
+    <Compile Include="Project\Model\PM_TaskEntry.cs" />
+    <!--<Compile Include="Project\Model\PM_Threshold.cs" />-->
+    <Compile Include="Project\Model\PM_TaskStages.cs" />
+    <Compile Include="Project\Model\PM_Threshold.cs" />
+    <Compile Include="Project\Model\PM_Todo.cs" />
+    <Compile Include="Project\Model\PM_Tracker.cs" />
+    <Compile Include="Project\Model\PM_WorkGroups.cs" />
+    <Compile Include="Project\Model\PM_UEItems.cs" />
+    <Compile Include="Project\Model\PM_UETypes.cs" />
+    <Compile Include="Project\Model\PM_WorkLog.cs" />
+    <Compile Include="Project\Model\ProjectApiObject.cs" />
+    <Compile Include="Project\Model\TaskModel.cs" />
+    <Compile Include="Project\Model\PM_TrackerGroups.cs" />
+    <Compile Include="Project\Model\TrackerModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Schema\BAL\TablesBL.cs" />
+    <Compile Include="Schema\DAL\DatabaseSchemaDL.cs" />
+    <Compile Include="Schema\Models\Columns.cs" />
+    <Compile Include="Schema\Models\Tables.cs" />
+    <Compile Include="Security\BLL\Sec_DomainConfigurationBL.cs" />
+    <Compile Include="Security\BLL\Sec_PermissionBL.cs" />
+    <Compile Include="Security\BLL\Sec_RoleBL.cs" />
+    <Compile Include="Security\BLL\Sec_UserBL.cs" />
+    <Compile Include="Security\BLL\Sec_UserDefinationTypeBL.cs" />
+    <Compile Include="Security\BLL\Sec_UserDevicesBL.cs" />
+    <Compile Include="Security\BLL\Sec_UserSettingsBL.cs" />
+    <Compile Include="Security\BLL\UserDateRightsBL.cs" />
+    <Compile Include="Security\DAL\RolePermissionDL.cs" />
+    <Compile Include="Security\DAL\Sec_DomainConfigurationDL.cs" />
+    <Compile Include="Security\DAL\Sec_PermissionDL.cs" />
+    <Compile Include="Security\DAL\Sec_RoleDL.cs" />
+    <Compile Include="Security\DAL\Sec_UserDefinationTypeDL.cs" />
+    <Compile Include="Security\DAL\Sec_UserDevicesDL.cs" />
+    <Compile Include="Security\DAL\Sec_UserDL.cs" />
+    <Compile Include="Security\DAL\Sec_UserProjectsDL.cs" />
+    <Compile Include="Security\DAL\Sec_UserScopeDL.cs" />
+    <Compile Include="Security\DAL\Sec_UserSettingsDL.cs" />
+    <Compile Include="Security\DAL\UserDateRightsDL.cs" />
+    <Compile Include="Security\DAL\UserPermissionDL.cs" />
+    <Compile Include="Security\Entities\LoginInformation.cs" />
+    <Compile Include="Security\Entities\Sec_DomainConfiguration.cs" />
+    <Compile Include="Security\Entities\Sec_Permission.cs" />
+    <Compile Include="Security\Entities\Sec_Role.cs" />
+    <Compile Include="Security\Entities\Sec_User.cs" />
+    <Compile Include="Security\Entities\Sec_UserApplicaton.cs" />
+    <Compile Include="Security\Entities\Sec_UserDefinationType.cs" />
+    <Compile Include="Security\Entities\Sec_UserDevices.cs" />
+    <Compile Include="Security\Entities\Sec_UserProjects.cs" />
+    <Compile Include="Security\Entities\Sec_UserSettings.cs" />
+    <Compile Include="Security\Entities\Sec_Workgroup.cs" />
+    <Compile Include="Security\Entities\Summary.cs" />
+    <Compile Include="Security\Entities\UserDateRights.cs" />
+    <Compile Include="Survey\BLL\CLS_VMBL.cs" />
+    <Compile Include="Survey\BLL\RequiredActionsBL.cs" />
+    <Compile Include="Survey\Model\SiteInfo.cs" />
+    <Compile Include="Survey\BLL\TSS_DashboardBL.cs" />
+    <Compile Include="Survey\BLL\TSS_QuestionBL.cs" />
+    <Compile Include="Survey\BLL\TSS_QuestionLogicBL.cs" />
+    <Compile Include="Survey\BLL\TSS_ResponseBL.cs" />
+    <Compile Include="Survey\BLL\TSS_SectionBL.cs" />
+    <Compile Include="Survey\BLL\TSS_SectionIterationBL.cs" />
+    <Compile Include="Survey\BLL\TSS_SurveyDocumentBL.cs" />
+    <Compile Include="Survey\BLL\TSS_VMBL.cs" />
+    <Compile Include="Survey\DAL\CLS_VMDL.cs" />
+    <Compile Include="Survey\DAL\TSS_DashboardDL.cs" />
+    <Compile Include="Survey\DAL\TSS_QuestionDL.cs" />
+    <Compile Include="Survey\DAL\TSS_QuestionLogicDL.cs" />
+    <Compile Include="Survey\DAL\TSS_RequiredActionDL.cs" />
+    <Compile Include="Survey\DAL\TSS_ResponseDL.cs" />
+    <Compile Include="Survey\DAL\TSS_SectionDL.cs" />
+    <Compile Include="Survey\DAL\TSS_SiteContactDL.cs" />
+    <Compile Include="Survey\DAL\TSS_SurveyDocumentDL.cs" />
+    <Compile Include="Survey\DAL\TSS_SurveyResponseDL.cs" />
+    <Compile Include="Survey\DAL\TSS_TemplateDL.cs" />
+    <Compile Include="Survey\DAL\TSS_VMDL.cs" />
+    <Compile Include="Survey\Model\CLS_VM.cs" />
+    <Compile Include="Survey\Model\MultipleChoices.cs" />
+    <Compile Include="Survey\Model\SurveySitesInfo.cs" />
+    <Compile Include="Survey\Model\TSS_Question.cs" />
+    <Compile Include="Survey\Model\RequiredActions.cs" />
+    <Compile Include="Survey\Model\Respondents.cs" />
+    <Compile Include="Survey\Model\TSS_QuestionLogic.cs" />
+    <Compile Include="Survey\Model\TSS_Response.cs" />
+    <Compile Include="Survey\Model\TSS_Section.cs" />
+    <Compile Include="Survey\Model\TSS_SectionIteration.cs" />
+    <Compile Include="Survey\Model\TSS_SectorLocations.cs" />
+    <Compile Include="Survey\Model\TSS_SiteAttendees.cs" />
+    <Compile Include="Survey\Model\TSS_SiteContact.cs" />
+    <Compile Include="Survey\Model\TSS_SurveyAction.cs" />
+    <Compile Include="Survey\Model\TSS_SurveyDocument.cs" />
+    <Compile Include="Survey\Model\TSS_SurveyResponse.cs" />
+    <Compile Include="Survey\Model\TSS_Template.cs" />
+    <Compile Include="Survey\Model\TSS_VM.cs" />
+    <Compile Include="Survey\Model\TSS_WorkOrderCSV.cs" />
+    <Compile Include="Template\BLL\TMP_ModuleTypeBL.cs" />
+    <Compile Include="Template\DAL\TMP_GetProjectScopeDL.cs" />
+    <Compile Include="Template\BLL\TMP_GetSiteReportBL.cs" />
+    <Compile Include="Template\BLL\TMP_NodeBL.cs" />
+    <Compile Include="Template\BLL\TMP_NodeSettingsBL.cs" />
+    <Compile Include="Template\BLL\TMP_NodesPropertiesBL.cs" />
+    <Compile Include="Template\BLL\TMP_TemplatesBL.cs" />
+    <Compile Include="Template\DAL\TMP_GetDashboardDL.cs" />
+    <Compile Include="Template\DAL\TMP_GetSiteReportDL.cs" />
+    <Compile Include="Template\DAL\TMP_ModuleTypesDL.cs" />
+    <Compile Include="Template\DAL\TMP_NodeDL.cs" />
+    <Compile Include="Template\DAL\TMP_NodeSettingsDL.cs" />
+    <Compile Include="Template\DAL\TMP_NodesPropertiesDL.cs" />
+    <Compile Include="Template\DAL\TMP_TemplatesDL.cs" />
+    <Compile Include="Template\Model\ModuleType.cs" />
+    <Compile Include="Template\Model\QuerySetting.cs" />
+    <Compile Include="Template\Model\MetaData.cs" />
+    <Compile Include="Template\Model\Schema.cs" />
+    <Compile Include="Template\Model\TMP_DashboardMap.cs" />
+    <Compile Include="Common\DataTableColumns.cs" />
+    <Compile Include="Template\Model\TMP_GetSiteReportVM.cs" />
+    <Compile Include="Template\Model\TMP_Node.cs" />
+    <Compile Include="Template\Model\TMP_NodeSettings.cs" />
+    <Compile Include="Template\Model\TMP_NodesProperties.cs" />
+    <Compile Include="Template\Model\TMP_SiteDetail.cs" />
+    <Compile Include="Template\Model\TMP_Templates.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Team\BLL\" />
+    <Folder Include="Team\DAL\" />
+    <Folder Include="Team\Model\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EntityDeploy Include="EFModel\AirViewConnectionString.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>AirViewConnectionString1.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="EFModel\AirViewConnectionString.edmx.diagram">
+      <DependentUpon>AirViewConnectionString.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EFModel\AirViewConnectionString.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AirViewConnectionString.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="EFModel\AirViewConnectionString.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AirViewConnectionString1.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

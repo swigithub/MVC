@@ -1,0 +1,78 @@
+﻿
+@using SWI.Libraries.AirView.Entities
+@model IEnumerable<SiteDashboardThroughtputChart>
+
+<div id="ULChart" style="height: 230px; width: 100%;"></div>
+
+<script>
+    var type='@ViewBag.type';
+    var ULgMax=[];
+    var ULMin=[];
+    var ULAvg=[];
+
+    @if (ViewBag.type == "Sector")
+     {
+         <text>
+    var ULLineChartData = [
+            @foreach (var item in Model)
+            {
+
+        @:{ x: new Date('@item.TimeStamp.Value.Month @item.TimeStamp.Value.Day, @item.TimeStamp.Value.Year @item.TimeStamp.Value.Hour:@item.TimeStamp.Value.Minute:@item.TimeStamp.Value.Second:@item.TimeStamp.Value.Millisecond'), y: @item.MaxResult },
+            }
+    ];
+
+    </text>
+     }
+     else {
+         <text>
+    
+
+
+        @foreach (var item in Model)
+    {
+        @:ULgMax.push({ label: "@item.Sector", y: @item.MaxResult });
+        @:ULMin.push({ label: "@item.Sector", y: @item.MinResult });
+        @:ULAvg.push({ label: "@item.Sector", y: @item.AvgResult });
+    }
+
+    var ULChartData=[
+                        {
+                            type: "stackedColumn",
+                            name: "Min",
+                            showInLegend: true,
+                            dataPoints: ULMin
+                        },
+                        {
+                            type: "stackedColumn",
+                            name: "Max",
+                            showInLegend: true,
+                            dataPoints: ULgMax
+                        },
+                        {
+                            type: "stackedColumn",
+                            name: "Avg",
+                            showInLegend: true,
+                            dataPoints: ULAvg
+                        },
+    ]
+
+    $("#ULChart").CanvasJSChart({
+        nimationEnabled: true,
+        title: {
+            text: ""
+        },
+        axisY: {
+            title: ""
+        },
+        toolTip: {
+            content: "{label} <br/>{name} : {y} "
+        },
+        data: ULChartData
+    });
+    
+    </text>
+     }
+
+    
+
+</script>

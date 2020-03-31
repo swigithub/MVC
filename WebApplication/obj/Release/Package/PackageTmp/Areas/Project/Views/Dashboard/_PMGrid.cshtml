@@ -1,0 +1,767 @@
+﻿@*@model IEnumerable<AirView.DBLayer.Project.Model.PM_Dashboard>*@
+@using System.Data;
+@{
+    var count = 0; 
+    var Entity = TempData["ProjectEntity"] as AirView.DBLayer.Security.Entities.Sec_UserProjects;
+    TempData.Keep("ProjectEntity");
+
+}
+
+<style>
+    td.details-control {
+        background: url('/Content/Images/Common/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    td.detail-control {
+        background: url('/Content/Images/Common/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('/Content/Images/Common/details_close.png') no-repeat center center;
+    }
+
+    tr.shownband td.detail-control {
+        background: url('/Content/Images/Common/details_close.png') no-repeat center center;
+    }
+
+    .SelectedRow {
+        background-color: #454de2 !important;
+        color: white;
+    }
+
+.btn.add-sites {
+    z-index: 1;
+    height: 28px;
+    line-height: 27px;
+    padding: 0 10px;
+    background: #838488;
+    border-radius: 3px;
+    border: 0;
+    font-size: 11px;
+    position: absolute;
+    left: 230px;
+    top:2px;
+}
+
+
+    div#divclientsites {
+        position: relative;
+    }
+</style>
+
+
+
+<style>
+    /* The switch - the box around the slider */
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 35px;
+    height: 16px;
+    position: absolute;
+    left: 440px;
+    z-index: 1;
+    top: 8px;
+}
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            display: none;
+        }
+
+    /* The slider */
+    .checkbox-btn {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .checkbox-btn:before {
+            position: absolute;
+            content: "";
+            height: 10px;
+            width: 10px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .checkbox-btn {
+        background-color: #2196F3;
+    }
+
+    input:focus + .checkbox-btn {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .checkbox-btn:before {
+        -webkit-transform: translateX(18px);
+        -ms-transform: translateX(18px);
+        transform: translateX(18px);
+    }
+</style>
+
+@if (ViewBag.AllowUri("/ProjectSites/all"))
+{
+    <a class="btn btn-xs btn-info add-sites addNewSite" href="/ProjectSites/all/@TempData["CProjectID"]" target="_blank">
+        Add New @Entity.Plural
+    </a>
+}
+@if (ViewBag.AllowUri("/Project/Task/Index"))
+{
+    <a class="btn btn-xs btn-info add-sites" href="/Project/Task/Index?ProjectId=@TempData["CProjectID"]" target="_blank" style="margin-left:100px;">
+        Group Planning
+    </a>
+}
+
+<label class="switch" style="margin-left: 29px">
+    <input type="checkbox" checked="checked" id="activeAndInactiveForSite" />
+    <span class="checkbox-btn"></span>
+</label>
+
+
+<div class="table-responsive">
+    <h3 id="TotalSites" hidden>@(ViewBag.Count)</h3>
+
+    <table id="tblSites" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <span id="lablevalues" hidden data-FACode="" data-SiteName="" data-Status="" data-CommonId="" data-UpdatedBy="" data-UpdatedOn=""></span>
+                <th class="NoExport"></th>
+                @foreach (DataColumn row in ViewBag.TableResult.Columns)
+                {
+                    if (@row.Caption != "Site Code" && @row.Caption != "SiteName" && @row.Caption != "ProjectId" && @row.Caption != "Count" && @row.Caption != "SiteId" && @row.Caption != "KeyCode" && @row.Caption != "ColorCode" && @row.Caption != "SubmittedOn" &&
+                    @row.Caption != "CreatedBy" && @row.Caption != "CreatedOn" && @row.Caption != "IsActive")
+                    {
+                        <th>@row.Caption</th>
+                    }
+                    if(@row.Caption == "Site Code")
+                    {
+                        <th>@Entity.Title Code</th>
+                    }
+                   
+                }
+                <th class="NoExport"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in ViewBag.TableResult.Rows)
+            {
+                string color = "";
+                string status = "";
+                <tr>
+                    @if (row.ItemArray[0].ToString() != "0")
+                {
+
+                    if (row["Count"].ToString() != "0")
+                    {
+                            <td class="details-control NoExport" data-ProjectId="@row["ProjectId"]" data-FaCode="@row["Site Code"]" data-Status="@row["Status"]" data-CommonId="@row["eNB"]"
+                                data-UpdatedBy="@row["CreatedBy"]" data-UpdatedOn="@row["CreatedOn"]" data-SiteId="@row["SiteId"]" data-SiteName="@row["SiteName"]">
+                                <h3 id="ProjectID" hidden>@row["ProjectId"]</h3>
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="" data-ProjectId="@row["ProjectId"]" data-FaCode="@row["Site Code"]" data-Status="@row["Status"]" data-CommonId="@row["eNB"]"
+                                data-UpdatedBy="@row["CreatedBy"]" data-UpdatedOn="@row["CreatedOn"]" data-SiteId="@row["SiteId"]"data-SiteName="@row["SiteName"]">
+                                <h3 id="ProjectID" hidden>@row["ProjectId"]</h3>
+                            </td>
+                        }
+                        foreach (DataColumn col in ViewBag.TableResult.Columns)
+                        {
+                        
+                            if (col.ColumnName == "SiteId")
+                            {
+                                TempData["SiteId"] = @row[col.ColumnName].ToString();
+                                string id = @row[col.ColumnName].ToString();
+                            }
+
+                            if (col.ColumnName != "SiteId" && col.ColumnName != "Count" && col.ColumnName != "SiteName" && col.ColumnName != "ProjectId" && col.ColumnName != "SubmittedOn" && col.ColumnName != "CreatedBy" && col.ColumnName != "CreatedOn")
+                            {
+                                if (col.ColumnName != "Status" && col.ColumnName != "KeyCode" && col.ColumnName != "ColorCode" && col.ColumnName != "IsActive")
+                                {
+                                    <td>@row[col.ColumnName]</td>
+                                }
+                                else if (col.ColumnName == "Status")
+                                {
+                                    status = @row[col.ColumnName].ToString();
+                                }
+
+                                if (col.ColumnName == "ColorCode")
+                                {
+                                    color = @row[col.ColumnName].ToString();
+                                }
+
+                                if (col.ColumnName == "KeyCode")
+                                {
+                                    <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@color">@status</span></td>
+
+                                    @*if (@row[col.ColumnName].ToString() == "COMPLETED")
+                                        {
+                                        <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@color">@status</span></td>
+                                        }
+                                        if (@row[col.ColumnName].ToString() == "PENDING_SCHEDULED")
+                                        {
+                                        <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@color">@status</span></td>
+                                        }
+                                        if (@row[col.ColumnName].ToString() == "SCHEDULED")
+                                        {
+                                        <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@color">@status</span></td>
+                                        }
+                                        if (@row[col.ColumnName].ToString() == "DRIVE_COMPLETED")
+                                        {
+                                        <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@color">@status</span></td>
+                                        }
+                                        if (@row[col.ColumnName].ToString() == "PENDING_WITH_ISSUE")
+                                        {
+                                        <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@color">@status</span></td>
+                                        }
+                                        if (@row[col.ColumnName].ToString() == "IN_PROGRESS")
+                                        {
+                                        <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@color">@status</span></td>
+                                        }
+                                        if (@row[col.ColumnName].ToString() == "PROJECT_STATUS")
+                                        {
+                                        <td><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@color">@status</span></td>
+                                        }*@
+                                }
+
+                            }
+
+
+                        }
+                        <td class="NoExport">
+
+@if (ViewBag.AllowUri("/Project/Task/StatusChange"))
+{
+                            <div class="more-options">
+                                <a href="javascript:void(0);" class="dropdown-toggle more-btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="modal-open Psite" title="Site Status" data-toggle="modal" data-target="#SiteStatus" data-ProjectSiteID="@row["SiteId"]" data-FaCode="@row["Site Code"]" data-SiteName="@row["SiteName"]" data-Status="@row["Status"]" data-CommonId="@row["eNB"]" data-UpdatedBy="@row["CreatedBy"]" data-UpdatedOn="@row["CreatedOn"]">
+                                            <img src="/Content/Images/Common/status_x24.png" alt="Site Status" style="" />
+                                            @Entity.Title Status
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="modal-open siteidd" data-backdrop="static" data-keyboard="false" title="Create Issue Ticket" data-Task="0" data-ProjectSiteId="@row["SiteId"]" data-SiteName="@row["SiteName"]" data-toggle="modal" data-target="#IssueModal" style="cursor:pointer;">
+
+                                           <img src="/Content/Images/Common/reportissue_x32.png" alt="View Report" style="" /> Issue Ticket
+                                        </a>
+                                    </li>                            
+                                    <li  style="cursor:pointer;">
+                                        @if (@row["IsActive"].ToString() == "True")
+                                        {
+                                            <a title="Deactivate"  onclick="SetSiteStatus(@row["SiteId"].ToString(),'false')">
+                                                <img src="/Content/Images/Common/deactive icon-02.png" alt="Deactive" style="" /> Deactivate
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a title="Deactivate" onclick="SetSiteStatus(@row["SiteId"].ToString(),'true')">
+                                                <img src="/Content/Images/Common/active icon-03.png" alt="Activate" style="" /> Activate
+                                            </a>
+
+                                        }
+
+                                    </li>
+                                </ul>
+                            </div>
+                            @*<a class="modal-open Psite pull-left" title="Site Status" data-toggle="modal" data-target="#SiteStatus" data-ProjectSiteID="@row["SiteId"]" data-FaCode="@row["Site Code"]" data-Status="@row["Status"]" data-CommonId="@row["eNB"]" data-UpdatedBy="@row["CreatedBy"]" data-UpdatedOn="@row["CreatedOn"]" style="cursor:pointer;">
+                                <span><img src="~/Content/Images/Common/hold_x24.png" alt="View Report" /></span>
+                            </a>*@
+}
+                            @*@if (@row["IsActive"].ToString() == "True"){
+                                <a class="td-icon" href="#" onclick="SetSiteStatus(@row["SiteId"].ToString(),'false')">&nbsp;&nbsp;<span style="color:red;" title="Deactive" class="fa  fa-arrow-circle-o-down"></span></a>
+                            }
+                            else
+                            {
+                                <a class="td-icon" href="#" onclick="SetSiteStatus(@row["SiteId"].ToString(),'true')">&nbsp;&nbsp;<span style="color:green;" title="Activate" class="fa fa-check-circle"></span></a>
+                            }*@
+
+                            @*<div class="btn-group" style="background-color:#337ab7;">
+
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="background-color:#337ab7;color:white;">
+                                <span style="margin: 5px;" class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" style="left:-185px!important;">
+                                <li>
+                                <a class="modal-open Psite" data-toggle="modal" data-target="#SiteStatus" data-ProjectSiteID="@row["SiteId"]" data-FaCode="@row["FACode"]" data-Status="@row["Status"]" data-CommonId="@row["Common Id"]"  data-UpdatedBy="@row["CreatedBy"]" data-UpdatedOn="@row["CreatedOn"]" style="cursor:pointer;">
+                                <span><img src="~/Content/Images/Common/hold_x24.png" alt="View Report" style="margin-right:20px;" />Site Status</span>
+                                </a>
+                                </li>
+
+                                </ul>
+                                </div>*@
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+    var statusAc = '@ViewBag.activeAndinative';
+
+    var IsShow = '@ViewBag.Show';
+    var view = '@ViewBag.view';
+    var NetLayer = '';
+    var SelectedSector = '';
+    var SitePrefix = '';
+    var SelectedSiteCode = '';
+    var FirstLatitude = '@ViewBag.Latitude';
+    var FirstLongitude = '@ViewBag.Longitude';
+    var table;
+    var responsiveHelper_datatable_col_reorder = undefined;
+
+
+   
+    $('.Psite').click(function () {
+    
+        var TskNme = $(this).parents('ul').parents('div').parents('td').siblings("td:eq(1)").text();
+        $('#lablevalues').attr({ 'data-FACode': $(this).attr('data-FACode'), 'data-SiteName': $(this).attr('data-SiteName'), 'data-CommonId': $(this).attr('data-CommonId'), 'data-Status': $(this).attr('data-Status'), 'data-UpdatedBy': $(this).attr('data-UpdatedBy'), 'data-UpdatedOn': moment.utc($(this).attr('data-UpdatedOn')).format('DD MMM, YYYY') })
+        FillLabel($(this).attr('data-FACode'), $(this).attr('data-SiteName'), null, $(this).attr('data-Status'), $(this).attr('data-UpdatedBy'), moment.utc($(this).attr('data-UpdatedOn')).format('DD MMM, YYYY'));
+        angular.element(document.getElementById('widget-grid')).scope().GetDefinitions();
+        angular.element(document.getElementById('widget-grid')).scope().clearfields();
+        angular.element(document.getElementById('widget-grid')).scope().GetSiteLog($(this).attr('data-projectsiteid'));
+        ProjectSiteId = $(this).attr('data-ProjectSiteID');
+    });
+
+    function OpenStreamWindow(Id, code) {
+        var id = Id.toString();
+        var code = code.toString();
+        window.open("/Dashboard/Support/" + id + "-" + code, "_blank", "toolbar=no,location=no,scrollbars=no,resizable=no,top=50,left=200,width=350,height=600");
+
+    }
+
+
+
+    function formatBandsTable(ProjectId, SiteId, FaCode) {
+
+        var milestone;
+
+        $.ajax({
+            url: '/Project/Dashboard/TLGrid?ProjectId=' + ProjectId + '&SiteId=' + SiteId + '&FACode=' + FaCode,
+            type: 'Get',
+            async: false,
+            // dataType: 'text',
+            //   processData: false,
+            success: function (data) {
+
+                if (data == "") {
+                }
+                else {
+                    milestone = data;
+                }
+            }
+        });
+
+
+
+        return milestone;
+
+    }
+
+    function format(ProjecId, MilestoneId, ProjectSiteId, FaCode) {
+        var retTable;
+        var ur = '/Project/Dashboard/TLGrid?ProjectId=' + ProjecId + '&SiteId=' + ProjectSiteId + '&FACode=' + FaCode + '&MilestoneId=' + MilestoneId
+        //  var url = '/Project/Dashboard/STGrid?ProjecId=' + ProjecId + '&MilestoneId=' + MilestoneId + '&SiteId=' + ProjectSiteId;
+        $.ajax({
+            url: ur,
+            type: 'GET',
+            async: false,
+            success: function (data) {
+                if (data == "") {
+                }
+                else {
+                    retTable = data;
+                }
+            }
+        });
+       return retTable;
+    }
+
+    $(function () {
+
+
+        $('.siteidd').click(function () {
+            $('#Issuelbl').text("Site Issue Ticket");
+            angular.element(document.getElementById('widget-grid')).scope().clearfields();
+            var TskNme = $(this).parents('ul').parents('div').parents('td').siblings("td:eq(1)").text();
+            $(this).parents('table').parents('tbody').attr('id');
+            FillLabel(TskNme, $(this).attr('data-SiteName'),null, $('#lablevalues').attr('data-Status'), $('#lablevalues').attr('data-UpdatedBy'), $('#lablevalues').attr('data-UpdatedOn'));
+
+            //$('.labelFacode').html($('#facode').attr('data-FACode'));
+            ProjectSiteId = $(this).attr('data-projectsiteid');
+            TaskID =0;
+            angular.element(document.getElementById('widget-grid')).scope().GetSiteIssues(TaskID, 0);
+            angular.element(document.getElementById('widget-grid')).scope().GetUsers(0);
+            angular.element(document.getElementById('widget-grid')).scope().GetDefinitions();
+            angular.element(document.getElementById('widget-grid')).scope().GetIssueType();
+            angular.element(document.getElementById('widget-grid')).scope().tickettype("Site Issue");
+
+
+
+        });
+
+        $('td.details-control').click(function () {
+            FillLabel($(this).attr('data-FACode'), $(this).attr('data-CommonId'), $(this).attr('data-Status'), $(this).attr('data-UpdatedBy'), moment.utc($(this).attr('data-UpdatedOn')).format('DD MMM, YYYY'));
+            $('#lablevalues').attr({ 'data-FACode': $(this).attr('data-FACode'), 'data-SiteName': $(this).attr('data-SiteName'), 'data-CommonId': $(this).attr('data-CommonId'), 'data-Status': $(this).attr('data-Status'), 'data-UpdatedBy': $(this).attr('data-UpdatedBy'), 'data-UpdatedOn': moment.utc($(this).attr('data-UpdatedOn')).format('DD MMM, YYYY') })
+            //var lblfacode = '', lblsite = '', lblstatus = '', lblupdateby = '';
+            //if ($(this).attr('data-FACode') != "") {
+            //    lblfacode = '<label style="margin-left: 33px;">FACode: </label><label style="margin-left:3px;">' + $(this).attr('data-FACode') + '</label>'
+
+            //}
+            //if ($(this).attr('data-CommonId') != "") {
+            //    lblsite = '<label  style="margin-left: 33px;">Site: </label><label style="margin-left:3px;">' + $(this).attr('data-CommonId') + '</label>'
+            //}
+            //if ($(this).attr('data-Status') != "") {
+            //    lblstatus = '<label  style="margin-left: 33px;">Last Status: </label><label style="margin-left:3px;">' + $(this).attr('data-Status') + '</label>'
+            //}
+            //if ($(this).attr('data-UpdatedBy') != "") {
+            //    lblupdateby = '<label  style="margin-left: 33px;">Updated By: </label><label style="margin-left:3px;">' + $(this).attr('data-UpdatedBy') + '</label>'
+            //}
+            //var labelText = lblfacode + lblsite + lblstatus + lblupdateby;
+            //$('.labelFacode').empty();
+
+            ////$('.labelFacode').html($(this).attr('data-FACode'));
+            //$('.labelFacode').html(labelText);
+
+
+
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+            if ($(this).closest("tr").hasClass("shown")) {
+                row.child.hide();
+                tr.removeClass('shown');
+               row.child.hide();
+                tr.next().hide();
+                tr.removeClass('shown');
+
+            } else {
+                var ProjectId = $(this).attr('data-projectid');
+                var siteid = $(this).attr('data-Siteid');
+                var FaCode = $(this).attr('data-FaCode');
+                var rec = formatBandsTable(ProjectId, siteid, FaCode);
+              //  row.child(rec).show();
+                tr.after("<tr> <td colspan='17' style='width:100%'>" + rec + "</td></tr>")
+                tr.addClass('shown');
+            }
+        });
+        if ('@ViewBag.Show' != 'no') {
+            var SiteDetails = $('.SiteDetails');
+            SiteDetails.hover(function () {
+                $(this).css({
+                    'cursor': 'pointer'
+                });
+            });
+            SiteDetails.click(function () {
+                window.location.href = "/sitedashboard/index?id=" + $(this).attr('data-SiteId');
+            });
+        }
+        var breakpointDefinition = {
+            tablet: 1024,
+            phone: 480
+        };
+
+
+        table = $('#tblSites').DataTable({
+            "searching": false,
+            "sDom": "<'#positionFilter'>t<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'C>r>" +
+                "t" +
+                "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
+            "autoWidth": true,
+            "preDrawCallback": function () {
+                // Initialize the responsive datatables helper once.
+                if (!responsiveHelper_datatable_col_reorder) {
+                    responsiveHelper_datatable_col_reorder = new ResponsiveDatatablesHelper($('#tblSites'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_datatable_col_reorder.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_datatable_col_reorder.respond();
+            },
+            "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
+            dom: 'frtlip',
+            "columnDefs": [
+           {
+               "targets": [6],
+               "visible": false,
+               "searchable": true
+           },
+           {
+               "targets": [7],
+               "visible": false,
+               "searchable": true
+           },
+           {
+               "targets": [12],
+               "visible": false,
+               "searchable": true
+           },
+           {
+               "targets": [13],
+               "visible": false,
+               "searchable": true
+           },
+           {
+               "targets": [14],
+               "visible": false,
+               "searchable": true
+           }
+            ]
+        });
+        table.column(5).visible(false);
+        table.column(6).visible(false);
+        table.column(7).visible(false);
+        table.column(8).visible(false);
+        table.column(9).visible(false);
+        table.column(10).visible(false);
+        table.column(11).visible(false);
+
+        table.column(13).visible(false);
+        table.column(12).visible(false);
+        table.column(14).visible(false);
+ 
+        var SearchInput = `<div class="input-group">
+                          <input type="text" class ="form-control sitesearchoption" placeholder="Search" name="search">
+                          <div class="input-group-btn">
+                            <button class ="btn btn-default" id="searchSiteBtn" style="background-color: lightgray;"><i class ="glyphicon glyphicon-search"></i></button>
+                          </div>
+                        </div>`;
+        $('#positionFilter').html(SearchInput);
+
+        $(document).on('click', '#searchSiteBtn', function () {
+            $("body").append(`<div id="ajaxLoading" style="position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; margin: auto; padding: 8px; text-align: center; vertical-align: middle; width: 140px; height: 95px; z-index: 2000; border-radius: 4px; display: block;"><img src="/Content/Images/Application/Logo_Loading.gif" style="margin-bottom:8px;width:100px;height:100px"><p style="margin:0;font-size:15px;color:#fff;background:#88887B">Please Wait...</p></div>`);
+
+            try {
+                var isSiteListActive = $("#activeAndInactiveForSite").is(":checked");
+                var value = $(".sitesearchoption").val();
+                UserSerachValue = value;
+                $(".sitesearchoption").val(UserSerachValue);
+                var url = '/Project/Dashboard/TableResult?ProjectId=' + $("#pId").attr("data-ProjectId") + '&Page=1' + '&TaskIds=' + $.cookie("ProjectTasks") + '&LocationIds=' +
+                         $.cookie(CookiesIdentifier + "SiteProjectMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + 'SiteFromDate') + '&ToDate=' + $.cookie(CookiesIdentifier + 'SiteToDate') + '&IsActive=' + isSiteListActive + "&Searchoption=" + value;
+                console.log(url);
+                $.ajax({
+                    url: url,
+                    type: 'Get',
+                    async: false,
+                    success: function (data) {
+                        $('#divclientsites').html(data);
+                        SiteGridPagination();
+                        $(".sitesearchoption").val(value);
+                        $("#ajaxLoading").remove();
+                    },
+                    error: function (r) {
+                        $("#ajaxLoading").remove();
+                    }
+                });
+            }
+            catch (e) {
+                $("#ajaxLoading").remove();
+            }
+        });
+
+        $(document).keypress(function (e) {
+            if (e.which == 13) {
+                $("body").append(`<div id="ajaxLoading" style="position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; margin: auto; padding: 8px; text-align: center; vertical-align: middle; width: 140px; height: 95px; z-index: 2000; border-radius: 4px; display: block;"><img src="/Content/Images/Application/Logo_Loading.gif" style="margin-bottom:8px;width:100px;height:100px"><p style="margin:0;font-size:15px;color:#fff;background:#88887B">Please Wait...</p></div>`);
+
+                try {
+                    var isSiteListActive = $("#activeAndInactiveForSite").is(":checked");
+                    var value = $(".sitesearchoption").val();
+                    UserSerachValue = value;
+                    $(".sitesearchoption").val(UserSerachValue);
+                    var url = '/Project/Dashboard/TableResult?ProjectId=' + $("#pId").attr("data-ProjectId") + '&Page=1' + '&TaskIds=' + $.cookie("ProjectTasks") + '&LocationIds=' +
+                             $.cookie(CookiesIdentifier + "SiteProjectMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + 'SiteFromDate') + '&ToDate=' + $.cookie(CookiesIdentifier + 'SiteToDate') + '&IsActive=' + isSiteListActive + "&Searchoption=" + value;
+                    console.log(url);
+                    $.ajax({
+                        url: url,
+                        type: 'Get',
+                        async: false,
+                        success: function (data) {
+                            $('#divclientsites').html(data);
+                            SiteGridPagination();
+                            $(".sitesearchoption").val(value);
+                            $("#ajaxLoading").remove();
+                        },
+                        error: function (r) {
+                            $("#ajaxLoading").remove();
+                        }
+                    });
+                }
+                catch (e) {
+                    $("#ajaxLoading").remove();
+                }
+            }
+        });
+
+        $(document).ajaxStop(function () {
+            var showing = parseInt($('#GridShowing').text());
+            var gridShowingTotal = parseInt($('#GridShowingTotal').text());
+            if (showing >= gridShowingTotal) {
+                $('#GridShowing').text(gridShowingTotal);
+            }
+            $(".ColVis").css("margin-top", "-27px");
+        });
+
+        $(document).on('keyup', '.sitesearchoption', function () {
+            var value = $(".sitesearchoption").val();
+
+            if (value == null || value == '' || value == 'undefined') {
+                $.ajax({
+                    url: '/Project/Dashboard/TableResult?ProjectId=' + $("#pId").attr("data-ProjectId") + '&Page=1' + '&TaskIds=' + $.cookie("ProjectTasks") + '&LocationIds=' +
+                         $.cookie(CookiesIdentifier + "SiteProjectMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + 'SiteFromDate') + '&ToDate=' + $.cookie(CookiesIdentifier + 'SiteToDate') + '&IsActive=' + $("#activeAndInactiveForSite").is(":checked") + "&Searchoption=" + value,
+                    type: 'Get',
+                    async: false,
+                    success: function (data) {
+                        $('#divclientsites').html(data);
+                        SiteGridPagination();
+                        $(".sitesearchoption").val(value);
+                    }
+                });
+            }
+        });
+
+
+        tblBands = $('#tblBands').DataTable();
+
+        $('#tblSites_filter').show();
+        $('#tblSites_length').hide();
+
+        $('#tblSites_info').css({ "float": "left" });
+
+        $('#tblSites_info').hide();
+        $('#tblSites_paginate').hide();
+        $(".ColVis_Button").on("click", function (ev) {
+            $('ul.ColVis_collection').find('li:first').hide()
+            $('ul.ColVis_collection').find('li:last').hide()
+        });
+
+        $('#activeAndInactiveForSite').change(function () {
+
+            var IsActive = false;
+            if ($(this).is(':checked') == true) {
+                IsActive = true;
+                //$('#checkToggle').prop('checked', false);
+            }
+            else {
+                IsActive = false;
+                //$('#checkToggle').prop('checked', true);
+            }
+            GetProjectSites(IsActive);
+        });
+
+        if (statusAc == 'True') {
+            $('#activeAndInactiveForSite').prop('checked', 'checked');
+
+        }
+        else {
+            $('#activeAndInactiveForSite').prop('checked', false);
+        }
+    });
+
+    //-----------------------------------
+
+    //Active, DeActive ProjectSite
+    function SetSiteStatus(SiteId, IsActive) {
+
+        var url1 = '/Project/Dashboard/TableResult?ProjectId=' + $("#pId").attr("data-ProjectId") + '&Page=1' + '&TaskIds=' + $.cookie("ProjectTasks") + '&LocationIds=' +
+                 $.cookie(CookiesIdentifier + "SiteProjectMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + 'SiteFromDate') + '&ToDate=' + $.cookie(CookiesIdentifier + 'SiteToDate') + '&IsActive=' + $("#activeAndInactiveForSite").is(":checked") + "&Searchoption=" + UserSerachValue;
+
+
+        var st = IsActive == true ? "Activated" : "Deactivated";
+        var data = {
+            ProjectSiteId: SiteId,
+            IsActive: IsActive
+        };
+
+        $.ajax({
+            url: '/Project/Dashboard/SetSiteStatus',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function (res) {
+                if (res != 'session expired') {
+                    if (res.Status == 'success') {
+                        $.ajax({
+                            //url: '/Project/Dashboard/GetMilstonesBarchart?ProjectId=' + $("#pId").attr("data-ProjectId") + '&filter=Get_Project_Timeline_Variance',
+                            url: '/Project/Dashboard/TableResult?ProjectId=' + $("#pId").attr("data-ProjectId") + '&Page=1' + '&TaskIds=' + $.cookie('ProjectTasks')
+                     + '&LocationIds=' + $.cookie(CookiesIdentifier + "SiteProjectMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + 'SiteFromDate') + '&ToDate=' + $.cookie(CookiesIdentifier + 'SiteToDate') + '&IsActive=' + $("#activeAndInactiveForSite").is(":checked"),
+
+                            type: 'Get',
+                            async: false,
+                            success: function (res) {
+
+                                $('#divclientsites').html(res);
+                                SiteGridPagination();
+
+                            }
+                        });
+                        swal("Success", res.Message, "success");
+                    } else {
+                        swal("Alert", res.Message, "error");
+
+                    }
+                } else {
+                    swal("Alert", "Site has been Updated Successfully!", "error");
+                }
+                
+            }
+        });
+    }
+
+
+
+
+
+
+    function GetProjectSites(IsActive) {
+        $.ajax({
+            //url: '/Project/Dashboard/GetMilstonesBarchart?ProjectId=' + $("#pId").attr("data-ProjectId") + '&filter=Get_Project_Timeline_Variance',
+            url: '/Project/Dashboard/TableResult?ProjectId=' + $("#pId").attr("data-ProjectId") + '&Page=1' + '&TaskIds=' + $.cookie('ProjectTasks') + '&LocationIds=' +
+                                                               $.cookie(CookiesIdentifier + "SiteProjectMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + 'SiteFromDate') + '&ToDate=' + $.cookie(CookiesIdentifier + 'SiteToDate') + '&IsActive=' + IsActive,
+            type: 'Get',
+            async: false,
+            success: function (data) {
+                 $('#divclientsites').html(data);
+                SiteGridPagination();
+            }
+        });
+    }
+
+    //$(".addNewSite").attr("href", "/ProjectSites/all/" + PID);
+    //$('#example1').dataTable({
+    //    "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'C>r>" +
+    //            "t" +
+    //            "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
+    //    "autoWidth": true,
+    //    "preDrawCallback": function () {
+    //        // Initialize the responsive datatables helper once.
+    //        if (!responsiveHelper_datatable_col_reorder) {
+    //            responsiveHelper_datatable_col_reorder = new ResponsiveDatatablesHelper($('#datatable_col_reorder'), breakpointDefinition);
+    //        }
+    //    },
+    //    "rowCallback": function (nRow) {
+    //        responsiveHelper_datatable_col_reorder.createExpandIcon(nRow);
+    //    },
+    //    "drawCallback": function (oSettings) {
+    //        responsiveHelper_datatable_col_reorder.respond();
+    //    }
+    //});
+</script>

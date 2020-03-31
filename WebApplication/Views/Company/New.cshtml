@@ -1,0 +1,236 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model  AD_Clients
+@{
+    ViewBag.Title = "New Company";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+  
+}
+
+<div class="box box-solid" id="save">
+    @using (Html.BeginForm("", "", new { back = ViewBag.tit }, FormMethod.Post, new { id = "frm-company", enctype = "multipart/form-data" }))
+    {
+        <div class="box-header with-border" >
+            <h2 class="box-title" >Create Company Profile</h2>
+            <button type="submit" id="btn-submit" class="btn btn-success pull-right" style="margin:2px"><i class="fa  fa-save"></i> Save</button>
+            <button type="reset" class="btn btn-default pull-right" style="margin:2px"><i class="fa  fa-refresh"></i> Reset</button>
+          </div>
+
+        <div class="box box-solid">
+            <div class="box-header with-border BoxHeaderBgcolor">
+                <h3 class="box-title">Profile Information</h3>
+            </div>
+            @Html.HiddenFor(m => m.ClientId )
+            <div class="box-body" id="pan-SiteInfo">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="State">Name</label>
+                            @Html.TextBoxFor(m => m.ClientName, null, new { @class = "form-control Row", data_name="ClientName", data_parsley_required_message = "Please insert your name", @data_required = "yes",required="required" })
+                        </div>
+                    </div>
+                    <div class="col-sm-2 hidden">
+                        <div class="form-group">
+                            <label for="">Profile Type</label>
+                            @Html.DropDownListFor(m => m.ClientTypeId, (IEnumerable<SelectListItem>)ViewBag.SelectedClientTypes, new { @class = "form-control select Row ClientTypeId", data_name ="ClientTypeId" , @data_required = "yes", required = "required", @id ="ClientTypeId" })
+                        </div>
+                    </div>
+                    @*<div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="State">Parent Profile</label>
+                            @Html.DropDownListFor(m => m.PClientId, ViewBag.SelectedPClient as List<SelectListItem>, new { @class = "form-control select Row State", data_name = "PClientId", @data_required = "yes", required = "required" })
+                        </div>
+                    </div>*@
+
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="State">Profile Prefix</label>
+                            @Html.TextBoxFor(m => m.ClientPrefix, new { @class = "form-control Row", data_name = "ClientPrefix" , @data_required = "yes", required = "required" })
+
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="State">Logo</label>
+                            <input type="file" name="file" id="file" accept="image/*" class="form-control Row" data_required="no" data_name = "Logo" />
+                        </div>
+                    </div>
+                    <div class="col-sm-1" id="div-image" style="display:none">
+                        <div class="form-group">
+                            <img id="showimage" src="#" height="100" width="100" alt="Default Logo" />
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label for="State">IsActive</label><br />
+                            @Html.CheckBoxFor(m => m.IsActive, new { @checked = "" , data_name = "IsActive" , @data_required = "yes" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="companycontact">
+             @Html.Action("address", "Company", new { Id = (Model != null) ? Model.ClientId : 0 })
+        </div>
+       
+    }
+
+</div>
+
+
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datepicker/js")
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+
+    <script>
+        $("#Contacts").hide();
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#showimage').attr('src', e.target.result);
+
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#file").change(function () {
+            readURL(this);
+            $('#div-image').show();
+        });
+
+
+        $(document).on('submit', '#frm-company', function (evt) {
+
+            var hit = 0;
+            if (hit == 1) {
+                $('#save input').each(function () {
+                    var textBox = $.trim($(this).val())
+                    var required = $(this).attr('data_required');
+                    console.log($(this).attr('data_name'));
+                    if (required != 'no' || required != undefined) {
+                        if (textBox == "") {
+                            $(this).addClass('required');
+                            hit = 1;
+                            $.notify('Enter Required Fields', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            return false;
+                        } else {
+                            $(this).removeClass('required');
+                        }
+                    }
+                });
+
+            }
+            var formData = new FormData();
+            var totalFiles = document.getElementById("file").files.length;
+                for (var i = 0; i < totalFiles; i++) {
+                    var file = document.getElementById("file").files[i];
+
+                    formData.append("file", file);
+                }
+
+
+            $("#tbl-def tr").each(function (i) {
+                i = i - 1;
+                $("input", this).each(function (j) {
+                    var name = $(this).attr('data-name');
+                    $(this).attr('name', '[' + i + '].' + name);
+                });
+
+                $("select", this).each(function (j) {
+                    var name = $(this).attr('data-name');
+                    $(this).attr('name', '[' + i + '].' + name);
+                });
+            });
+
+            $("#tbl-clnt tr").each(function (i) {
+                i = i - 1;
+                $("input", this).each(function (j) {
+                    var name = $(this).attr('data-name');
+                    $(this).attr('name', '[' + i + '].' + name);
+                });
+
+                $("select", this).each(function (j) {
+                    var name = $(this).attr('data-name');
+                    $(this).attr('name', '[' + i + '].' + name);
+                });
+            });
+            if(hit==0){
+                //var data = $(this).serialize();
+                  // formData = $(this).serialize();
+            evt.preventDefault();
+            var formData = new FormData($(this)[0]);
+            debugger;
+            $.ajax({
+                url: '/Company/New',
+                type: 'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
+                success: function (res) {
+
+                   if (res.Status == 'success') {
+
+                       $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                       location.reload();
+                    } else {
+                        $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                },
+                error: function (err) {
+                    $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+                }
+            });
+            $('#frm-company')[0].reset();
+            return false;
+            }
+            return false;
+        });
+
+    </script>
+}
+@section style{
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    @Styles.Render("~/AdminLTE/plugins/datepicker/css")
+    <style>
+        .required {
+            border-color: red;
+        }
+
+        #tbl-wo .form-control {
+            width: 100px;
+        }
+
+
+        .SelectedRow {
+            background-color: #454de2 !important;
+            color: white;
+        }
+
+        .BoxHeaderBgcolor {
+            background-color: #b4b4b4 !important;
+        }
+    </style>
+
+
+}
+<script>
+    $(function () {
+        $('#frm-company').parsley();
+        var theText = "Company";
+        $("#ClientTypeId option:contains("+theText+")").attr('selected', 'selected');
+    });
+</script>
+

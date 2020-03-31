@@ -1,0 +1,680 @@
+﻿@using System.Web.Mvc.Html
+@using SWI.Libraries.Common
+@using SWI.Libraries.AirView.Entities
+@using System.Drawing;
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    ViewBag.Title = "EditNetLayerReport";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    int count = 0;
+    int RowSpan = Model.Count() + 1;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Edit Report</h3>
+                <button class="btn btn-info pull-right" id="Save" onclick="Save()" style="margin-left:90%;">Save</button>
+            </div>
+            <div class="box-body">
+                @using (Html.BeginForm("EditNetLayerReport", "Site", FormMethod.Post, new { id = "frm-smry", enctype = "multipart/form-data" }))
+                {
+                    <div style="overflow-x:auto;overflow-y:hidden">
+
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr class="tbl-heading">
+                                    <th>Sector</th>
+                                    <th>Ping KPI</th>
+                                    <th>Ping Status</th>
+                                    <th>DL KPI</th>
+                                    <th>FTP DL Status</th>
+                                    <th>UL KPI</th>
+                                    <th>FTP UL Status</th>
+                                    <th>FTP DL (Mbps)</th>
+                                    <th>FTP UL (Mbps)</th>
+                                    <th>PHY DL (Mbps)</th>
+                                    <th>PHY UL (Mbps)</th>
+                                    <th>PHY DL Status</th>
+                                    <th>PHY UL Status</th>
+                                    <th>CADLSpeed </th>
+                                    <th>CAULSpeed</th>
+                                    <th>Intre HO Interupt Time</th>
+                                    <th>Intra HO Interupt Time</th>
+                                    <th>Call Setup Time</th>
+                                    <th>RTT (ms)</th>
+                                    <th>Ookla DL</th>
+                                    <th>Ookla UL</th>
+                                    <th>Ookla Ping</th>
+                                    <th>Ookla RSSI</th>
+                                    <th>Ookla SINR</th>
+                                    <th>eCSFB MO</th>
+                                    <th>eCSFB MT</th>
+                                    <th>VoLTE MO</th>
+                                    <th>VoLTE MT</th>
+                                    <th>MIMO Status</th>
+                                    <th>Cw Handover Status</th>
+                                    <th>Ccw Handover Status</th>
+                                    <th>E911 Status</th>
+                                    <th>E911 Performed</th>
+                                    <th>SMO Status</th>
+                                    <th>SMT Status</th>
+                                    <th>Inter Site Cw</th>
+                                    <th>Inter Site Ccw</th>
+                                    <th>Test Latitude</th>
+                                    <th>Test Longitude</th>
+                                    <th>Test RSSI</th>
+                                    <th>Test SINR</th>
+                                    <th>Ookla </th>
+                                    <th>Stationary </th>
+                                    <th>MIMO </th>
+                                    <th>CW </th>
+                                    <th>CCW</th>
+                                  
+                                    <th>Speed Test </th>
+                                    <th>CA SM Active </th>
+                                    <th>CA SM Deactive </th>
+                                    <th>CA Speed Test</th>
+                                    <th>LAA SM </th>
+                                    <th>LAA Speed Test </th>
+                            
+                               
+
+
+
+                                    
+                                </tr>
+                            </thead>
+                            @{
+                                string Selected = "";
+                            }
+                            @foreach (var item in Model)
+                            {
+                                <tr class="tbl-data">
+                                    <td>
+                                        <input type="hidden" name="[@count].SummaryId" value="@item.SummaryId" />
+                                        <input type="hidden" name="[@count].Site" value="@item.Site" />
+                                        <input type="hidden" name="[@count].NetworkMode" value="@item.NetworkMode" />
+                                        <input type="hidden" name="[@count].Band" value="@item.Band" />
+                                        <input type="hidden" name="[@count].Carrier" value="@item.Carrier" />
+
+                                        <b>@item.Sector</b>
+                                    </td>
+                                    <td><input type="text" name="[@count].LatencyRate" class="form-control" value="@item.LatencyRate.ToString("0.00")" /> </td>
+                                    <td>
+                                        <select name="[@count].PingStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.PingStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.PingStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.PingStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="[@count].DownlinkRate" class="form-control" value="@item.DownlinkRate.ToString("0.00")" /> </td>
+                                    <td>
+                                        <select name="[@count].DownlinkStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.DownlinkStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.DownlinkStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.DownlinkStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="[@count].UplinkRate" class="form-control" value="@item.UplinkRate.ToString("0.00")" /> </td>
+                                    <td>
+                                        <select name="[@count].UplinkStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.UplinkStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.UplinkStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.UplinkStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+                                    </td>
+
+                                    <td><input type="text" name="[@count].DownlinkMaxResult" class="form-control" value="@item.DownlinkMaxResult.ToString("0.00")" /> </td>
+
+                                    <td><input type="text" name="[@count].UplinkMaxResult" class="form-control" value="@item.UplinkMaxResult.ToString("0.00")" /> </td>
+                                      <td><input type="text" name="[@count].PhyDLSpeedMax" class="form-control" value="@item.PhyDLSpeedMax.ToString("0.00")" /> </td>
+
+                                    <td><input type="text" name="[@count].PhyULSpeedMax" class="form-control" value="@item.PhyULSpeedMax.ToString("0.00")" /> </td>
+                                    <td>
+                                        <select name="[@count].PhyDLStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.PhyDLStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.PhyDLStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.PhyDLStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="[@count].PhyULStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.PhyULStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.PhyULStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.PhyULStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="[@count].CADLSpeed" class="form-control" value="@item.CADLSpeed.ToString("0.00")" /> </td>
+                                    <td><input type="text" name="[@count].CAULSpeed" class="form-control" value="@item.CAULSpeed.ToString("0.00")" /> </td>
+                                   <td><input type="text" name="[@count].IntreHOInteruptTime" class="form-control" value="@item.IntreHOInteruptTime.ToString("0.00")" /> </td>
+                                    <td><input type="text" name="[@count].IntraHOInteruptTime" class="form-control" value="@item.IntraHOInteruptTime.ToString("0.00")" /> </td>
+
+                                    <td><input type="text" name="[@count].callSetupTime" class="form-control" value="@item.callSetupTime.ToString("0.00")" /> </td>
+                                     
+                                    <td><input type="text" name="[@count].PingAverageResult" class="form-control" value="@item.PingAverageResult.ToString("0.00")" /></td>
+
+                                    <td><input type="text" name="[@count].OoklaDownlinkResult" class="form-control" value="@item.OoklaDownlinkResult" /></td>
+                                    <td><input type="text" name="[@count].OoklaUplinkResult" class="form-control" value="@item.OoklaUplinkResult" /></td>
+
+                                    <td style="font-weight:normal">
+                                        <input type="text" name="[@count].OoklaPingResult" class="form-control" value="@item.OoklaPingResult" />
+                                    </td>
+                                    <td style="font-weight:normal">
+                                        <input type="text" name="[@count].OoklaRssi" class="form-control" value="@item.OoklaRssi" />
+                                    </td>
+                                    <td style="font-weight:normal">
+                                        <input type="text" name="[@count].OoklaSinr" class="form-control" value="@item.OoklaSinr" />
+                                    </td>
+
+
+                                    <td>
+                                        <select name="[@count].MoStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.MoStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.MoStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.MoStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+
+                                    </td>
+                                    <td>
+                                        <select name="[@count].MtStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.MtStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.MtStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.MtStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+                                    <td>
+                                        <select name="[@count].VMoStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.VMoStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.VMoStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.VMoStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+                                    <td>
+                                        <select name="[@count].VMtStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.VMtStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.VMtStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.VMtStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+                                    <td>
+                                        <select name="[@count].MimoStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.MimoStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.MimoStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.MimoStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+                                    <td>
+                                        <select name="[@count].CwHandoverStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.CwHandoverStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.CwHandoverStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.CwHandoverStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+                                    <td>
+                                        <select name="[@count].Ccwhandoverstatus" class="form-control select">
+                                            @{
+                                                Selected = (item.Ccwhandoverstatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.Ccwhandoverstatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.Ccwhandoverstatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+                                    <td>
+                                        <select name="[@count].E911Status" class="form-control select">
+                                            @{
+                                                Selected = (item.E911Status == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.E911Status == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.E911Status == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+
+                                    <td>
+                                        <select name="[@count].IsE911Performed" class="form-control select">
+                                            @{
+                                                Selected = (item.IsE911Performed == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.IsE911Performed == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.IsE911Performed == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+
+                                    <td>
+                                        <select name="[@count].SMoStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.SMoStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.SMoStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.SMoStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+
+                                    </td>
+
+                                    <td>
+                                        <select name="[@count].SMtStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.SMtStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.MoStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.SMtStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+
+                                    </td>
+                                    <td>
+                                        <select name="[@count].ICwHandoverStatus" class="form-control select">
+                                            @{
+                                                Selected = (item.ICwHandoverStatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.ICwHandoverStatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.ICwHandoverStatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+                                    <td>
+                                        <select name="[@count].ICcwhandoverstatus" class="form-control select">
+                                            @{
+                                                Selected = (item.ICcwhandoverstatus == null) ? "selected='selected'" : "";
+                                            }
+                                            <option value="NULL" @Selected>No Select</option>
+                                            @{
+                                                Selected = (item.ICcwhandoverstatus == true) ? "selected='selected'" : "";
+                                            }
+                                            <option value="True" @Selected>True</option>
+                                            @{
+                                                Selected = (item.ICcwhandoverstatus == false) ? "selected='selected'" : "";
+                                            }
+                                            <option value="False" @Selected>False</option>
+
+                                        </select>
+
+                                    </td>
+
+                                    <td style="font-weight:normal">
+                                        <input type="text" name="[@count].TestLatitude" class="form-control" value="@item.TestLatitude" />
+                                    </td>
+                                    <td style="font-weight:normal">
+                                        <input type="text" name="[@count].TestLongitude" class="form-control" value="@item.TestLongitude" />
+                                    </td>
+
+                                    <td style="font-weight:normal">
+                                        <input type="text" name="[@count].TestRssi" class="form-control" value="@item.TestRssi" />
+                                    </td>
+                                    <td style="font-weight:normal">
+                                        <input type="text" name="[@count].TestSinr" class="form-control" value="@item.TestSinr" />
+                                    </td>
+
+                                    <td>
+                                        @if ( item.OoklaTestFilePath!="")
+                                        {
+
+                                       
+                                        <div id="Ooklaprew">
+                                        <input type="hidden" name="[@count].OoklaTestFilePath" value="" />
+                                            <img class="img-thumbnail" alt="Ookla Test " src="@item.OoklaTestFilePath" style="width:100px;height:100px;" />
+                                            <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a>
+                                        </div> }
+                                        <input type="file" onclick="newImage(this)" class="file" accept="image/*" name="[@count].OoklaTestFilePath" value="@item.OoklaTestFilePath" />
+                                    </td>
+                                
+                                    <td>
+@if (item.StationaryTestFilePath != "")
+{
+                                        <div id="Stationaryprew">
+                                            <input type="hidden" name="[@count].StationaryTestFilePath" value="" />
+                                            <img class="img-thumbnail" alt="Stationary Test " src="@item.StationaryTestFilePath" style="width:100px;height:100px;" />
+                                            <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a> </div>}
+
+    <input type="file" class="file" accept="image/*" onchange="newImage(this)" name="[@count].StationaryTestFilePath" value="@item.StationaryTestFilePath" />
+</td>
+<td>
+@if (item.MimoTestFilePath != "")
+{
+
+    <div id="Mimoprew">
+        <input type="hidden" name="[@count].MimoTestFilePath" value="" />
+        <img class="img-thumbnail" alt="MIMO TEST " src="@item.MimoTestFilePath" style="width:100px;height:100px;" />
+        <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a>
+    </div>}
+    <input type="file" class="file" accept="image/*" onchange="newImage(this)" name="[@count].MimoTestFilePath" value="@item.MimoTestFilePath" /> 
+
+</td>
+                                    <td>
+@if (item.CwTestFilePath != "")
+{
+
+                                        <div id="CWprew">
+                                            <input type="hidden" name="[@count].CwTestFilePath" value="" />
+                                            <img class="img-thumbnail" alt="CW Test " src="@item.CwTestFilePath" style="width:100px;height:100px;" />
+                                            <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a>
+                                        </div>
+}
+                                        <input type="file" class="file" accept="image/*" onchange="newImage(this)" name="[@count].CwTestFilePath" value="@item.CwTestFilePath" />
+                                    </td>
+                                    <td>
+@if (item.CcwTestFilePath != "")
+{
+                                        <div id="CWWprew">
+                                            <input type="hidden" name="[@count].CcwTestFilePath" value="" />
+                                            <img class="img-thumbnail" alt="CWW Test " src="@item.CcwTestFilePath" style="width:100px;height:100px;" />
+                                           @*<i class="glyphicon glyphicon-remove" onclick="RemoveImage(this)"></i>*@
+                                            <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#" ></a>
+                                        </div>
+}
+                                        <input type="file" class="file" accept="image/*"  onchange="newImage(this)" name="[@count].CcwTestFilePath" value="@item.CcwTestFilePath" />
+                                    </td>
+                                    <td>
+                                        @if (item.SpeedTestFilePath != "")
+                                        {
+
+                                            <div id="Mimoprew">
+                                                <input type="hidden" name="[@count].SpeedTestFilePath" value="" />
+                                                <img class="img-thumbnail" alt="MIMO TEST " src="@item.SpeedTestFilePath" style="width:100px;height:100px;" />
+                                                <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a>
+                                            </div>}
+                                        <input type="file" class="file" accept="image/*" onchange="newImage(this)" name="[@count].SpeedTestFilePath" value="@item.SpeedTestFilePath" />
+
+                                    </td>
+                                    <td>
+                                        @if (item.CaActiveTestFilePath != "")
+                                        {
+
+                                            <div id="Mimoprew">
+                                                <input type="hidden" name="[@count].CaActiveTestFilePath" value="" />
+                                                <img class="img-thumbnail" alt="MIMO TEST " src="@item.CaActiveTestFilePath" style="width:100px;height:100px;" />
+                                                <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a>
+                                            </div>}
+                                        <input type="file" class="file" accept="image/*" onchange="newImage(this)" name="[@count].CaActiveTestFilePath" value="@item.CaActiveTestFilePath" />
+
+                                    </td>
+                                    <td>
+                                        @if (item.CaDeavticeTestFilePath != "")
+                                        {
+
+                                            <div id="Mimoprew">
+                                                <input type="hidden" name="[@count].CaDeavticeTestFilePath" value="" />
+                                                <img class="img-thumbnail" alt="MIMO TEST " src="@item.CaDeavticeTestFilePath" style="width:100px;height:100px;" />
+                                                <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a>
+                                            </div>}
+                                        <input type="file" class="file" accept="image/*" onchange="newImage(this)" name="[@count].CaDeavticeTestFilePath" value="@item.CaDeavticeTestFilePath" />
+
+                                    </td>
+                                    <td>
+                                        @if (item.CaSpeedTestFilePath != "")
+                                        {
+
+                                            <div id="Mimoprew">
+                                                <input type="hidden" name="[@count].CaSpeedTestFilePath" value="" />
+                                                <img class="img-thumbnail" alt="MIMO TEST " src="@item.CaSpeedTestFilePath" style="width:100px;height:100px;" />
+                                                <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a>
+                                            </div>}
+                                        <input type="file" class="file" accept="image/*" onchange="newImage(this)" name="[@count].CaSDDTestFilePath" value="@item.CaSpeedTestFilePath" />
+
+                                    </td>
+                                    <td>
+                                        @if (item.LaaSmTestFilePath != "")
+                                        {
+
+                                            <div id="Mimoprew">
+                                                <input type="hidden" name="[@count].LaaSmTestFilePath" value="" />
+                                                <img class="img-thumbnail" alt="MIMO TEST " src="@item.LaaSmTestFilePath" style="width:100px;height:100px;" />
+                                                <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a>
+                                            </div>}
+                                        <input type="file" class="file" accept="image/*" onchange="newImage(this)" name="[@count].LaaSmTestFilePath" value="@item.LaaSmTestFilePath" />
+
+                                    </td>
+                                    <td>
+                                        @if (item.LaaSpeedTestFilePath != "")
+                                        {
+
+                                            <div id="Mimoprew">
+                                                <input type="hidden" name="[@count].LaaSpeedTestFilePath" value="" />
+                                                <img class="img-thumbnail" alt="MIMO TEST " src="@item.LaaSpeedTestFilePath" style="width:100px;height:100px;" />
+                                                <a class="glyphicon glyphicon-remove-sign" onclick="RemoveImage(this)" style="color:red;" href="#"></a>
+                                            </div>}
+                                        <input type="file" class="file" accept="image/*" onchange="newImage(this)" name="[@count].LaaSPDTestFilePath" value="@item.LaaSpeedTestFilePath" />
+
+                                    </td>
+                                  
+                                </tr>
+                            count++;}
+                        </table>
+                      
+                    </div>
+                           }
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+    <script type="text/javascript">
+ 
+        function RemoveImage(elemRef) {
+            $(elemRef).siblings('input[type=hidden]').val('remove');
+            $(elemRef).parent('div').css('display', 'none');
+        }
+        function newImage(elmRef) {
+            $(elmRef).siblings('div').children('input[type=hidden]').val('');
+
+            //     $(elmRef).siblings('input[type=hidden]').val('');
+            //$(elemRef).parent('div').css('display', 'none');
+            //$('div').parent(elmRef).siblings('input[type=hidden]').val('');
+            // $(elmRef).parent('td').siblings('div input[type=hidden]').val('null');
+           // $('div').parent(elmRef.parentNode).siblings('input[type=hidden]').val('');
+            //var parentTag = $(elmRef).prevAll("input[type=hidden]").val()
+           //alert(parentTag);
+           // $('input[name='+parentTag+' type=hidden]').val('');
+          
+
+        }
+        function Save() {
+            $('#frm-smry').submit();
+
+        };
+        $("document").ready(function () {
+            $('upload').change(function () {
+                var parentTag = $(this).prevAll("input[type=hidden]").val()
+                alert(parentTag);
+
+            });
+         
+        
+        });
+    </script>
+    
+    
+    
+    
+
+@section style{
+    <style>
+        .select {
+            width: 82px;
+        }
+
+        input {
+            width: 150px;
+        }
+
+        .form-control {
+            width: 90px;
+        }
+    </style>
+
+}
+

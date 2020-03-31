@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Library.SWI.Survey.Model.TSS_Section>
+
+@if (Model != null || Model.Count() > 0)
+{
+
+    <table class="table table-striped" id="table" >
+        <thead>
+            <tr>
+              
+                <th style="width: 19%">Section</th>
+                <th style="width: 19%">Total Questions</th>
+                <th style="width: 62%">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+          @foreach (var element in Model)
+          {
+              if (@element.IsRepeatable == false && @element.PSectionId == 0)
+              {
+                <tr data-node="treetable-@element.SectionId">
+                    <td>@element.SectionTitle</td>
+                    <td>@element.TotalQuestions</td>
+                    <td><span class="label" style="background-color:@element.StatusColor;">@element.Status</span></td>
+                    
+                </tr>
+              }
+              else if (@element.IsRepeatable == true && @element.PSectionId == 0)
+              {
+                <tr data-node="treetable-@element.TemplateSectionId">
+                    <td>@element.SectionTitle</td>
+                    <td>@element.TotalQuestions</td>
+                    <td><span class="label" style="background-color:@element.StatusColor;">@element.Status</span></td>
+                </tr>
+              }
+              else if (@element.IsRepeatable == false && @element.PSectionId == @element.SectionPSectionId)
+              {
+                <tr data-node="treetable-@element.SectionId" data-pnode="treetable-parent-@element.PSectionId">
+                    <td>@element.SectionTitle</td>
+                    <td>@element.TotalQuestions</td>
+                    <td><span class="label" style="background-color:@element.StatusColor;">@element.Status</span></td>
+                </tr>
+              }
+              else if (@element.IsRepeatable == true && @element.PSectionId == @element.SectionPSectionId)
+              {
+                <tr data-node="treetable-@element.TemplateSectionId" data-pnode="treetable-parent-@element.PSectionId">
+                    <td>@element.SectionTitle</td>
+                    <td>@element.TotalQuestions</td>
+                    <td><span class="label" style="background-color:@element.StatusColor;">@element.Status</span></td>
+                </tr>
+              }
+              else if (@element.PSectionId != @element.SectionPSectionId)
+              {
+                <tr data-node="treetable-@element.TemplateSectionId" data-pnode="treetable-parent-@element.PSectionId">
+                    <td>@element.SectionTitle</td>
+                    <td>@element.TotalQuestions</td>
+                    <td><span class="label" style="background-color:@element.StatusColor;">@element.Status</span></td>
+                </tr>
+              }
+
+
+
+
+            @*<tr data-node="treetable-3" data-pnode="treetable-parent-1">
+               
+                <td>1-2</td>
+                <td>c</td>
+                <td>info</td>
+            </tr>*@
+          }
+        </tbody>
+    </table>
+
+    <script>
+        $(function () {
+            $("#table").treeFy({
+                initStatusClass: 'treetable-collapsed'
+
+            });
+        });
+    </script>
+
+   }
+
+
+
+
+
+

@@ -1,0 +1,63 @@
+﻿
+
+<div class="overlay rmt" style="display:none;">
+    <div class="overlay__inner">
+        <div class="overlay__content">
+            <span class="spinner"></span>
+        </div>
+    </div>
+</div>
+<div id="addnew-panel" class="popup-box">
+    <form name=vm.remoteTablesNColumnsForm ng-submit="vm.remoteTablesNColumnsForm.$valid" novalidate>
+        <div class="widget-title">
+            <div class="title-text">Add Tables & Views</div>
+            <a class="close-popup" ng-click="vm.cancel()" href="#" title=""><i class="fa fa-times"></i></a>
+        </div><!-- Popup Title -->
+
+        <div class="popup-content">
+            <div class="row">
+                <div class="col-lg-3 scrollbar dataset-tables-views">
+                    <input type="text" placeholder="search datasets" ng-model="vm.datasetsFilter">
+                    <div ivh-treeview="vm.tablesNViewsTree" ivh-treeview-
+                         ivh-treeview-on-cb-change="vm.schmaDesignerNodeChange(ivhNode, ivhIsSelected, ivhTree)" ivh-treeview-filter="vm.datasetsFilter" ivh-treeview-options="vm.customOpts">
+                    </div>
+                </div>
+               
+                <div class="col-lg-9 bind-uigrid" >
+                    <div class="overlay grid-div" style="display:none;">
+                        <div class="overlay__inner">
+                            <div class="overlay__content">
+                                <span class="spinner"></span>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+       
+
+
+
+
+<div class="popup-footer align-right">
+    <button type="submit" class="custom-btn medium color1" ng-click="vm.addRemoteDatasource()">Save</button>
+    <button type="button" class="custom-btn medium color11" ng-click="vm.cancel()">Cancel</button>
+</div>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        $('body .dataset-tables-views.scrollbar').enscroll({
+            showOnHover: true,
+            scrollIncrement: 30,
+            easingDuration: 300,
+            addPaddingToPane: false,
+            verticalTrackClass: 'track4',
+            verticalHandleClass: 'handle4'
+        });
+    })
+
+</script>
+

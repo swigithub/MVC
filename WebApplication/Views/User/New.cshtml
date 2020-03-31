@@ -1,0 +1,541 @@
+﻿@using SWI.Libraries.Security.Entities
+
+@model Sec_User
+<style>
+            .error{
+	display: none;
+	margin-left: 15px;
+}		
+
+.error_show{
+	color: #B94A48;
+	margin-left: 15px;
+}
+</style>
+@{
+    ViewBag.Title = ViewBag.tit + " User";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    var CompanyId = ViewBag.Id;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("", "", new { back = ViewBag.tit }, FormMethod.Post, new { id = "frm-User", enctype = "multipart/form-data" }))
+        {
+            <div class="box box-solid">
+                <div class="box-header with-border" style="background-color:#3c8dbc">
+                    <h3 class="box-title" style="color:white">@ViewBag.tit User Profile</h3>
+                    <a href="#" onclick="window.history.back();return false" class="btn btn-info pull-right"><i class="fa  fa-save"></i> Back</a>
+                    <div class="pull-right" style="margin-right:5px">
+                        <div @*class="col-md-offset-2 col-md-10"*@>
+                            <input type="submit" value="Save" id="ResourceSubmit" class="btn btn-success btn-flat" />
+                            <input onclick="Reset();" type="reset" value="Reset" class="btn  btn-flat" />
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-12 form-row">
+
+
+                            @*@Html.AntiForgeryToken()*@
+                            @Html.HiddenFor(m => m.UserId)
+                            <div>
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="row">
+                                    <div class="col-md-3">
+
+                                        <div class="form-group">
+                                            @Html.Label("Title *", htmlAttributes: new { @class = "control-label", data_required = "yes" })
+                                            @Html.DropDownListFor(m => m.Title, new List<SelectListItem>{
+                               new SelectListItem{ Text="Mr.", Value="Mr."},
+                               new SelectListItem{ Text="Mrs.", Value="Mrs."},
+                                new SelectListItem{ Text="Miss.", Value="Miss."},
+                               new SelectListItem{ Text="Ms.", Value="Ms."},
+                                new SelectListItem{ Text="Sir.", Value="Sir."},
+                               new SelectListItem{ Text="DR", Value="DR"}
+                            }, "--- Select ---", new { @class = "form-control", name = "Title", data_name = "Title", id = "Title" })
+                                            <span id="title_error" class="error"> This value is required</span>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                        <div class="form-group">
+                                            @Html.Label("First Name *", htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.Label("Last Name *", htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.Label("Gender *", htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-user"></i>
+                                                </div>
+                                                @Html.DropDownListFor(m => m.Gender, new List<SelectListItem>{
+                               new SelectListItem{ Text="Male", Value="Male"},
+                               new SelectListItem{ Text="Female", Value="Female"}
+                            }, "--- Select ---", new { @class = "form-control", name = "Gender", data_name = "Gender", id = "Gender" })
+                                            </div>
+                                            <span id="gender_error" class="error"> This value is required</span>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.Label("Company *", htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(m => m.CompanyId, ViewBag.Clients2 as List<SelectListItem>, new { @class = "form-control select", @id = "CompanyId", @name = "CompanyId",})
+                                            <span id="company_error" class="error"> This value is required</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.Label("Designation", htmlAttributes: new { @class = "control-label" })
+                                            <div class="">
+                                                @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control", @name = "Designation", required = "required" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="HiringDate" class="control-label">Hiring Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input data-required="no" type="text" value="@DateTime.Now.ToString("MM/dd/yyyy")" tabindex="4" class="form-control UserLiveDate" style="" id="HiringDate" name="HiringDate" data-name="HiringDate">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="control-label">Profile Picture</label>
+                                        @*<div class="col-md-12">
+                                                @if (Model == null)
+                                                {
+                                                    <div id="imagePreview"></div>
+
+                                                }
+                                                else
+                                                {
+                                                    <div class="form-control" id="imagePreview"><img src="@Model.Picture" height="65" width="65" /></div>
+                                                }
+                                            </div>*@
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-image"></i>
+                                            </div>
+                                            <input id="uploadFile" type="file" accept="image/*" name="image" class="img form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="control-label">Is Manager</label>
+                                       <div style="margin-left:30px" class="checkbox">
+                                                @Html.CheckBox("IsManager", false)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.Label("Email *", htmlAttributes: new { @class = "control-label" })
+                                            <div>
+                                                @*<div class="input-group-addon">
+                                                        <i class="fa fa-envelope"></i>
+                                                    </div>*@
+                                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", required = "required", data_parsley_type = "email" } })
+                                            </div>
+                                            <span id="EmailMsg" style="color: #B94A48 "></span>
+                                            @Html.ValidationMessageFor(m => m.Email)
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.Contact, htmlAttributes: new { @class = "control-label" })
+                                            <div>
+                                                @*<div class="input-group-addon">
+                                                        <i class="fa fa-phone"></i>
+                                                    </div>*@
+                                                @Html.EditorFor(model => model.Contact, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label" })
+                                            @Html.TextAreaFor(model => model.Address, new { @class = "form-control", required = "required" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                @Html.Label("Latitude", htmlAttributes: new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-map-pin"></i>
+                                                    </div>
+                                                    @Html.EditorFor(model => model.homeLatitude, new { htmlAttributes = new { @class = "form-control" } })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.Label("Longitude", htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-map-pin"></i>
+                                                </div>
+                                                @Html.EditorFor(model => model.homeLongitude, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        @Html.Label("User Name *", htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                        @Html.ValidationMessageFor(m => m.UserName)
+                                        <span id="UserNameMsg" style="color: #B94A48 "></span>
+
+                                    </div>
+
+                                    @if (Model == null)
+                                    {
+		                             <!--Password-->
+                                        <div class="col-md-3">
+
+                                            <div class="form-group ">
+                                                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+                                                @Html.PasswordFor(model => model.Password, new { @class = "form-control", required = "required" ,@id="Password"})
+                                            </div>
+                                        </div>
+                                     <!--Confirm Password-->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                @Html.Label("Confirm Password *", htmlAttributes: new { @class = "control-label" })
+                                                @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control", required = "required", data_parsley_equalto = "#Password", parsley_error_message = "Confirm Password not match" })<!-- data_required_message = "Confirm Password not match" -->
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.Label("User Role *", htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(m => m.RoleId, ViewBag.Roles as List<SelectListItem>, new { @class = "form-control select", required = "required" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.Label("Report To", htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(m => m.ReportToId, ViewBag.Reports as List<SelectListItem>, new { @class = "form-control select", id = "ReportToId", required = "required", data_name = "ReportToId", data_row = "r0", style = "", name = "ReportToId" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            @Html.Label("Color", htmlAttributes: new { @class = "control-label" })
+                                            <input type="color" id="Color" name="Color" class="form-control" value="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+    </div>
+</div>
+@section scripts{
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <script src="~/AdminLTE/bootstrap/js/twitter-bootstrap.min-3.0.0.js"></script>
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    @Scripts.Render("~/AdminLTE/plugins/datepicker/js")
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+    <script>
+        $(function () {
+            $('#frm-User').parsley();
+            $('#RoleId').val('@ViewBag.RoleId');
+
+            $('#UserName').blur(function () {
+                IsExist('#UserName', 'byUserName', $(this).val());
+            });
+
+            $('#Email').blur(function () {
+                IsExist('#Email', 'byEmail', $(this).val());
+            });
+
+            function IsExist(selector,filter, value) {
+                $.ajax({
+                    url: '/User/IsExist?filter=' + filter + '&value=' + value,
+                    success: function (res) {
+                        if (res == 'True') {
+                            $(selector + 'Msg').text('Already Exist ' + value)
+                            $(selector ).val('');
+                        } else {
+                            $(selector+'Msg').text('')
+                        }
+                    },
+                    error:function(err){
+                        alert(err.statusText);
+                    }
+                });
+            }
+
+            $("#uploadFile").on("change", function()
+            {
+                var files = !!this.files ? this.files : [];
+                if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+
+                if (/^image/.test( files[0].type)){ // only image file
+                    var reader = new FileReader(); // instance of the FileReader
+                    reader.readAsDataURL(files[0]); // read the local file
+
+                    reader.onloadend = function () { // set image data as background of div
+                        $("#imagePreview").empty();
+                        $("#imagePreview").css("background-image", "url("+this.result+")");
+                    }
+                }
+            });
+        });
+        //Reset
+        function Reset(){
+            var Users =  @Html.Raw(Json.Encode(ViewBag.ReportTo));
+            var Id = '@ViewBag.Id';
+            $('form').get(0).reset();
+            $("#CompanyId").val(Id);
+           // $("#CompanyId").attr("disabled", true);
+        }
+       ///add if id exist
+        var Users =  @Html.Raw(Json.Encode(ViewBag.ReportTo));
+        var Id = '@ViewBag.Id';
+        if (Id != 0) {
+            $("#CompanyId").val(Id);
+           // $("#CompanyId").attr("disabled", true);
+            $('#ReportToId').empty();
+            $('#ReportToId').append(' <option  value="0">-Report To-</option></select>');
+            $.each(Users, function (i,item) {
+
+                if (item.CompanyId.toString() == Id) {
+                    $('#ReportToId').append(' <option value=' + item.Id + '>' + item.FirstName+" "+item.LastName + '</option></select>');
+                }
+            });
+        }
+        else{
+            $('#ReportToId').empty();
+            $('#ReportToId').append(' <option  value="0">-Report To-</option></select>');
+        }
+        $('#CompanyId').on('change', function() {
+            if(!(this.value=="0")){
+                $("#company_error").removeClass("error_show").addClass("error");
+                return true;
+            }
+            else{
+                $("#company_error").removeClass("error").addClass("error_show");
+                return false;
+            }
+        });
+        $('#Gender').on('change', function() {
+            if(!(this.value=="")){
+                $("#gender_error").removeClass("error_show").addClass("error");
+                return true;
+            }
+            else{
+                $("#gender_error").removeClass("error").addClass("error_show");
+                return false;
+            }
+        });
+        $('#Title').on('change', function() {
+            if(!(this.value=="")){
+                $("#title_error").removeClass("error_show").addClass("error");
+                return true;
+            }
+            else{
+                $("#title_error").removeClass("error").addClass("error_show");
+                return false;
+            }
+        });
+        ///submit form
+        $(document).on('submit', '#frm-User', function (evt) {
+            if($("#CompanyId").val()=="0" ){
+                $("#company_error").removeClass("error").addClass("error_show");
+                return false;
+            }
+            else{
+                $("#company_error").removeClass("error_show").addClass("error");
+            }
+            if($("#Gender").val()=="" ){
+                $("#gender_error").removeClass("error").addClass("error_show");
+                return false;
+            }
+            else{
+                $("#gender_error").removeClass("error_show").addClass("error");
+            }
+            if($("#Title").val()=="" ){
+                $("#title_error").removeClass("error").addClass("error_show");
+                return false;
+            }
+            else{
+                $("#title_error").removeClass("error_show").addClass("error");
+            }
+            var hit = 0;
+            if (hit == 1) {
+                $('#save input').each(function () {
+                    var textBox = $.trim($(this).val())
+                    var required = $(this).attr('data_required');
+                    console.log($(this).attr('data_name'));
+                    if (required != 'no' || required != undefined) {
+                        if (textBox == "") {
+                            $(this).addClass('required');
+                            hit = 1;
+                            $.notify('Enter Required Fields', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            return false;
+                        } else {
+                            $(this).removeClass('required');
+                        }
+                    }
+                });
+
+            }
+            var formData = new FormData();
+            //var totalFiles = document.getElementById("file").files.length;
+            //for (var i = 0; i < totalFiles; i++) {
+            //    var file = document.getElementById("uploadFile").files[i];
+
+            //    formData.append("file", file);
+            //}
+
+
+            //$("#tbl-def tr").each(function (i) {
+            //    i = i - 1;
+            //    $("input", this).each(function (j) {
+            //        var name = $(this).attr('data-name');
+            //        $(this).attr('name', '[' + i + '].' + name);
+            //    });
+
+            //    $("select", this).each(function (j) {
+            //        var name = $(this).attr('data-name');
+            //        $(this).attr('name', '[' + i + '].' + name);
+            //    });
+            //});
+
+            //$("#tbl-clnt tr").each(function (i) {
+            //    i = i - 1;
+            //    $("input", this).each(function (j) {
+            //        var name = $(this).attr('data-name');
+            //        $(this).attr('name', '[' + i + '].' + name);
+            //    });
+
+            //    $("select", this).each(function (j) {
+            //        var name = $(this).attr('data-name');
+            //        $(this).attr('name', '[' + i + '].' + name);
+            //    });
+            //});
+            if (hit == 0) {
+                //var data = $(this).serialize();
+                // formData = $(this).serialize();
+                evt.preventDefault();
+               // $("#CompanyId").attr("disabled", false);
+                var formData = new FormData($(this)[0]);
+                $.ajax({
+                    url: '/User/New',
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    success: function (res) {
+
+                        if (res.Status == 'success') {
+
+                            $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                            $('form')[0].reset();
+                            $("#CompanyId").val(Id);
+                          //  $("#CompanyId").attr("disabled", true);
+                        } else {
+                            $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    },
+                    error: function (err) {
+                        $.notify(err.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+                    }
+                });
+                // $('form').get(0).reset();
+                return false;
+            }
+            return false;
+        });
+        ///onchange Company Id in case of no company Id
+        $("#CompanyId").on("change", function () {
+            var value = $('#CompanyId').val();
+            $('#ReportToId').empty();
+            $('#ReportToId').append(' <option  value="0">-Report To-</option></select>');
+            $.each(Users, function (i,item) {
+                if (item.CompanyId.toString()==value) {
+                    $('#ReportToId').append(' <option value=' + item.Id + '>' + item.FirstName+" "+item.LastName+ '</option></select>');
+                }
+            });
+        });
+        //Lock ReportId in case of Ismaanger = true
+        var IsManager= '@ViewBag.IsManager';
+        $("#ReportToId").val('@ViewBag.UserId');
+        if(IsManager==true && '@ViewBag.IsAdmin'==false){ $("#ReportToId").attr("disabled", true);}
+        
+    </script>
+}
+
+
+@section style{
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <style>
+        #imagePreview {
+            width: 65px;
+            height:65px;
+            background-position: center center;
+            background-size: cover;
+            -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, .3);
+            display: inline-block;
+        }
+
+
+    </style>
+}
+<link href="~/Content/box.css" rel="stylesheet" />
+
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="~/AdminLTE/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+@Styles.Render("~/AdminLTE/plugins/datepicker/css")

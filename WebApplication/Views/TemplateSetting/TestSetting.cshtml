@@ -1,0 +1,216 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model TestConfiguration
+@{
+    ViewBag.Title = "Test Settings & Configuration";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var Bands = jss.Serialize(ViewBag.Bands);
+    var Carriers = jss.Serialize(ViewBag.Carriers);
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border boxHeader">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="box-body boxBody">
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        @using (Html.BeginForm("TestSetting", "TemplateSetting", FormMethod.Post, new { id = "frm-tstStng" }))
+                        {
+
+                            <div class="row ">
+                                
+                                <div class="col-sm-2" style="padding-left:30px;">
+                                    <div class="form-group">
+                                       <label for="ClientId" class="col-sm-2">Client</label>
+                                        <div class="col-sm-12">
+                                            @Html.DropDownListFor(m => m.ClientId, new SelectList(ViewBag.UserClients, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="CityId" class="col-sm-2">Market</label>
+                                        <div class="col-sm-12">
+                                            @Html.DropDownListFor(m => m.CityId, new SelectList(ViewBag.Cities, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="NetworkModeId" class="col-sm-5">Network Mode</label>
+                                        <div class="col-sm-12">
+                                            @Html.DropDownListFor(m => m.NetworkModeId, new SelectList(ViewBag.NetworkModes, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+                                 
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="BandId" class="col-sm-2">Band</label>
+                                        <div class="col-sm-12">
+                                           @Html.DropDownListFor(m => m.BandId, Enumerable.Empty<SelectListItem>(), new { @class = "form-control select", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+                                  
+                                </div>                               
+                            </div>
+                            <hr />
+
+                            @Html.Action("TestTemplate", "TemplateSetting")
+
+                                <div class="form-group">
+                                    <button style="margin-left:20px" type="submit" class="btn btn-success pull-right">
+                                        <i class="fa fa-save"></i> Save
+                                    </button>
+                                    <button type="reset" class="btn btn-danger pull-right">
+                                        <i class="fa fa-undo"></i> Refresh
+                                    </button>
+                                </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+   
+<script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+<script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+    <script>
+        $(function () {
+            var loading = $.loading();
+            $("select").select2();
+            var SelectedClientId = $('select[name="ClientId"]').val();
+            var SelectedCityId = $('select[name="CityId"]').val();
+            var SelectedNetworkModeId = 0;
+            var SelectedBandId =0;
+            //var SelectedCarrierId =0;
+         
+            var Bands = JSON.parse('@Html.Raw(Bands)');
+            var Carriers = JSON.parse('@Html.Raw(Carriers)');
+
+
+            $(document).on('change', '#NetworkModeId', function () {
+                var value = $(this).val();
+                $('#BandId').empty();
+                $('#BandId').append(' <option value="0" >-Band-</option></select>');
+                $.each(Bands, function (i, v) {
+                    if (v.PDefinationId == value) {
+                        $('#BandId').append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                    }
+                });
+                
+                SelectedNetworkModeId = value;
+                LoadValues(SelectedClientId, SelectedCityId, SelectedNetworkModeId, SelectedBandId);
+
+            });
+
+
+            $(document).on('change', '#BandId', function () {
+                SelectedBandId = $(this).val();
+                LoadValues(SelectedClientId, SelectedCityId, SelectedNetworkModeId, SelectedBandId);
+                
+            });
+            
+
+            
+
+
+            $(document).on('change', '#ClientId', function () {
+                SelectedClientId = $('select[name="ClientId"]').val();
+                LoadValues(SelectedClientId, SelectedCityId, SelectedNetworkModeId, SelectedBandId);
+            });
+
+
+            $(document).on('change', '#CityId', function () {
+               
+                SelectedCityId = $('select[name="CityId"]').val();
+                LoadValues(SelectedClientId, SelectedCityId, SelectedNetworkModeId, SelectedBandId);
+            });
+
+
+
+
+           
+            $(document).on('keyup', '.kpiValue', function () {
+                var kpi = $(this).attr('data-kpi');
+                var value = kpi + '-' + $(this).val();
+                $('#k-' + kpi).val(value);
+
+            });
+
+
+           
+
+            $(document).on('submit', '#frm-tstStng', function () {
+
+                var hit = 0;
+                $('.TextBox').each(function () {
+                    var textBox = $.trim($(this).val())
+                    var required = $(this).attr('data-required');
+                    if (required != 'no') {
+                        if (textBox == "") {
+                            $(this).addClass('required');
+                            hit = 1;
+                            return false;
+                        } else {
+                            $(this).removeClass('required');
+                        }
+                    }
+
+
+                });
+                if (hit==0) {
+                    $.ajax({
+                        url: '/TemplateSetting/TestSetting',
+                        type: 'post',
+                        async: false,
+                        data: $(this).serialize(),
+                        success: function (res) {
+                            if (res.Status == 'success') {
+                                // window.reload();
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                            } else {
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+
+                        },
+                        error: function (err) {
+                            $.notify(err.statusText, { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6 });
+
+                        },
+
+                    });
+                }
+               
+                return false;
+            });
+
+        });
+    </script>
+
+}
+@section style{
+<link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<link href="~/Content/box.css" rel="stylesheet" />
+<style>
+    .required {
+        border-color: red;
+    }
+</style>
+}

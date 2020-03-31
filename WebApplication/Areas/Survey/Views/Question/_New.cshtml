@@ -1,0 +1,380 @@
+﻿<form ng-submit="SubmitQuestion(obj.Responses)" id="frm-question" enctype="multipart/form-data" >
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="btn-group pull-right">
+                <button class="btn btn-s-md btn-success" type="Submit">Save</button><button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret "></span></button>
+                &nbsp;  &nbsp;  &nbsp;
+                <button style="border-radius: 3px;" class="btn btn-default pull-right" type="button" ng-click="clearFieldsForQuestions()">Clear</button>
+
+                <ul class="dropdown-menu">
+                    <li><a ng-click="AddQuestionFromTemplate()" style="cursor: pointer;">Add Questions from Template</a></li>
+                </ul>
+            </div>
+            <br /><br /><br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            @*<div class="form-horizontal">*@
+            <div class="form-group">
+                <label>Section<span style="color:red">*</span></label>
+                @*<div class="col-sm-10">*@
+                <select class="form-control" required ng-model="obj.SectionId" ng-options="x.SectionId as x.SectionTitle for x in Sections" ng-change="ChangeValidationStatus(obj.SectionId)">
+                    <option value="">-- Section --</option>
+                </select> 
+
+                <span ng-if="showValidations" style="color:red">Please Select Section</span>
+
+                @*</div>*@
+            </div>
+            @*</div>*@
+
+        </div>
+        <div class="col-sm-6">
+            @*<div class="form-horizontal">*@
+            <div class="form-group">
+                <label class="control-label">Question Type<span style="color:red">*</span></label>
+                @*<div class="col-sm-10">*@
+                <select class="form-control" required ng-model="obj.QuestionTypeId" ng-change="ShowRespose(obj.QuestionTypeId)">
+                    <option value="">-Question Types-</option>
+                    <option ng-repeat="item in QuestionTypeId" ng-model="item.DefinationName" ng-value="{{item.DefinationId}}">{{ChangeName(item.DefinationName)}}</option>
+                </select>
+                @*</div>*@
+            </div>
+            @*</div>*@
+
+        </div>
+
+    </div>
+    <!--<div class="row" id="UnitType" ng-if="obj.QuestionTypeId =='103306'">-->
+
+    <div class="row" id="UnitType" ng-if="obj.KeyCode =='NUMERIC_INPUT'">
+        <div class="col-sm-6">
+
+            <div class="form-group">
+                <label>Unit Type</label>
+
+                @*<select class="form-control" required ng-model="obj.UnitTypeId" ng-options="x.DefinationId as x.DefinationName for x in UnitTypes" ng-change="fillddlUnits()">
+                        <option ng-value="0">-- Unit Type --</option>
+                    </select>*@
+
+
+                <select class="form-control" required ng-model="obj.UnitTypeId" ng-change="fillddlUnits()">
+                    <option ng-value="">-- Unit Type --</option>
+                    <option ng-repeat="x in UnitTypes" ng-model="x.DefinationName" ng-value="{{x.DefinationId}}">{{x.DefinationName}}</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="col-sm-6">
+            @*<div class="form-horizontal">*@
+            <div class="form-group">
+                <label class="control-label col-sm-2 ">Unit</label>
+                @*<div class="col-sm-10">*@
+
+
+                <select class="form-control" required ng-model="obj.UnitId">
+                    <option value="">--Unit--</option>
+                    <option ng-repeat="item in UnitId" ng-model="item.DefinationName" ng-value="{{item.DefinationId}}">{{item.DefinationName}}</option>
+                </select>
+                @*</div>*@
+            </div>
+            @*</div>*@
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="form-group">
+                <label>Question<span style="color:red">*</span></label>
+                @*<div class="col-sm-12">*@
+                <textarea rows="3" class="form-control " required ng-model="obj.Question"></textarea>
+
+                <div class="col-sm-4">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="obj.IsRequired"> Required ?</label>
+                    </div>
+                </div>
+                @*<div class="col-sm-4">
+                        <div class="checkbox">
+                            <label><input type="checkbox" ng-model="obj.IsRepeatable" ng-change="IsRepeatable()"> Repeatable?</label>
+                        </div>
+                    </div>*@
+                <div class="col-sm-4">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="obj.IsVerificationRequired" ng-checked="{{obj.IsVerificationRequired}}"> Verification Required ?</label>
+                    </div>
+                </div>
+
+
+
+                @*</div>*@
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            @*<div class="form-horizontal">*@
+
+
+
+
+            <div class="form-group">
+                <label>Detail</label>
+                @*<div class="col-sm-12">*@
+                <textarea rows="3" ng-model="obj.Description" class="form-control "></textarea>
+                @*</div>*@
+            </div>
+
+
+            @*</div>*@
+
+        </div>
+
+
+
+    </div>
+    <div class="row" ng-if="obj.KeyCode=='Direction & GPS Based Images'">
+        <div class="col-sm-6">
+            @*<div class="form-horizontal">*@
+            <div class="form-group">
+                <label class="control-label">Survey Entity</label>
+                @*<div class="col-sm-10">*@
+                <select class="form-control" ng-model="obj.SurveyEntity" ng-change="MarkMultiLocation(obj.SurveyEntity)">
+                    <option value="">-N/A-</option>
+                    <option value="Sector Location">Sector Location</option>
+                    <option value="Site Location">Site Location</option>
+                    
+                </select>
+                @*</div>*@
+            </div>
+            @*</div>*@
+
+        </div>
+        <div class="col-sm-6" ng-if="obj.KeyCode=='Direction & GPS Based Images'">
+            <div class="form-group">
+                <label class="control-label"></label>
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-disabled="obj.SurveyEntity=='Sector Location'" ng-model="obj.IsMultiLocation" ng-change="ChangeSurveyEnity(obj.IsMultiLocation)"> Is Multi Location</label>
+                </div>
+            </div>
+         </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="form-group">
+                <table class="table">
+                    <tr>
+                        <td>
+                            <label style="margin-top:8px;">Actions:</label>
+                        </td>
+                        <td>
+                            <div class="checkbox">
+                                <label><input type="checkbox" ng-model="obj.IsNoteRequired"> Notes</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="checkbox">
+                                <label><input type="checkbox" ng-model="obj.IsDocumentRequired"> Document </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="checkbox">
+                                <label><input type="checkbox" ng-model="obj.IsBarCodeRequired"> Bar Code Scan</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="checkbox">
+                                <label><input type="checkbox" ng-model="obj.IsImageRequired"> Image</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="checkbox">
+                                <label><input type="checkbox" ng-model="obj.IsAudioRequired"> Audio </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="checkbox">
+                                <label><input type="checkbox" ng-model="obj.IsVideoRequired"> Video </label>
+                            </div>
+                        </td>
+
+
+                        <td></td>
+                   
+                    <tr ng-if="obj.IsImageRequired">
+                        <td>
+                            <label style="margin-top:8px;">Prefix</label>
+                        </td>
+                        <td colspan="2">
+
+                            <input  type="text" ng-model="obj.Prefix" class="form-control" />
+
+                        </td>
+                        <td>
+                            <div class="checkbox">
+                                <label><input type="checkbox" ng-model="obj.IsImageDetailRequired" > Azimuth and Detail</label>
+                            </div>
+                        </td>
+                    </tr>
+                   
+                    <tr>
+                        <td>
+                            <label style="margin-top:8px;">Weightage</label>
+                        </td>
+                        <td colspan="2">
+
+                            <input required type="text" id="QWeightage"  ng-model="obj.Weightage" maxlength="3" numbers-only class="form-control" />
+
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            @*<div class="form-group">
+                                    <label class="col-sm-3" style="margin-top:8px;">Weightage</label>
+                                    <div class="col-sm-4">
+                                        <input required type="text" ng-model="obj.Weightage" maxlength="3" numbers-only class="form-control" />
+                                    </div>
+                                </div>*@
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="isSeignleMultiselect">
+        <div class="col-sm-12">
+            <table class="table table-bordered table-striped" id="tbl-response">
+                <tr>
+                    <th></th>
+                    <th ng-show="ResponseText">Response</th>
+                    <th ng-show="minmax">MinValue</th>
+                    <th ng-show="minmax">MaxValue</th>
+                    <th>Passed?</th>
+                </tr>
+                <tr id="ResponseRow" ng-repeat="x in Responses">
+                    <td class="ResponseCount">{{$index+1}}</td>
+                    <td ng-show="ResponseText">
+                        <input type="text" ng-model="x.ResponseText" class="ResponseText form-control" />
+                    </td>
+                    <td ng-show="minmax"><input type="number" ng-model="x.MinValue" class="form-control" min="0" max="99999" maxlength="5" /> </td>
+                    <td ng-show="minmax"><input type="number" ng-model="x.MaxValue" class="form-control" min="0" max="99999" maxlength="5" /> </td>
+                    <td>
+                        <input type="checkbox" ng-model="x.IsPassed" ng-checked="x.IsPassed" ng-keydown="ResponseNewRow()" class="NewControll">
+                        <a class="delete" style="cursor:pointer;font-size:11px;color:#3c8dbc" ng-click="DeleteResponse(x)" ng-if="Responses.length>1"><i class="fa fa-trash icon-muted fa-fw" style="font-size:15px"></i></a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="row" ng-if="obj.KeyCode =='TABLE'">
+        <div class="col-sm-6" >
+            <div class="form-group">
+                <label>No. of Columns</label>
+                <input type="number" required placeholder="Enter Number of Columns" min="1" max="15" ng-model="obj.TotalColumn" class="form-control rowcolumn" id="Tcolumns" ng-change="ColumnChanged(obj.TotalColumn)"  />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>No. of Rows</label><br />
+                <input type="number" required ng-hide="obj.DynamicRows" placeholder="Enter Number of Rows" min="1" max="20"  ng-model="obj.TotalRows" class="form-control rowcolumn" id="Trows" ng-change="RowChanged(obj.TotalRows)" />
+
+                <input type="checkbox" ng-model="obj.DynamicRows" ng-change="obj.TotalRows=DynamicRowsChanged(obj.DynamicRows,obj.TotalRows)" /> Dynamic
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <table class="table table-bordered table-striped" id="tblaresponse" width="100" ng-if="isColumnRows">
+                <tr>
+                    <th ng-repeat="x in [].constructor(obj.TotalColumn) track by $index" style="background:#d1d1d1;" ng-class="IncreaseWidth(obj.TotalColumn)">
+                        <button type="button" ng-click="DeleteColumn($index)" style="float: right;margin-top: -8px;margin-right: -8px;font-size: 8pt;margin-bottom: 5px;" >X</button>
+                        <input type="text" ng-model="Responses[$index].ResponseText"  class="form-control " placeholder="Header{{$index+1}}" style="font-weight:900;" />
+
+                        <select class="form-control" required ng-model="Responses[$index].ResponseValue">
+                            <option value="">-Type-</option>
+                            <option ng-model="Responses[$index].ResponseValue" ng-repeat="x in TableHeaderType">{{x}}</option>
+                        </select>
+
+                        <div ng-if="Responses[$index].ResponseValue=='DropDownList'">
+                            <input type="text" placeholder="Enter Value for DropDown" class="form-control" ng-model="ddItem"  id="ddItem" />
+                            <button type="button" ng-click="ddItem=AddNewDropDownData(ddItem,$index)">+</button>
+                            <button type="button" ng-click="RemoveDropDownItem($index)">-</button>
+                        </div>
+
+                        <div ng-if="Responses[$index].ResponseValue=='RadioButton'">
+                            <input type="text" placeholder="Enter Value for RadioButton" class="form-control" ng-model="rbItem"  id="rbItem" />
+                            <button type="button" ng-click="rbItem=AddRadioButtonItems(rbItem,$index)">+</button>
+                            <button type="button" ng-click="RemoveRadioButtonItem($index)">-</button>
+                        </div>
+
+                        <div ng-if="Responses[$index].ResponseValue=='CheckBox'">
+                            <input type="text" placeholder="Enter Value for CheckBox" class="form-control" ng-model="cbItem" id="cbItem" />
+                            <button type="button" ng-click="cbItem=AddCheckBoxItems(cbItem,$index)">+</button>
+                            <button type="button" ng-click="RemoveCheckBoxItem($index)">-</button>
+                        </div>
+                        <input type="checkbox" ng-model="Responses[$index].IsReadOnly" value="false" /> <label>Read Only</label>
+                    </th>
+                </tr>
+                <tr ng-repeat="x in [].constructor(obj.TotalRows) track by $index" >
+                    <td ng-repeat="x in [].constructor(obj.TotalColumn) track by $index" ng-class="IncreaseWidth(obj.TotalColumn)">
+
+                        <input ng-if="Responses[$index].ResponseValue=='TextBox'" ng-blur="AddDataForTextBox($index,arrStringForTextBox[$index][$parent.$parent.$index],$parent.$parent.$index)" ng-model="arrStringForTextBox[$index][$parent.$parent.$index]" type="text" class="form-control" />
+                        <span ng-if="Responses[$index].ResponseValue=='Map'" style="color:gray">Map</span>
+                        <div ng-if="Responses[$index].ResponseValue=='DropDownList'">
+                                <select class="form-control" ng-change="SetDropDownItem(valueddl)" ng-model="valueddl" ng-options="c as c for c in arrStringforDropDown[$index]">
+                                    <option value="">- {{Responses[$index].ResponseText}} -</option>
+                                </select>
+                        </div>
+                        <div ng-if="Responses[$index].ResponseValue=='RadioButton'">
+                            <span ng-repeat="c in arrString[$index] track by $index " >
+                                <input type="radio" name="rb{{$parent.$index}}" ng-click="SetRadioButtonItem(c)" />{{c}}
+                                <br />
+                            </span>
+                        </div>
+                        <div ng-if="Responses[$index].ResponseValue=='CheckBox'">
+                            <span ng-repeat="c in arrStringforCheckBox[$index] track by $index">
+                                <input type="checkbox" ng-model="IsChecked" ng-change="SetCheckBoxItem(c,IsChecked)" />{{c}}
+                                <br />
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+  
+</form>
+
+<script>
+    $(document).ready(function () {
+        $("#QWeightage").val(1);
+
+      
+    });
+    $(document).on("input", ".rowcolumn", function () {
+        debugger;
+        var current=$(this).val();
+        if (current== "0")
+        {
+            $(this).val('');
+        }
+    });
+</script>
+@*<style>
+    .InputWidthClass:hover 
+    {
+    width:25%;   
+    }
+</style>*@

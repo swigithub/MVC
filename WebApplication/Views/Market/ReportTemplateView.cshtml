@@ -1,0 +1,91 @@
+﻿@using SWI.Libraries.AD.BLL;
+@using SWI.Libraries.AirView.BLL;
+@{ 
+    AD_DefinationBL db = new AD_DefinationBL();
+    if (ViewBag.IsAdmin)
+    {
+        ViewBag.Cities = db.SelectedList("AllCities");
+    }
+    else
+    {
+        ViewBag.Cities = db.SelectedList("UserCities", Convert.ToString(ViewBag.UserId));
+    }
+    UserClientsBL ucb = new UserClientsBL();
+    ViewBag.UserClients = ucb.SelectedList("byUserId", Convert.ToString(ViewBag.UserId));
+    ViewBag.Projects = db.SelectedList("UserProjects", Convert.ToString(ViewBag.UserId));
+}
+<div class="row">
+    <div class="col-sm-2" style="padding-left:30px;">
+        <label for="ddlClientId">Client</label><br />
+        @Html.DropDownList("ddlClientId", new SelectList(ViewBag.UserClients, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+    </div>
+    <div class="col-sm-2">
+        <label for="ddlProjectId">Projects</label><br />
+        @Html.DropDownList("ddlProjectId", new SelectList(ViewBag.Projects, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+    </div>
+    <div class="col-sm-2">
+        <label for="ddlMarketId">Markets</label><br />
+        @Html.DropDownList("ddlMarketId", new SelectList(ViewBag.Cities, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+    </div>
+    <div class="col-md-2">
+        <label for="ReportTemplateId">Report Templates</label><br />
+        <select class="form-control" id="ReportTemplateId" onchange="LoadAllDataTemplate()" style="height:unset !important;width:200px">
+            <option value="0">Select Template Name</option>
+        </select>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        LoadAllReportTemplates();
+        $("#ddlMarketId").on("change", function () {
+            LoadAllReportTemplates();
+        });
+    });
+    function LoadAllReportTemplates() {
+        var id = $("#ddlMarketId option:selected").val();
+        if (id != 0) {
+            $.ajax({
+                url: "/Market/GetReportTemplates",
+                type: "GET",
+                data: { MarketId: id },
+                success: function (res) {
+                    var rt = $("#ReportTemplateId");
+                    rt.empty();
+                    rt.append("<option value='0'>Select Report Template</option>");
+                    $.each(res, function (i, e) {
+                        rt.append("<option value=" + e.Value + ">" + e.Text + "</option>");
+                    });
+                },
+                error: function (e) {
+                    console.log("Error:" + e);
+                },
+                complete: function (msg) {
+
+                }
+            });
+        }
+    }
+
+    function LoadAllDataTemplate() {
+        var rt = $("#ReportTemplateId option:selected").val();
+        if (rt != 0) {
+            $.ajax({
+                url: "/Market/GetDataTemplates?id=" + rt,
+                type: "GET",
+                success: function (res) {
+                    //
+                    var DataTemplates = res;
+
+                    console.log('DataTemplates');
+                    console.log(DataTemplates);
+                },
+                error: function (e) {
+                    console.log("Error:" + e);
+                },
+                complete: function (msg) {
+
+                }
+            });
+        }
+    }
+</script>

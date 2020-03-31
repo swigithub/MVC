@@ -1,0 +1,474 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+
+<div id='container'>
+    <div class="button-set">
+        <button class="addmore btn btn-info btn-xs"><span class="glyphicon glyphicon-plus-sign"></span>Add</button>
+        <button class="deletescriptform btn btn-danger btn-xs"><span class="glyphicon glyphicon-minus-sign"></span>Delete</button>
+    </div>
+    <div id="dt_basic_wrapper" class="">
+
+        <input type="hidden" id="formTypeId" name="formTypeId" value="@ViewBag.FormId" />
+        <input type="hidden" id="definationTypeId" name="definationTypeId" value="@ViewBag.DefinationId" />
+
+        <table id='fb-table' class="table table-responsive table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th><input class='check_all' type='checkbox' onclick="select_all()" /></th>
+                    <th>Title <sup style="color:red">*</sup></th>
+                    @*<th>Control Type <sup style="color:red">*</sup></th>*@
+                    <th>Data Type <sup style="color:red">*</sup> </th>
+                    <th>Default Value</th>
+                    <th>Max Length</th>
+                    @*<th>Comments</th>*@
+                    <th>Required</th>
+                    @*<th>Attachment</th>*@
+                    <th>Sort Order</th>
+                </tr>
+            </thead>
+            <tbody id="FormBuilderFields"></tbody>
+        </table>
+
+    </div>
+
+    @*<div class="form-group">
+            <input type='submit' class="btn btn-success pull-right" name='submit' value='Save' id="btn-FormBuilderSubmit" />
+        </div>
+        <div class="form-group">
+            <input type='button' class="btn btn-primary pull-left" value='Go Back' onclick="goBack();" />
+        </div>*@
+</div>
+
+@section style{
+    <style>
+        .table > tbody > tr > td {
+            padding: 1px 10px;
+        }
+    </style>
+    <style>
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            vertical-align: middle;
+        }
+    </style>
+}
+<script type="text/javascript">
+
+    function goBack() {
+        window.history.back();
+    }
+
+    var generatedFormHTML = "";
+    var NodeTypeListHTML = "";
+    var ControlTypeListHTML = "";
+    var DataTypeListHTML = "";
+
+    $(document).ready(function () {
+        $("#FormBuilderFields").sortable({
+            stop: function (event, ui) {
+                $("#FormBuilderFields .sortOrderAutoValue").each(function (i) {
+                  //  $(this).val(i + 1);
+                });
+            }
+        });
+
+        // Get by id in query string
+        var definationType = $('#selectLstForm option:selected').val();
+        if (definationType != null && definationType != "-1") {
+            $('#definationTypeId').val(definationType);
+        }
+
+        var formType = $('#formTypeId').val();
+        var definationType = $('#definationTypeId').val();
+
+        $.ajax({
+            url: "/Project/Template/GetTypeList/",
+            type: "post",
+            data: {
+                FormId: formType,
+                DefinationId: definationType,
+            },
+            async: false,
+        }).done(function (result) {
+            var formTypeName = result.FormTypeName;
+
+            if (formTypeName == "Node") {
+                $('#NodeTypeListArea').css("display", "");
+
+                // Node Type List
+                var NodeTypeList = result.NodeTypeList;
+                if (NodeTypeList != null) {
+                    NodeTypeListHTML = '<select class="form-control" id="NodeType">     \
+                                            <option value="-1">                         \
+                                                Select Type                             \
+                                            </option>';
+                    $(NodeTypeList).each(function (i) {
+                        NodeTypeListHTML += '<option value=' + NodeTypeList[i].DefinationId + '> ' + NodeTypeList[i].DefinationName + ' </option>';
+                    });
+                    NodeTypeListHTML += '</select>';
+
+                    $('#NodeTypeListSelectList').html(NodeTypeListHTML);
+                }
+            }
+
+            // Control Type List
+            var ControlTypeList = result.ControlTypeList;
+            ControlTypeListHTML = '<option value="-1"> Select Control Type </option>';
+            $(ControlTypeList).each(function (i) {
+                ControlTypeListHTML += '<option value=' + ControlTypeList[i].DefinationId + '> ' + ControlTypeList[i].DefinationName + ' </option>';
+            });
+
+            // Data Type List
+            var DataTypeList = result.DataTypeList;
+            DataTypeListHTML = '<option value="-1"> Select Data Type </option>';
+            $(DataTypeList).each(function (i) {
+                DataTypeListHTML += '<option  value=' + DataTypeList[i].DefinationId + '> ' + DataTypeList[i].DefinationName + ' </option>';
+            });
+
+        });
+
+        // Render Saved Form (if anything saved before)
+        var definationType = $('#definationTypeId').val();
+        if (definationType != null) {
+            $.ajax({
+                url: "/NetLayerStatus/SavedFormInfo/",
+                type: "post",
+                data: {
+                    FormId: definationType,
+                },
+                async: false,
+            }).done(function (result) {
+                var GeneratedForm = result.Form;
+                $('#FormBuilderFields').html(GeneratedForm);
+            });
+        }
+    });
+
+    // Load form based on select item from list
+    $('#NodeTypeListSelectList').change(function () {
+
+        var definationType = $('#NodeTypeListSelectList option:selected').val();
+        if (definationType != null && definationType != "-1") {
+            $('#definationTypeId').val(definationType)
+
+            var formType = $('#formTypeId').val();
+            var definationType = $('#definationTypeId').val();
+            var GeneratedForm = "";
+
+            $.ajax({
+                url: "/NetLayerStatus/SavedFormInfo/",
+                type: "post",
+                data: {
+                    FormId: definationType,
+                },
+                async: false,
+            }).done(function (result) {
+                var GeneratedForm = result.Form;
+                $('#FormBuilderFields').html(GeneratedForm);
+            });
+        }
+    });
+
+
+    $(".deletescriptform").on('click', function () {
+        
+        $('.case:checkbox:checked').parents("tr").each(function (i) {
+            $(this).find("input.deleted:hidden").val(1)
+            $(this).find("input").attr('required', false);
+            $(this).find("select").attr('required', false);
+        });
+        $('.case:checkbox:checked').parents("tr").hide();
+        $('.check_all').prop("checked", false);
+       // check();
+
+        //$("#FormBuilderFields .sortOrderAutoValue").each(function (i) {
+        // //   $(this).val(i + 1);
+        //});
+        return false
+    });
+
+    $(document).on('click', '.require', function () {
+        var value = false;
+        if ($(this).is(':checked')) {
+            value = true;
+        }
+        else {
+            value = false;
+        }
+
+        $('#require' + $(this).attr('data-row')).val(value);
+    });
+    $(document).on('click', '.comment', function () {
+        var value = false;
+        if ($(this).is(':checked')) {
+            value = true;
+        }
+        else {
+            value = false;
+        }
+
+        $('#comment' + $(this).attr('data-row')).val(value);
+    });
+    $(document).on('click', '.isAttachment', function () {
+        var value = false;
+        if ($(this).is(':checked')) {
+            value = true;
+        }
+        else {
+            value = false;
+        }
+
+        $('#isAttachment' + $(this).attr('data-row')).val(value);
+    });
+
+    var i = 1;
+    $(".addmore").on('click', function () {
+        count = $('table tr').length;
+        i = count;
+
+        var data = "<tr>                                                                                                                                    \
+                        <td>                                                                                                                                \
+                            <input type='checkbox' class='case'/>                                                                                           \
+                        </td>                                                                                                                               \
+                        <td>                                                                                                                                \
+                            <input required class='form-control title' type='text' id='title" + i + "' name='title'/>                                                      \
+                        </td>                                                                                                                               \
+                                                                                                                                                \
+                        <td>                                                                                                                                \
+                            <select required class='form-control dropdown DataType DataTypeChange' id='dataType" + i + "' name='dataType' data-row='" + i + "'>                     \
+                                " + DataTypeListHTML + "                                                                                                    \
+                            </select>                                                                                                                       \
+                        </td>                                                                                                                               \
+                        <td>                                                                                                                                \
+                            <input class='form-control' type='text' onclick='dynamicQueryPop(" + i + ")' id='defaultValue" + i + "' name='defaultValue'/>   \
+                        </td>                                                                                                                               \
+                        <td>                                                                                                                                \
+                            <input class='form-control' type='number' id='maxLength" + i + "' name='maxLength'/>                                            \
+                        </td>                                                                                                                               \
+    \
+                        <td>                                                                                                                                \
+                            <input type='checkbox' class='require' data-row='" + i + "' />                                                                  \
+                            <input type='hidden' value='false' id='require" + i + "' name='required' />                                                     \
+                        </td>                                                                                                                               \
+                                                                                                                                               \
+                        <td><input type='hidden' id='formid" + i + "' name='formid' value='0' /><input type='hidden' class='deleted' name='isdeleted' value='0' id='isdeleted" + i + "'  />                                                                                                                               \
+                            <input class='form-control sortOrderAutoValue' type='number' id='sortOrderInput" + i + "' name='sortOrder' value='' min='0' max='9999' onkeypress = 'return isNumber(event)'/>  \
+                        </td>                                                                                                                               \
+                    </tr>";
+
+        $('#fb-table').append(data);
+        i++;
+    });
+
+    /* == Check Sort Order Input == */
+    $(document).on('input', '.sortOrderAutoValue', function () {
+        var max = parseInt(this.max);
+
+        if (parseInt(this.value) > max) {
+            this.value = max;
+        }
+    });
+
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+
+    function select_all() {
+        $('input[class=case]:checkbox').each(function () {
+            if ($('input[class=check_all]:checkbox:checked').length == 0) {
+                $(this).prop("checked", false);
+            } else {
+                $(this).prop("checked", true);
+            }
+        });
+    }
+
+    function check() {
+        obj = $('table tr').find('span');
+        $.each(obj, function (key, value) {
+            id = value.id;
+            $('#' + id).html(key + 1);
+        });
+    }
+
+    function dynamicQueryPop(rowVal) {
+        if ($('#dataType' + rowVal + ' option:selected').text().trim() == 'DynamicDropdown') {
+            $('#queryToRender').val(rowVal)
+            if ($('#defaultValue' + rowVal).val() != null) {
+                $('#dynamicQuery').val($('#defaultValue' + rowVal).val());
+            }
+            $('#dynamicQueryModal').modal('show');
+        }
+    }
+
+    $('#dynamicQueryOkBtn').click(function () {
+        $('#defaultValue' + $('#queryToRender').val()).val($('#dynamicQuery').val());
+        $('#dynamicQueryModal').modal('hide');
+    });
+   // $('.DataTypeChange').change(function () {
+    $(document).on('change', '.DataTypeChange', function () {
+
+
+        var _form = document.getElementById('defaultValue' + $(this).attr("data-row"));
+        var _text = document.getElementById('defaultValue' + $(this).attr("data-row"));
+
+        var _combo = document.createElement('input');
+        _combo.setAttribute('size', '1');
+        _combo.setAttribute('id', 'defaultValue' + $(this).attr("data-row"));
+
+        _combo.setAttribute('name', 'defaultValue');
+        _form.after(_combo);
+        $('#defaultValue' + $(this).attr("data-row"))[0].remove();
+        _combo = document.getElementById('defaultValue' + $(this).attr("data-row"));
+        $('#defaultValue' + $(this).attr("data-row")).addClass("form-control")
+        $('#defaultValue' + $(this).attr("data-row")).val("")
+        $('#defaultValue' + $(this).attr("data-row")).prop('readonly', false);
+        $('#defaultValue' + $(this).attr("data-row")).attr('readonly', false);
+        $('#maxLength' + $(this).attr("data-row")).prop('readonly', false);
+        $('#maxLength' + $(this).attr("data-row")).attr('readonly', false);
+        var Selected = $('#'+$(this)[0].id + ' option:selected').text().trim();
+        if (Selected == 'StaticDropdown') {
+            $('#defaultValue' + $(this).attr("data-row")).val("")
+            //     $('#defaultValue' + $(this).attr("data-row")).prop('readonly', 'false');
+            $('#defaultValue' + $(this).attr("data-row")).prop('type', 'Text');
+            $('#maxLength' + $(this).attr("data-row")).prop('readonly', 'true');
+
+            ////////
+            //var _form = document.getElementById('defaultValue' + $(this).attr("data-row"));
+            //var _text = document.getElementById('defaultValue' + $(this).attr("data-row"));
+
+            //var _combo = document.createElement('select');
+            //_combo.setAttribute('size', '1');
+            //_combo.setAttribute('id', 'defaultValue' + $(this).attr("data-row"));
+            //_combo.setAttribute('name', 'defaultValue');
+            //_form.after(_combo);
+            //$('#defaultValue' + $(this).attr("data-row"))[0].remove();
+            //_combo = document.getElementById('defaultValue' + $(this).attr("data-row"));
+            //$('#defaultValue' + $(this).attr("data-row")).addClass("form-control")
+            //$('#defaultValue' + $(this).attr("data-row")).addClass("DropDown")
+
+            ////_opt = document.createElement('option');
+            ////_opt.text = 'Add More';
+            ////_opt.value = '';
+            ////$('#defaultValue' + $(this).attr("data-row")).append(_opt);
+            ////add first value to the dropdown
+            //var _opt = document.createElement('option');
+            //_opt.text = 'Selected';
+            //_opt.value = 'selected';
+            //$('#defaultValue' + $(this).attr("data-row")).append(_opt);
+            ////add second value to the dropdown
+            //_opt = document.createElement('option');
+            //_opt.text = 'Unselected';
+            //_opt.value = 'unselected';
+            //$('#defaultValue' + $(this).attr("data-row")).append(_opt);
+
+        }
+        else if (Selected == 'Text') {
+            $('#defaultValue' + $(this).attr("data-row")).val("")
+          //  $('#defaultValue' + $(this).attr("data-row")).prop('readonly', 'false');
+            $('#defaultValue' + $(this).attr("data-row")).prop('type', 'text');
+        //    $('#maxLength' + $(this).attr("data-row")).prop('readonly', 'false');
+        }
+        else if (Selected == 'Number' || Selected == 'Decimal') {
+            $('#defaultValue' + $(this).attr("data-row")).val("")
+          //  $('#defaultValue' + $(this).attr("data-row")).prop('readonly', 'false');
+            $('#defaultValue' + $(this).attr("data-row")).prop('type', 'number');
+        //    $('#maxLength' + $(this).attr("data-row")).prop('readonly', 'false');
+       }
+       else if (Selected == 'Image') {
+           $('#defaultValue' + $(this).attr("data-row")).val("");
+           $('#defaultValue' + $(this).attr("data-row")).prop('readonly', 'true');
+           $('#maxLength' + $(this).attr("data-row")).prop('readonly', 'true');
+       }
+       else if (Selected == 'ColorPicker') {
+           $('#defaultValue' + $(this).attr("data-row")).val("")
+        //   $('#defaultValue' + $(this).attr("data-row")).prop('readonly', 'false');
+           var Target = $('#defaultValue' + $(this).attr("data-row")).prop('type', 'color');
+           $('#maxLength' + $(this).attr("data-row")).prop('readonly', 'true');
+       }
+       else if (Selected == 'Date') {
+          $('#defaultValue' + $(this).attr("data-row")).val("")
+      //    $('#defaultValue' + $(this).attr("data-row")).prop('readonly', 'false');
+          $('#defaultValue' + $(this).attr("data-row")).prop('type','date');
+          $('#maxLength' + $(this).attr("data-row")).prop('readonly', 'true');
+       }
+       else if (Selected == 'RadioButton') {
+           $('#defaultValue' + $(this).attr("data-row")).val("")
+      //     $('#defaultValue' + $(this).attr("data-row")).prop('readonly', 'false');
+           $('#defaultValue' + $(this).attr("data-row")).prop('type', 'radio');
+           $('#maxLength' + $(this).attr("data-row")).prop('readonly', 'true');
+
+
+           //////
+           var _form = document.getElementById('defaultValue' + $(this).attr("data-row"));
+           var _text = document.getElementById('defaultValue' + $(this).attr("data-row"));
+
+
+           var _combo = document.createElement('select');
+           _combo.setAttribute('size', '1');
+           _combo.setAttribute('id', 'defaultValue' + $(this).attr("data-row"));
+           _combo.setAttribute('name', 'defaultValue');
+           _form.after(_combo);
+           $('#defaultValue' + $(this).attr("data-row"))[0].remove();
+           _combo = document.getElementById('defaultValue' + $(this).attr("data-row"));
+           $('#defaultValue' + $(this).attr("data-row")).addClass("form-control")
+           //add first value to the dropdown
+           var _opt = document.createElement('option');
+           _opt.text = 'Selected';
+           _opt.value = 'selected';
+           $('#defaultValue' + $(this).attr("data-row")).append(_opt);
+           //add second value to the dropdown
+           _opt = document.createElement('option');
+           _opt.text = 'Unselected';
+           _opt.value = 'unselected';
+           $('#defaultValue' + $(this).attr("data-row")).append(_opt);
+
+           /////
+
+       }
+    });
+
+    $(document).on('dblclick', '.DropDown', function ()
+    {
+        var Selected = $('#' + $(this)[0].id + ' option:selected').text().trim();
+
+        var re= `<tr class="dropdowntabletr">
+                                            <td><input type='checkbox' class="dropdowncheckbox" /></td>
+                                            <td>
+                                                <input type="text" class="DropDownName  form-control" name="" />
+                                              </td>
+                                            </tr>`;
+        $("#dropdowntablebody").append(re);
+        $('#DropdownModal').modal('show');
+    });
+    function select_all_dropdown() {
+        $('input[class=dropdowncheckbox]:checkbox').each(function () {
+            if ($('input[class=check_all_dropdown]:checkbox:checked').length == 0) {
+                $(this).prop("checked", false);
+            } else {
+                $(this).prop("checked", true);
+            }
+        });
+    }
+    $(".addmoredropdown").on('click', function () {
+        debugger
+        count = $('#dropdowntablebody tr').length;
+        var Local = $(".dropdowntabletr")[0];
+        var oldV = "[$].";
+        var newcount = count;
+        var newV = "" + newcount + "]";
+        //    var str = KPIFirstRow.replace("Band-r0", "Band-r" + count + "");
+        var str = Local.replace(RegExp(oldV, "gi"), newV);
+        str = str.replace(RegExp("", "gi"), "").replace(RegExp("dropdowncheckboxfirst", "gi"), "dropdowncheckbox");
+        $('#dropdowntablebody').prepend("<tr class='newdropdownrow' >" + str + "</tr>");
+        i++;
+    });
+</script>

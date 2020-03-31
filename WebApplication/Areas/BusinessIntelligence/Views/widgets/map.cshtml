@@ -1,0 +1,125 @@
+<div class="widget">
+        <div class="title-bar" style="background:{{titlebg}};">
+                <h3>
+                        <img src="images/title-icon4.png" alt="" />
+                        <span class="update-name">{{widgetname_01}}</span>
+					<span class="cache-value"></span>
+                        <input ng-model="widgetname_01" ng-init="widgetname_01='Map View'" type="text" />
+
+                </h3>
+                <div class="buttons-sets">
+                        <a class="custom-btn icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+                        <a class="custom-btn icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+                        <a class="custom-btn icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+                        <ul class="opt-dropdown" >
+                                <li class="has-children"><a href="#" title="">Panel Size</a>
+                                        <ul class="column-size">
+                                                <li><a class="onesixth" href="#" title="">One Sixth <img src="images/onesixth.png" alt=""> </a></li>
+                                                <li><a class="onethird" href="#" title="">One Third <img src="images/onethird.png" alt=""> </a></li>
+                                                <li><a class="half" href="#" title="">Half <img src="images/half.png" alt=""></a></li>
+                                                <li><a class="twothird" href="#" title="">Two Thrid <img src="images/twothird.png" alt=""></a></li>
+                                                <li><a class="fivesixth" href="#" title="">Five Sixth <img src="images/fivesixth.png" alt=""> </a></li>
+                                                <li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+                                        </ul>
+
+                                </li>
+                                <li class="has-children"><a href="#" title="">Panel Color</a>
+                                        <ul class="panel-color">
+                                                <li>
+                                                        <a href="#" title=""><input class="bgcolor"  type="text"  value="#fff" ng-model="titlebg"  ng-init="titlebg = '#fff'"  />
+                                                        <div class="colorpickerwrapper style2"><div colorpicker></div></div></a>
+                                                </li>
+                                        </ul>
+                                </li>
+                        </ul>
+
+
+                        <a class="opt-btn custom-btn icon-only" href="#" title=""><i class="fas fa-filter"></i></a>
+                        <ul class="opt-dropdown style2 wider">
+                                <li><a href="javascript:void(0)" title=""><div class="date-range" datepicker> <span class="getValue"></span> </div></a></li>
+                                <li>
+                                        <select class="multiselect" multiple="multiple"  multiselect>
+                                                <optgroup label="North East" class="group-1">
+                                                        <option>NY/NNJ</option>
+                                                        <option>Michigan/Indiana</option>
+                                                        <option>E.Pa/S.Nj/De</option>
+                                                        <option>Ohio/Western Pennsylvania</option>
+                                                        <option>Washington DC-Baltimore</option>
+                                                </optgroup>
+                                                <optgroup label="West" class="group-2">
+                                                        <option>Desert Southwest</option>
+                                                        <option>Pacific Northwest</option>
+                                                        <option>San Diego/Las Vegas</option>
+                                                        <option>Rocky Mountain Region</option>
+                                                </optgroup>
+                                                <optgroup label="Central" class="group-3">
+                                                        <option> Illinois/Wisconsin</option>
+                                                        <option>Northern Plains</option>
+                                                        <option>Greater Midwest</option>
+                                                </optgroup>
+                                        </select>
+                                </li>
+                                <li>
+                                        <select class="multiselect"  multiselect>
+                                                <option>All Milestone</option>
+                                                <option>EPL</option>
+                                                <option>Pre Install</option>
+                                                <option>Migration</option>
+                                                <optgroup label="SSM" class="group-1">
+                                                        <option>Ordered</option>
+                                                        <option>Called Out</option>
+                                                        <option>Delivered</option>
+                                                </optgroup>
+                                        </select>
+                                </li>
+                                <li>
+                                        <select class="multiselect" multiple="multiple"   multiselect>
+                                                <option>Site Status 1</option>
+                                                <option>Site Status 2</option>
+                                                <option>Site Status 3</option>
+                                                <option>Site Status 4</option>
+                                                <option>Site Status 5</option>
+                                        </select>
+                                </li>
+                                <li>
+                                        <select class="multiselect" multiple="multiple"   multiselect>
+                                                <option>Deliverable 1</option>
+                                                <option>Deliverable 2</option>
+                                                <option>Deliverable 3</option>
+                                                <option>Deliverable 4</option>
+                                                <option>Deliverable 5</option>
+                                        </select>
+                                </li>
+                                <li><a class="filter-btn" href="#" title="">Apply</a></li>
+                        </ul>
+                </div>
+                <div class="selected-filters">
+                        <span>01/01/18 - 01/01/18</span>
+                        <span>North East</span>
+                        <span>TSS</span>
+                        <span>All Site Status</span>
+                        <span>All Deliverable</span>
+                </div><!-- Selected Filters -->
+        </div>
+
+        <div class="content-wrapper">
+                <div class="mapview">
+                        <div id="map-container">
+                                <div id="map_div"></div>
+                        </div>
+
+                        <div class="mapview-legends">
+                                <ul>
+                                        <li><img src="images/pending.png" alt="" /> Pending</li>
+                                        <li><img src="images/tss.png" alt="" /> TSS</li>
+                                        <li><img src="images/tss_ssm.png" alt="" /> TSS_SSM</li>
+                                        <li><img src="images/tss_epl.png" alt="" /> TSS_EPL</li>
+                                        <li><img src="images/tss_ssm_epl.png" alt="" /> TSS_SSM_EPL</li>
+                                        <li><img src="images/preinstall.png" alt="" /> Preinstall</li>
+                                        <li><img src="images/migrated.png" alt="" /> Migrated</li>
+                                        <li><img src="images/completed.png" alt="" /> Completed</li>
+                                </ul>
+                        </div>
+                </div><!-- Map View -->
+        </div>
+</div>

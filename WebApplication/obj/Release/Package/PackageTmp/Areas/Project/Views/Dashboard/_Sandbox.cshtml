@@ -1,0 +1,55 @@
+﻿
+<table class="table table-striped" id="Tbl_Sandbox" style="max-width:600px;overflow:auto">
+
+    <thead>
+        <tr>
+            <th class="mycheck" style="pointer-events: none;" ><input type="hidden" id="SelectedValue" /><input type="hidden" id="SCategory" /><input type="hidden" id="SName" /></th>
+            <th>FACode</th>
+            <th>eNB</th>
+            <th>Region</th>
+            <th>market</th>
+            <th>Sub Market</th>
+            <th>Status</th>
+          </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.Result)
+        {
+
+            <tr>
+               @if (@item.IsSelected == true)
+               {
+                <td>  <input class="check1234" psid="@item.ProjectSiteId"  checked type='checkbox' /></td>
+               }
+               else
+               {
+                <td>  <input class="check123" psid="@item.ProjectSiteId" type='checkbox' /></td>
+               }
+                <td>@item.FACode</td>
+                <td>@item.eNB</td>
+                <td>@item.Region</td>
+                <td>@item.Market</td>
+                <td>@item.SubMarket</td>
+                <td> <span class="badge" style="background-color:@item.ColorCode">@item.Status</span></td>
+              </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    
+var Counter= @Html.Raw(Json.Encode(ViewBag.Count));  //ViewBag.Result
+    var tbl = $("#Tbl_Sandbox").DataTable(
+         {
+             "columnDefs": [
+          { "orderDataType": "dom-checkbox", targets: 0 }
+             ]
+         }
+        ,
+      { "paging": true, "ordering": true, "info": false, "searching": true, Filter: false });
+    $.fn.dataTable.ext.order['dom-checkbox'] = function (settings, col) {
+        return this.api().column(col, { order: 'index' }).nodes().map(function (td, i) {
+            return $('input', td).prop('checked') ? '0' : '1';
+        });
+    };
+</script>

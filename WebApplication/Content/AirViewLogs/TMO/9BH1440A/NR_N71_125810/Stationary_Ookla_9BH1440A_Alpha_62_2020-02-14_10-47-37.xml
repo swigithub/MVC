@@ -1,0 +1,12 @@
+<Drive>
+<TestType>Stationary</TestType>
+<ChildTestType>rdoStationary</ChildTestType>
+<Site>9BH1440A</Site>
+<Sector>Alpha</Sector>
+<Pci>62</Pci>
+<Date>2020-02-14</Date>
+<Time>10-47-37</Time>
+
+<message-body><rat>LTE</rat><RadioBearerID>0</RadioBearerID><Freq>66786</Freq><PCI>426</PCI><time>16:47:38.470</time><channel>EUTRA-PCCH-Message</channel><event>paging</event><EUTRA-PCCH-Message>    <message>        <c1>            <paging>                <pagingRecordList>                    <EUTRA-PagingRecord>                        <ue-Identity>                            <s-TMSI>                                <mmec>                                    01101111                                </mmec>                                <m-TMSI>                                    11001001101001001101010111110010                                </m-TMSI>                            </s-TMSI>                        </ue-Identity>                        <cn-Domain><ps/></cn-Domain>                    </EUTRA-PagingRecord>                </pagingRecordList>            </paging>        </c1>    </message></EUTRA-PCCH-Message></message-body>
+
+</Drive>

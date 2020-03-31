@@ -1,0 +1,142 @@
+﻿@using SWI.Libraries.Security.Entities
+@model IEnumerable<Sec_Permission>
+@{
+    ViewBag.Title = "Permissions";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    string style = "";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <a href="@Url.Action("New","Permission")" class="btn btn-sm btn-info btn-flat pull-right">New</a>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                @if (ViewBag.View == "Mobile")
+                {
+                    style = "display: block;overflow-x: scroll;";
+                }
+
+                <table id="grid-data" style="@style" class="table  table-bordered table-striped context-menu-one">
+                    <thead style="background-color:rgba(53, 124, 165, 0.89);color:white">
+                        <tr>
+                            <th data-column-id="Id">Id</th>
+                            <th data-column-id="ParentId">Parent Id</th>
+                            <th data-column-id="Title">Title</th>
+                            <th data-column-id="URL">URL</th>
+                            <th data-column-id="Code">Code</th>
+                            <th data-column-id="Icon">Icon</th>
+                            <th data-column-id="IsMenuItem">Is Menu Item</th>
+                            <th data-column-id="IsUsed">IsActive</th>
+                            <th data-column-id="IsModule">IsModule</th>
+                            <th data-column-id="Id" data-formatter="action">Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div onclick="Delete(); return false;"></div>
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+<script src="~/Content/js/Plugins/bootgrid/jquery.bootgrid.js"></script>
+<script src="~/Content/js/Plugins/ContextMenu/contextMenu.min.js"></script>
+    <script>
+
+        function Delete(value) {
+            var c = confirm('Do you want to delete...? ');
+            if (c) { window.location.replace("/permission/Delete/" + value); }
+            else { return false }
+        }
+
+        $('#tbl-permission').DataTable({
+            "lengthMenu": [[10, 25, 50], [10, 25, 50]],
+            // dom: 'frtlip'
+        });
+        
+
+        //For Active Deactive
+        $(document).on('click', '.IsMenuItem', function () {
+
+            var Id = $(this).attr('data-id');
+            var status = false;
+            if ($(this).prop('checked') == true) {
+                status = true;
+            }
+
+
+            $.ajax({
+                url: '/Permission/ManageStatus?Id=' + Id + '&status=' + status + '&type=set_IsMenuItem',
+                type: 'POST',
+                success: function (res) {
+
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+
+        });
+
+
+        $(document).on('click', '.IsUsedItem', function () {
+          //  debugger;
+            var Id = $(this).attr('data-id');
+            var status = false;
+            if ($(this).prop('checked') == true) {
+                status = true;
+            }
+
+
+            $.ajax({
+                url: '/Permission/ManageStatus?Id=' + Id + '&status=' + status + '&type=set_IsUsed',
+                type: 'POST',
+                success: function (res) {
+
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+
+        });
+
+
+        var grid = $("#grid-data").bootgrid({
+            ajax: true,
+            sorting: false,
+            post: function () {
+                return {
+                    //id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
+                };
+            },
+            url: "/permission/Paging",
+            searchSettings: {
+                delay: 100,
+                characters: 3
+            },
+            formatters: {
+                action: function (column, row) {
+                    console.log('column:' + JSON.stringify(row));
+                    return '<a href="/permission/edit/' + row.Id + '">Edit</a> | <a onclick="Delete(' + row.Id + '); return false;" class="delete" href="/permission/Delete/' + row.Id + '">Delete</a>';
+                },
+            },
+        });
+        $('.column-header-anchor').css('color', 'white');
+
+        $("#grid-data th").hover(function () {
+            $(this).css('background-color', 'rgba(53, 124, 165, 0.89)');
+        });
+    </script>
+
+}
+@section style{
+    @Styles.Render("~/AdminLTE/plugins/datatables/css")
+<link href="~/Content/js/Plugins/bootgrid/jquery.bootgrid.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/ContextMenu/contextMenu.min.css" rel="stylesheet" />
+}

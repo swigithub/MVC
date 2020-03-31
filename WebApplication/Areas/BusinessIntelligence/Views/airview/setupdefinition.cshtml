@@ -1,0 +1,357 @@
+<div class="row grid muuri page" ng-controller="grids" data-pagename="setupdefinition">
+	<div class="col-xl-12 col-lg-12" data-position="1">
+		<div class="widget">
+			<div class="title-bar" style="background:{{titlebg}};">
+				<h3><i class="fa fa-exclamation-triangle"></i>
+					<span class="update-name">{{widgetname_01}}</span>
+					<span class="cache-value"></span>
+					<input ng-model="widgetname_01" ng-init="widgetname_01='Create Master Defination'" type="text" />
+				</h3>
+
+				<div class="buttons-sets">
+					<a class="custom-btn icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+					<a class="custom-btn icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+					<a class="custom-btn icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+					<ul class="opt-dropdown" >
+						<li class="has-children"><a href="#" title="">Panel Size</a>
+							<ul class="column-size">
+								<li><a class="onesixth" href="#" title="">One Sixth <img src="images/onesixth.png" alt=""> </a></li>
+								<li><a class="onethird" href="#" title="">One Third <img src="images/onethird.png" alt=""> </a></li>
+								<li><a class="half" href="#" title="">Half <img src="images/half.png" alt=""></a></li>
+								<li><a class="twothird" href="#" title="">Two Thrid <img src="images/twothird.png" alt=""></a></li>
+								<li><a class="fivesixth" href="#" title="">Five Sixth <img src="images/fivesixth.png" alt=""> </a></li>
+								<li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+							</ul>
+						</li>
+						<li class="has-children"><a href="#" title="">Panel Color</a>
+							<ul class="panel-color">
+								<li>
+									<a href="#" title=""><input class="bgcolor"  type="text"  value="#fff" ng-model="titlebg"  ng-init="titlebg = '#fff'"  />
+									<div class="colorpickerwrapper style2"><div colorpicker></div></div></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="content-wrapper">
+				<form>
+					<div class="table-container coloured no-borders big-headings ">
+						<table>
+							<thead>
+								<tr>
+									<th>Definition Type</th>
+									<th>Definition Name</th>
+									<th>Parent Definition</th>
+									<th>Key Code</th>
+									<th>Display Type</th>
+									<th>Color</th>
+									<th>Input Type</th>
+									<th>Max Length</th>
+									<th>Sort Order</th>
+									<th>Display Text</th>
+									<th>Is Active</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<select>
+											<option value="">-Defination Type-</option>
+											<option value="">Country</option>
+											<option value="">State</option>
+											<option value="">Region</option>
+											<option value="">City</option>
+											<option value="">NetworkMode</option>
+											<option value="">Band</option>
+											<option value="">Carrier</option>
+											<option value="">Scope</option>
+											<option value="">KPI Type</option>
+											<option value="">Test KPI</option>
+											<option value="">Test Category</option>
+											<option value="">WO Status</option>
+											<option value="">Profile Type</option>
+											<option value="">Sector Name</option>
+											<option value="">Report</option>
+											<option value="">Issue Type</option>
+											<option value="">Reasons</option>
+											<option value="">Redrive Types</option>
+											<option value="">Report Sections</option>
+											<option value="">Report Keys</option>
+											<option value="">SiteType</option>
+											<option value="">Site Class</option>
+											<option value="">Color</option>
+											<option value="">Test Type</option>
+											<option value="">UE Type</option>
+											<option value="">Report Filter</option>
+											<option value="">Module</option>
+											<option value="">UE Status</option>
+											<option value="">Script Events</option>
+											<option value="">Survey Category</option>
+											<option value="">Survey Sub Category</option>
+											<option value="">Script Type</option>
+											<option value="">Script Sub Events</option>
+											<option value="">Question Type</option>
+											<option value="">Conditions</option>
+											<option value="">Logic Actions</option>
+											<option value="">Contact Types</option>
+											<option value="">Contact Designations</option>
+											<option value="">Module Type</option>
+											<option value="">Permission Type</option>
+											<option value="">Unit Stystem</option>
+											<option value="">Priority</option>
+											<option value="">UnitType</option>
+											<option value="">UnitName</option>
+											<option value="">ControlType</option>
+											<option value="">DataType</option>
+											<option value="">Project Status</option>
+											<option value="">Task Types</option>
+											<option value="">NodeType</option>
+											<option value="">Floor No.</option>
+											<option value="">FormType</option>
+											<option value="">Issue Status</option>
+											<option value="">Issue Priority</option>
+											<option value="">Issue Category</option>
+											<option value="">Issue Type</option>
+											<option value="">Project Site Status</option>
+											<option value="">Milestone Window</option>
+											<option value="">Market</option>
+											<option value="">Sub Market</option>
+											<option value="">Alarms</option>
+											<option value="">Severity</option>
+											<option value="">GNG Status</option>
+											<option value="">Activity Type</option>
+											<option value="">Item Type</option>
+											<option value="">Project Delivery</option>
+											<option value="">Kpi_Level</option>
+											<option value="">Column_Type</option>
+											<option value="">KPI_Actions</option>
+											<option value="">Formula_Operator</option>
+											<option value="">KPI_DataType</option>
+											<option value="">L3KPI</option>
+										</select>
+									</td>
+									<td> <input type="text" /> </td>
+									<td>
+										<select>
+											<option value="">-Defination Type-</option>
+											<option value="">Country</option>
+											<option value="">State</option>
+											<option value="">Region</option>
+											<option value="">City</option>
+										</select>
+									</td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td><input class="bgcolor"  type="text"  value="#fafafa"  /> <div class="colorpickerwrapper"><div colorpicker></div></div> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="checkbox" /> </td>
+								</tr>
+								<tr>
+									<td>
+										<select>
+											<option value="">-Defination Type-</option>
+											<option value="">Country</option>
+											<option value="">State</option>
+											<option value="">Region</option>
+											<option value="">City</option>
+											<option value="">NetworkMode</option>
+											<option value="">Band</option>
+											<option value="">Carrier</option>
+											<option value="">Scope</option>
+											<option value="">KPI Type</option>
+											<option value="">Test KPI</option>
+											<option value="">Test Category</option>
+											<option value="">WO Status</option>
+											<option value="">Profile Type</option>
+											<option value="">Sector Name</option>
+											<option value="">Report</option>
+											<option value="">Issue Type</option>
+											<option value="">Reasons</option>
+											<option value="">Redrive Types</option>
+											<option value="">Report Sections</option>
+											<option value="">Report Keys</option>
+											<option value="">SiteType</option>
+											<option value="">Site Class</option>
+											<option value="">Color</option>
+											<option value="">Test Type</option>
+											<option value="">UE Type</option>
+											<option value="">Report Filter</option>
+											<option value="">Module</option>
+											<option value="">UE Status</option>
+											<option value="">Script Events</option>
+											<option value="">Survey Category</option>
+											<option value="">Survey Sub Category</option>
+											<option value="">Script Type</option>
+											<option value="">Script Sub Events</option>
+											<option value="">Question Type</option>
+											<option value="">Conditions</option>
+											<option value="">Logic Actions</option>
+											<option value="">Contact Types</option>
+											<option value="">Contact Designations</option>
+											<option value="">Module Type</option>
+											<option value="">Permission Type</option>
+											<option value="">Unit Stystem</option>
+											<option value="">Priority</option>
+											<option value="">UnitType</option>
+											<option value="">UnitName</option>
+											<option value="">ControlType</option>
+											<option value="">DataType</option>
+											<option value="">Project Status</option>
+											<option value="">Task Types</option>
+											<option value="">NodeType</option>
+											<option value="">Floor No.</option>
+											<option value="">FormType</option>
+											<option value="">Issue Status</option>
+											<option value="">Issue Priority</option>
+											<option value="">Issue Category</option>
+											<option value="">Issue Type</option>
+											<option value="">Project Site Status</option>
+											<option value="">Milestone Window</option>
+											<option value="">Market</option>
+											<option value="">Sub Market</option>
+											<option value="">Alarms</option>
+											<option value="">Severity</option>
+											<option value="">GNG Status</option>
+											<option value="">Activity Type</option>
+											<option value="">Item Type</option>
+											<option value="">Project Delivery</option>
+											<option value="">Kpi_Level</option>
+											<option value="">Column_Type</option>
+											<option value="">KPI_Actions</option>
+											<option value="">Formula_Operator</option>
+											<option value="">KPI_DataType</option>
+											<option value="">L3KPI</option>
+										</select>
+									</td>
+									<td> <input type="text" /> </td>
+									<td>
+										<select>
+											<option value="">-Defination Type-</option>
+											<option value="">Country</option>
+											<option value="">State</option>
+											<option value="">Region</option>
+											<option value="">City</option>
+										</select>
+									</td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td><input class="bgcolor"  type="text"  value="#fafafa"  /> <div class="colorpickerwrapper"><div colorpicker></div></div> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="checkbox" /> </td>
+								</tr>
+								<tr>
+									<td>
+										<select>
+											<option value="">-Defination Type-</option>
+											<option value="">Country</option>
+											<option value="">State</option>
+											<option value="">Region</option>
+											<option value="">City</option>
+											<option value="">NetworkMode</option>
+											<option value="">Band</option>
+											<option value="">Carrier</option>
+											<option value="">Scope</option>
+											<option value="">KPI Type</option>
+											<option value="">Test KPI</option>
+											<option value="">Test Category</option>
+											<option value="">WO Status</option>
+											<option value="">Profile Type</option>
+											<option value="">Sector Name</option>
+											<option value="">Report</option>
+											<option value="">Issue Type</option>
+											<option value="">Reasons</option>
+											<option value="">Redrive Types</option>
+											<option value="">Report Sections</option>
+											<option value="">Report Keys</option>
+											<option value="">SiteType</option>
+											<option value="">Site Class</option>
+											<option value="">Color</option>
+											<option value="">Test Type</option>
+											<option value="">UE Type</option>
+											<option value="">Report Filter</option>
+											<option value="">Module</option>
+											<option value="">UE Status</option>
+											<option value="">Script Events</option>
+											<option value="">Survey Category</option>
+											<option value="">Survey Sub Category</option>
+											<option value="">Script Type</option>
+											<option value="">Script Sub Events</option>
+											<option value="">Question Type</option>
+											<option value="">Conditions</option>
+											<option value="">Logic Actions</option>
+											<option value="">Contact Types</option>
+											<option value="">Contact Designations</option>
+											<option value="">Module Type</option>
+											<option value="">Permission Type</option>
+											<option value="">Unit Stystem</option>
+											<option value="">Priority</option>
+											<option value="">UnitType</option>
+											<option value="">UnitName</option>
+											<option value="">ControlType</option>
+											<option value="">DataType</option>
+											<option value="">Project Status</option>
+											<option value="">Task Types</option>
+											<option value="">NodeType</option>
+											<option value="">Floor No.</option>
+											<option value="">FormType</option>
+											<option value="">Issue Status</option>
+											<option value="">Issue Priority</option>
+											<option value="">Issue Category</option>
+											<option value="">Issue Type</option>
+											<option value="">Project Site Status</option>
+											<option value="">Milestone Window</option>
+											<option value="">Market</option>
+											<option value="">Sub Market</option>
+											<option value="">Alarms</option>
+											<option value="">Severity</option>
+											<option value="">GNG Status</option>
+											<option value="">Activity Type</option>
+											<option value="">Item Type</option>
+											<option value="">Project Delivery</option>
+											<option value="">Kpi_Level</option>
+											<option value="">Column_Type</option>
+											<option value="">KPI_Actions</option>
+											<option value="">Formula_Operator</option>
+											<option value="">KPI_DataType</option>
+											<option value="">L3KPI</option>
+										</select>
+									</td>
+									<td> <input type="text" /> </td>
+									<td>
+										<select>
+											<option value="">-Defination Type-</option>
+											<option value="">Country</option>
+											<option value="">State</option>
+											<option value="">Region</option>
+											<option value="">City</option>
+										</select>
+									</td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td><input class="bgcolor"  type="text"  value="#fafafa"  /> <div class="colorpickerwrapper"><div colorpicker></div></div> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="text" /> </td>
+									<td> <input type="checkbox" /> </td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="form-footer align-right">
+						<button class="custom-btn medium color1"><i class="fa fa-save"></i> Save</button>
+						<button class="custom-btn medium color2"><i class="fa fa-sync-alt"></i> Refresh</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

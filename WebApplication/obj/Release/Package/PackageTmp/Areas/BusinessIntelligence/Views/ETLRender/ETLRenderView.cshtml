@@ -1,0 +1,293 @@
+﻿
+
+<div ng-controller="ETLManipulateController as vm">
+   
+        <div class="static_widgets">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="widget datatable">
+                        <div class="title-bar title-bar-d">
+                            <h3>
+                                <i class="fas fa-ticket-alt"></i>
+                                ETL List
+                            </h3>
+                            <div class="buttons-sets">
+                                
+                                <div class="get_dt_search"><input id="myInputTextField" type="search" class="form-control form-control-sm" placeholder="Search" aria-controls="ticketTable"></div>
+                                    @*<a href="Ticket/Ticket/create" class="custom-btn medium color1"> <i class="fas fa-plus-circle"></i> New Ticket</a>*@
+                               
+                                <a href="#" class="querybuilder active custom-btn medium d-none color1" ng-click="vm.reloadingOfMurri()" data-toggle="tab" data-target="#queryBuilderSection" title=""><i class="fas fa-plus-circle"></i> New</a>
+                            </div>
+                        </div>
+                        <div class="content-wrapper" style="min-height:400px">
+                            <div class="table-container no-borders">
+                                <table class="table table-striped" id="etlTable">
+                                    <thead>
+                                        <tr class="filtersRow" style="display:none">
+                                            <th class="filterhead "></th>
+                                            <th class="filterhead "></th>
+                                            <th class="filterhead "></th>
+                                            <th class="filterhead "></th>
+                                            <th class="filterhead "></th>
+                                            <th class="filterhead "></th>
+                                        </tr>
+                                        <tr>
+                                            <th>SR.#</th>
+                                            <th>Data set</th>
+                                            <th>Schedule Type</th>
+                                            <th>Execution Time</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="target_table_id"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="widget-footer">
+                            <div class="dt-bottom-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <a class="sidepanel-btn" href="#" title=""><i class="bar"></i></a>
+    <div class="side-panel" sidepanel ng-show="vm.modeType=='edit'">
+        <ul class="nav active-padding">
+            @*<li><a class="active penalsettings" data-toggle="tab" data-target="#tab1" title="">settings</a></li>*@
+            @*<li>
+                <a class="querybuilder" ng-click="vm.reloadingOfMurri()" data-toggle="tab" data-target="#queryBuilderSection" title="">Query Builder</a>
+            </li>*@
+        </ul>
+        <!-- <h3>Settings Panel</h3> -->
+
+        <div class="tab-content">
+
+            <div class="tab-pane fade" id="queryBuilderSection">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@*<link href="~/Areas/BusinessIntelligence/assets/css/jquery.datetimepicker.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.datatables.net/colvis/1.1.2/css/dataTables.colVis.css" />
+<script src="~/Areas/BusinessIntelligence/assets/js/jquery.datetimepicker.full.js"></script>
+<link href="~/Areas/BusinessIntelligence/assets/css/querybuilder.css" rel="stylesheet" />
+
+
+<script src="https://cdn.datatables.net/colreorder/1.5.1/js/dataTables.colReorder.min.js"></script>
+<script src="https://cdn.datatables.net/colvis/1.1.2/js/dataTables.colVis.min.js"></script>*@
+<script>
+    var itemtable;
+    $(document).ready(function () {
+
+        $('.querybuilder').click(function () {
+
+            $(this).parents('.new-template').siblings('.side-panel').toggleClass('active');
+            $(".new-template").toggleClass('shrink');
+            $(".side-panel").css({ "width": "calc(100% - 240px)" });
+
+            $("#queryBuilderSection").addClass(' active show')
+            $("#queryBuilderSection").children(".querybuilder-wrapper").css('display', 'flex');
+
+        })
+        dataTableList();
+        //addColorClasses();
+       
+    });
+    function dataTableList() {
+        itemtable = $("#etlTable").DataTable({
+            dom: '<"top"<"dt-filters"f>>rt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            processing: false, // for show progress bar
+            serverSide: true, // for process server side
+            filter: true, // this is for disable filter (search box)
+            orderMulti: true, // for disable multiple column at once
+             searchable :true,
+            ajax: {
+                url: "/BusinessIntelligence/DashboardNReport/GetTempNodes",
+                type: "GET",
+                datatype: "json",
+                contentType: 'application/json',
+                data: function (data) {
+                    hideHeaderWidgets();
+                 //   console.log(data);
+                    //console.log(JSON.stringify(data));
+                }
+            },
+            columns: [
+                { data: "RowNumber", name: "RowNumber", autoWidth: true },
+                { data: "datasetName", name: "datasetName", autoWidth: true },
+                 { data: "scheduletype", name: "scheduletype", autoWidth: true },
+                 // { data: "Status", name: "Status", autoWidth: true },
+                  {
+                      data: "DurStartDate",
+                      render: function (data, type, row) {
+                          if (row['DurStartDate'] != "") {
+                              return row['DurStartDate'];
+                          }
+                          else {
+                              return 'NA';
+                          }
+                         
+                         
+                      }, autoWidth: true
+                  },
+                  {
+                data: "Status",class:"statusColor",
+                render: function (data, type, row) {
+                    let Ahtml = "";
+                    if (row['Status'] == "Start") {
+                        Ahtml += '<p class="start-status-etl">' + row['Status'] + '</p>';
+                    }
+                    else if (row['Status'] == "Inprogress") {
+                        Ahtml += '<p class="inprogress-status-etl">' + row['Status'] + '</p>';
+                    }
+                    else if (row['Status'] == "Completed") {
+                        Ahtml += '<p class="completed-status-etl">' + row['Status'] + '</p>';
+                    }
+                    else if (row['Status'] == "Incompleted") {
+                        Ahtml += '<p class="in-completed-status-etl">' + row['Status'] + '</p>';
+                    }
+                    else  {
+                        Ahtml += '<p>  NA  </p>';
+                    }
+                  //  addColorClasses();
+                    return Ahtml;
+                      }, autoWidth: true
+                  },
+                 {
+                     render: function (data, type, row, meta) {
+                       
+                         return "<a  class='far fa-edit' onclick=angular.element(this).scope().renderQueryBuilderForETL(" + row.TemplateNodeID + "); ></a>  <a  onclick=angular.element(this).scope().deleteETL(" + row.TemplateNodeID + "); ><i class='fa fa-trash-alt' aria-hidden='true'></i></a>";
+                     }
+                 },
+            ],
+            initComplete: function () {
+                // Move Search To Panel Header
+                $("#ticketTable_wrapper .dataTables_filter input").appendTo(".dataTables_filter");
+                $("#ticketTable_wrapper .dt-filters").css("display", "none");
+                $(".dataTables_filter input").attr('placeholder', 'Search');
+
+                $("#ticketTable_wrapper .dt-bottom").appendTo('.dt-bottom-container');
+            },
+              preDrawCallback: function () {
+                  $("#etlTable").LoadingOverlay("show");
+            },
+            drawCallback: function () {
+                $(".loadingoverlay").remove();
+               // addColorClasses();
+
+            },
+            rowCallback: function (settings) {
+                $("#etlTable").LoadingOverlay("hide");
+            }
+
+        });
+         $('#myInputTextField').keyup(function (e) {
+             if (e.keyCode == 13) {
+                 // Call the API search function
+                 itemtable.search(this.value).draw();
+             }
+
+             // Ensure we clear the search if they backspace far enough
+             if (this.value === "") {
+                 itemtable.search("").draw();
+             }
+         })
+        
+
+    }
+   
+   
+    //function btnEdit(ETLName) {
+    //    console.log(ETLName);
+    //    editDataSet(ETLName);
+    //}
+    //function editDataSet(dataSetName) {
+    //    $.ajax({
+    //        url: '/BusinessIntelligence/DashboardNReport/EditDataSet',
+    //        dataType: 'json',
+    //        type: 'post',
+    //        contentType: 'application/json',
+    //        data: JSON.stringify({ userID: 11, templateName: dataSetName }),
+    //        processData: false,
+    //        success: function (data, textStatus, jQxhr) {
+    //            if (data.status) {
+                  
+    //                alert("edit dataset")
+
+    //            }
+    //        },
+    //        error: function (jqXhr, textStatus, errorThrown) {
+    //            console.log(errorThrown);
+    //        }
+    //    });
+    //}
+    function btnDelete(ETLName) {
+        // console.log(ETLName);
+        isDataSetAlreadyExist(ETLName)
+
+    }
+    //function isDataSetAlreadyExist(dataSetName) {
+    //    $.ajax({
+    //        url: '/BusinessIntelligence/DashboardNReport/CheckTemplateNameIsExistOrNot',
+    //        dataType: 'json',
+    //        type: 'post',
+    //        contentType: 'application/json',
+    //        data: JSON.stringify({ userID: 11, templateName: dataSetName }),
+    //        processData: false,
+    //        success: function (data, textStatus, jQxhr) {
+    //            if (data.status) {
+    //                var confirmStatus = confirm("Are you sure you want to delete ...?")
+    //                if (confirmStatus) {
+   //                     DeleteDataSet(dataSetName);
+    //                   // alert("deleted")
+    //                }
+    //            }
+    //            else {
+    //                alert("not deleted")
+
+    //            }
+    //        },
+    //        error: function (jqXhr, textStatus, errorThrown) {
+    //            console.log(errorThrown);
+    //        }
+    //    });
+    //}
+
+
+
+
+    //function DeleteDataSet(dataSetName) {
+    //    $.ajax({
+    //        url: '/BusinessIntelligence/DashboardNReport/DeleteDataSet',
+    //        dataType: 'json',
+    //        type: 'POST',
+    //        contentType: 'application/json',
+    //        data: JSON.stringify({ userID: 11, templateName: dataSetName }),
+    //        processData: false,
+    //        success: function (data, textStatus, jQxhr) {
+    //            if (data.status) {
+    //                alert("Data deleted successfully")
+    //            }
+
+    //        },
+    //        error: function (jqXhr, textStatus, errorThrown) {
+    //            console.log(errorThrown);
+    //        }
+    //    });
+    //}
+    function hideHeaderWidgets() {
+        //$(".ui-select-container").hide()
+        //$('.quick-settings').hide()
+        //$(".more-links").hide()
+    }
+
+
+    //    function removeDataTableParentClass() {
+
+    //        $('.datatable').parent().parent().removeClass('row change-settings');
+    //}
+</script>

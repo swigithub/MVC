@@ -1,0 +1,262 @@
+﻿@model SWI.Libraries.AirView.Entities.AD_DefinationTypes
+@{
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+      ViewBag.Title = "Index";
+}
+ @*----King--Coder--Safi-UK-----*@
+<div id="content">
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Add Defination Type</h4>
+                </div>
+                <div class="modal-body" style="height: 230px;" >
+                    <div class="col-lg-12">
+                        <div class="col-lg-4">
+                            @Html.Label("Defination Type : ", new { @style = "margin-top:8px;" })
+                            <br />
+                            @Html.Label("PDefination Type : ", new { @style = "margin-top:28px;" })
+                            <br />
+                            @Html.Label("Status : ", new { @style = "margin-top:18px;" })
+                        </div>
+                        <div id="myModalBodyDiv1">
+                            @Html.Partial("~/Views/DefinationType/_DefinationTypes.cshtml", Model)
+                            <!-- widget div-->
+                        </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnSubmit" >Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Defination Types</h3>
+                        <a data-toggle="modal" data-target="#myModal" onclick="reset();" class="btn btn-sm btn-info btn-flat pull-right">New</a>
+                    </div>
+
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="grid-data" class="table  table-bordered table-striped context-menu-one">
+                            <thead style="background-color:rgba(53, 124, 165, 0.89);color:white">
+                                <tr>
+                                    <th data-column-id="DefinationType">Defination Types</th>
+                                    <th data-column-id="PDefinationTypeName">PDefination Types</th>
+                                    <th data-column-id="DefinationTypeId" data-formatter="action">Action</th>
+                                </tr>
+                            </thead>
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+                        @section scripts{
+                            @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+                            <script src="~/Content/js/Plugins/bootgrid/jquery.bootgrid.js"></script>
+                            <script src="~/Content/js/Plugins/ContextMenu/contextMenu.min.js"></script>
+<link href="~/AdminLTE/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminLTE/plugins/sweetalert/sweetalert.js"></script>
+                            <script>
+
+                                $(document).ready(function () {
+
+                                    $("#btnSubmit").click(function () {
+                                        var myformdata = $("#myForm").serialize();
+                                        $.ajax({
+
+                                            type: "POST",
+                                            url: "/DefinationType/New",
+                                            data: myformdata,
+                                            success: function () {
+                                                $("#loaderDiv").hide();
+                                                $("#myModal").modal("hide");
+                                                swal("Saved !", "Success !", "success");
+                                                $("#myForm")[0].reset();
+                                                $('#grid-data').bootgrid('reload');
+                                            },
+                                            error: function () {
+                                                swal("Error !", "Error occured :(", "error");
+
+                                            }
+
+                                        })
+                                     
+                                    })
+
+
+                                    // Attach Button click event listener
+                                    $("#myBtn").click(function () {
+                                        // show Modal
+                                        $('#myModal').modal('show');
+                                    });
+                                });
+
+                                $('#tbl-permission').DataTable({
+                                    "lengthMenu": [[10, 25, 50], [10, 25, 50]],
+                                    // dom: 'frtlip'
+                                });
+
+
+                                //For Active Deactive
+                                //$(document).on('click', '.IsMenuItem', function () {
+
+                                //    var Id = $(this).attr('data-id');
+                                //    var status = false;
+                                //    if ($(this).prop('checked') == true) {
+                                //        status = true;
+                                //    }
+                                //    alert(Id);
+
+                                //    $.ajax({
+                                //        url: '/Permission/ManageStat?Id=' + Id + '&status=' + status + '&type=set_IsMenuItem',
+                                //        type: 'POST',
+                                //        success: function (res) {
+
+                                //        },
+                                //        error: function (err) {
+                                //            alert(err.statusText);
+                                //        }
+                                //    });
+
+                                //});
+
+
+                                //$(document).on('click', '.IsUsedItem', function () {
+                                //    //  debugger;
+                                //    var Id = $(this).attr('data-id');
+                                //    var status = false;
+                                //    if ($(this).prop('checked') == true) {
+                                //        status = true;
+                                //    }
+
+
+                                //    $.ajax({
+                                //        url: '/Permission/ManageStatus?Id=' + Id + '&status=' + status + '&type=set_IsUsed',
+                                //        type: 'POST',
+                                //        success: function (res) {
+
+                                //        },
+                                //        error: function (err) {
+                                //            alert(err.statusText);
+                                //        }
+                                //    });
+
+                                //});   
+                                function reset() {
+                                    var url = "/DefinationType/New";
+                                    $("#myModalBodyDiv1").load(url, function () {
+                                        $("#myModal").modal("show");
+                                    })
+                                }
+                                function Edite(id) {
+                                    var url = "/DefinationType/EditDefinationType?Id=" + id;
+
+                                    $("#myModalBodyDiv1").load(url, function () {
+                                        $("#myModal").modal("show");
+                                    })
+                                }
+                                function Delete(id) {
+                                    $.ajax({
+                                        url: '/DefinationType/Delete?Id=' + id ,
+                                        type: 'POST',
+                                        success: function (res) {
+                                            if (res == true) {
+                                                swal("Information!", "Defination Type  Successfully Deleted !", "success");    
+                                                $('#grid-data').bootgrid('reload');
+                                            }
+                                        },
+                                        error: function (err) {
+                                            swal("Error !", "Error occured :(", "error");
+                                            //alert(err.statusText);
+                                        }
+                                    });
+                             
+
+                               
+                                }
+                                function ChangeStatus(id) {
+                                    $.ajax({
+                                        url: '/DefinationType/DefinationTypeStatus?Id=' + id,
+                                        type: 'POST',
+                                        success: function (res) {
+                                            if (res == true) {
+                                                swal("Information!", "Defination Type Status Successfully Updated!", "success");
+                                                $('#grid-data').bootgrid('reload');
+                                            }
+                                        },
+                                        error: function (err) {
+                                            swal("Error !", "Error occured :(", err.statusText);
+                                        
+                                        }
+                                    });
+
+
+
+                                }
+                                var status="";
+                                var grid = $("#grid-data").bootgrid({
+                                    ajax: true,
+                                    sorting: false,
+                                    post: function () {
+                                        return {
+                                            //id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
+                                        };
+                                    },
+                                    url: "/DefinationType/Paging",
+                                    searchSettings: {
+                                        delay: 100,
+                                        characters: 3
+                                    },
+                                    formatters: {
+                                        action: function (column, row) {
+                                            if(row.IsActive == true){
+                                                status="Deactive"
+                                            }else{
+                                                status="Active"
+                                            }
+
+                                            return '<a hrf="" onclick="Edite(' + row.DefinationTypeId + ');" ">Edit</a> | <a onclick="Delete(' + row.DefinationTypeId + '); return false;" class="delete" href="/DefinationType/Delete/' + row.DefinationTypeId + '">Delete</a>| <a onclick="ChangeStatus(' + row.DefinationTypeId + '); return false;" class="delete" href="/DefinationType/DefinationTypeStatus/' + row.DefinationTypeId + '">' +status + '</a>';
+                                        },
+                                    },
+                                });
+                                $('.column-header-anchor').css('color', 'white');
+
+                                $("#grid-data th").hover(function () {
+                                    $(this).css('background-color', 'rgba(53, 124, 165, 0.89)');
+
+
+
+                                });
+
+                            </script>
+
+                        }
+                        @section style{
+                            @Styles.Render("~/AdminLTE/plugins/datatables/css")
+                            <link href="~/Content/js/Plugins/bootgrid/jquery.bootgrid.css" rel="stylesheet" />
+                            <link href="~/Content/js/Plugins/ContextMenu/contextMenu.min.css" rel="stylesheet" />
+                        }

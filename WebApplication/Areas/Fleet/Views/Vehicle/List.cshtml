@@ -1,0 +1,3276 @@
+﻿
+@{
+    ViewBag.Title = "Vehicle List";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<style>
+    .form-group select {
+        width: 100%;
+        height: 33px;
+    }
+
+    th.hideme input {
+        display: none;
+    }
+
+.major-btns {
+    margin: -50px 240px 10px 0;
+    float: right;
+}
+    button.disabled {
+        pointer-events: none;
+    }
+.form-horizontal p {
+    margin: 0;
+    padding-top: 7px;
+}
+.align-left{text-align:left!important}
+.align-right{text-align:right!important}
+div#table_fleet2_filter label {
+    font-weight: 600;
+}
+div.dataTables_filter input {
+    border: 1px solid #ddd;
+    height: 28px;
+    margin: 0 0 5px 10px;
+    background: #fff;
+}
+td label.control-label {
+    padding: 0!important;
+}
+.form-horizontal td p {
+    margin: 0;
+    padding: 0;
+}
+.dataTables_wrapper .dataTables_filter{margin-top:-46px}
+.nav-tabs-custom td .btn {
+    background: none;
+    border: 0;
+    padding: 4px 8px;
+    font-size: 16px;
+}
+.nav-tabs-custom table td:last-child {
+    white-space: nowrap;
+}
+.modal-body {
+    max-height: calc(100vh - 190px);
+    overflow: auto;
+}
+th.sorting_asc.no-sort {
+    background: none!important;
+}
+</style>
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<script>
+    $(document).on('click', '#AvailableTab', function () {
+        $('.switch.pull-right').show();
+    });
+    $(document).on('click', '#AssignedTab', function () {
+        $('.switch.pull-right').hide();
+    });
+
+</script>
+<div class="col-sm-12" style="margin-bottom:10px">
+    <a href="/Fleet/Vehicle" class="btn btn-sm btn-info btn-flat pull-right">Add New Vehicle</a>
+</div>
+<div class="col-sm-12">
+    <section class="panel panel-default">
+        <header class="panel-heading font-bold">
+            @ViewBag.Title
+            <label class="switch pull-right" style="margin-top:5px; margin-right:15px;">
+                <input type="checkbox" />
+                <span class="slider" value="0"></span>
+            </label>
+        </header>
+        <div class="panel-body">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active" id="AvailableTab"><a href="#available" data-toggle="tab">Available</a></li>
+                    <li id="AssignedTab"><a href="#assigned" data-toggle="tab" >Assigned</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="available">
+                        <div class="btn-group major-btns">
+                            <button type="button" class="btn btn-danger disabled AllDelete" data-toggle="modal" data-target="#AllDeleteModal"><i class="fa fa-trash-o"></i> Delete</button>
+                            <button type="button" class="btn btn-success disabled AllActivate" style="display:none" data-toggle="modal" data-target="#AllActivateModal"><i class="fa fa-link"></i>  Activate</button>
+                            <button type="button" class="btn btn-warning disabled AllDeactive" data-toggle="modal" data-target="#AllDeactiveModal"><i class="fa fa-unlink"></i>  Deactive</button>
+                            <button type="button" class="btn btn-primary disabled AllAssign" data-toggle="modal" data-target="#AllAssignModal"><i class="fa fa-check-square"></i>  Assign</button>
+                        </div>
+
+                        <table class="table datatable table-bordered" id="table_fleet2">
+                            <thead>
+                                <tr>
+                                    <th class="no-sort"><input id="checkall" type="checkbox" /></th>
+                                    <th>VehicleId</th>
+                                    <th></th>
+                                    <th>Group</th>
+                                    <th>Type</th>
+                                    <th>Manufacturer</th>
+                                    <th>Model</th>
+                                    <th>Sub Model</th>
+                                    <th>Year</th>
+                                    <th>VIN</th>
+                                    <th>Registration</th>
+                                    <th>IMEI</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th class="hideme"></th>
+                                    <th class="hasinput">VehicleId</th>
+                                    <th class="hideme"></th>
+                                    <th class="hasinput">Group</th>
+                                    <th class="hasinput">Type</th>
+                                    <th class="hasinput">Manufacturer</th>
+                                    <th class="hasinput">Model</th>
+                                    <th class="hasinput">Sub Model</th>
+                                    <th class="hasinput">Year</th>
+                                    <th class="hasinput">VIN</th>
+                                    <th class="hasinput">Registration</th>
+                                    <th class="hasinput">IMEI</th>
+                                    <th class="hidden"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="assigned">
+                        <div class="btn-group major-btns">
+                            <button type="button" class="btn btn-danger disabled AllReturn" data-toggle="modal" data-target="#AllReturnModal"><i class="fa fa-undo"></i> Return</button>
+                            <button type="button" class="btn btn-success disabled AllTransfer" data-toggle="modal" data-target="#AllTransferModal"><i class="fa fa-exchange"></i> Transfer</button>
+                        </div>
+                        <table class="table datatable table-bordered" id="table_fleet">
+                            <thead>
+                                <tr>
+                                    <th class="no-sort"><input id="checkall" type="checkbox" /></th>
+                                    <th>VehicleId</th>
+                                    <th>UserId</th>
+                                    <th></th>
+                                    <th>Group</th>
+                                    <th>Type</th>
+                                    <th>Manufacturer</th>
+                                    <th>Model</th>
+                                    <th>Sub Model</th>
+                                    <th>Driver Name</th>
+                                    <th>Year</th>
+                                    <th>VIN</th>
+                                    <th>Registration</th>
+                                    <th>IMEI</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+
+                            <tfoot>
+                                <tr>
+                                    <th class="hideme"></th>
+                                    <th class="hasinput">VehicleId</th>
+                                    <th class="hasinput">UserId</th>
+                                    <th class="hideme"></th>
+                                    <th class="hasinput">Group</th>
+                                    <th class="hasinput">Type</th>
+                                    <th class="hasinput">Manufacturer</th>
+                                    <th class="hasinput">Model</th>
+                                    <th class="hasinput">Sub Model</th>
+                                    <th class="hasinput">Driver Name</th>
+                                    <th class="hasinput">Year</th>
+                                    <th class="hasinput">VIN</th>
+                                    <th class="hasinput">Registration</th>
+                                    <th class="hasinput">IMEI</th>
+                                    <th class="hidden"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+    
+       <div class="modal fade" id="AllTransferModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" id="closeNow">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Transfer All Vehicles</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body" id="AllTransferModalBody">
+                            <table class="table table-bordered">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-danger AllTransferCarNow"><i class="fa fa-exchange"></i> Transfer</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="AllReturnModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" id="closeNow">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Return All Vehicles</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body" id="AllReturnModalBody">
+                            <table class="table table-bordered">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-danger AllReturnCarNow"><i class="fa fa-undo"></i> Return</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="AllDeleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" id="closeNow">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Delete All Vehicles</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body" id="AllDeleteModalBody">
+                            <table class="table table-bordered">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-danger AllDeleteNow"><i class="fa fa-trash"></i> Delete</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="AllDeactiveModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" id="closeNow">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Deactive All Vehicles</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body" id="AllDeactiveModalBody">
+                            <table class="table table-bordered">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-danger AllDeactiveNow"><i class="fa fa-unlink"></i> Deactivate</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="AllActivateModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" id="closeNow">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Activate All Vehicles</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body" id="AllActivateModalBody">
+                            <table class="table table-bordered">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-danger AllActivateNow"><i class="fa fa-link"></i> Activate</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="AllAssignModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" id="closeNow">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Assign All Vehicles</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body" id="AllAssignModalBody">
+                            <table class="table table-bordered">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-success AllAssignCarNow"><i class="fa fa-check-square"></i> Assign</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="assign">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" id="closeNow">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Assign Vehicle</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <table id="AssignSingleVehicleTable" class="table table-bordered">
+                                <thead></thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label class="control-label align-left">Vehicle:</label> </td>
+                                        <td> <p class="ReturnCarName"></p> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label align-left">Assignee:</label></td>
+                                        <td> @Html.DropDownList("TransferUserList", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "TransferUserList" })</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label align-left">Tracker:</label></td>
+                                        <td> @Html.DropDownList("TransferTrackerList", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "TransferTrackerList" , @disabled = "disabled" })</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            @*<div class="form-group">
+                                    <label class="col-sm-4 control-label">Vehicle:</label>
+                                    <div class="col-sm-8">
+                                        <p class="ReturnCarName"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Assignee:</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("TransferUserList", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "TransferUserList" })
+                                    </div>
+                                </div>*@
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="AssignCarNowClosebtn" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-success AssignCarNow"><i class="fa fa-check-square"></i> Assign</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="transfer">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" id="closeNow">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Transfer Vehicle</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <table class="table table-bordered" id="TransferVehicleTable">
+                                <thead></thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label class="control-label align-left">Vehicle:</label> </td>
+                                        <td> <p class="ReturnCarName"></p> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label align-left">Current Assignee:</label></td>
+                                        <td><p class="ReturnCarCurrentUser"></p> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label align-left">Current Tracker:</label></td>
+                                        <td> <p id="CurrentUsrTrkr"></p> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label align-left">New Assignee:</label></td>
+                                        <td> @Html.DropDownList("TransferUserList", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "TransferUserList" }) </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label align-left">New Tracker:</label></td>
+                                        <td> @Html.DropDownList("CrntUsrAvlblTrkrs", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "CrntUsrAvailableTrkrs" }) </td>
+                                    </tr>                                    
+                                </tbody>
+                            </table>
+
+                            @*<div class="form-group">
+                                    <label class="col-sm-4 control-label align-left">Vehicle:</label>
+                                    <div class="col-sm-8">
+                                        <p class="ReturnCarName"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label align-left">Current Assignee:</label>
+                                    <div class="col-sm-8">
+                                        <p class="ReturnCarCurrentUser"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label align-left">New Assignee:</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("TransferUserList", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "TransferUserList" })
+                                    </div>
+                                </div>*@
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="TransferVehicleClosebtn" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" id="TransferVehicleTransferbtn" class="btn btn-success TransferCarNow"><i class="fa fa-exchange"></i> Transfer</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+    <div class="modal fade" id="return">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Return Vehicle</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <table class="table table-bordered">
+                                <thead></thead>
+                                <tbody>
+                                    <tr>
+                                        <td> <label class="control-label align-left">Vehicle:</label> </td>
+                                        <td> <p class="ReturnCarName"></p> </td>
+                                    </tr>
+                                    <tr>
+                                        <td> <label class="control-label align-left">Assignee:</label></td>
+                                        <td> <p id="ReturnUserName"></p> </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td> <label class="control-label align-left">Current Tracker:</label></td>
+                                        <td> <p id="ReturnCrntTrkr"></p> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            @*<div class="form-group">
+                                    <label class="col-sm-4 control-label align-left">Vehicle:</label>
+                                    <div class="col-sm-8">
+                                        <p class="ReturnCarName"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label align-left">Assignee:</label>
+                                    <div class="col-sm-8">
+                                        <p id="ReturnUserName"></p>
+                                    </div>
+                                </div>*@
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="closeNow"><i class="fa fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-danger ReturnCarNow"><i class="fa fa-undo"></i> Retrun</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+    <div class="modal fade" id="tracker">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <h4 class="modal-title">Tracker || <span id="CurrentTrackerRegisteration"></span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#add" data-toggle="tab">Add</a></li>
+                            <li><a href="#history" data-toggle="tab">History</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade active in" id="add">
+                                <table class="table table-bordered">
+                                    <thead></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong> Current Tracker </strong></td>
+                                            <td><span id="CurrentTrackerInformation"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong> New Tracker </strong></td>
+                                            <td>
+                                               <select id="TrackerList">
+                                                   
+                                               </select>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="history">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Tracker</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button type="button" class="btn btn-success SaveTracker"><i class="fa fa-check-square "></i> Save</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+    <link href="~/Styles/switch/switch.css" rel="stylesheet" />
+    <link href="~/Scripts/datatable/datatable.css" rel="stylesheet" />
+    <script src="~/Scripts/datatable/datatable.js"></script>
+
+    <script>
+
+        var previousTrackerID = "";
+        $(document).on("ready", function () {
+            var GetTable = $('#history').html();
+            function Current_date() {
+                var dateObj = new Date();
+                var month = dateObj.getUTCMonth() + 1; //months from 1-12
+                var day = dateObj.getUTCDate();
+                var year = dateObj.getUTCFullYear();
+
+                return newdate = year + "-" + month + "-" + day;
+            }
+
+            function ConvertDate(mydate) {
+                var dsdate = new Date(parseInt(mydate.substr(6)));
+                var month = dsdate.getMonth() + 1;
+                var day = dsdate.getUTCDate();
+                var year = dsdate.getFullYear();
+                var formatdate2 = month + "/" + day + "/" + year
+                return formatdate2;
+            }
+
+            /* == Loading IMEI By User ID List Start == */
+            function LoadingTrackerList(UserID) {
+                $.ajax({
+                    url: "/Fleet/Vehicle/ListIMEIAll?id=" + UserID,
+                    type: "Get",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        $("#TrackerList").empty();
+
+                        if (result != "") {
+                            //$("#TrackerList").append($("<option selected disabled></option>").val(0).html('Ref no. | Manufacturer Model | Serial/IMEI (UE Number)'));
+
+                            $(result).each(function (key, index) {
+                                $("#TrackerList").append($("<option></option>").val("0").html('-Tracker-'));
+                                $("#TrackerList").append($("<option></option>").val(this.IMEIId).html(this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI));
+                            });
+
+                             @*var IMEIID =  @Html.Raw(Model.IMEIId);
+                            $('#IMEIId').val(IMEIID);*@
+                        }
+                        else {
+                            $("#TrackerList").append($("<option></option>").val("0").html('-Tracker-'));
+                        }
+
+                    },
+                    error: function (data) { }
+                });
+            }
+
+            function LoadGenericTrackerList(UserID) {
+                var ReturnResult;
+                $.ajax({
+                    url: "/Fleet/Vehicle/ListIMEIAll?id=" + UserID,
+                    type: "Get",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    async:false,
+                    success: function (result) {
+                        ReturnResult = result;
+                    },                   
+                });
+                return ReturnResult;
+            }
+
+            //LoadingTrackerList();
+            /* == Loading IMEI List End == */
+
+            $(".TransferUserList").append($("<option selected></option>").val(0).html('-Assignee-'));
+
+            $.ajax({
+                url: "/Fleet/Vehicle/GetDTList",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+
+                    $(result).each(function () {
+                        $(".TransferUserList").append($("<option></option>").val(this.UserId).html(this.UserName));
+                    });
+
+                },
+                error: function (data) { }
+            });
+
+            /* == Data Table Initialize == */
+            var table = $('#table_fleet').DataTable({
+                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                lengthChange: false,
+                ordering: true,
+                "ajax": {
+                    "url": "/Fleet/Vehicle/GetAssignedRecord",
+                    "dataSrc": ""
+                },
+                "columns": [{
+                    "data": "VehicleId",
+                    "orderable": false
+                },
+                {
+                    "data": "VehicleId"
+                },
+                {
+                    "data": "VehicleImage"
+                },
+                {
+                    "data": "UserId"
+                },
+                {
+                    "data": "VehicleGroupName"
+                },
+                {
+                    "data": "TypeName"
+                },
+                {
+                    "data": "ManuName"
+                },
+                {
+                    "data": "ModelName"
+                },
+                {
+                    "data": "SubModelName"
+                },
+                {
+                    "data": "UserName"
+                },
+                {
+                    "data": "Year"
+                },
+                {
+                    "data": "ChassisNumber"
+                },
+                {
+                    "data": "RegistrationNumber"
+                },
+                {
+                    "data": "IMEI"
+                },
+                {
+                    "data": "IsActive"
+                }
+                ],
+                "columnDefs": [{
+                    "targets": [1, 2],
+                    "visible": false
+                },
+                {
+                    "targets": [0,3],
+                    "orderable": false
+                }]
+            });
+
+
+            /* == Data Table Initialize == */
+            var table2 = $('#table_fleet2').DataTable({
+
+                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                lengthChange: false,
+                ordering: true,
+                "ajax": {
+                    "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                    "dataSrc": ""
+                },
+                "columns": [{
+                    "data": "VehicleId",
+                    "orderable": false
+                },
+                {
+                    "data": "VehicleId"
+                },
+                {
+                    "data": "VehicleImage"
+                },
+                {
+                    "data": "VehicleGroupName"
+                },
+                {
+                    "data": "TypeName"
+                },
+                {
+                    "data": "ManuName"
+                },
+                {
+                    "data": "ModelName"
+                },
+                {
+                    "data": "SubModelName"
+                },
+                {
+                    "data": "Year"
+                },
+                {
+                    "data": "ChassisNumber"
+                },
+                {
+                    "data": "RegistrationNumber"
+                },
+                {
+                    "data": "IMEI"
+                },
+                {
+                    "data": "IsActive"
+                }
+                ],
+                "columnDefs": [{
+                    "targets": [1],
+                    "visible": false
+                },
+                {
+                    "targets": [0, 2],
+                    "orderable": false
+                }]
+            });
+
+
+            table2.on('draw', function () {
+                var countRows = $('#table_fleet2 tbody').children('tr').length;
+                for (var x = 0; x < countRows; x++) {
+                    //<button class="btn btn-default btn-flat tracker" data-toggle="modal" data-target="#tracker" title="Tracker"><i class="fa fa-bullseye"></i></button>
+                    selectedIndex = JSON.stringify(table2.row($('#table_fleet2 tbody').children('tr:eq(' + x + ')')).data());
+                    if (selectedIndex != undefined) {
+                        dataModel = JSON.parse(selectedIndex);
+                        $('#table_fleet2 tbody').children('tr:eq(' + x + ')').children('td:eq(1)').html('<img src="/Content/Images/Vehicles/Thumb/' + dataModel.VehicleImage + '" height="30px" width="30px">');
+                        if ($('.slider').attr('value') == 0) {
+                            $('#table_fleet2 tbody').children('tr:eq(' + x + ')').children('td:eq(0)').html('<input class="available-check" type="checkbox" />');
+                            $('#table_fleet2 tbody').children('tr:eq(' + x + ')').children('td:eq(4)').html('<span value="' + dataModel.VehicleId + '">' + dataModel.ManuName + '</span>');
+                            $('#table_fleet2 tbody').children('tr:eq(' + x + ')').children('td:eq(11)').html('<a href="/Fleet/Vehicle/edit/' + dataModel.VehicleId + '" class="btn btn-default btn-flat" title="Edit Vehicle"><i class="fa fa-edit"></i></a> <button type="button" class="btn btn-default btn-flat delete" value="' + dataModel.VehicleId + '" title="Delete Vehicle"><i class="fa fa-trash"></i></button> <button type="button" class="btn btn-default btn-flat deactive" value="' + dataModel.VehicleId + '" title="Deactivate Vehicle"><i class="fa fa-unlink" ></i></button>  <button type="button" class="btn btn-default btn-flat AssignCar" data-toggle="modal" data-target="#assign" value="Assign" title="Assign Vehicle"><i class="fa fa-check-square"></i></button> ');
+                        } else {
+                            $('#table_fleet2 tbody').children('tr:eq(' + x + ')').children('td:eq(0)').html('<input class="available-check" type="checkbox" />');
+                            $('#table_fleet2 tbody').children('tr:eq(' + x + ')').children('td:eq(11)').html('<a href="/Fleet/Vehicle/edit/' + dataModel.VehicleId + '" class="btn btn-default btn-flat" title="Edit Vehicle"><i class="fa fa-edit"></i></a> <button type="button" class="btn btn-default btn-flat delete" value="' + dataModel.VehicleId + '" title="Delete Vehicle"><i class="fa fa-trash"></i></button> <button type="button" class="btn btn-default btn-flat activate" value="' + dataModel.VehicleId + '" title="Activate Vehicle"><i class="fa fa-link"></i></button>');
+                        }
+                    }
+                }
+            });
+
+
+            table.on('draw', function () {
+                var countRows = $('#table_fleet tbody').children('tr').length;
+
+                for (var x = 0; x < countRows; x++) {
+
+                    selectedIndex = JSON.stringify(table.row($('#table_fleet tbody').children('tr:eq(' + x + ')')).data());
+
+                    if (selectedIndex != undefined) {
+                        dataModel = JSON.parse(selectedIndex);
+                        $('#table_fleet tbody').children('tr:eq(' + x + ')').children('td:eq(0)').html('<input class="available-check" type="checkbox" />');
+                        $('#table_fleet tbody').children('tr:eq(' + x + ')').children('td:eq(1)').html('<img src="/Content/Images/Vehicles/Thumb/' + dataModel.VehicleImage + '" height="30px" width="30px">');
+                        $('#table_fleet tbody').children('tr:eq(' + x + ')').children('td:eq(3)').html('<span value="' + dataModel.VehicleAssignmentId + '">' + dataModel.TypeName + '</span>');
+                        $('#table_fleet tbody').children('tr:eq(' + x + ')').children('td:eq(4)').html('<span value="' + dataModel.VehicleId + '">' + dataModel.ManuName + '</span>');
+                        $('#table_fleet tbody').children('tr:eq(' + x + ')').children('td:eq(7)').html('<span value="' + dataModel.UserId + '">' + dataModel.UserName + '</span>');
+                        $('#table_fleet tbody').children('tr:eq(' + x + ')').children('td:eq(12)').html('<a href="/Fleet/Vehicle/edit/' + dataModel.VehicleId + '" class="btn btn-default btn-flat" title="Edit Vehicle"><i class="fa fa-edit"></i></a> <button type="button" class="btn btn-default btn-flat ReturnCar" data-toggle="modal" data-target="#return" value="' + dataModel.VehicleId + '" title="Return Vehicle"><i class="fa fa-undo"></i></button><button type="button" class="btn btn-default btn-flat TransferCar" data-toggle="modal" data-target="#transfer" value="' + dataModel.VehicleId + '" title="Transfer Vehicle"><i class="fa fa-exchange"></i></button> <button class="btn btn-default btn-flat trackerAssigned" data-toggle="modal" data-target="#tracker" title="Tracker"><i class="fa fa-bullseye"></i></button>');
+                    }
+                }
+            });
+
+
+            function LoadTrackerListByUserID() {
+                var UserID = $('.TransferUserList').val();
+                $('#TransferTrackerList').children('option').remove();
+
+
+                if (UserID != 0) {
+                    $.ajax({
+                        url: "/Fleet/Vehicle/GetTrackersByUserID/?id=" + UserID,
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        datatype: JSON,
+
+                        success: function (result) {
+                            $("#TransferTrackerList").prop("disabled", false);
+                            $("#TransferTrackerList").append($("<option></option>").val(0).html("-Tracker-"));
+                            $(result).each(function () {
+                                $("#TransferTrackerList").append($("<option></option>").val(this.IMEIId).html(this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI));
+                            });
+                        }
+                    });
+                }
+
+            }
+
+            /* == Search == */
+            $('.datatable').each(function () {
+
+                $(this).find('tfoot th').each(function () {
+                    var title = $(this).text();
+                    $(this).html('<input type="text" placeholder="' + title + '" />');
+                });
+            });
+
+            $('.hasinput').children('input').on('keyup change', function () {
+                var dt = $(this).parents('.datatable').DataTable();
+
+                if (dt.search() !== this.value) {
+                    dt
+                        .search(this.value)
+                        .draw();
+                }
+            });
+
+
+
+
+            $('.datatable').each(function () {
+                var r = $(this).find('tfoot tr');
+                $(this).find('thead').prepend(r);
+            });
+
+
+            $(document).on('click', '.slider', function () {
+
+                var ListStatusId = $('.slider').attr('value');
+
+                if (ListStatusId == 1) {
+                    $('.slider').attr('value', 0)
+                    $('.AllAssign').show();
+                    $('.AllActivate').hide();
+                    $('.AllDeactive').show();
+                    $("#checkall").prop("checked", false);
+
+                    $(".AllDelete").addClass("disabled");
+                    $(".AllAssign").addClass("disabled");
+                    $(".AllDeactive").addClass("disabled");
+                } else {
+                    $('.slider').attr('value', 1)
+                    $('.AllAssign').hide();
+                    $('.AllActivate').show();
+                    $('.AllDeactive').hide();
+                    $("#checkall").prop("checked", false);
+
+                    $(".AllDelete").addClass("disabled");
+                    $(".AllActivate").addClass("disabled");
+                }
+
+                $('#table_fleet2').DataTable().destroy();
+
+                table2 = $('#table_fleet2').DataTable({
+                    "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                    lengthChange: false,
+                    ordering: true,
+                    "ajax": {
+                        "url": "/Fleet/Vehicle/GetRecord/?id=" + ListStatusId,
+                        "dataSrc": ""
+                    },
+                    "columns": [{
+                        "data": "VehicleId",
+                        "orderable": false
+                    },
+                    {
+                        "data": "VehicleId"
+                    },
+                    {
+                        "data": "VehicleImage"
+                    },
+                    {
+                        "data": "VehicleGroupName"
+                    },
+                    {
+                        "data": "TypeName"
+                    },
+                    {
+                        "data": "ManuName"
+                    },
+                    {
+                        "data": "ModelName"
+                    },
+                    {
+                        "data": "SubModelName"
+                    },
+                    {
+                        "data": "Year"
+                    },
+                    {
+                        "data": "ChassisNumber"
+                    },
+                    {
+                        "data": "RegistrationNumber"
+                    },
+                    {
+                        "data": "IMEI"
+                    },
+                    {
+                        "data": "IsActive"
+                    }
+                    ],
+                    "columnDefs": [{
+                        "targets": [1],
+                        "visible": false
+                    },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                });
+            });
+
+            //Transfer Tracker List
+            $(document).on('change', '.TransferUserList', function () {
+
+                var UserID = $(this).val();
+                var ModalID = $(this).parent().parents().eq(2).attr('id') 
+                var DropDownLength;
+                if (UserID == 0)
+                {
+                    if (ModalID =='TransferVehicleTable'){
+                        $("#CrntUsrAvlblTrkrs").prop("disabled", true);
+                        $('#CrntUsrAvlblTrkrs').children('option').remove();
+                                                
+                    }
+                    else{
+                        $("#TransferTrackerList").prop("disabled", true);
+                        $('#TransferTrackerList').children('option').remove();                                               
+                    }                    
+                }                                
+
+                if (UserID != 0) {
+                    $.ajax({
+                        url: "/Fleet/Vehicle/GetTrackersByUserID/?id=" + UserID,
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        datatype: JSON,
+
+                        success: function (result) {                                                  
+                            if (ModalID == 'TransferVehicleTable') {
+                                $('#CrntUsrAvlblTrkrs').children('option').remove();
+                                $("#CrntUsrAvlblTrkrs").append($("<option></option>").val(0).html("-Tracker-"));
+                                $(result).each(function () {
+                                    $("#CrntUsrAvlblTrkrs").append($("<option></option>").val(this.IMEIId).html(this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI));
+                                });
+                                $("#CrntUsrAvlblTrkrs").prop("disabled", false);
+                            }
+                            else {
+                                $('#TransferTrackerList').children('option').remove();
+                                $("#TransferTrackerList").append($("<option></option>").val(0).html("-Tracker-"));
+                                $(result).each(function () {
+                                    $("#TransferTrackerList").append($("<option></option>").val(this.IMEIId).html(this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI));
+                                });
+                                
+                                $("#TransferTrackerList").prop("disabled", false);
+                            }
+                        }
+                    });
+                }
+            });
+
+            /* == Activate Button == */
+            $(document).on('click', '.activate', function () {
+                var ActiveId = $(this).val();
+                $(this).parents('.tab-pane').find(".major-btns button").addClass('disabled');
+                $.ajax({
+                    url: "/Fleet/Vehicle/SetStatus/?id=" + ActiveId + "&Status=1",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        $('#table_fleet2').DataTable().destroy();
+
+                        table2 = $('#table_fleet2').DataTable({
+                            "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                            lengthChange: false,
+                            ordering: true,
+                            "ajax": {
+                                "url": "/Fleet/Vehicle/GetRecord/?id=0",
+                                "dataSrc": ""
+                            },
+                            "columns": [{
+                                "data": "VehicleId",
+                                "orderable": false
+                            },
+                            {
+                                "data": "VehicleId"
+                            },
+                            {
+                                "data": "VehicleImage"
+                            },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                            {
+                                "data": "TypeName"
+                            },
+                            {
+                                "data": "ManuName"
+                            },
+                            {
+                                "data": "ModelName"
+                            },
+                            {
+                                "data": "SubModelName"
+                            },
+                            {
+                                "data": "Year"
+                            },
+                            {
+                                "data": "ChassisNumber"
+                            },
+                            {
+                                "data": "RegistrationNumber"
+                            },
+                            {
+                                "data": "IMEI"
+                            },
+                            {
+                                "data": "IsActive"
+                            }
+                            ],
+                            "columnDefs": [{
+                                "targets": [1],
+                                "visible": false
+                            },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                        });
+                        $.notify("Successfully Activated", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                    },
+                    error: function (data) {
+                        $.notify("There is an error to activate this vehicle", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                });
+            });
+
+            /* == Deactive Button == */
+            $(document).on('click', '.deactive', function () {
+                var DeactiveId = $(this).val();
+                $(this).parents('.tab-pane').find(".major-btns button").addClass('disabled');
+                $.ajax({
+                    url: "/Fleet/Vehicle/SetStatus/?id=" + DeactiveId + "&Status=0",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        $('#table_fleet2').DataTable().destroy();
+
+                        table2 = $('#table_fleet2').DataTable({
+                            "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                            lengthChange: false,
+                            ordering: true,
+                            "ajax": {
+                                "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                                "dataSrc": ""
+                            },
+                            "columns": [{
+                                "data": "VehicleId",
+                                "orderable": false
+                            },
+                            {
+                                "data": "VehicleId"
+                            },
+                            {
+                                "data": "VehicleImage"
+                            },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                            {
+                                "data": "TypeName"
+                            },
+                            {
+                                "data": "ManuName"
+                            },
+                            {
+                                "data": "ModelName"
+                            },
+                            {
+                                "data": "SubModelName"
+                            },
+                            {
+                                "data": "Year"
+                            },
+                            {
+                                "data": "ChassisNumber"
+                            },
+                            {
+                                "data": "RegistrationNumber"
+                            },
+                            {
+                                "data": "IMEI"
+                            },
+                            {
+                                "data": "IsActive"
+                            }
+                            ],
+                            "columnDefs": [{
+                                "targets": [1],
+                                "visible": false
+                            },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                        });
+                        $.notify("Successfully deactivated", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                        $('input#checkall').prop("checked", false);
+
+                    },
+                    error: function (data) {
+                        $.notify("There is an error to deactivate this vehicle", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                });
+            });
+            /* == Tracker Button Available Start == */
+            $(document).on('click', '.tracker', function () {
+                //var GetTable = $('#history').html();
+                var RegisterationNo = $(this).parent().parent().children().eq(9).text();
+                previousTrackerID = $(this).parent().parent().children().eq(10).text();
+                $('#CurrentTrackerRegisteration').text(RegisterationNo);
+                $("#CurrentTrackerInformation").empty();
+                debugger;
+                var TrackerVehicleId = $(this).parent().parent().children().children().eq(2).attr('value');
+                $('.SaveTracker').attr('value', TrackerVehicleId);
+                console.log('TrackerVehicleId:' + TrackerVehicleId);
+                LoadingTrackerList();
+                $.ajax({
+                    url: "/Fleet/Vehicle/CurrentIMEI/?Id=" + TrackerVehicleId,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        console.log('CurrentIMEI:' + JSON.stringify(result['History']));
+                        $('#history').empty();
+                        $("#CurrentTrackerInformation").empty();
+                        $('#history').children('table').children('tbody').empty();
+                        if (result['Vehicle'] != "") {
+
+                            $(result['Vehicle']).each(function (key, index) {
+                                $("#CurrentTrackerInformation").empty();
+                                $("#CurrentTrackerInformation").append(this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI);
+                            });
+                        }
+                        if (result['History'] != "") {
+                            $('#history').append(GetTable);
+                            $(result['History']).each(function (key, index) {
+
+                                var Tracker = this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI ;
+                                var Timestamp = ConvertDate(this.TrackerDate);
+                                console.log('this.TrackerDate:' + this.TrackerDate);
+                                var RenderHTML = '<tr><td>' + Timestamp + '</td> <td>' + Tracker + '</td></tr>';
+                                $('#history').children('table').children('tbody').append(RenderHTML);
+                            });
+                        }
+                        else {
+                            $('#history').empty();
+                            $('#history').append('<div style="text-align: center;">No Data Available</div>');
+                        }
+                    }
+                });
+
+
+            });
+
+            function GetIMEIValues(CurrentRow)
+            {                                
+                var CurrentTrackerInforamtion;
+                debugger;
+                var TrackerVehicleId = $(CurrentRow).parent().parent().children().children().eq(3).attr('value');
+                //$('.SaveTracker').attr('value', TrackerVehicleId);
+                //console.log('TrackerVehicleId:' + TrackerVehicleId);
+                //LoadingTrackerList();
+                $.ajax({
+                    url: "/Fleet/Vehicle/CurrentIMEI/?Id=" + TrackerVehicleId,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    async:false,
+                    success: function (result) {
+                        console.log('CurrentIMEI:' + JSON.stringify(result['History']));                                                                        
+                        if (result['Vehicle'] != "") {
+
+                            $(result['Vehicle']).each(function (key, index) {                                
+                                CurrentTrackerInforamtion = this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI;
+                            });
+                        }                       
+                    }
+                });
+                return CurrentTrackerInforamtion;
+            }
+
+            function GetDTCollection() {
+                
+                $(".TransferUserList").eq(1).children().remove()
+                $(".TransferUserList").eq(1).append($("<option selected></option>").val(0).html('-Assignee-'));
+                $.ajax({
+                    url: "/Fleet/Vehicle/GetDTList",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    async: false,
+                    success: function (result) {
+
+                        $(result).each(function () {
+                            $(".TransferUserList").eq(1).append($("<option></option>").val(this.UserId).html(this.UserName));
+                        });
+
+                    },
+                    error: function (data) { }
+                });
+            }
+
+            function GetIMEIValuesInMultipleSelection(CurrentRow) {                
+                var CurrentTrackerInforamtion;                
+                debugger;
+                var TrackerVehicleId = $(CurrentRow).children().children().eq(3).attr('value');                
+
+                $.ajax({
+                    url: "/Fleet/Vehicle/GetCurrentIMEIWithoutHistory/?Id=" + TrackerVehicleId,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    async: false,
+                    success: function (result) {                        
+                        if (result!= "") {
+                            $(result).each(function (key, index) {
+                                CurrentTrackerInforamtion = this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI;
+                            });
+                        }
+                    }
+                });
+                return CurrentTrackerInforamtion;
+            }
+            /* == Tracker Button Available End == */
+
+            /* == Tracker Button Assign Start == */
+            $(document).on('click', '.trackerAssigned', function () {
+
+                var RegisterationNo = $(this).parent().parent().children().eq(10).text();
+                previousTrackerID = $(this).parent().parent().children().eq(11).text();
+
+                $('#CurrentTrackerRegisteration').text(RegisterationNo);
+                $("#CurrentTrackerInformation").empty();
+                var TrackerVehicleId = $(this).parent().parent().children().children().eq(3).attr('value');
+                var UserID = $(this).parent().parent().children().children().eq(4).attr('value');
+                $('.SaveTracker').attr('value', TrackerVehicleId);
+                console.log('TrackerVehicleId:' + TrackerVehicleId);
+                LoadingTrackerList(UserID);
+                $.ajax({
+                    url: "/Fleet/Vehicle/CurrentIMEI/?Id=" + TrackerVehicleId,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        console.log('CurrentIMEI:' + JSON.stringify(result['History']));
+                        $("#CurrentTrackerInformation").empty();
+                        $('#history').children('table').children('tbody').empty();
+                        if (result['Vehicle'] != "") {
+
+                            $(result['Vehicle']).each(function (key, index) {
+                                $("#CurrentTrackerInformation").empty();
+                                $("#CurrentTrackerInformation").append(this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI);
+                            });
+
+                            $(result['History']).each(function (key, index) {
+                                var Tracker = this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI;
+                                var Timestamp = ConvertDate(this.TrackerDate);
+                                var RenderHTML = '<tr><td>' + Timestamp + '</td> <td>' + Tracker + '</td></tr>';
+                                $('#history').children('table').children('tbody').append(RenderHTML);
+                            });
+
+                        }
+                    }
+                });
+
+
+            });
+            /* == Tracker Button Assign End == */
+
+            /* == Submit Tracker Information Start == */
+            function CheckIMEIValue(IMEI) {
+                if (IMEI != undefined) {
+                    return IMEI;
+                } else {
+                    return "";
+                }
+            }
+            $(document).on('click', '.SaveTracker', function () {
+
+                var TrackerValue = $('#TrackerList').val();
+                var TrackerVehicleId = $(this).attr('value');
+                var CurrentTrackerIMEI = 0;
+
+                if ($('#TrackerList option:selected').val() != 0) {
+                    CurrentTrackerIMEI = $("#TrackerList option:selected").text().split('|')[2].split('(')[0].trim();
+                }
+
+                if (previousTrackerID == null || previousTrackerID == undefined || previousTrackerID == "")
+                {
+                    previousTrackerID = '0';
+                }
+                $.ajax({
+                    url: "/Fleet/Vehicle/SaveIMEI/?Id=" + TrackerVehicleId + "&TrackerIMEI=" + TrackerValue + "&PreviousIMEI=" + previousTrackerID + "&CurrentTrackerIMEI=" + CurrentTrackerIMEI,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+
+                        if (result != "") {
+
+                            var cc = $('button[value="' + TrackerVehicleId + '"]').eq(0).parent().parent().children().length;
+                            if (cc==13) {
+                                $('button[value="' + TrackerVehicleId + '"]').eq(0).parent().parent().children().eq(11).text(CheckIMEIValue(result.IMEI));
+                            } else {
+                                $('button[value="' + TrackerVehicleId + '"]').eq(0).parent().parent().children().eq(10).text(CheckIMEIValue(result.IMEI));
+                            }
+
+
+
+                        }
+
+                        $.notify("Tracker Saved Successfully", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                        $('[data-dismiss="modal"]').click();
+                    }
+                });
+
+
+            });
+            /* == Submit Tracker Information End == */
+
+
+            /* == Delete Button == */
+            $(document).on('click', '.delete', function () {
+                var DeleteId = $(this).val();
+                $(this).parents('.tab-pane').find(".major-btns button").addClass('disabled');
+                $.ajax({
+                    url: "/Fleet/Vehicle/DeleteRecord/?id=" + DeleteId,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        $('#table_fleet2').DataTable().destroy();
+
+                        if ($('.slider').attr('value') == 0) {
+                            table2 = $('#table_fleet2').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                    {
+                                        "data": "VehicleGroupName"
+                                    },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1],
+                                    "visible": false
+                                },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                            });
+                        } else {
+                            table2 = $('#table_fleet2').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                searching: false,
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetRecord/?id=0",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                    {
+                                        "data": "VehicleGroupName"
+                                    },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1],
+                                    "visible": false
+                                },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                            });
+                        }
+                        $.notify("Successfully deleted", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                    },
+                    error: function (data) {
+                        $.notify("There is an error to delete this vehicle", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                });
+            });
+
+
+
+            /* == Check Buttons == */
+            $("body").on("change", "input#checkall", function () {
+                console.log(this.checked);
+                if (this.checked) {
+                    $(this).parents('table').find(".available-check").prop("checked", true);
+                    $(this).parents('.tab-pane').find(".major-btns button").removeClass('disabled');
+                } else if (this.checked == false) {
+                    $(this).parents('table').find(".available-check").prop("checked", false);
+                    $(this).parents('.tab-pane').find(".major-btns button").addClass('disabled');
+                }
+            });
+
+
+            $("body").on("change", "input.available-check", function () {
+                if (this.checked) {
+                    $(this).parents('.tab-pane').find(".major-btns button").removeClass('disabled');
+                } else {
+                    if ($('.available-check:checked').length < 1) {
+                        $('input#checkall').prop("checked", false);
+                        $(this).parents('.tab-pane').find(".major-btns button").addClass('disabled');
+                    }
+                }
+            });
+
+            /* == Return Button Process == */
+            $(document).on('click', '.ReturnCar', function () {
+
+                var ReturnAssignmentId = $(this).parent().parent().children().children().eq(2).attr('value');
+                var ReturnVehicleId = $(this).parent().parent().children().children().eq(3).attr('value');
+
+
+                $('.ReturnCarName').val(ReturnVehicleId);
+                $('#ReturnUserName').val(ReturnAssignmentId);
+
+                var ReturnVehicleName = $(this).parent().parent().children().children().eq(3).text();
+                var ReturnUserName = $(this).parent().parent().children().children().eq(4).text();
+                var CurrentTrkr = GetIMEIValues(this);//$(this).parent().parent().children().eq(11).text();
+                var CarModel = $('.ReturnCar').parent().parent().children().eq(5).text();
+                var CarSubModel = $('.ReturnCar').parent().parent().children().eq(6).text();
+
+                $('.ReturnCarName').text(ReturnVehicleName + " " + CarModel + " " + CarSubModel);
+                $('#ReturnUserName').text(ReturnUserName);
+                $('#ReturnCrntTrkr').text('');
+                if (CurrentTrkr != undefined)
+                {
+                    $('#ReturnCrntTrkr').text(CurrentTrkr);
+                }
+                 
+
+            });
+
+            /* == Transfer Button Process == */
+            $(document).on('click', '.TransferCar', function () {
+
+                $('.TransferUserList').val(0);
+                $('#CrntUsrAvlblTrkrs').children().empty();
+                $('#CrntUsrAvlblTrkrs').prop('disabled', true);
+                $('#TransferVehicleTable tr:eq(2) td:eq(1)').children('span').remove();
+
+                var ReturnAssignmentId = $(this).parent().parent().children().children().eq(2).attr('value');
+                var ReturnVehicleId = $(this).parent().parent().children().children().eq(3).attr('value');
+                var ReturnVehicleUser = $(this).parent().parent().children().children().eq(4).text();
+                var ReturnVehicleUserId = $(this).parent().parent().children().children().eq(4).attr('value');
+                var CrntUsrTrkr = GetIMEIValues(this);//$(this).parent().parent().children().eq(11).text();
+
+                $('.ReturnCarName').val(ReturnVehicleId);
+                $('.ReturnCarCurrentUser').text(ReturnVehicleUser);
+                $('#ReturnUserName').val(ReturnAssignmentId);
+                
+                if (CrntUsrTrkr != undefined) {
+                    $('#CurrentUsrTrkr').text(CrntUsrTrkr)
+                }
+                else
+                {
+                    $('#CurrentUsrTrkr').text('')
+                }
+                    
+
+                var ReturnVehicleName = $(this).parent().parent().children().children().eq(3).text();
+                var ReturnUserName = $(this).parent().parent().children().children().eq(4).text();
+
+                var CarModel = $(this).parent().parent().children().eq(5).text();
+                var CarSubModel = $(this).parent().parent().children().eq(6).text();
+
+                $('.ReturnCarName').text(ReturnVehicleName + " " + CarModel + " " + CarSubModel);
+                $('#ReturnUserName').text(ReturnUserName);
+                GetDTCollection();
+                $(".TransferUserList").eq(1).children("option[value='" + ReturnVehicleUserId + "']").remove();
+            });
+
+            /* == Assign Button Process == */
+            $(document).on('click', '.AssignCar', function () {
+
+                var AssignmentVehicleId = $(this).parent().parent().children().children().eq(2).attr('value');
+
+
+                $('.ReturnCarName').val(AssignmentVehicleId);
+
+
+                var AssignmentVehicleName = $(this).parent().parent().children().children().eq(2).text();
+
+
+                var CarModel = $(this).parent().parent().children().eq(5).text();
+                var CarSubModel = $(this).parent().parent().children().eq(6).text();
+
+                $('.ReturnCarName').text(AssignmentVehicleName + " " + CarModel + " " + CarSubModel);
+                LoadTrackerListByUserID();
+
+            });
+
+            /* == ReturnCar Button Process == */
+            $(document).on('click', '.ReturnCarNow', function () {
+
+                var ReturnVehicleId = $('.ReturnCarName').val();
+                var ReturnAssignmentId = $('#ReturnUserName').val();
+                var PrevTracker = '';
+                
+                if ($("#ReturnCrntTrkr").text() != '' && $("#ReturnCrntTrkr").text() != ' ') {
+                    PrevTracker = $("#ReturnCrntTrkr").text().split('|')[2].split('(')[0].trim();
+                }
+
+                var model = {
+                    VehicleId: ReturnVehicleId,
+                    VehicleAssignmentId: ReturnAssignmentId,
+                    DateReturn: Current_date(),
+                    PreviousTracker: PrevTracker                     
+                };
+
+                $.ajax({
+                    url: "/Fleet/Vehicle/ReturnSingleVehicle/",
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(model),
+                    datatype: JSON,
+                    success: function (result) {
+                        console.log('ReturnSingleVehicle:' + result);
+
+                        $('#table_fleet').DataTable().destroy();
+
+                        table = $('#table_fleet').DataTable({
+                            "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                            lengthChange: false,
+                            ordering: true,
+                            "ajax": {
+                                "url": "/Fleet/Vehicle/GetAssignedRecord",
+                                "dataSrc": ""
+                            },
+                            "columns": [{
+                                "data": "VehicleId",
+                                "orderable": false
+                            },
+                            {
+                                "data": "VehicleId"
+                            },
+                            {
+                                "data": "VehicleImage"
+                            },
+                            {
+                                "data": "UserId"
+                            },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                            {
+                                "data": "TypeName"
+                            },
+                            {
+                                "data": "ManuName"
+                            },
+                            {
+                                "data": "ModelName"
+                            },
+                            {
+                                "data": "SubModelName"
+                            },
+                            {
+                                "data": "UserName"
+                            },
+                            {
+                                "data": "Year"
+                            },
+                            {
+                                "data": "ChassisNumber"
+                            },
+                            {
+                                "data": "RegistrationNumber"
+                            },
+                            {
+                                "data": "IMEI"
+                            },
+                            {
+                                "data": "IsActive"
+                            }
+                            ],
+                            "columnDefs": [{
+                                "targets": [1, 2],
+                                "visible": false
+                            },
+                    {
+                        "targets": [0, 3],
+                        "orderable": false
+                    }]
+                        });
+                        $('#table_fleet2').DataTable().destroy();
+
+                        table2 = $('#table_fleet2').DataTable({
+                            "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                            lengthChange: false,
+                            ordering: true,
+                            "ajax": {
+                                "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                                "dataSrc": ""
+                            },
+                            "columns": [{
+                                "data": "VehicleId",
+                                "orderable": false
+                            },
+                            {
+                                "data": "VehicleId"
+                            },
+                            {
+                                "data": "VehicleImage"
+                            },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                            {
+                                "data": "TypeName"
+                            },
+                            {
+                                "data": "ManuName"
+                            },
+                            {
+                                "data": "ModelName"
+                            },
+                            {
+                                "data": "SubModelName"
+                            },
+                            {
+                                "data": "Year"
+                            },
+                            {
+                                "data": "ChassisNumber"
+                            },
+                            {
+                                "data": "RegistrationNumber"
+                            },
+                            {
+                                "data": "IMEI"
+                            },
+                            {
+                                "data": "IsActive"
+                            }
+                            ],
+                            "columnDefs": [{
+                                "targets": [1],
+                                "visible": false
+                            },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                        });
+                        $('#closeNow').click();
+
+                        $.notify("Successfully returned", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                    },
+                    error: function (result) {
+                        $.notify("There is an error to return this vehicle", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                });
+                $('#return').modal('hide');
+            });
+
+            /* == TransferCar Button Process == */
+            $(document).on('click', '.TransferCarNow', function () {
+                $('#TransferVehicleTable tr:eq(2) td:eq(1)').find('span').remove();
+                var ReturnVehicleId = $('.ReturnCarName').val();
+                var ReturnAssignmentId = $('#ReturnUserName').val();
+                var UserId = $('.TransferUserList').eq(1).val();
+                var NewUsrTracker = $('#CrntUsrAvlblTrkrs').val();
+                if (UserId == 0) {
+
+                    $('#TransferVehicleTable tr:eq(2) td:eq(1)').append('<span style = "color:red"> Required </span>');
+                }
+                else
+                {
+                    var PrevTracker ='';
+                    var NwTracker = '';
+                    
+                    if ($("#CurrentUsrTrkr").text() != '' && $("#CurrentUsrTrkr").text() != ' ')
+                    {
+                        PrevTracker = $("#CurrentUsrTrkr").text().split('|')[2].split('(')[0].trim();
+                    }
+                   
+                    if ($('#CrntUsrAvlblTrkrs').val() !=0)
+                    {
+                        NwTracker= $('#CrntUsrAvlblTrkrs').text().split('|')[2].split('(')[0].trim();
+                    }                    
+                                          
+                    var model = {
+                        VehicleId: ReturnVehicleId,
+                        VehicleAssignmentId: ReturnAssignmentId,
+                        DateAssign: Current_date(),
+                        UserId: UserId,
+                        TrackerVal: NewUsrTracker,
+                        PreviousTracker: PrevTracker,
+                        NewTracker:NwTracker
+                    };
+
+                    $.ajax({
+                        url: "/Fleet/Vehicle/TransferSingleVehicle/",
+                        contentType: "application/json; charset=utf-8",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(model),
+                        datatype: JSON,
+                        success: function (result) {
+                            console.log('ReturnSingleVehicle:' + result);
+
+                            $('#table_fleet').DataTable().destroy();
+
+                            table = $('#table_fleet').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetAssignedRecord",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                {
+                                    "data": "UserId"
+                                },
+                                    {
+                                        "data": "VehicleGroupName"
+                                    },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "UserName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1, 2],
+                                    "visible": false
+                                },
+                    {
+                        "targets": [0, 3],
+                        "orderable": false
+                    }]
+                            });
+                            $('#table_fleet2').DataTable().destroy();
+
+                            table2 = $('#table_fleet2').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                    {
+                                        "data": "VehicleGroupName"
+                                    },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1],
+                                    "visible": false
+                                },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                            });
+                            $('#closeNow').click();
+                            $.notify("Successfully transfered", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                        },
+                        error: function (result) {
+                            $.notify("There is an error to transfer this vehicle", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    });
+                    $('#transfer').modal('hide');
+                }
+            });
+
+            $(document).on('click', '#TransferVehicleClosebtn', function () {
+                $('#TransferVehicleTable tr:eq(2) td:eq(1)').find('span').remove();
+            });
+
+            /* == AssignCar Button Process == */
+            $(document).on('click', '.AssignCarNow', function () {
+
+                var AssignVehicleId = $('.ReturnCarName').val();
+                var UserId = $('.TransferUserList').val();
+                var TrackerID = $('.TransferTrackerList').val();
+                $('#AssignSingleVehicleTable tr:eq(1) td:eq(1)').find("span").remove();
+                if (UserId == 0) {
+                    $('#AssignSingleVehicleTable tr:eq(1) td:eq(1)').append('<span style = "color:red"> Required </span>');
+                    //$('.AssignCarNow').parent().append('<span style = "color:red"> Required </span>');
+                }
+                else {
+                    $('#AssignSingleVehicleTable tr:eq(1) td:eq(1)').find("span").remove();
+                    var model = {
+                        VehicleId: AssignVehicleId,
+                        DateAssign: Current_date(),
+                        UserId: UserId,
+                        TrackerVal: TrackerID
+                    };
+
+                    $.ajax({
+                        url: "/Fleet/Vehicle/AssignSingleVehicle/",
+                        contentType: "application/json; charset=utf-8",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(model),
+                        datatype: JSON,
+                        success: function (result) {
+                            console.log('ReturnSingleVehicle:' + result);
+                            $('#table_fleet2').DataTable().destroy();
+                            table2 = $('#table_fleet2').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1],
+                                    "visible": false
+                                },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                            });
+
+                            $('#table_fleet').DataTable().destroy();
+
+                            table = $('#table_fleet').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetAssignedRecord",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                {
+                                    "data": "UserId"
+                                },
+                                    {
+                                        "data": "VehicleGroupName"
+                                    },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "UserName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1, 2],
+                                    "visible": false
+                                },
+                    {
+                        "targets": [0, 3],
+                        "orderable": false
+                    }]
+                            });
+
+                            $('#closeNow').click();
+                            $.notify("Successfully assigned", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                        },
+                        error: function (result) {
+                            $.notify("There is an error to assign this vehicle", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    });
+
+                    $('#assign').modal('hide');
+                }
+            });
+
+            var publicListCount;
+            /* == AllAssign Button Process == */
+            $(document).on('click', '.AllAssign', function () {
+                var AssignCount = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").length;
+                publicListCount = AssignCount;
+                $('#AllAssignModalBody table thead').empty();
+                $('#AllAssignModalBody table tbody').empty();
+                $('#AllAssignModalBody table thead').append('<tr><th> <label class="control-label align-left">Vehicle:</label> </th><th> <label class="control-label align-left">Assignee:</label> </th> <th> <label class="control-label align-left">Tracker:</label> </th></tr>');
+                for (x = 0; x < AssignCount; x++) {
+                    var AllVehicleId = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('span').attr('value');
+                    var AllManuName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(4).children().text();
+                    var AllModelName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(5).text();
+                    var AllSubModelName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(6).text();
+                    $('#AllAssignModalBody table tbody').append('<tr><td> <p class="ReturnCarName" value="' + AllVehicleId + '">' + AllManuName + " " + AllModelName + " " + AllSubModelName + '</p> </td><td> <select class="AllTransferUserList" ></select></td>  <td><select class="AllAssignTrackersList" ></select></td></tr>');
+
+                }
+                $(".AllAssignTrackersList").append($("<option selected disabled></option>").val(0).html('-Tracker-'));
+                $(".AllTransferUserList").append($("<option selected></option>").val(0).html('-Assignee-'));
+                $(".AllAssignTrackersList").prop('disabled',true);
+                $.ajax({
+                    url: "/Fleet/Vehicle/GetDTList",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+
+                        $(result).each(function () {
+                            $(".AllTransferUserList").append($("<option></option>").val(this.UserId).html(this.UserName));
+                        });
+                    },
+                    error: function (data) { }
+                });
+
+            });
+
+
+            /* == AllReturn Button Process == */
+            $(document).on('click', '.AllReturn', function () {
+                var ReturnCount = $('#table_fleet').children().eq(1).children().find(".available-check:checked").length;
+
+                publicListCount = ReturnCount;
+
+                $('#AllReturnModalBody table thead').empty();
+                $('#AllReturnModalBody table tbody').empty();
+                $('#AllReturnModalBody table thead').append('<tr> <th><label class=" control-label align-left">Vehicle</label> </th> <th><label class="control-label align-left">Assignee</label></th> <th><label class="control-label align-left">Current Tracker</label></th> </tr>');
+
+                for (x = 0; x < ReturnCount; x++) {
+                    var AllUserName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(7).children().text();
+                    var AllManuName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(4).children().text();
+                    var AllModelName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(5).text();
+                    var AllSubModelName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(6).text();
+                    var AllIMEIID = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(11).text();
+                    var CurrentRow = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent();
+                    var CompleteIMEI = GetIMEIValuesInMultipleSelection(CurrentRow);
+
+                    if (CompleteIMEI == undefined) {
+                        CompleteIMEI = '';
+                    }
+
+                    $('#AllReturnModalBody table tbody').append('<tr><td><p class="ReturnCarName  align-left">' + AllManuName + " " + AllModelName + " " + AllSubModelName + '</p></td><td><p id="ReturnUserName">' + AllUserName + '</p></td> <td><p class="ReturntrackerID">' + CompleteIMEI + '</p></td></td>')
+
+                }
+            });
+
+            var CurrentUserId = [];
+            /* == AllTransfer Button Process == */
+            $(document).on('click', '.AllTransfer', function () {
+                var TransferCount = $('#table_fleet').children().eq(1).children().find(".available-check:checked").length;
+
+                publicListCount = TransferCount;
+
+                $('#AllTransferModalBody table thead').empty();
+                $('#AllTransferModalBody table tbody').empty();
+                $('#AllTransferModalBody table thead').append('<tr> <th><label class="control-label align-left">Vehicle</label></th><th><label class="control-label align-left">Current Assignee</label></th> <th><label class="control-label align-left">Current Tracker</label></th> <th><label class="control-label align-left">New Assignee</label></th> <th><label class="control-label align-left">New Tracker</label></th> </tr>');
+
+                for (x = 0; x < TransferCount; x++) {
+                    var AllUserName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(7).children().text();
+                    var AllManuName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(4).children().text();
+                    var AllModelName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(5).text();
+                    var AllSubModelName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(6).text();
+                    var AllUserId = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(7).children().attr('value');
+                    var AllAssignedTracker = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(11).text();
+                    var CurrentRow = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent();
+                    var CompleteIMEI = GetIMEIValuesInMultipleSelection(CurrentRow);
+                    
+                    if (CompleteIMEI == undefined) {
+                        CompleteIMEI = '';
+                    }
+                    $('#AllTransferModalBody table tbody').append('<tr> <td><p class="ReturnCarName">' + AllManuName + " " + AllModelName + " " + AllSubModelName + '</p></td><td><p class="ReturnCarName">' + AllUserName + '</p></td> <td><p class="AllTransferPrevTID">' + CompleteIMEI + '</p></td> <td><select class="AllTransferUsersList" ></select></td><td><select class="AllTranfserTrackersList" ></select></td></tr>');
+                    CurrentUserId[x] = AllUserId;
+                }
+                $(".AllTranfserTrackersList").append($("<option selected disabled></option>").val(0).html('-Tracker-'));
+                $(".AllTransferUsersList").append($("<option selected></option>").val(0).html('-Assignee-'));
+                $(".AllTranfserTrackersList").prop("disabled", true);
+                $.ajax({
+                    url: "/Fleet/Vehicle/GetDTList",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+
+                        $(result).each(function () {
+                            $(".AllTransferUsersList").append($("<option></option>").val(this.UserId).html(this.UserName));
+                        });
+                        for (x = 0; x < $(".AllTransferUsersList").length; x++) {
+                            $(".AllTransferUsersList").eq(x).children("option[value='" + CurrentUserId[x] + "']").remove();
+                        }
+                    },
+                    error: function (data) { }
+                });
+
+
+            });
+
+            /* == AllAssignCarNow Button Process == */
+            $(document).on('click', '.AllAssignCarNow', function () {
+                var ListObjectModel = [];
+                var ErrorExists = false;              
+
+                for (x = 0; x < publicListCount; x++) {
+                    var currentUserId = $('.AllTransferUserList').eq(x).val();
+                    var CurrentRow = $('.AllTransferUserList').eq(x).parent
+                    $('.AllTransferUserList').eq(x).parent().find("span").remove();
+                    var AllIMEIVal = $('.AllAssignTrackersList').eq(x).val();                  
+                    if (currentUserId == 0) {
+                        $('.AllTransferUserList').eq(x).parent().append('<span style = "color:red"> Required </span>');
+                        ErrorExists = true;
+                    }
+
+                    else {
+                        $('.AllTransferUserList').eq(x).parent().find("span").remove();
+                        var AllVehicleId = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('span').attr('value');
+                        var model = {
+                            VehicleId: AllVehicleId,
+                            UserId: currentUserId,
+                            DateAssign: Current_date(),
+                            TrackerVal: AllIMEIVal
+                        };
+                        ListObjectModel.push(model);
+                    }
+                }
+
+                var UniqTracker = false;
+
+                $('.AllAssignTrackersList').each(function (counter, item) {
+                    var CurrentTracker = $(this).val();
+                    $('.AllAssignTrackersList').each(function (cntr, itm) {
+
+                        if (counter !== cntr) {
+                            if (CurrentTracker == $(this).val() && CurrentTracker != null && CurrentTracker != 0) {
+                                UniqTracker = true;
+                            }
+                        }
+                    });
+                });
+
+                if (UniqTracker) {
+                    $.notify("Please select unique tracker for every vehicle.", { color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                }
+
+                if (!ErrorExists && !UniqTracker) {
+                   $.ajax({
+                        url: "/Fleet/Vehicle/AssignListVehicle/",
+                        contentType: "application/json; charset=utf-8",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(ListObjectModel),
+                        datatype: JSON, 
+                        success: function (result) {
+                            $('#table_fleet2').DataTable().destroy();
+
+                            table2 = $('#table_fleet2').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                    {
+                                        "data": "VehicleGroupName"
+                                    },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1],
+                                    "visible": false
+                                },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                            });
+
+                            $('#table_fleet').DataTable().destroy();
+
+                            table = $('#table_fleet').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetAssignedRecord",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                {
+                                    "data": "UserId"
+                                },
+                                    {
+                                        "data": "VehicleGroupName"
+                                    },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "UserName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1, 2],
+                                    "visible": false
+                                },
+                    {
+                        "targets": [0, 3],
+                        "orderable": false
+                    }]
+                            });
+
+                            $('#closeNow').click();
+                            $('#AllAssignModal').modal('hide');
+                            $('input#checkall').prop('checked', false);
+                            $(".major-btns button").addClass('disabled');
+                            $.notify("Successfully assigned", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                        },
+                        error: function (data) {
+                            $.notify("There is an error to assigned these vehicles", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    });
+                }
+
+            });
+
+            /* == AllReturnCarNow Button Process == */
+            $(document).on('click', '.AllReturnCarNow', function () {
+                var ListObjectModel = [];
+                for (x = 0; x < publicListCount; x++) {
+
+                    var AllVehicleAssignmentId = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('span').eq(0).attr('value');
+                    var AllVehicleId = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('span').eq(1).attr('value');
+                    var AllUserName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(5).children().text();
+                    var AllUserId = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(5).children().attr('value');
+                    var PrevTracker = '';
+
+                    if ($(".ReturntrackerID").eq(x).text() != '' && $(".ReturntrackerID").eq(x).text() != ' ') {
+                        PrevTracker = $(".ReturntrackerID").eq(x).text().split('|')[2].split('(')[0].trim();
+                    }
+
+                    var model = {
+                        VehicleAssignmentId: AllVehicleAssignmentId,
+                        VehicleId: AllVehicleId,
+                        UserId: AllUserId,
+                        DateReturn: Current_date(),
+                        PreviousTracker: PrevTracker
+                    };
+                    ListObjectModel.push(model);
+                }
+
+                $.ajax({
+                    url: "/Fleet/Vehicle/ReturnListVehicle/",
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(ListObjectModel),
+                    datatype: JSON,
+                    success: function (result) {
+                        $('#table_fleet2').DataTable().destroy();
+
+                        table2 = $('#table_fleet2').DataTable({
+                            "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                            lengthChange: false,
+                            ordering: true,
+                            "ajax": {
+                                "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                                "dataSrc": ""
+                            },
+                            "columns": [{
+                                "data": "VehicleId",
+                                "orderable": false
+                            },
+                            {
+                                "data": "VehicleId"
+                            },
+                            {
+                                "data": "VehicleImage"
+                            },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                            {
+                                "data": "TypeName"
+                            },
+                            {
+                                "data": "ManuName"
+                            },
+                            {
+                                "data": "ModelName"
+                            },
+                            {
+                                "data": "SubModelName"
+                            },
+                            {
+                                "data": "Year"
+                            },
+                            {
+                                "data": "ChassisNumber"
+                            },
+                            {
+                                "data": "RegistrationNumber"
+                            },
+                            {
+                                "data": "IMEI"
+                            },
+                            {
+                                "data": "IsActive"
+                            }
+                            ],
+                            "columnDefs": [{
+                                "targets": [1],
+                                "visible": false
+                            },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                        });
+
+                        $('#table_fleet').DataTable().destroy();
+
+                        table = $('#table_fleet').DataTable({
+                            "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                            lengthChange: false,
+                            ordering: true,
+                            "ajax": {
+                                "url": "/Fleet/Vehicle/GetAssignedRecord",
+                                "dataSrc": ""
+                            },
+                            "columns": [{
+                                "data": "VehicleId",
+                                "orderable": false
+                            },
+                            {
+                                "data": "VehicleId"
+                            },
+                            {
+                                "data": "VehicleImage"
+                            },
+                            {
+                                "data": "UserId"
+                            },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                            {
+                                "data": "TypeName"
+                            },
+                            {
+                                "data": "ManuName"
+                            },
+                            {
+                                "data": "ModelName"
+                            },
+                            {
+                                "data": "SubModelName"
+                            },
+                            {
+                                "data": "UserName"
+                            },
+                            {
+                                "data": "Year"
+                            },
+                            {
+                                "data": "ChassisNumber"
+                            },
+                            {
+                                "data": "RegistrationNumber"
+                            },
+                            {
+                                "data": "IMEI"
+                            },
+                            {
+                                "data": "IsActive"
+                            }
+                            ],
+                            "columnDefs": [{
+                                "targets": [1, 2],
+                                "visible": false
+                            },
+                    {
+                        "targets": [0, 3],
+                        "orderable": false
+                    }]
+                        });
+
+                        $('#closeNow').click();
+                        $('#AllReturnModal').modal('hide');
+                        $('input#checkall').prop('checked', false);
+                        $(".major-btns button").addClass('disabled');
+                        $.notify("Successfully returned", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                    },
+                    error: function (data) {
+
+                        $.notify("There is an error to returned these vehicles", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                });
+
+            });
+
+            /* == AllTransferCarNow Button Process == */
+            $(document).on('click', '.AllTransferCarNow', function () {
+                var ListObjectModel = [];
+                var ErrorExists = false;
+                for (x = 0; x < publicListCount; x++) {                    
+                    $('.AllTransferUsersList').eq(x).parent().find("span").remove();
+                    var currentUserId = $('.AllTransferUsersList').eq(x).val();
+                    if (currentUserId == 0) {
+                        $('.AllTransferUsersList').eq(x).parent().append('<span style = "color:red"> Required </span>');
+                        ErrorExists = true;
+
+                    }
+                    else {
+                        $('.AllTransferUsersList').eq(x).parent().find("span").remove();
+                        var AllVehicleAssignmentId = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('span').eq(0).attr('value');
+                        var AllVehicleId = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('span').eq(1).attr('value');
+                        var AllUserName = $('#table_fleet').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(5).children().text();
+                        var currentTId = $('.AllTranfserTrackersList').eq(x).val();
+
+                        var AllTransferPrevTr = '', CrntTracker = '';
+                        //var NwTracker = '';
+
+                        if ($('.AllTranfserTrackersList').eq(x).val() != 0 ) {
+                            CrntTracker = $('.AllTranfserTrackersList').eq(x).text().split('|')[2].split('(')[0].trim();
+                        }
+
+                        if ($('.AllTransferPrevTID').eq(x).text() != '' && $('.AllTransferPrevTID').eq(x).text() != ' ') {
+                            AllTransferPrevTr = $('.AllTransferPrevTID').eq(x).text().split('|')[2].split('(')[0].trim();
+                        }
+                        
+                        var model = {
+                            VehicleAssignmentId: AllVehicleAssignmentId,
+                            VehicleId: AllVehicleId,
+                            UserId: currentUserId,
+                            DateAssign: Current_date(),
+                            DateReturn: Current_date(),
+                            TrackerVal: currentTId,
+                            PreviousTracker: AllTransferPrevTr,
+                            NewTracker: CrntTracker
+                        };
+
+                        ListObjectModel.push(model);
+                    }
+                }
+
+                var UniqTracker = false;
+
+                $('.AllTranfserTrackersList').each(function (counter, item) {
+                    var CurrentTracker = $(this).val();
+                    $('.AllTranfserTrackersList').each(function (cntr, itm) {
+
+                        if (counter !== cntr) {
+                            if (CurrentTracker == $(this).val() && CurrentTracker != null && CurrentTracker != 0) {
+                                UniqTracker = true;
+                            }
+                        }
+                    });
+                });
+
+                if (UniqTracker)
+                {
+                    $.notify("Please select unique tracker for every vehicle.", { color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                }
+
+                if (!ErrorExists && !UniqTracker) {
+                    $.ajax({
+                        url: "/Fleet/Vehicle/TransferListVehicle/",
+                        contentType: "application/json; charset=utf-8",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(ListObjectModel),
+                        datatype: JSON,
+                        success: function (result) {
+                            $('#table_fleet2').DataTable().destroy();
+
+                            table2 = $('#table_fleet2').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                    {
+                                        "data": "VehicleGroupName"
+                                    },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1],
+                                    "visible": false
+                                },
+                        {
+                            "targets": [0, 2],
+                            "orderable": false
+                        }]
+                            });
+
+                            $('#table_fleet').DataTable().destroy();
+
+                            table = $('#table_fleet').DataTable({
+                                "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                                lengthChange: false,
+                                ordering: true,
+                                "ajax": {
+                                    "url": "/Fleet/Vehicle/GetAssignedRecord",
+                                    "dataSrc": ""
+                                },
+                                "columns": [{
+                                    "data": "VehicleId",
+                                    "orderable": false
+                                },
+                                {
+                                    "data": "VehicleId"
+                                },
+                                {
+                                    "data": "VehicleImage"
+                                },
+                                {
+                                    "data": "UserId"
+                                },
+                                    {
+                                        "data": "VehicleGroupName"
+                                    },
+                                {
+                                    "data": "TypeName"
+                                },
+                                {
+                                    "data": "ManuName"
+                                },
+                                {
+                                    "data": "ModelName"
+                                },
+                                {
+                                    "data": "SubModelName"
+                                },
+                                {
+                                    "data": "UserName"
+                                },
+                                {
+                                    "data": "Year"
+                                },
+                                {
+                                    "data": "ChassisNumber"
+                                },
+                                {
+                                    "data": "RegistrationNumber"
+                                },
+                                {
+                                    "data": "IMEI"
+                                },
+                                {
+                                    "data": "IsActive"
+                                }
+                                ],
+                                "columnDefs": [{
+                                    "targets": [1, 2],
+                                    "visible": false
+                                },
+                        {
+                            "targets": [0, 3],
+                            "orderable": false
+                        }]
+                            });
+
+                            $('#closeNow').click();
+                            $('input#checkall').prop('checked', false);
+                            $.notify("Successfully transfered", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                        },
+                        error: function (data) {
+                            $.notify("There is an error to transfer these vehicles", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    });
+                }
+            });
+
+            //All Transfer User List Change 
+            $(document).on('change', ".AllTransferUsersList ", function () {
+                var TempData = LoadGenericTrackerList(parseInt($(this).val()));
+                var NextDropDown = $(this).parent().next('td').children();
+                NextDropDown.empty();
+                NextDropDown.append("<option value='0'>-Tracker-</option>")
+
+                if (TempData != null || TempData != undefined || TempData != "") {
+                    $.each(TempData, function (key, value) {
+                        $(NextDropDown).append($("<option></option>").val(this.IMEIId).html(this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI));                        
+                    });
+                }
+
+                $(NextDropDown).prop("disabled", false);
+            });
+
+            $(document).on('change', ".AllTransferUserList ", function () {
+                var TempData = LoadGenericTrackerList(parseInt($(this).val()));
+                var NextDropDown = $(this).parent().next('td').children();
+                NextDropDown.empty();
+                NextDropDown.append("<option value='0'>-Tracker-</option>")
+
+                if (TempData != null || TempData != undefined || TempData != "") {
+                    $.each(TempData, function (key, value) {
+                        $(NextDropDown).append($("<option></option>").val(this.IMEIId).html(this.TypeName + ' | ' + this.ManuName + ' | ' + this.IMEI));
+                    });
+                }
+
+                $(NextDropDown).prop("disabled", false);
+            });
+            
+
+            $(document).on('click', '.AllDeactive', function () {
+                console.log('AllDeactive');
+                var AssignCount = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").length;
+                publicListCount = AssignCount;
+                $('#AllDeactiveModalBody table thead').empty();
+                $('#AllDeactiveModalBody table tbody').empty();
+                //$('#AllDeactiveModalBody table thead').append('<div class="form-group"><label class="col-sm-4 control-label align-left">Vehicle</label></div>');
+                $('#AllDeactiveModalBody table thead').append('<tr> <th><label class="col-sm-4 control-label align-left">Vehicle</label></th> </tr>');
+                for (x = 0; x < AssignCount; x++) {
+                    var AllVehicleId = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('span').attr('value');
+
+                    var AllManuName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(4).children().text();
+                    var AllModelName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(5).text();
+                    var AllSubModelName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(6).text();
+                    $('#AllDeactiveModalBody table tbody').append('<tr> <td><p class="ReturnCarName" value="' + AllVehicleId + '">' + AllManuName + " " + AllModelName + " " + AllSubModelName + '</p></td></tr>');
+                }
+
+            });
+
+            $(document).on('click', '.AllActivate', function () {
+                console.log('AllActivate');
+                var AssignCount = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").length;
+                publicListCount = AssignCount;
+                $('#AllActivateModalBody table thead').empty();
+                $('#AllActivateModalBody table body').empty();
+                //$('#AllActivateModalBody').append('<div class="form-group"><label class="col-sm-4 control-label align-left">Vehicle</label></div>');
+                $('#AllActivateModalBody table thead').append('<tr> <th><label class="col-sm-4 control-label align-left">Vehicle</label></th> </tr>');
+                for (x = 0; x < AssignCount; x++) {
+                    var AllVehicleId = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('span').attr('value');
+
+                    var AllManuName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(4).text();
+                    var AllModelName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(5).text();
+                    var AllSubModelName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(6).text();
+                    $('#AllActivateModalBody table thead').append('<tr> <td><p class="ReturnCarName" value="' + AllVehicleId + '">' + AllManuName + " " + AllModelName + " " + AllSubModelName + '</p></td></tr>');
+                }
+
+            });
+
+            $(document).on('click', '.AllDelete', function () {
+                console.log('AllDelete');
+                var AssignCount = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").length;
+                publicListCount = AssignCount;
+                $('#AllDeleteModalBody table thead').empty();
+                $('#AllDeleteModalBody table tbody').empty();
+                $('#AllDeleteModalBody table thead').append('<tr><th<label class="col-sm-4 control-label align-left">Vehicle</label></th> </tr>');
+                for (x = 0; x < AssignCount; x++) {
+                    var AllVehicleId = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('span').attr('value');
+
+                    var AllManuName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(4).text();
+                    var AllModelName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(5).text();
+                    var AllSubModelName = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().eq(6).text();
+                    $('#AllDeleteModalBody table tbody').append('<tr><td><p class="ReturnCarName" value="' + AllVehicleId + '">' + AllManuName + " " + AllModelName + " " + AllSubModelName + '</p></td></tr>');
+                }
+
+            });
+
+            $(document).on('click', '.AllDeactiveNow', function () {
+                var ListObjectModel = [];
+                for (x = 0; x < publicListCount; x++) {
+                    var AllVehicleId = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('button').eq(1).val();
+                    var model = {
+                        VehicleId: AllVehicleId,
+                        TypeId: 0
+                    };
+                    ListObjectModel.push(model);
+                }
+
+                $.ajax({
+                    url: "/Fleet/Vehicle/ListSetStatus/",
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(ListObjectModel),
+                    datatype: JSON,
+                    success: function (result) {
+                        $('#table_fleet2').DataTable().destroy();
+
+                        table2 = $('#table_fleet2').DataTable({
+                            "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                            lengthChange: false,
+                            ordering: true,
+                            "ajax": {
+                                "url": "/Fleet/Vehicle/GetRecord/?id=1",
+                                "dataSrc": ""
+                            },
+                            "columns": [{
+                                "data": "VehicleId",
+                                "orderable": false
+                            },
+                            {
+                                "data": "VehicleId"
+                            },
+                            {
+                                "data": "VehicleImage"
+                            },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                            {
+                                "data": "TypeName"
+                            },
+                            {
+                                "data": "ManuName"
+                            },
+                            {
+                                "data": "ModelName"
+                            },
+                            {
+                                "data": "SubModelName"
+                            },
+                            {
+                                "data": "Year"
+                            },
+                            {
+                                "data": "ChassisNumber"
+                            },
+                            {
+                                "data": "RegistrationNumber"
+                            },
+                            {
+                                "data": "IMEI"
+                            },
+                            {
+                                "data": "IsActive"
+                            }
+                            ],
+                            "columnDefs": [{
+                                "targets": [1],
+                                "visible": false
+                            },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                        });
+                        $('#closeNow').click();
+                        $('#AllDeactiveModal').modal('hide');
+                        $('input#checkall').prop('checked', false);
+                        $(".major-btns button").addClass('disabled');
+                        $.notify("Successfully Deactivated", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                    },
+                    error: function (data) {
+                        $.notify("There is an error to deactivate these vehicles", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                });
+
+            });
+            $(document).on('click', '.AllActivateNow', function () {
+                var ListObjectModel = [];
+                for (x = 0; x < publicListCount; x++) {
+                    var AllVehicleId = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('button').eq(1).val();
+                    var model = {
+                        VehicleId: AllVehicleId,
+                        TypeId: 1
+                    };
+                    ListObjectModel.push(model);
+                }
+
+                $.ajax({
+                    url: "/Fleet/Vehicle/ListSetStatus/",
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(ListObjectModel),
+                    datatype: JSON,
+                    success: function (result) {
+                        $('#table_fleet2').DataTable().destroy();
+
+                        table2 = $('#table_fleet2').DataTable({
+                            "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                            lengthChange: false,
+                            ordering: true,
+                            "ajax": {
+                                "url": "/Fleet/Vehicle/GetRecord/?id=0",
+                                "dataSrc": ""
+                            },
+                            "columns": [{
+                                "data": "VehicleId",
+                                "orderable": false
+                            },
+                            {
+                                "data": "VehicleId"
+                            },
+                            {
+                                "data": "VehicleImage"
+                            },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                            {
+                                "data": "TypeName"
+                            },
+                            {
+                                "data": "ManuName"
+                            },
+                            {
+                                "data": "ModelName"
+                            },
+                            {
+                                "data": "SubModelName"
+                            },
+                            {
+                                "data": "Year"
+                            },
+                            {
+                                "data": "ChassisNumber"
+                            },
+                            {
+                                "data": "RegistrationNumber"
+                            },
+                            {
+                                "data": "IMEI"
+                            },
+                            {
+                                "data": "IsActive"
+                            }
+                            ],
+                            "columnDefs": [{
+                                "targets": [1],
+                                "visible": false
+                            },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                        });
+                        $('#closeNow').click();
+                        $('#AllActivateModal').modal('hide');
+                        $('input#checkall').prop('checked', false);
+                        $(".major-btns button").addClass('disabled');
+                        $.notify("Successfully Activated", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                    },
+                    error: function (data) {
+                        $.notify("There is an error to activate these vehicles", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                });
+
+            });
+            $(document).on('click', '.AllDeleteNow', function () {
+                var ListObjectModel = [];
+                for (x = 0; x < publicListCount; x++) {
+                    var AllVehicleId = $('#table_fleet2').children().eq(1).children().find(".available-check:checked").eq(x).parent().parent().children().children('button').eq(1).val();
+                    var model = {
+                        VehicleId: AllVehicleId
+                    };
+                    ListObjectModel.push(model);
+                }
+
+                $.ajax({
+                    url: "/Fleet/Vehicle/ListDeleteRecord/",
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(ListObjectModel),
+                    datatype: JSON,
+                    success: function (result) {
+                        $('#table_fleet2').DataTable().destroy();
+                        if ($('.slider').attr('value')==0) {
+                            var URl1 = "/Fleet/Vehicle/GetRecord/?id=1";
+                        }
+                        else {
+                            var URl1 = "/Fleet/Vehicle/GetRecord/?id=0";
+                        }
+
+                        table2 = $('#table_fleet2').DataTable({
+                            "dom": '<"top">frt<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                            lengthChange: false,
+                            ordering: true,
+                            "ajax": {
+                                "url": URl1,
+                                "dataSrc": ""
+                            },
+                            "columns": [{
+                                "data": "VehicleId",
+                                "orderable": false
+                            },
+                            {
+                                "data": "VehicleId"
+                            },
+                            {
+                                "data": "VehicleImage"
+                            },
+                                {
+                                    "data": "VehicleGroupName"
+                                },
+                            {
+                                "data": "TypeName"
+                            },
+                            {
+                                "data": "ManuName"
+                            },
+                            {
+                                "data": "ModelName"
+                            },
+                            {
+                                "data": "SubModelName"
+                            },
+                            {
+                                "data": "Year"
+                            },
+                            {
+                                "data": "ChassisNumber"
+                            },
+                            {
+                                "data": "RegistrationNumber"
+                            },
+                            {
+                                "data": "IMEI"
+                            },
+                            {
+                                "data": "IsActive"
+                            }
+                            ],
+                            "columnDefs": [{
+                                "targets": [1],
+                                "visible": false
+                            },
+                    {
+                        "targets": [0, 2],
+                        "orderable": false
+                    }]
+                        });
+                        $('#closeNow').click();
+                        $('#AllDeleteModal').modal('hide');
+                        $('input#checkall').prop('checked', false);
+                        $(".major-btns button").addClass('disabled');
+                        $.notify("Successfully Deleted", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                    },
+                    error: function (data) {
+                        $.notify("There is an error to delete these vehicles", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                });
+
+            });
+
+            $('#AssignCarNowClosebtn').on('click', function () {
+
+                $('#AssignSingleVehicleTable tr:eq(1) td:eq(1)').find("span").remove();
+            });
+
+
+        });
+    </script>

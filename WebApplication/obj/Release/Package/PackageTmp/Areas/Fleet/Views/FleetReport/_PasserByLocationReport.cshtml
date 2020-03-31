@@ -1,0 +1,190 @@
+﻿<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="title-passerbylctrpt">Positioning Statement <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Passer-by Location Report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="passerbylocation-custom-filters">
+            <div class="filter-field">
+                <label>Vehicle</label>
+                <input type="text" id="asset2" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="date-range2">
+                </div>
+            </div>
+            <div class="filter-field button">
+                <button id="apply_filters2" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            <div class="filter-field">
+                <label>Latitude</label>
+                <input type="text" id="latitude" placeholder="Latitude" />
+            </div>
+            <div class="filter-field">
+                <label>Longitude</label>
+                <input type="text" id="longitude" placeholder="Longitude" />
+            </div>
+            <div class="filter-field">
+                <label>Radius</label>
+                <input type="text" id="radius" placeholder="Radius" />
+            </div>
+        </div>
+        <!-- Custom Filters -->
+
+        <div class="report-table" id="passerbylocation-table">
+            <table id="passerbylocationreport" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Time</th>
+                        <th>Vehicle</th>
+                        <th>Tracker Id</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Speed (km/h)</th>
+                        <th>Direction</th>
+                        <th>Rotation</th>
+                        <th>Current Trip Mileage</th>
+                        <th>GPS Signal</th>
+                        <th>GSM Signal</th>
+                        <th>Mileage</th>
+                        <th>Address</th>
+                        <th>Alarm State</th>
+                        <th>Device State</th>
+                        <th>Engine</th>
+                        <th>Extend State</th>
+                        <th>Fuel (%)</th>
+                        <th>Fuel (Ltr)</th>
+                        <th>Temperature</th>
+                        <th>Distance</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#apply_filters2").click(function () {
+        debugger;
+
+        var assetname = $("#asset2").val();
+        var daterange = $("#date-range2").val();
+        var latitude = $("#latitude").val();
+        var longitude = $("#longitude").val();
+        var radius = $("#radius").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var reportexporttitle = $("#title-passerbylctrpt").text();
+        var exportfilename = $("#title-passerbylctrpt").text();
+        var frcmodel = {
+            ReportFilter: "PasserByLocationReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname,
+            Latitude: latitude,
+            Longitude: longitude,
+            Radius: radius
+        }
+
+        var table = $('#passerbylocationreport').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[1, 'asc']],
+            "deferRender": true,
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'Time', "name": "Time", "autoWidth": true },
+               { data: 'AssetName', "name": "Vehicle" },
+               { data: 'TrackerId', "name": "Tracker Id" },
+               { data: 'Latitude', "name": "Latitude", "autoWidth": true },
+               { data: 'Longitude', "name": "Longitude", "autoWidth": true },
+               { data: 'Speed', "name": "Speed (km/h)", "autoWidth": true },
+               { data: 'Direction', "name": "Direction", "autoWidth": true },
+               { data: 'Rotation', "name": "Rotation", "autoWidth": true },
+               { data: 'CurrentTripMileage', "name": "Current Trip Mileage", "autoWidth": true },
+               { data: 'GPSSignalStatus', "name": "GPS Signal", "autoWidth": true },
+               { data: 'GSMSignal', "name": "GSM Signal", "autoWidth": true },
+               { data: 'Mileage', "name": "Mileage", "autoWidth": true },
+               { data: 'Address', "name": "Address", "autoWidth": true },
+               { data: 'AlarmState', "name": "Alarm State", "autoWidth": true },
+               { data: 'DeviceState', "name": "Device State", "autoWidth": true },
+               { data: 'AssetStatus', "name": "Engine", "autoWidth": true },
+               { data: 'ExtendState', "name": "Extend State", "autoWidth": true },
+               { data: 'FuelPercent', "name": "Feul (%)", "autoWidth": true },
+               { data: 'FuelLiter', "name": "Feul (Ltr)", "autoWidth": true },
+               { data: 'Temperature', "name": "Temperature", "autoWidth": true },
+               { data: 'Distance', "name": "Distance", "autoWidth": true }
+            ],
+            initComplete: function (settings, json) {
+                $("#passerbylocation-custom-filters .top").remove();
+                $($("#passerbylocation-table .top")).appendTo("#passerbylocation-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+        //$.ajax({
+        //    url: window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+        //    type: "POST",
+        //    traditional: true,
+        //    data:JSON.stringify(frcmodel),
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    error: function (response) {
+        //        alert(response.responseText);
+        //    },
+
+        //    success: function (response) {
+        //        alert(response);
+        //    }
+        //});
+    });
+</script>

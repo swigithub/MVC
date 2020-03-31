@@ -1,0 +1,624 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0">
+
+    <div id="regionviewchart1" class="vector-map" style="margin: 0px auto;overflow:hidden"></div>
+    <div id="regionviewchart2" class="vector-map" style="margin: 0px auto;overflow:hidden"></div>
+    <div id="regionviewchart3" class="vector-map" style="margin: 0px auto;overflow:hidden"></div>
+
+    <script src="Scripts/jquery-1.10.2.min.js"></script>
+    <script src="SmartAdmin/js/moment.min.js"></script>
+
+    <script src="Content/js/Project/canvasjs.min.js"></script>
+    <script src="SmartAdmin/js/moment.min.js"></script>
+
+    <script>
+	
+	
+
+        window.onload = function () {
+            function setChartHeight() {
+                var chartHeight = $(window).height();
+                var chartWidth = $(window).width();
+                $('#regionviewchart1').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+                $('#regionviewchart2').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+                $('#regionviewchart3').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+            }
+            setChartHeight();
+
+            $(window).resize(function () {
+                setChartHeight();
+            });
+			
+			$(window).onresize = function() {
+				setChartHeight();
+			};
+
+            //http://att.airviewx.com/ProjectRegionalView.html?filter=Get_Project_Issue_By&ProjectId=20021&&Value1=0&TaskIds=50080&LocationIds=163408_163409_163410_163411_163412_163413_163414_163415_163416_163405_163406_163407&FromDate=2/1/2018&ToDate=2/28/2018&SearchFilter=Daily
+
+            //  //163408_163409_163410_163411_163412_163413_163414_163415_163416_163405_163406_163407
+
+            var ProjectId = getParameter('ProjectId');
+            var RawMarketid = getParameter('LocationIds');
+            var marketid = RawMarketid.replace(/_/g, ",");
+            var taskid = getParameter('TaskIds');
+            var fromdate = getParameter('FromDate');
+            var todate = getParameter('ToDate');
+            var Value1 = getParameter('Value1');
+            var SearchFilter = getParameter('SearchFilter');
+
+            var TitleText = '';
+            var regionveiwdata = [];
+            var Forecast = [];
+            var Planned = [];
+            var Actual = [];
+            var Target = [];
+            var CumActual = [];
+            var CumForecast = [];
+            var CumTarget = [];
+            var RunRate = [];
+            var actularcolor, forecastcolor, plancolor, targetcolor, runratecolor, cumactualcolor, cumforecastcolor, cumtargetcolor;
+            var chart1;
+            var chart2;
+            var chart3;
+
+            setTimeout(function () { LoadRegionViewChart() }, 2000);
+
+            function getParameter(theParameter) {
+                var params = window.location.search.substr(1).split('&');
+                for (var i = 0; i < params.length; i++) {
+                    var p = params[i].split('=');
+                    if (p[0] == theParameter) {
+                        return decodeURIComponent(p[1]);
+                    }
+                }
+                return false;
+            }
+
+            // function call to get first level data for drill down chart
+            function LoadRegionViewChart() {
+                var url;
+                if (marketid != null) {
+                    url = window.location.origin + '/swi/PM_Dashboard?filter=Get_RegionView_WO&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid
+               + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+                }
+                else {
+                    url = window.location.origin + '/swi/PM_Dashboard?filter=Get_RegionView_WO&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid
+                          + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    async: false,
+                    success: function (data) {
+                        array = data;
+                        debugger;
+                        var sd = {};
+                        Forecast = [];
+                        Planned = [];
+                        Actual = [];
+                        Target = [];
+                        RunRate = [];
+                        CumActual = [];
+                        CumForecast = [];
+                        CumTarget = [];
+                        for (var i = 0; i < data.length ; i++) {
+                            if (data[i].DefinationName != null) {
+
+                                sd = { label: data[i].DefinationName, y: data[i].TotalSites, id: data[i].DefinationId };
+                                if (data[i].Type == 'Forecast') {
+                            forecastcolor = data[i].ColorCode;
+                            Forecast.push(sd);
+                        }
+                        else if (data[i].Type == 'CumForecast') {
+                            cumforecastcolor = data[i].ColorCode;
+                            CumForecast.push(sd);
+                        }
+                        else if (data[i].Type == 'Actual') {
+                            actularcolor = data[i].ColorCode;
+                            Actual.push(sd);
+                        }
+                        else if (data[i].Type == 'CumActual') {
+
+                            cumactualcolor = data[i].ColorCode;
+                            CumActual.push(sd);
+                        }
+                            }
+                        }
+                    }
+                });
+
+                // fist level of drill down chart
+                chart1 = new CanvasJS.Chart("regionviewchart1", {
+                    animationEnabled: false,
+                    exportEnabled: true,
+                    theme: "light2",
+                    //height: "280",
+                    title: {
+                        text: ""
+                    },
+                    axisX: {
+                        valueFormatString: "MMM"
+                    },
+                    axisY: {
+                        labelFormatter: addSymbols,
+                        //interval: 50
+                    },
+                    axisY2: {
+                        interval: 500
+                    },
+                    toolTip: {
+                        shared: true
+                    },
+                    legend: {
+                        cursor: "pointer",
+                        itemclick: toggleDataSeries1,
+                        fontSize: 13
+                    },
+                    data: [
+            {
+                type: "column",
+                name: "Actual",
+                axisYType: "primary",
+                //color:"#0070c0",
+                color: actularcolor,
+                click: CallMarket1,
+                showInLegend: true,
+                dataPoints: Actual,
+
+            },
+            {
+                type: "line",
+                name: "Cum. Actual",
+                axisYType: "secondary",
+				connectNullData: true,
+                color: cumactualcolor,
+                showInLegend: true,
+                markerBorderThickness: 2,
+                dataPoints: CumActual
+
+            },
+            {
+                type: "column",
+                axisYType: "primary",
+                axisYindex: 0,
+                exportEnabled: true,
+                name: "Forecast",
+                color: forecastcolor,
+                click: CallMarket1,
+                markerBorderColor: "white",
+                markerBorderThickness: 2,
+                showInLegend: true,
+
+                dataPoints: Forecast
+            },
+            {
+                type: "line",
+                axisYType: "secondary",
+				connectNullData: true,
+                axisYindex: 1,
+                name: 'Cum. ForeCast',
+                //color: "#70ad47",
+                color: cumforecastcolor,
+                markerBorderColor: "white",
+                markerBorderThickness: 2,
+                showInLegend: true,
+                yValueFormatString: "#,##0",
+                dataPoints: CumForecast
+            }
+            ]
+                });
+                //showDefaultText(chart, "No Data Available");
+                chart1.render();
+            }
+
+            function addSymbols(e) {
+                var suffixes = ["", "K", "M", "B"];
+                var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+
+                if (order > suffixes.length - 1)
+                    order = suffixes.length - 1;
+
+                var suffix = suffixes[order];
+                return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+            }
+
+            function toggleDataSeries1(e) {
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else {
+                    e.dataSeries.visible = true;
+                }
+                e.chart1.render();
+            }
+
+            function toolTipFormatter(e) {
+                var str = "";
+                var total = 0;
+                var str3;
+                var str2;
+                for (var i = 0; i < e.entries.length; i++) {
+                    var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong> <br/>";
+                    total = e.entries[i].dataPoint.y + total;
+                    str = str.concat(str1);
+                }
+                str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br/>";
+                str3 = "<span style = \"color:Tomato\">Total: </span><strong>" + total + "</strong><br/>";
+                return (str2.concat(str)).concat(str3);
+            }
+
+        
+
+            // function call to get second level data for drill down chart
+            function CallMarket1(e) {
+
+                var url;
+                var TitleText1 = e.dataPoint.label + ' ' + 'Regional View';
+                var RegionId = e.dataPoint.id;
+                $.ajax({
+                    url: window.location.origin + '/swi/PM_Dashboard?filter=' + 'Get_MarketView_WO' + '&ProjectId=' + ProjectId + '&Value1=' + e.dataPoint.id + '&TaskIds=' + taskid
+                          + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter,
+                    type: 'POST',
+                    async: false,
+                    success: function (data) {
+                        $('#regionviewchart1').empty();
+                        $('#regionviewchart1').hide();
+
+                        $('#regionviewchart2').empty();
+                        $('#regionviewchart2').html(data);
+                        $('#regionviewchart2').show();
+
+                        array = data;
+                        var sd = {};
+                        Forecast = [];
+                        Planned = [];
+                        Actual = [];
+                        Target = [];
+                        RunRate = [];
+                        CumActual = [];
+                        CumForecast = [];
+                        CumTarget = [];
+                        for (var i = 0; i < data.length ; i++) {
+                            if (data[i].DefinationName != null) {
+
+                                sd = { label: data[i].DefinationName, y: data[i].TotalSites, id: data[i].DefinationId };
+                                if (data[i].Type == 'Forecast') {
+                        forecastcolor = data[i].ColorCode;
+                        Forecast.push(sd);
+                    }
+                    else if (data[i].Type == 'CumForecast') {
+                        cumforecastcolor = data[i].ColorCode;
+                        CumForecast.push(sd);
+                    }
+                    else if (data[i].Type == 'Actual') {
+                        actularcolor = data[i].ColorCode;
+                        Actual.push(sd);
+                    }
+                    else if (data[i].Type == 'CumActual') {
+
+                        cumactualcolor = data[i].ColorCode;
+                        CumActual.push(sd);
+                    }
+                            }
+                        }
+                    }
+                });
+
+                // render chart for second level data
+                chart2 = new CanvasJS.Chart("regionviewchart2", {
+                    animationEnabled: false,
+                    exportEnabled: true,
+                    theme: "light2",
+                    //height: "280",
+                    title: {
+                        text: ""
+                    },
+                    axisX: {
+                        valueFormatString: "MMM"
+                    },
+                    axisY: {
+                        labelFormatter: addSymbols,
+                        //interval: 50
+                    },
+                    axisY2: {
+                        interval: 500
+                    },
+                    toolTip: {
+                        shared: true
+                    },
+                    legend: {
+                        cursor: "pointer",
+                        itemclick: toggleDataSeries1,
+                        fontSize: 13
+                    },
+                    data: [
+        {
+            type: "column",
+            name: "Actual",
+            axisYType: "primary",
+            showInLegend: true,
+            //color: "#0070c0",
+            color: actularcolor,
+            click: CallDatewise,
+            dataPoints: Actual
+        },
+            {
+                type: "line",
+                name: "Cum. Actual",
+				connectNullData: true,
+                axisYType: "secondary",
+                color: cumactualcolor,
+                showInLegend: true,
+                markerBorderThickness: 2,
+                dataPoints: CumActual
+
+            },
+            {
+                type: "column",
+                axisYType: "primary",
+                axisYindex: 0,
+                exportEnabled: true,
+                name: "Forecast",
+                color: forecastcolor,
+                click: CallDatewise,
+                markerBorderColor: "white",
+                markerBorderThickness: 2,
+                showInLegend: true,
+
+                dataPoints: Forecast
+            },
+            {
+                type: "line",
+                axisYType: "secondary",
+				connectNullData: true,
+                axisYindex: 1,
+                //color: "#70ad47",
+				name: "Cum. Forecast",
+                color: cumforecastcolor,
+                markerBorderColor: "white",
+                markerBorderThickness: 2,
+                showInLegend: true,
+                yValueFormatString: "#,##0",
+                dataPoints: CumForecast
+            }]
+                });
+                //showDefaultText(chart, "No Data Available");
+                chart2.render();
+
+                // function call to get third level data for drill down chart
+                function CallDatewise(e) {
+                  var  TitleText = e.dataPoint.label;
+                  var  MarketId = e.dataPoint.id;
+var intervalCount = 1;
+                    $.ajax({
+                        url: window.location.origin + '/swi/PM_Dashboard?filter=' + 'Get_DateWise_WO' + '&ProjectId=' + ProjectId + '&Value1=' + e.dataPoint.id + '&TaskIds=' + taskid
+                        + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter,
+                        type: 'POST',
+                        async: false,
+                        success: function (data) {
+                            
+                            $('#regionviewchart1').empty();
+                            $('#regionviewchart1').hide();
+
+                            $('#regionviewchart2').empty();
+                            $('#regionviewchart2').hide();
+
+                            $('#regionviewchart3').empty();
+                            $('#regionviewchart3').html(data);
+                            $('#regionviewchart3').show();
+
+                           //-----------------------------
+                       
+                        var uniqueDates = [];
+                        for (var i = 0; i < data.length ; i++) {
+                            if (uniqueDates.indexOf(data[i].DefinationName) === -1) {
+                                uniqueDates.push(data[i].DefinationName);
+                            }
+                        }
+                        console.log(uniqueDates.length);
+                        if (uniqueDates.length > 0 && uniqueDates.length <= 15) {
+                            intervalCount = 1;
+                        }
+                        else if (uniqueDates.length > 15 && uniqueDates.length <= 20) {
+                            intervalCount = 2;
+                        }
+                        else if (uniqueDates.length > 20 && uniqueDates.length <= 30) {
+                            intervalCount = 3;
+                        }
+                        else {
+                            intervalCount = 5;
+                        }
+                        //-----------------------------
+
+                            Forecast = [];
+                            Planned = [];
+                            Actual = [];
+                            Target = [];
+							 CumActual = [];
+                        CumForecast = [];
+                            array = data;
+                            var sd = {};
+							
+			for (var i = 0; i < data.length ; i++) {
+                if (data[i].DefinationName != null) {
+				if (SearchFilter == 'Daily') {
+					var date = new Date(moment(data[i].DefinationName)); 
+                    sd = { label: ((date.getMonth() + 1) + '/' + date.getDate()), y: data[i].TotalSites };
+					}
+					else
+					{
+						sd = { label: data[i].DefinationName, y: data[i].TotalSites };
+					}
+                    if (data[i].Type == 'Forecast') {
+                        forecastcolor = data[i].ColorCode;
+                        Forecast.push(sd);
+                    }
+                    else if (data[i].Type == 'CumForecast') {
+                        cumforecastcolor = data[i].ColorCode;
+                        CumForecast.push(sd);
+                    }
+                    else if (data[i].Type == 'Actual') {
+                        actularcolor = data[i].ColorCode;
+                        Actual.push(sd);
+                    }
+                    else if (data[i].Type == 'CumActual') {
+
+                        cumactualcolor = data[i].ColorCode;
+                        CumActual.push(sd);
+                    }
+                }
+
+            }
+						
+                        }
+                    }
+					);
+
+                    var chart3 = new CanvasJS.Chart("regionviewchart3", {
+                        animationEnabled: false,
+            exportEnabled: true,
+        theme: "light2",
+        //height: "280",
+        title: {
+            text: ""
+        },
+        axisX: {
+            interval: intervalCount,
+            valueFormatString: "MMM"
+        },
+        axisY: {
+            labelFormatter: addSymbols,
+            //interval: 50
+        },
+        axisY2: {
+            interval: 500
+        },
+        toolTip: {
+            shared: true
+        },
+        legend: {
+            cursor: "pointer",
+            itemclick: toggleDataSeries
+        },
+        data: [
+    {
+        type: "column",
+        name: "Actual",
+        axisYType: "primary",
+        showInLegend: true,
+        //color: "#0070c0",
+        color: actularcolor,
+        //click: CallDatewise,
+        dataPoints: Actual
+    },
+        {
+            type: "line",
+            name: "Cum. Actual",
+            axisYType: "secondary",
+			connectNullData: true,
+            color: cumactualcolor,
+            showInLegend: true,
+            markerBorderThickness: 2,
+            dataPoints: CumActual
+
+        },
+        {
+            type: "column",
+            axisYType: "primary",
+            axisYindex: 0,
+            exportEnabled: true,
+            name: "Forecast",
+            color: forecastcolor,
+            //click: CallMarket1,
+            markerBorderColor: "white",
+            markerBorderThickness: 2,
+            showInLegend: true,
+
+            dataPoints: Forecast
+        },
+        {
+            type: "line",
+            axisYType: "secondary",
+			connectNullData: true,
+            axisYindex: 1,
+            //color: "#70ad47",
+            name:'Cum. Forecast',
+            color: cumforecastcolor,
+            markerBorderColor: "white",
+            markerBorderThickness: 2,
+            showInLegend: true,
+            yValueFormatString: "#,##0",
+            dataPoints: CumForecast
+        }]
+                    });
+					
+					
+                    chart3.render();
+
+                    chart3.options.title.text = TitleText1;
+                    chart3.options.title.horizontalAlign = "left";
+                    chart3.options.title.fontSize = 16;
+
+                    function addSymbols(e) {
+                        var suffixes = ["", "K", "M", "B"];
+                        var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+
+                        if (order > suffixes.length - 1)
+                            order = suffixes.length - 1;
+
+                        var suffix = suffixes[order];
+                        return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+                    }
+
+                   
+
+                    function toolTipFormatter(e) {
+                        var str = "";
+                        var total = 0;
+                        var str3;
+                        var str2;
+                        for (var i = 0; i < e.entries.length; i++) {
+                            var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong> <br/>";
+                            total = e.entries[i].dataPoint.y + total;
+                            str = str.concat(str1);
+                        }
+                        str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br/>";
+                        str3 = "<span style = \"color:Tomato\">Total: </span><strong>" + total + "</strong><br/>";
+                        return (str2.concat(str)).concat(str3);
+                    }
+
+                    function toggleDataSeries(e) {
+                        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                            e.dataSeries.visible = false;
+                        }
+                        else {
+                            e.dataSeries.visible = true;
+                        }
+                        chart3.render();
+                    }
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,448 @@
+﻿@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.Security.Entities
+@model SitesVM
+@{
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var UserDevices = jss.Serialize(ViewBag.UserDevices);
+    int rowcount = 0;
+    List<AV_ScopeTests> Tests = ViewBag.ScopeTests as List<AV_ScopeTests>;
+    var SelectedLayers = ViewBag.SelectedLayer as List<AV_WoDevices>;
+    var Devices = ViewBag.UserDevices as List<Sec_UserDevices>;
+    var Parent = ViewBag.ParentTester as List<AV_SiteScript>;
+}
+
+
+<div class="" id="schedule-model">
+
+    <form method="post" action="#" id="frm-SiteSchedule">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="" style="width:300px;">
+                    <tr>
+                        <td><label>Site Code: </label></td>
+                        <td>@Model.SiteCode</td>
+                    </tr>
+                    <tr>
+                        <td><label>Region: </label></td>
+                        <td>@Model.Region</td>
+                    </tr>
+                    <tr>
+                        <td><label>Market: </label></td>
+                        <td>@Model.Market</td>
+                    </tr>
+                </table>
+                <div>
+                    <div class="btn-group">
+                        <button type="button" data-value="@DateTime.Now.ToShortDateString()" class="btn btn-default dateSelection">@DateTime.Now.Day</button>
+                        @for (int i = 1; i < 7; i++)
+                        {
+                            <button type="button" data-value="@DateTime.Now.AddDays(i).ToShortDateString()" class="btn btn-default dateSelection">@DateTime.Now.AddDays(i).Day</button>
+
+                        }
+                        <button type="button" id="btn-PickDate" class="btn btn-default dateSelection">Pick Date</button>
+                        <div id="EmptyClick"></div>
+
+                    </div>
+                    <div class="input-group" id="pan-date" style="width: 305px;visibility:hidden;">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+
+                        <input type="text" required readonly class="form-control pull-right UserLiveDate" name="Date" placeholder="Pick Schedule" id="schduledate">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-8 col-sm-12">
+
+                <table style="width:100%">
+                    <tr>
+                        <td><strong>Tester:&nbsp; </strong></td>
+                        <td>
+                            @Html.DropDownList("TesterId", ViewBag.Users as List<SelectListItem>, new { @class = "form-control TesterId select", id = "TesterHeaderRow-" + rowcount,
+                           data_row = rowcount, style = "width:150px;" })
+                        </td>
+                        <td><strong> Device:</strong></td>
+                        <td>
+                            @Html.DropDownList("Devices", ViewBag.Devices as List<SelectListItem>, new {
+                                   @class = "form-control select DeviceHeaderRow",
+                                   id = "DeviceHeaderRow",
+                                   style = "width:170px;"
+                               })
+                        </td>
+                        @if(ViewBag.FleetPermission == "True"){
+                        <td class="VehiclePermission"><strong> Vehicles:</strong></td>
+                        <td class="VehiclePermission">
+                            @Html.DropDownList("Vehicles", ViewBag.Devices as List<SelectListItem>, new {
+                                   @class = "form-control select VehicleHeaderRow",
+                                   id = "VehicleHeaderRowTop",
+                                   style = "width:170px;"
+                               })
+                        </td>
+                        }
+                    </tr>
+                </table>
+                <br />
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered table-striped" style="width:100%;">
+                    <tr>
+                        <th><input type="checkbox" id="selectall" /></th>
+                        @if (ViewBag.Scope == "TSS")
+                        {
+
+                            <th>Survey</th>
+                        }
+                        else
+                        {
+                            <th>Network Mode</th>
+                            <th>Band</th>
+                            <th>Carrier</th>
+                        }
+
+                        <th>Tester</th>
+                        <th>WO Devices</th>
+                        <th>Test Types</th>
+                        @if (ViewBag.FleetPermission == "True")
+                        {
+                            <th>WO Vehicles</th>
+                        }
+                        </tr>
+                    @foreach (var item in ViewBag.SiteNetworkLayers)
+                    {
+                        Int64 TesterId = 0;
+                        Int64 DeviceId = 0;
+                        string layer = item.NetworkModeId + "_" + item.BandId + "_" + item.CarrierId;
+                        var selected = SelectedLayers.Where(m => m.BandId == item.BandId && m.NetworkId == item.NetworkModeId && m.CarrierId == item.CarrierId && m.IsDownlaoded == false).FirstOrDefault();
+                        if (selected != null)
+                        {
+                            TesterId = selected.UserId;
+                            DeviceId = selected.UserDeviceId;
+                        }
+                    <tr>
+                        <td>
+                            <input type="checkbox" onchange="SelectLayer(this,'@rowcount','@layer');  return false;" data-row="@rowcount" data-layer="@layer" class="SelectLayer" />
+                            <input type="hidden" id="layerRow-@rowcount" value="-" name="Layer" />
+                            <input type="hidden" name="NetworkMode" value="@item.NetworkModeId" />
+                            <input type="hidden" name="Band" value="@item.BandId" />
+                            <input type="hidden" name="Carrier" value="@item.CarrierId" />
+                            <input type="hidden" name="LayerStatusId" value="@item.LayerStatusId" />
+                        </td>
+
+                        @if (ViewBag.Scope == "TSS")
+                        {
+                            <td>@item.BandName</td>
+                        }
+                        else
+                        {
+                            <td>
+                                @item.NetworkMode
+                            </td>
+                            <td>@item.BandName</td>
+                            <td>@item.Carrier</td>
+                        }
+
+                        <td>
+                            @if (ViewBag.TesterId != null)
+                            {
+                                TesterId = ViewBag.TesterId;
+                            }
+                            @Html.DropDownList("TesterId", ViewBag.Users as List<SelectListItem>, new { @class = "form-control TesterId select SelectAllTester", id = "TesterId-" + rowcount, data_Selected = TesterId, data_row = rowcount, style = "width:150px;" })
+                        </td>
+                        <td class="TableCell" id="TableCellId-@rowcount">
+                            @Html.DropDownList("Devices", ViewBag.Devices as List<SelectListItem>, new { @class = "form-control DeviceHeaderRow", id = "DeviceId-" + rowcount,
+                          // data_Selected = DeviceId,
+                           data_row = rowcount, style = "width:150px;" })
+                        </td>
+                        <td>
+                            <select class="form-control select" style="width:150px;" id="ddlTestType-@rowcount" data-row="@rowcount" onchange="ddlTestTypeChange('@rowcount' ); return false" multiple>
+                                @foreach (var tst in Tests.Where(m => m.NetworkModeId == item.NetworkModeId))
+                                {
+                                    <option value="@tst.TestTypeId">@tst.Test</option>
+                                }
+                            </select>
+                            <input type="hidden" name="TestTypes" id="TestTypes-@rowcount" />
+                        </td>
+                        @if (ViewBag.FleetPermission == "True")
+                        {
+                            <td>
+                                @Html.DropDownList("Vehicles", ViewBag.Devices as List<SelectListItem>, new { @class = "form-control VehicleHeaderRow", id = "VehicleHeaderRowBottom", style = "width:150px;" })
+                            </td>}
+                        </tr>
+                        rowcount++;
+                    }
+                </table>
+                <input type="hidden" name="SiteId" value="@Model.SiteId" />
+                <input type="hidden" name="Scope" value="@ViewBag.Scope" />
+            </div>
+        </div>
+
+        <div class="pull-right">
+            <button type="submit" class="btn btn-success btn-sm "><span class="fa fa-calendar-check-o"></span> Schedule</button>
+            <a href="#" class="btn btn-danger btn-sm " data-dismiss="modal">
+                <span class="glyphicon glyphicon-remove"></span> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        
+        $('.VehicleHeaderRow').empty();
+        $('.VehicleHeaderRow').append('<option value="0">Please Select Vehicle</option>');
+        console.log('filterContext.Controller.ViewBag.RoleID:' +@ViewBag.RoleID);
+    /*var FleetManagementPermission;
+    $.ajax({//ViewBag.RoleID
+            url: "http://localhost:18459/Fleet/Vehicle/CheckVehiclePermission/"+2,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+
+                FleetManagementPermission = result.PermissionId;
+                if (FleetManagementPermission != null) {
+                    //var RowHTML = '<td><strong> Vehicles:</strong></td>';
+                    //RowHTML = RowHTML + '<td><select name="Vehicles" class="form-control  VehicleHeaderRow" id="VehicleHeaderRowTop" style="width:170px;"></select></td>';
+                    //$('table').eq(3).children().children().append(RowHTML);
+                } else {
+                    $('.VehiclePermission').hide();
+                }
+            },
+            error: function (data) {
+                console.log('VehicleList: Error');
+            },
+        complete: function () {
+
+        }
+    });*/
+        
+    });
+
+    function SelectLayer(e, row, layer) {
+        if ($(e).is(':checked')) {
+            $('#layerRow-' + row).val(layer);
+        } else {
+            $('#layerRow-' + row).val('-');
+        }
+    }
+
+    $(function () {
+        var UserDevices = JSON.parse('@Html.Raw(UserDevices)');
+
+        /* == Default Change Listner for User DropDownList== */
+        /*$("select").each(function (j) {
+
+            var selected = $(this).attr('data-Selected');
+            if (selected != undefined) {
+
+                var row = $(this).attr('data-row');
+                var id = $(this).attr('id');
+
+                $('#' + id).val(selected);
+
+                if (id.startsWith("TesterId")) {
+                    LoadDevices(row, selected)
+                }
+            }
+
+        });*/
+
+        /* == Custom Change Listner for User DropDownList== */
+        $("select").each(function (j) {
+
+            var selected = $(this).attr('data-Selected');
+            if (selected != undefined) {
+                
+                var row = $(this).attr('data-row');
+                var id = $(this).attr('id');
+
+                $('#' + id).val(selected);
+
+                if (id.startsWith("TesterId")) {
+                    LoadDevices(row, selected);
+                }
+            }
+
+        });
+
+        
+        // $(".select").select2();
+        $(document).on('change', '.TesterId', function () {
+            console.log('TesterId Clicked');
+            var val = $(this).val();
+            //console.log('Tester val' + $(this).parent().parent().children().eq(7).children().val());
+            var row = $(this).attr('data-row');
+
+            var Row = $(this);
+            $(Row).parent().parent().children().eq(7).children().empty();
+            $(Row).parent().parent().children().eq(7).children().append('<option value="0">Please Select Vehicle</option>');
+
+
+
+            var VehicleList = [];
+            /* == Ajax for rendering Vehicles List for DT Scheduling == */
+            $.ajax({
+                url: "http://localhost:18459/Fleet/Vehicle/GetAssignedRecord",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+
+                    $(result).each(function () {
+
+                        var VehicleName = this.ManuName + " " + this.ModelName + " " + this.SubModelName;
+                        var VehicleModel = {
+                            UserId: this.UserId,
+                            VehicleName: VehicleName,
+                            VehicleId: this.VehicleId
+                        };
+                        VehicleList.push(VehicleModel);
+                    });
+
+                    for (i = 0; i < VehicleList.length; i++) {
+                        if (val == VehicleList[i].UserId) {
+                            console.log('Loading');
+                            $(Row).parent().parent().children().eq(7).children().append('<option value="' + VehicleList[i].VehicleId + '">' + VehicleList[i].VehicleName + '</option>');
+                            //$('.VehicleHeaderRow').append('<option value="' + VehicleList[i].VehicleId+'">' + VehicleList[i].VehicleName + '</option>');
+                        }
+                    }
+
+                },
+                error: function (data) {
+                    console.log('VehicleList: Error');
+                }
+            });
+
+            
+
+            
+
+           LoadDevices(row, val,1);
+            $(".select").select2();
+        });
+
+        $("#selectall").change(function () {
+            var status = this.checked;
+            $('.SelectLayer').each(function () {
+                this.checked = status;
+                SelectLayer($(this), $(this).attr('data-row'), $(this).attr('data-layer'));
+            });
+        });
+
+        /* == Default Function to Load Devices according to User DropDownList Value == */
+        function LoadDevices(row, value,change) {
+            var ids = 0
+            if(change==undefined)
+            {
+            $('.DeviceHeaderRow').empty();
+            // $('.TableCell').append('<select class="form-control select DeviceId" data-row="0" id="DeviceId-' + row + '" name="Devices" style="width:150px;"> <option value="0">-Device-</option></select>');
+            $('.DeviceHeaderRow').append('<option value="0">-Device-</option>');
+            $.each(UserDevices, function (i, v) {
+                if (v.UserId == value) {
+                    $('.DeviceHeaderRow').append(' <option value=' + v.DeviceId + '>' + v.Manufacturer + ' ' + v.Model + '[' + v.IMEI + ']' + '</option></select>');      
+                }
+            });
+            }
+            else
+            {
+                $('#DeviceId-'+row).empty();
+                // $('.TableCell').append('<select class="form-control select DeviceId" data-row="0" id="DeviceId-' + row + '" name="Devices" style="width:150px;"> <option value="0">-Device-</option></select>');
+                $('#DeviceId-'+row).append('<option value="0">-Device-</option>');
+                $.each(UserDevices, function (i, v) {
+                    if (v.UserId == value) {
+                        $('#DeviceId-'+row).append(' <option value=' + v.DeviceId + '>' + v.Manufacturer + ' ' + v.Model + '[' + v.IMEI + ']' + '</option></select>');      
+                    }
+                });
+            }
+            $(".select").select2();
+        }
+
+        //function LoadDevices(row, value) {
+        //    $('#TableCellId-' + row).empty();
+        //    $('#TableCellId-' + row).append('<select class="form-control select" data-row="0" id="DeviceId-' + row + '" name="Devices" style="width:150px;"> <option value="0">-Device-</option></select>');
+        //    $.each(UserDevices, function (i, v) {
+        //        if (v.UserId == value) {
+        //            $('#DeviceId-' + row).append(' <option value=' + v.DeviceId + '>' + v.Manufacturer + ' ' + v.Model + '[' + v.IMEI + ']' + '</option></select>');
+        //        }
+        //    });
+        //}
+
+
+        //--------------------------
+        $("#VehicleHeaderRowTop").change(function () {
+            var val = $(this).val();
+            $('.VehicleHeaderRow').val(val);
+        });
+        $("#TesterHeaderRow-0").change(function () {
+            var val = $(this).val();
+            console.log('Value Selected:' + val);
+            $('.SelectAllTester').each(function () {
+                $(this).val(val);
+            });
+            var row = $(this).attr('data-row');
+            LoadDevices(row, val);  
+            var VehicleList = [];
+            $('#VehicleHeaderRowTop').empty();
+            $('.VehicleHeaderRow').empty();
+            $('.VehicleHeaderRow').append('<option value="0">Please Select Vehicle</option>');   
+            /* == Ajax for rendering Vehicles List for DT Scheduling == */
+            $.ajax({
+                url: "http://localhost:18459/Fleet/Vehicle/GetAssignedRecord",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+
+                    $(result).each(function () {
+
+                        var VehicleName = this.ManuName + " " + this.ModelName + " " + this.SubModelName;
+                        var VehicleModel = {
+                            UserId: this.UserId,
+                            VehicleName: VehicleName,
+                            VehicleId: this.VehicleId
+                        };
+                        VehicleList.push(VehicleModel);
+                    });
+
+                    for (i = 0; i < VehicleList.length; i++) {
+                        if (val == VehicleList[i].UserId) {
+                            console.log('Loading');
+                            //$(Row).parent().parent().children().eq(7).children().append('<option value="' + VehicleList[i].VehicleId + '">' + VehicleList[i].VehicleName + '</option>');
+                            $('.VehicleHeaderRow').append('<option value="' + VehicleList[i].VehicleId+'">' + VehicleList[i].VehicleName + '</option>');
+                        }
+                    }    
+                },
+                error: function (data) {
+                    console.log('VehicleList: Error');
+                }
+            });
+        });
+
+        //-----------------------
+        $("#DeviceHeaderRow").change(function () {
+            var val = $(this).val();
+            $('.DeviceHeaderRow').each(function () {
+                $(this).val(val);
+            });
+        });
+        //--------------------------
+
+    })
+
+    
+    
+</script>

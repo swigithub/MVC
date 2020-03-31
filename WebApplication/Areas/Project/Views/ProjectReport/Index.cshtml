@@ -1,0 +1,2461 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = null; //"~/Views/Shared/_SmartAdmin.cshtml";
+    var ProjectId = ViewBag.Id;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" />
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+        <link rel="stylesheet" href="https://angular-ui.github.io/ui-select/dist/select.css">*@
+    <link rel="stylesheet" href="~/Areas/Project/Content/stylesR/daterangepicker.css">
+    <link rel="stylesheet" href="~/Areas/Project/Content/stylesR/main.css">
+
+    <script src="~/SmartAdmin/js/libs/jquery-2.1.1.min.js"></script>
+    <script src="~/SmartAdmin/js/libs/jquery-ui-1.10.3.min.js"></script>
+    <script src="~/Scripts/angular.js"></script>
+
+
+    <style>
+        .dropdown-menu > .active > a, .dropdown-menu > .active > a:focus, .dropdown-menu > .active > a:hover {
+            color: #0064a9;
+            text-decoration: none;
+            outline: 0;
+            background-color: #ccc;
+        }
+
+        @@media print and (color) {
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @@page {
+            /* size: 7in 9.25in;*/
+            /*size: 240px landscape;*/
+            size: A4 landscape;
+            margin: 5mm 0cm 5mm 0cm;
+            /*margin: 0mm 2mm 0mm 2mm;*/
+            border: dotted 1px;
+        }
+
+        .pagebreak {
+            page-break-before: always;
+        }
+
+        .custom-row {
+            float: left;
+            width: 100%;
+            margin: 0 0 10px;
+        }
+
+        input[type=checkbox], input[type=radio] {
+            width: auto;
+        }
+
+        li {
+            margin-bottom: 0px;
+        }
+
+        .breakhere {
+            page-break-after: always;
+        }
+
+        #maincontainer td {
+            border: 5px solid #fff;
+        }
+
+        h1, h2 {
+            border: 0;
+        }
+
+
+
+        #loaderdiv {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            background-color: grey;
+            opacity: .8;
+        }
+
+        .ajax-loader {
+            position: absolute;
+            left: 50%;
+            top: 10%;
+            margin-left: -32px; /* -1 * image width / 2 */
+            margin-top: -32px; /* -1 * image height / 2 */
+            display: block;
+        }
+        /*.panel-body{
+            margin:0px;
+            padding:0px;
+        }*/
+
+        div#maincontainer {
+            margin: 0 auto;
+            width: 90%;
+        }
+
+        .topchart {
+            display: table;
+            width: 100%;
+            margin: 0 0 50px;
+        }
+
+            .topchart canvas {
+                width: 100%;
+            }
+
+        div#chartProgramView {
+            height: 400px !important;
+        }
+
+        .panel.panel-default {
+            padding: 20px;
+        }
+
+        .canvasjs-chart-container {
+        }
+
+        canvas.canvasjs-chart-canvas {
+            width: 100%;
+        }
+
+        .bottomchart {
+            float: left;
+            width: 100%;
+        }
+
+        .bottomchart-inner {
+            display: flex;
+            align-items: center;
+        }
+
+            .bottomchart-inner > div:first-child {
+                flex: 1.5;
+            }
+
+            .bottomchart-inner > div {
+                flex: 1;
+            }
+
+        #searchFilter {
+            width: 1500px;
+            margin: 0 auto 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:10px;">
+        <!--SEARCH FILTER PANEL BEGIN-->
+        <div class="panel panel-default" id="searchFilter">
+            <div class="panel-heading"><strong>Report Criteria</strong></div>
+            <div class="panel-body">
+                <div class="custom-row">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+
+                            <input class="daterangepicker-field" title="Select Date" style="height: 33px;width: 165px;" />
+
+                            <select class="form-control" id="ProjectMarkets" multiple="multiple"></select>
+
+                            <select class="form-control groupMultiSelect example" id="ProjectTasks"></select>
+
+
+                            <button class="btn btn-default" id="btnGetData" style="background: #a8a9a7;color:#fff;margin-left:2px;height:30px;">Preview Report</button>
+
+                            <button class="btn btn-default printPDF" id="btnExport" style="background: #a8a9a7;color: #fff;margin-left:2px;height:30px;">Generate PDF</button>
+
+                            <button class="btn btn-default" id="btnRefresh" style="background: #a8a9a7;color: #fff;margin-left:2px;height:30px;">Refresh</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--SEARCH FILTER PANEL END-->
+        @*<div id="loaderdiv">
+                <img src="~/Content/Images/Common/loader.gif" class="ajax-loader" />
+            </div>*@
+        <div id="maincontainer" style="margin:0 auto; width:1500px;">
+            <!--WELCOME PAGE BEGIN-->
+            <div class="panel panel-default">
+                <div class="panel-body" style="color:#0026ff;height:750px;">
+                    <div style="color:#0026ff;">
+                        <img src="~/Content/Images/ClientLogo/att_logo.png" style="margin-left:50px;margin-right:50px;margin-top:30px;position:relative;height:50px;" />
+
+                        <div style="margin-left:50px;margin-right:50px;margin-top:90px;font-size:xx-large;font-family:Arial,Verdana;margin-top:75px;">
+
+                            <h1 id="REPORT_TITLE">Project Summary Report</h1>
+                            <h1 id="PROJECT_TITLE" style="margin-top:-30px;float:left;">ATT FSM4 - </h1> <h1 id="lblTask" style="margin-top:-30px;"></h1>
+                        </div>
+                        <br />
+                        <div class="" style="margin-top:50px;margin-left:50px;margin-right:50px; font-size:large;font-family:Arial,Verdana;">
+                            <div>
+                                <div class="left">
+                                    @*<h2>Markets: All Markets</h2>*@
+                                    @*<h2>Date: 02 Mar, 2018</h2>
+                                        <h2>Task: Migrations</h2>*@
+                                    <h2><label id="lblDateRange"></label></h2>
+                                    <h2></h2>
+                                </div>
+                                <div class="left"></div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--WELCOME PAGE END-->
+            <p class="pagebreak" />
+            <!--REPORT BEGIN-->
+            <!--PROGRAM SUMMARY BEGIN-->
+            <div class="panel panel-default">
+                <h1 style="margin-left:50px;margin-right:50px;margin-top:50px;text-align:center;color:#0026ff;">Program Summary</h1>
+                <div class="panel-body">
+                    <div style="float:left;width:100%;" cellspacing="10">
+                        <div style="vertical-align:top;text-align:center;" class="topchart">
+                            <div colspan="3" style="margin-bottom:7px;text-align:center;">
+                                <div id="chartProgramView" style="width:100%;height:350px;"></div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:7px;" class="bottomchart">
+                            <div colspan="3">
+                                <div style="width:100%;margin-bottom:7px;text-align:center;" class="bottomchart-inner">
+                                    <div>
+                                        <div id="Projectregionviewchart1" style="height:350px;width:100%;float:left;"></div>
+                                        <div id="Projectregionviewchart2" style="height:350px;width:100%;display:none;float:left;"></div>
+                                        <div id="Projectregionviewchart3" style="height:350px;width:100%;display:none;float:left;"></div>
+                                    </div>
+                                    <div>
+                                        <div id="ProjectReadiness" style="height:350px;width:100%;float:left;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--PROGRAM SUMMARY END-->
+            <p class="pagebreak" />
+            <!--ISSUES SUMMARY BEGIN-->
+            <div class="panel panel-default">
+                <h1 style="margin-left:50px;margin-top:50px;text-align:center;color:#0026ff;">Issues Summary</h1>
+                <div class="panel-body">
+
+                    <div style="float:left;width:100%;" cellspacing="10">
+                        <div style="vertical-align:top;">
+                            <div colspan="3" style="margin:0;margin-bottom:7px;">
+                                <div id="IssuesRegionalView" style="width:100%; height:350px;"></div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:7px;">
+                            <div colspan="3">
+                                <div style="width:100%;margin-bottom:7px;">
+                                    <div style="margin:0;">
+                                        <div id="IssuesProjectView" style="margin-top:70px;height:350px; width:35%;float:left;"></div>
+                                    </div>
+                                    <div style="margin:0">
+                                        <div id="IssuesNationalProgram" style="margin-top:70px;height:350px;width:65%;float:left;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--ISSUES SUMMARY END-->
+            <p class="pagebreak" />
+            <!--PROJECT SUMMARY BEGIN-->
+            <div class="panel panel-default">
+                <h1 style="margin-left:50px;margin-top:50px;text-align:center;color:#0026ff;">Project Summary</h1>
+                <div class="panel-body">
+
+                    <div style="margin-top:10px;width:100%">
+                        <div style="margin:0;">
+                            <div id="Site_Status" style="margin-top:50px;height:350px;width:33%;float:left;"></div>
+                        </div>
+                        <div style="margin:0;text-align:center;">
+                            <div id="Issue_Accountibility" style="margin-top:50px;height:350px;width:34%;float:left;"></div>
+                        </div>
+                        <div style="margin:0;">
+                            <div id="Issue_Distribution" style="margin-top:50px;height:350px;width:33%;float:left;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--PROJECT SUMMARY END-->
+            <!--REPORT END-->
+        </div>
+    </div>
+
+    <script>
+
+        //---------------Start Global Variables---------------------------------------------------
+
+
+        //--------------------------
+        function getHostName(url) {
+            var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+            if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) {
+                return match[2];
+            }
+            else {
+                return null;
+            }
+        }
+
+        //var baseUrl = 'http://localhost:18460'; // for local
+         var CurrentUrl = window.location.href; // uncomment these two lines when set live
+         var baseUrl = getHostName(CurrentUrl);
+
+        //--------------------------
+
+
+        var intervalCount = 1;
+        var ProjectId = @ProjectId;
+        // var RawMarketid = getParameter('LocationIds');
+        var marketid = "163408,163409,163410,163411,163412,163413,163414,163415,163416,163405,163406,163407";
+        var taskid = 50080;
+        var fromdate = "2/2/2018";
+        var todate = "3/3/2018";
+        var Value1 = "0";
+        var SearchFilter = "Daily";
+
+        array = [];
+        var actularcolor, forecastcolor, plancolor, targetcolor, runratecolor, cumactualcolor, cumforecastcolor, cumtargetcolor;
+        //-----------------------------
+        var TitleText = '';
+        var regionveiwdata = [];
+        var Forecast = [];
+        var Planned = [];
+        var Actual = [];
+        var Target = [];
+        var CumActual = [];
+        var CumForecast = [];
+        var CumTarget = [];
+        var RunRate = [];
+        //-----------------------------
+        var tempdata = [];
+        var marketissue = [];
+        var ResourceIssue = [];
+        var dataPoints1 = [];
+        var dataPoint = [];
+        var dataPoints2 = [];
+        var dataPoints3 = [];
+
+        //-------------End Global Variables----------------------------------------------------
+
+        var first_date = '';
+        var last_date = '';
+
+        $(document).ready(function () {
+            $('#maincontainer').hide();
+            //$('#loaderdiv').hide();
+
+            $(".daterangepicker-field").daterangepicker({
+                forceUpdate: true,
+                startDate: new Date(),
+                endDate: new Date(),
+                minDate: moment().add(-5, 'years'),
+                maxDate: moment().add(5, 'years'),
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Custom Range': "custom"
+                },
+                callback: function (startDate, endDate, period) {
+                    var title = startDate.format('L') + '-' + endDate.format('L');
+                    $(this).val(title);
+
+                    var selectedDates = $(".daterangepicker-field").val();
+                    var parts = selectedDates.split("-");
+
+                    first_date = parts[0];
+                    last_date = parts[1];
+
+                    var datesReturned = '';
+                    var targetType = period;
+                }
+            });
+
+
+
+            /// disable calendate date input fields
+            $(function () {
+                // list of All elements inside div
+                var $children = $('.custom-range-inputs').children();
+                $.each($children, function () {
+                    $(this).attr('disabled', true);
+                });
+                $('.custom-range-inputs').children().attr('disabled', true)
+            });
+
+            var btn_print = $('#btnExport');
+            btn_print.click(function () {
+
+                //$('#header').hide();
+                //$('#left-panel').hide();
+                $('#searchFilter').hide();
+                //$('.page-footer').hide();
+
+                setTimeout(function () {
+                    window.print();
+
+                    $('#searchFilter').show();
+
+
+                }, 2000);
+                return false;
+            });
+
+
+
+        });
+        //----------End Document Ready-----------------------------
+
+        function LoadAllMarkets() {
+            debugger;
+            var url = '';
+            var UserLocation = [];
+            var Region = [];
+            var Market = [];
+
+            var option = ''
+            var optgroup1 = '';
+            var optgroup2 = '';
+            var optgroup3 = '';
+
+            $.ajax({
+                url: window.location.origin + '/Defnation/ToList?filter=' + 'UserLocations' + '&value=@ViewBag.UserId',// + parseInt($("#UserId").attr("data-UserId")),
+                type: 'GET',
+                async: false,
+                success: function (data) {
+
+                    var items = ''; //ProjectMarketscookie ? ProjectMarketscookie.split(/,/) : new Array();
+                    var items1 = ''; // IssueMarketscookie ? IssueMarketscookie.split(/,/) : new Array();
+                    var items2 = ''; // MarketMarketscookie ? MarketMarketscookie.split(/,/) : new Array();
+
+                    var group = GroupMarket(data);
+                    var marketarray = []
+                    var marketstring = '';
+
+                    for (var i = 0; i < group.length; i++) {
+                        option = '';
+                        for (var j = 0; j < group[i].cities.length; j++) {
+                            var marketstring = marketstring + group[i].cities[j].DefinationId + ',';
+                            marketarray.push(group[i].cities[j].DefinationId);
+                            if (checkselected(items, group[i].cities[j].DefinationId)) {
+                                option += '<option value="' + group[i].cities[j].DefinationId + '" selected="selected">' + group[i].cities[j].DefinationName + '</option>'
+                            }
+                            else {
+                                option += '<option value="' + group[i].cities[j].DefinationId + '">' + group[i].cities[j].DefinationName + '</option>'
+                            }
+                        }
+                        optgroup1 += '<optgroup label="' + group[i].PDefinationName + '">' + option + '</optgroup>'
+                    }
+
+
+                    marketstring = marketarray.join(',');
+                    for (var i = 0; i < group.length; i++) {
+                        option = '';
+                        for (var j = 0; j < group[i].cities.length; j++) {
+                            if (checkselected(items1, group[i].cities[j].DefinationId)) {
+                                option += '<option value="' + group[i].cities[j].DefinationId + '" selected="selected">' + group[i].cities[j].DefinationName + '</option>'
+                            }
+                            else {
+                                option += '<option value="' + group[i].cities[j].DefinationId + '">' + group[i].cities[j].DefinationName + '</option>'
+                            }
+                        }
+                        optgroup2 += '<optgroup label="' + group[i].PDefinationName + '">' + option + '</optgroup>'
+                    }
+
+                    for (var i = 0; i < group.length; i++) {
+                        option = '';
+                        for (var j = 0; j < group[i].cities.length; j++) {
+                            if (checkselected(items2, group[i].cities[j].DefinationId)) {
+                                option += '<option value="' + group[i].cities[j].DefinationId + '" selected="selected">' + group[i].cities[j].DefinationName + '</option>'
+                            }
+                            else {
+                                option += '<option value="' + group[i].cities[j].DefinationId + '">' + group[i].cities[j].DefinationName + '</option>'
+                            }
+                        }
+                        optgroup3 += '<optgroup label="' + group[i].PDefinationName + '">' + option + '</optgroup>'
+                    }
+                    var groupAll = optgroup1;// + optgroup2 + optgroup3;
+                    $('#ProjectMarkets').append(groupAll);
+
+                }
+
+            });
+        }
+
+        function GroupMarket(data) {
+            var group_to_values = data.reduce(function (obj, item) {
+                obj[item.PDefinationName] = obj[item.PDefinationName] || [];
+                obj[item.PDefinationName].push({
+                    DefinationName: item.DefinationName, DefinationId: item.DefinationId
+                });
+                return obj;
+            }, {
+            });
+
+            var groups = Object.keys(group_to_values).map(function (key) {
+                return {
+                    PDefinationName: key, cities: group_to_values[key]
+                };
+            });
+
+            return groups;
+        }
+
+        function checkselected(data, value) {
+            if (value != undefined) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i] == value.toString()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return false;
+        }
+
+        //-------------------------
+        // set all markets selected
+
+       // $("#ProjectMarkets").change(function () {
+            debugger;
+           // var str = "";
+            //$("#ProjectMarkets optgroup").each(function () {
+            //    //may want to use $.trim in here
+            //    return $(this).text().toLowerCase() == 'NorthEast';
+            //}).prop('selected', true);
+            //alert(str);
+       // }).trigger("change");
+
+        //-------------------------
+
+
+
+
+        function LoadProjectTasks() {
+
+            var url = '';
+
+            $.ajax({
+                //url: baseUrl + '/Project/Task/ToList',
+                url: '/Project/Task/getAllTask?Filter=Get_Project_Tasks&projectId=@ProjectId',// + parseInt($("#pId").attr("data-ProjectId")),
+                type: 'POST',
+                async: false,
+                success: function (result) {
+
+                    var option1 = '';
+                    for (var i = 0; i < result.length; i++) {
+                        option1 += '<option value="' + result[i].TaskId + '">' + result[i].Task + '</option>'
+                    }
+                    $('#ProjectTasks').append(option1);
+
+                    //for (var i = 0; i < result.length; i++) {
+                    //    var option = '';
+                    //    var optgrp = '';
+                    //    optgrp += '<option value="' + result[i].TaskId + '">' + result[i].Task + '</option>'
+
+                    //    for (var j = 0; j < result[i].Tasks.length; j++) {//tasklistloop
+                    //        optgrp += '<option value="' + result[i].Tasks[j].TaskId + '">' + result[i].Tasks[j].Task + '</option>'
+                    //    }
+
+                    //    $('#ProjectTasks').append(optgrp);
+                    //}
+                }
+            });
+        }
+
+        //-----------------------------------
+        $('#btnGetData').click(function () {
+            $('#maincontainer').show();
+            //var selectedMrkIds = $('#example-xss-html_Project option:selected').map(function () { return $(this).val(); }).get();
+            //var selectedTskId = $('#example-multiple-optgroups_Project option:selected').map(function () { return $(this).val(); }).get();
+
+            ProjectId = @ProjectId;
+            marketid = $('#ProjectMarkets option:selected').map(function () { return $(this).val(); }).get();
+            taskid = $('#ProjectTasks option:selected').map(function () { return $(this).val(); }).get();
+            taskName = $('#ProjectTasks option:selected').map(function () { return $(this).text(); }).get();
+
+            fromdate = first_date;
+            todate = last_date;
+            Value1 = "0";
+            SearchFilter = "Daily";
+
+            debugger;
+            if (marketid.length > 0 && taskid.length > 0) {
+                $('#lblDateRange').html("Date: " + fromdate + ' - ' + todate);
+                $("#lblTask").html(' ' + taskName);
+
+                //$('#loaderdiv').show();
+
+                LoadProgramChart(SearchFilter);
+                LoadRegionViewChart();
+                LoadReadiness();
+                LoadIssues_ProjectView(ProjectId, Value1, marketid, taskid, fromdate, todate, SearchFilter);
+                LoadIssues_RegionalView();
+                LoadNationalProgram(SearchFilter);
+                LoadPieChartSiteStatus();
+
+                //$('#loaderdiv').hide();
+
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#btnRefresh').click(function () {
+
+            $('#maincontainer').hide();
+
+            $('#chartProgramView').empty();
+
+            $('#Projectregionviewchart1').empty();
+            $('#Projectregionviewchart2').empty();
+            $('#Projectregionviewchart3').empty();
+            $('#ProjectReadiness').empty();
+
+            $('#IssuesProjectView').empty();
+            $('#IssuesRegionalView').empty();
+            $('#IssuesNationalProgram').empty();
+
+            $('#Site_Status').empty();
+            $('#Issue_Accountibility').empty();
+            $('#Issue_Distribution').empty();
+        });
+
+        //-----------------------------------------------------------------------------------
+
+        window.onload = function () {
+            function setChartHeight() {
+                var chartHeight = $(window).height();
+                var chartWidth = $(window).width();
+
+                $('#chartProgramView').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+                $('#Projectregionviewchart1').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+                $('#Projectregionviewchart2').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+                $('#Projectregionviewchart3').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+                $('#ProjectReadiness').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+                $('#IssuesProjectView').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+                $('#IssuesRegionalView').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+                $('#IssuesNationalProgram').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+
+            }
+            //setChartHeight();
+
+            $(window).resize(function () {
+                //   setChartHeight();
+            });
+
+            //-------------------------------
+
+            LoadAllMarkets();
+            $("#ProjectMarkets").multiselect({ enableClickableOptGroups: true, includeSelectAllOption: true });
+
+            LoadProjectTasks();
+            $("#ProjectTasks").multiselect();
+        }
+
+
+        //--------------------Start Program View Chart------------------------------
+        function LoadProgramChart(type) {
+            //debugger;
+            var url = '';
+            
+            $.ajax({
+                url: window.location.origin + '/swi/PM_Dashboard?filter=Get_Project_Timeline_Variance&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + type,
+
+                type: 'POST',
+                async: false,
+                success: function (data) {
+                    array = data;
+                    var sd = {};
+                    Forecast = [];
+                    Planned = [];
+                    Actual = [];
+                    Target = [];
+                    RunRate = [];
+                    CumActual = [];
+                    CumForecast = [];
+                    CumTarget = [];
+
+                    var uniqueDates = [];
+                    for (var i = 0; i < data.length ; i++) {
+                        if (uniqueDates.indexOf(data[i].WoDate) === -1) {
+                            uniqueDates.push(data[i].WoDate);
+                        }
+                    }
+
+                    if (uniqueDates.length > 0 && uniqueDates.length <= 15) {
+                        intervalCount = 1;
+                    }
+                    else if (uniqueDates.length > 15 && uniqueDates.length <= 20) {
+                        intervalCount = 2;
+                    }
+                    else if (uniqueDates.length > 20 && uniqueDates.length <= 30) {
+                        intervalCount = 3;
+                    }
+                    else {
+                        intervalCount = 5;
+                    }
+
+                    for (var i = 0; i < data.length ; i++) {
+                        if (data[i].WoDate != null) {
+                            if (type == "Daily") {
+                                //var date = new Date(parseInt(data[i].WoDate.substr(6)));
+                                var date = new Date(moment(data[i].WoDate));
+                                sd = { label: ((date.getMonth() + 1) + '/' + date.getDate()), y: data[i].WoCount };
+                            }
+                            else {
+                                sd = { label: data[i].WoDate, y: data[i].WoCount, legendMarkerColor: data[i].ColorCode };
+                            }
+
+                            if (data[i].WoType == 'Forecast') {
+                                forecastcolor = data[i].ColorCode;
+                                Forecast.push(sd);
+                            }
+                            else if (data[i].WoType == 'CumForecast') {
+                                cumforecastcolor = data[i].ColorCode;
+                                CumForecast.push(sd);
+                            }
+                            else if (data[i].WoType == 'Actual') {
+                                actularcolor = data[i].ColorCode;
+                                Actual.push(sd);
+                            }
+                            else if (data[i].WoType == 'CumActual') {
+
+                                cumactualcolor = data[i].ColorCode;
+                                CumActual.push(sd);
+                            }
+                            else if (data[i].WoType == 'Target') {
+                                targetcolor = data[i].ColorCode;
+                                Target.push(sd);
+                            }
+                            else if (data[i].WoType == 'CumTarget') {
+                                cumtargetcolor = data[i].ColorCode;
+                                CumTarget.push(sd);
+                            }
+
+                            else if (data[i].WoType == 'RunRate') {
+                                runratecolor = data[i].ColorCode;
+                                RunRate.push(sd);
+                            }
+                        }
+                    }
+                }
+            });
+
+
+
+            var chartProgramView = new CanvasJS.Chart("chartProgramView", {
+                animationEnabled: true,
+                //colorSet: "CustomColor",
+                theme: "light2",
+                exportEnabled: false,
+                //height: "200",
+                title: {
+                    text: "Program View", fontSize: 15
+                },
+                axisX: {
+                    valueFormatString: "MMM",
+                    interval: intervalCount
+                },
+                axisY: {
+                    labelFormatter: addSymbols,
+                    //interval: 50
+                },
+                axisY2: {
+                    interval: 500
+                },
+                toolTip: {
+                    shared: true
+                },
+                legend: {
+                    cursor: "pointer",
+                    itemclick: toggleDataSeries
+                },
+                data: [
+                {
+                    type: "column",
+                    axisYType: "primary",
+                    axisYindex: 0,
+                    exportEnabled: false,
+                    name: "Actual",
+                    //color: "#0070c0",
+                    color: actularcolor,
+                    showInLegend: true,
+                    xValueFormatString: "MMMM YYYY",
+                    yValueFormatString: "#,##0",
+                    dataPoints: Actual
+                },
+                {
+                    type: "line",
+                    axisYType: "secondary",
+                    connectNullData: true,
+                    axisYindex: 0,
+                    //color: "#0070c0",
+                    color: cumactualcolor,
+                    name: "Cum. Actual",
+                    exportEnabled: false,
+                    markerBorderColor: "white",
+                    markerBorderThickness: 2,
+                    showInLegend: true,
+                    yValueFormatString: "#,##0",
+                    dataPoints: CumActual
+                }, {
+                    type: "column",
+                    axisYType: "primary",
+                    axisYindex: 0,
+                    exportEnabled: false,
+                    name: "Forecast",
+                    //color: "#70ad47",
+                    color: forecastcolor,
+                    markerBorderColor: "white",
+                    markerBorderThickness: 2,
+                    showInLegend: true,
+                    yValueFormatString: "#,##0",
+                    dataPoints: Forecast
+                },
+                {
+                    type: "line",
+                    axisYType: "secondary",
+                    connectNullData: true,
+                    axisYindex: 1,
+                    //color: "#70ad47",
+                    color: cumforecastcolor,
+                    exportEnabled: true,
+                    name: "Cum. Forecast",
+                    showInLegend: true,
+                    yValueFormatString: "#,##0",
+                    dataPoints: CumForecast
+
+                }, {
+                    type: "column",
+                    axisYType: "primary",
+                    axisYindex: 0,
+                    exportEnabled: false,
+                    name: "Target",
+                    //color: "#70ad47",
+                    color: targetcolor,
+                    markerBorderColor: "white",
+                    markerBorderThickness: 2,
+                    showInLegend: true,
+                    yValueFormatString: "#,##0",
+                    dataPoints: Target
+                },
+                {
+                    type: "line",
+                    axisYType: "secondary",
+                    connectNullData: true,
+                    axisYindex: 1,
+                    //color: "#70ad47",
+                    color: cumtargetcolor,
+                    exportEnabled: true,
+                    name: "Cum. Target",
+                    showInLegend: true,
+                    yValueFormatString: "#,##0",
+                    dataPoints: CumTarget
+                },
+                {
+                    type: "line",
+                    axisYType: "primary",
+                    axisYindex: 1,
+                    //color: "#e51427",
+                    color: runratecolor,
+                    exportEnabled: false,
+                    name: "Run Rate",
+                    showInLegend: true,
+                    yValueFormatString: "#,##0",
+                    dataPoints: RunRate
+                }]
+            });
+
+            //showDefaultText(chart, "No Data Available");
+            chartProgramView.render();
+
+            function addSymbols(e) {
+                var suffixes = ["", "K", "M", "B"];
+                var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+
+                if (order > suffixes.length - 1)
+                    order = suffixes.length - 1;
+                var suffix = suffixes[order];
+                return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+            }
+
+            function toggleDataSeries(e) {
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else {
+                    e.dataSeries.visible = true;
+                }
+
+                //showDefaultText(chartProgramView, "No Data Available");
+                e.chartProgramView.render();
+            }
+
+            function toolTipFormatter(e) {
+                var str = "";
+                var total = 0;
+                var str3;
+                var str2;
+                for (var i = 0; i < e.entries.length; i++) {
+                    var str1 = "<span style=\"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong> <br />";
+                    total = e.entries[i].dataPoint.y + total;
+                    str = str.concat(str1);
+                }
+                str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br />";
+                str3 = "<span style=\"color:Tomato\">Total: </span><strong>" + total + "</strong><br />";
+                return (str2.concat(str)).concat(str3);
+            }
+
+            function toggleDataSeries(e) {
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                }
+                else {
+                    e.dataSeries.visible = true;
+                }
+                //showDefaultText(chartProgramView, "No Data Available");
+                chartProgramView.render();
+            }
+        }
+        //-------------------End Program View Chart---------------------------------
+
+
+        //--------------------Start Project Regional View Chart--------------------
+        var chart1;
+        var chart2;
+        var chart3;
+
+        // setTimeout(function () { LoadRegionViewChart() }, 2000);
+
+        // function call to get first level data for drill down chart
+        function LoadRegionViewChart() {
+            var url;
+            if (marketid != null) {
+                url = window.location.origin + '/swi/PM_Dashboard?filter=Get_RegionView_WO&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+            }
+            else {
+                url = window.location.origin + '/swi/PM_Dashboard?filter=Get_RegionView_WO&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                async: false,
+                success: function (data) {
+                    array = data;
+                    var sd = {};
+                    Forecast = [];
+                    Planned = [];
+                    Actual = [];
+                    Target = [];
+                    RunRate = [];
+                    CumActual = [];
+                    CumForecast = [];
+                    CumTarget = [];
+                    for (var i = 0; i < data.length ; i++) {
+                        if (data[i].DefinationName != null) {
+
+                            sd = { label: data[i].DefinationName, y: data[i].TotalSites, id: data[i].DefinationId };
+                            if (data[i].Type == 'Forecast') {
+                                forecastcolor = data[i].ColorCode;
+                                Forecast.push(sd);
+                            }
+                            else if (data[i].Type == 'CumForecast') {
+                                cumforecastcolor = data[i].ColorCode;
+                                CumForecast.push(sd);
+                            }
+                            else if (data[i].Type == 'Actual') {
+                                actularcolor = data[i].ColorCode;
+                                Actual.push(sd);
+                            }
+                            else if (data[i].Type == 'CumActual') {
+
+                                cumactualcolor = data[i].ColorCode;
+                                CumActual.push(sd);
+                            }
+                        }
+                    }
+                }
+            });
+
+            // fist level of drill down chart
+            chart1 = new CanvasJS.Chart("Projectregionviewchart1", {
+                animationEnabled: true,
+                exportEnabled: false,
+                theme: "light2",
+                //height: "280",
+                title: {
+                    text: "Project Regional View", fontSize: 15,
+                },
+                axisX: {
+                    valueFormatString: "MMM"
+                },
+                axisY: {
+                    labelFormatter: addSymbols,
+                    //interval: 50
+                },
+                axisY2: {
+                    interval: 500
+                },
+                toolTip: {
+                    shared: true
+                },
+                legend: {
+                    cursor: "pointer",
+                    itemclick: toggleDataSeries1,
+                    fontSize: 13
+                },
+                data: [
+                {
+                    type: "column",
+                    name: "Actual",
+                    axisYType: "primary",
+                    //color:"#0070c0",
+                    color: actularcolor,
+                    click: CallMarket1,
+                    showInLegend: true,
+                    dataPoints: Actual,
+
+                },
+                {
+                    type: "line",
+                    name: "Cum. Actual",
+                    axisYType: "secondary",
+                    connectNullData: true,
+                    color: cumactualcolor,
+                    showInLegend: true,
+                    markerBorderThickness: 2,
+                    dataPoints: CumActual
+
+                },
+                {
+                    type: "column",
+                    axisYType: "primary",
+                    axisYindex: 0,
+                    exportEnabled: false,
+                    name: "Forecast",
+                    color: forecastcolor,
+                    click: CallMarket1,
+                    markerBorderColor: "white",
+                    markerBorderThickness: 2,
+                    showInLegend: true,
+
+                    dataPoints: Forecast
+                },
+                {
+                    type: "line",
+                    axisYType: "secondary",
+                    connectNullData: true,
+                    axisYindex: 1,
+                    name: 'Cum. ForeCast',
+                    //color: "#70ad47",
+                    color: cumforecastcolor,
+                    markerBorderColor: "white",
+                    markerBorderThickness: 2,
+                    showInLegend: true,
+                    yValueFormatString: "#,##0",
+                    dataPoints: CumForecast
+                }
+                ]
+            });
+            //showDefaultText(chart, "No Data Available");
+            chart1.render();
+        }
+
+        function addSymbols(e) {
+            var suffixes = ["", "K", "M", "B"];
+            var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+
+            if (order > suffixes.length - 1)
+                order = suffixes.length - 1;
+
+            var suffix = suffixes[order];
+            return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+        }
+
+        function toggleDataSeries1(e) {
+            if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            } else {
+                e.dataSeries.visible = true;
+            }
+            e.chart1.render();
+        }
+
+        function toolTipFormatter(e) {
+            var str = "";
+            var total = 0;
+            var str3;
+            var str2;
+            for (var i = 0; i < e.entries.length; i++) {
+                var str1 = "<span style=\"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong> <br />";
+                total = e.entries[i].dataPoint.y + total;
+                str = str.concat(str1);
+            }
+            str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br />";
+            str3 = "<span style=\"color:Tomato\">Total: </span><strong>" + total + "</strong><br />";
+            return (str2.concat(str)).concat(str3);
+        }
+
+        function toggleDataSeries1(e) {
+            if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            }
+            else {
+                e.dataSeries.visible = true;
+            }
+            chart1.render();
+        }
+
+        // function call to get second level data for drill down chart
+        function CallMarket1(e) {
+            var url;
+            var TitleText1 = e.dataPoint.label + ' ' + 'Regional View';
+            var RegionId = e.dataPoint.id;
+            $.ajax({
+                url: window.location.origin + '/swi/PM_Dashboard?filter=' + 'Get_MarketView_WO' + '&ProjectId=' + ProjectId + '&Value1=' + e.dataPoint.id + '&TaskIds=' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter,
+                type: 'POST',
+                async: false,
+                success: function (data) {
+                    $('#Projectregionviewchart1').empty();
+                    $('#Projectregionviewchart1').hide();
+
+                    $('#Projectregionviewchart3').empty();
+                    $('#Projectregionviewchart3').hide();
+
+                    $('#Projectregionviewchart2').empty();
+                    $('#Projectregionviewchart2').html(data);
+                    $('#Projectregionviewchart2').show();
+
+                    array = data;
+                    var sd = {};
+                    Forecast = [];
+                    Planned = [];
+                    Actual = [];
+                    Target = [];
+                    RunRate = [];
+                    CumActual = [];
+                    CumForecast = [];
+                    CumTarget = [];
+                    for (var i = 0; i < data.length ; i++) {
+                        if (data[i].DefinationName != null) {
+
+                            sd = { label: data[i].DefinationName, y: data[i].TotalSites, id: data[i].DefinationId };
+                            if (data[i].Type == 'Forecast') {
+                                forecastcolor = data[i].ColorCode;
+                                Forecast.push(sd);
+                            }
+                            else if (data[i].Type == 'CumForecast') {
+                                cumforecastcolor = data[i].ColorCode;
+                                CumForecast.push(sd);
+                            }
+                            else if (data[i].Type == 'Actual') {
+                                actularcolor = data[i].ColorCode;
+                                Actual.push(sd);
+                            }
+                            else if (data[i].Type == 'CumActual') {
+
+                                cumactualcolor = data[i].ColorCode;
+                                CumActual.push(sd);
+                            }
+                        }
+                    }
+                }
+            });
+
+            // render chart for second level data
+            chart2 = new CanvasJS.Chart("Projectregionviewchart2", {
+                animationEnabled: true,
+                exportEnabled: false,
+                theme: "light2",
+                //height: "280",
+                title: {
+                    text: "Market View", fontSize: 15,
+                },
+                axisX: {
+                    valueFormatString: "MMM"
+                },
+                axisY: {
+                    labelFormatter: addSymbols,
+                    //interval: 50
+                },
+                axisY2: {
+                    interval: 500
+                },
+                toolTip: {
+                    shared: true
+                },
+                legend: {
+                    cursor: "pointer",
+                    itemclick: toggleDataSeries1,
+                    fontSize: 13
+                },
+                data: [
+                {
+                    type: "column",
+                    name: "Actual",
+                    axisYType: "primary",
+                    showInLegend: true,
+                    //color: "#0070c0",
+                    color: actularcolor,
+                    click: CallDatewise,
+                    dataPoints: Actual
+                },
+                {
+                    type: "line",
+                    name: "Cum. Actual",
+                    connectNullData: true,
+                    axisYType: "secondary",
+                    color: cumactualcolor,
+                    showInLegend: true,
+                    markerBorderThickness: 2,
+                    dataPoints: CumActual
+
+                },
+                {
+                    type: "column",
+                    axisYType: "primary",
+                    axisYindex: 0,
+                    exportEnabled: false,
+                    name: "Forecast",
+                    color: forecastcolor,
+                    click: CallDatewise,
+                    markerBorderColor: "white",
+                    markerBorderThickness: 2,
+                    showInLegend: true,
+
+                    dataPoints: Forecast
+                },
+                {
+                    type: "line",
+                    axisYType: "secondary",
+                    connectNullData: true,
+                    axisYindex: 1,
+                    //color: "#70ad47",
+                    name: "Cum. Forecast",
+                    color: cumforecastcolor,
+                    markerBorderColor: "white",
+                    markerBorderThickness: 2,
+                    showInLegend: true,
+                    yValueFormatString: "#,##0",
+                    dataPoints: CumForecast
+                }]
+            });
+            //showDefaultText(chart, "No Data Available");
+            chart2.render();
+
+            // function call to get third level data for drill down chart
+            function CallDatewise(e) {
+                var TitleText = e.dataPoint.label;
+                var MarketId = e.dataPoint.id;
+
+                $.ajax({
+                    url: window.location.origin + '/swi/PM_Dashboard?filter=' + 'Get_DateWise_WO' + '&ProjectId=' + ProjectId + '&Value1=' + e.dataPoint.id + '&TaskIds=' + taskid
+                    + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter,
+                    type: 'POST',
+                    async: false,
+                    success: function (data) {
+
+                        $('#Projectregionviewchart1').empty();
+                        $('#Projectregionviewchart1').hide();
+
+                        $('#Projectregionviewchart2').empty();
+                        $('#Projectregionviewchart2').hide();
+
+                        $('#Projectregionviewchart3').empty();
+                        $('#Projectregionviewchart3').html(data);
+                        $('#Projectregionviewchart3').show();
+
+                        //-----------------------------
+
+                        var uniqueDates = [];
+                        for (var i = 0; i < data.length ; i++) {
+                            if (uniqueDates.indexOf(data[i].DefinationName) === -1) {
+                                uniqueDates.push(data[i].DefinationName);
+                            }
+                        }
+                        //console.log(uniqueDates.length);
+                        if (uniqueDates.length > 0 && uniqueDates.length <= 15) {
+                            intervalCount = 1;
+                        }
+                        else if (uniqueDates.length > 15 && uniqueDates.length <= 20) {
+                            intervalCount = 2;
+                        }
+                        else if (uniqueDates.length > 20 && uniqueDates.length <= 30) {
+                            intervalCount = 3;
+                        }
+                        else {
+                            intervalCount = 5;
+                        }
+                        //-----------------------------
+
+
+                        Forecast = [];
+                        Planned = [];
+                        Actual = [];
+                        Target = [];
+                        CumActual = [];
+                        CumForecast = [];
+                        array = data;
+                        var sd = {};
+
+                        for (var i = 0; i < data.length ; i++) {
+                            if (data[i].DefinationName != null) {
+                                if (SearchFilter == 'Daily') {
+                                    var date = new Date(moment(data[i].DefinationName));
+                                    sd = { label: ((date.getMonth() + 1) + '/' + date.getDate()), y: data[i].TotalSites };
+                                }
+                                else {
+                                    sd = { label: data[i].DefinationName, y: data[i].TotalSites };
+                                }
+                                if (data[i].Type == 'Forecast') {
+                                    forecastcolor = data[i].ColorCode;
+                                    Forecast.push(sd);
+                                }
+                                else if (data[i].Type == 'CumForecast') {
+                                    cumforecastcolor = data[i].ColorCode;
+                                    CumForecast.push(sd);
+                                }
+                                else if (data[i].Type == 'Actual') {
+                                    actularcolor = data[i].ColorCode;
+                                    Actual.push(sd);
+                                }
+                                else if (data[i].Type == 'CumActual') {
+
+                                    cumactualcolor = data[i].ColorCode;
+                                    CumActual.push(sd);
+                                }
+                            }
+
+                        }
+
+                    }
+                });
+
+                var chart3 = new CanvasJS.Chart("Projectregionviewchart3", {
+                    animationEnabled: true,
+                    exportEnabled: false,
+                    theme: "light2",
+                    //height: "280",
+                    title: {
+                        text: "Date Wise View", fontSize: 15
+                    },
+                    axisX: {
+                        interval: intervalCount,
+                        valueFormatString: "MMM"
+                    },
+                    axisY: {
+                        labelFormatter: addSymbols,
+                        //interval: 50
+                    },
+                    axisY2: {
+                        interval: 500
+                    },
+                    toolTip: {
+                        shared: true
+                    },
+                    legend: {
+                        cursor: "pointer",
+                        itemclick: toggleDataSeries
+                    },
+                    data: [
+                    {
+                        type: "column",
+                        name: "Actual",
+                        axisYType: "primary",
+                        showInLegend: true,
+                        //color: "#0070c0",
+                        color: actularcolor,
+                        //click: CallDatewise,
+                        dataPoints: Actual
+                    },
+                    {
+                        type: "line",
+                        name: "Cum. Actual",
+                        axisYType: "secondary",
+                        connectNullData: true,
+                        color: cumactualcolor,
+                        showInLegend: true,
+                        markerBorderThickness: 2,
+                        dataPoints: CumActual
+
+                    },
+                    {
+                        type: "column",
+                        axisYType: "primary",
+                        axisYindex: 0,
+                        exportEnabled: false,
+                        name: "Forecast",
+                        color: forecastcolor,
+                        //click: CallMarket1,
+                        markerBorderColor: "white",
+                        markerBorderThickness: 2,
+                        showInLegend: true,
+
+                        dataPoints: Forecast
+                    },
+                    {
+                        type: "line",
+                        axisYType: "secondary",
+                        connectNullData: true,
+                        axisYindex: 1,
+                        //color: "#70ad47",
+                        name: 'Cum. Forecast',
+                        color: cumforecastcolor,
+                        markerBorderColor: "white",
+                        markerBorderThickness: 2,
+                        showInLegend: true,
+                        yValueFormatString: "#,##0",
+                        dataPoints: CumForecast
+                    }]
+                });
+                chart3.render();
+
+                chart3.options.title.text = TitleText1;
+                chart3.options.title.horizontalAlign = "left";
+                chart3.options.title.fontSize = 16;
+
+                function addSymbols(e) {
+                    var suffixes = ["", "K", "M", "B"];
+                    var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+
+                    if (order > suffixes.length - 1)
+                        order = suffixes.length - 1;
+
+                    var suffix = suffixes[order];
+                    return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+                }
+
+                function toggleDataSeries(e) {
+                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    } else {
+                        e.dataSeries.visible = true;
+                    }
+                    e.chart3.render();
+                }
+
+                function toolTipFormatter(e) {
+                    var str = "";
+                    var total = 0;
+                    var str3;
+                    var str2;
+                    for (var i = 0; i < e.entries.length; i++) {
+                        var str1 = "<span style=\"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong> <br />";
+                        total = e.entries[i].dataPoint.y + total;
+                        str = str.concat(str1);
+                    }
+                    str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br />";
+                    str3 = "<span style=\"color:Tomato\">Total: </span><strong>" + total + "</strong><br />";
+                    return (str2.concat(str)).concat(str3);
+                }
+
+                function toggleDataSeries(e) {
+                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    }
+                    else {
+                        e.dataSeries.visible = true;
+                    }
+                    chart3.render();
+                }
+            }
+        }
+
+        //--------------------End Project Regional View Chart-------------------
+
+
+
+
+        //--------------------Start Script Project Readiness------------------------------
+        function LoadReadiness() {
+            // CanvasJS.addColorSet("ReadinessColor", ["#4472c4", "#ed7d31", "#ff0000"]);
+            var url;
+            if (marketid != null) {
+                var url = window.location.origin + '/swi/PM_Dashboard?filter=GET_PROJECT_READINESS&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+
+            }
+            else {
+                url = window.location.origin + '/swi/PM_Dashboard?filter=GET_PROJECT_READINESS&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+            }
+            var Readiness = [];
+
+            function GroupByIssues(data) {
+                var group_to_values = data.reduce(function (obj, item) {
+                    obj[item.Type] = obj[item.Type] || [];
+                    obj[item.Type].push({ label: item.DefinationName, y: item.WoCount, toolTipContent: item.Type + ': ' + item.WoCount, Type: item.Type, ColorCode: item.ColorCode });
+                    return obj;
+                }, {});
+
+                var groups = Object.keys(group_to_values).map(function (key) {
+                    return { DefinationName: key, chartdata: group_to_values[key] };
+                });
+
+                return groups;
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                async: false,
+                success: function (data) {
+                    Readiness = [];
+                    var sd = {};
+                    var grpIssues = GroupByIssues(data);
+                    for (var i = 0; i < grpIssues.length; i++) {
+                        var col = '';
+                        var issueStackbar = [];
+                        for (var j = 0; j < grpIssues[i].chartdata.length; j++) {
+                            col = grpIssues[i].chartdata[j].ColorCode;
+                            issueStackbar.push({ indexLabel: "{y}", label: grpIssues[i].chartdata[j].label, y: grpIssues[i].chartdata[j].y, name: 'Market Issue', toolTipContent: grpIssues[i].chartdata[j].Type + ': ' + grpIssues[i].chartdata[j].y, color: grpIssues[i].chartdata[j].ColorCode });
+                        }
+                        Readiness.push({
+                            type: "column",
+                            legendText: grpIssues[i].DefinationName,
+                            legendMarkerColor: col,
+                            showInLegend: true,
+                            dataPoints: issueStackbar
+                        })
+                    }
+                }
+            });
+
+            var chartProjectReadiness = new CanvasJS.Chart("ProjectReadiness", {
+                animationEnabled: true,
+                colorSet: "ReadinessColor",
+                //height: 270,
+                theme: "light2",
+                exportEnabled: false,
+                title: {
+                    text: "Readiness as of " + moment.utc(new Date).format('MMM DD, YY'), fontSize: 15,
+                    fontWeight: "normal"
+                },
+                axisX: {
+                    //interval: 1,
+                    //intervalType: "year"
+                },
+                axisY: {
+                    //valueFormatString: "$#0bn",
+                    //gridColor: "#B6B1A8",
+                    //tickColor: "#B6B1A8"
+                },
+                toolTip: {
+                    //shared: true,
+                    //content: toolTipContent
+                },
+
+                data: Readiness
+            });
+            //showDefaultText(chart, "No Data Available");
+            chartProjectReadiness.render();
+        }
+        //--------------------End Script Project Readiness--------------------------------
+
+
+        //-------------------Start Issues-Project View ----------------------------
+
+        function LoadIssues_ProjectView(ProjectId, Value1, marketid, taskid, fdate, todate, SearchFilter) {
+            var pIssuesChart = [];
+            var url = ''
+            //if (marketid != null) {
+           
+            url = window.location.origin + '/swi/PM_Dashboard?filter=Get_Project_Issue_By&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds=' + taskid + '&LocationIds=' + marketid + '&FromDate=' + fdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter,
+            //}
+            $.ajax({
+                url: url,
+                type: 'POST',
+                async: false,
+                success: function (data) {
+                    picchart = []
+                    // debugger;
+                    var sd = {};
+                    for (var i = 0; i < data.length ; i++) {
+                        sd = { label: data[i].IssueBy, y: data[i].TotalSite, legendText: data[i].IssueBy + ' ' + '(' + data[i].IssueCount + ')', color: data[i].ColorCode };
+                        picchart.push(sd);
+                    }
+                    picchart = picchart.sort(SortByLabel);
+                    $('#IssuesProjectView').empty();
+                }
+            });
+
+            var pie = [{
+                type: "pie",
+                //height: 200,
+                //width:705,
+                showInLegend: true,
+                indexLabelPlacement: "inside",
+                indexLabelFontSize: 15,
+                indexLabelFontColor: '#fff',
+                indexLabel: "{y}",
+                yValueFormatString: "##0.0\"%\"",
+                dataPoints: picchart
+            }]
+            CanvasJS.addColorSet("PieColor",
+            [
+            "#7cb5ec",
+            "#5c5c61",
+            "#90ed7d",
+            "#f7a35c",
+            "#d0d2f7",
+            "#f15c80",
+            "#2b908f",
+            ]);
+            var chartIssuesProjectView = new CanvasJS.Chart("IssuesProjectView", {
+                animationEnabled: true,
+                colorSet: "PieColor",
+                theme: "light2",
+                //height: "290",
+                title: {
+                    text: "Project View", fontSize: 15
+                },
+                exportEnabled: false,
+                legend: {
+                    horizontalAlign: "right", // "center" , "right"
+                    verticalAlign: "center",  // "top" , "bottom"
+                    fontSize: 13
+                },
+                data: [{
+                    type: "pie",
+                    //height: 200,
+                    showInLegend: true,
+                    indexLabelPlacement: "inside",
+                    indexLabelFontSize: 15,
+                    indexLabelFontColor: '#fff',
+                    indexLabel: "{y}",
+                    yValueFormatString: "##0.0\"%\"",
+                    dataPoints: picchart
+                }]
+            });
+
+            //showDefaultText(chart, "Data Not Available");
+            chartIssuesProjectView.render();
+        }
+
+        function SortByLabel(a, b) {
+            var aName = a.label.toLowerCase();
+            var bName = b.label.toLowerCase();
+            return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+        }
+
+        //-------------------End Issues-Project View-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //-------------------Start Issues-Regional View ******************************************
+        function LoadIssues_RegionalView() {
+
+
+            // level 1 Data
+            debugger;
+            var url = ''
+            if (marketid != null) {
+                url = window.location.origin + '/swi/PM_Dashboard?filter=Get_Region_Issue&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+            }
+            else {
+                url = window.location.origin + '/swi/PM_Dashboard?filter=Get_Region_Issue&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                async: false,
+                success: function (data) {
+
+                    var uniqueNames = UniquNamesList(data)
+                    var grpIssues = GroupByIssues22(data)
+                    grpIssues = grpIssues.sort(SortByName);
+                    for (var i = 0; i < grpIssues.length; i++) {
+
+                        var issueStackbar = [];
+                        var col = ''
+                        for (var j = 0; j < uniqueNames.length; j++) {
+
+                            if (GetNames(grpIssues[i].chartdata, uniqueNames[j])) {
+                                var index = grpIssues[i].chartdata.map(function (v) { return v.label; }).indexOf(uniqueNames[j]);
+                                col = grpIssues[i].chartdata[index].ColorCode;
+                                issueStackbar.push({ label: grpIssues[i].chartdata[index].label, y: grpIssues[i].chartdata[index].count, name: 'Market Issue', id: grpIssues[i].chartdata[index].id, toolTipContent: grpIssues[i].chartdata[index].Issue + ': ' + grpIssues[i].chartdata[index].count, color: grpIssues[i].chartdata[index].ColorCode });
+                            }
+                            else {
+                                issueStackbar.push({ label: uniqueNames[j], y: 0 });
+                            }
+                        }
+
+                        tempdata.push({
+                            type: "stackedColumn",
+                            legendText: grpIssues[i].Issue,
+                            name: "New vs Returning Visitors",
+                            legendMarkerColor: col,
+                            click: visitorsChartDrilldownHandler,
+                            showInLegend: true,
+                            dataPoints: issueStackbar
+                        })
+                    }
+                }
+            });
+
+            var chartIssue = tempdata;
+            var visitorsData = {
+                "Geo Issue By Region": chartIssue,
+                "Market Issue": [],
+                "Resource Issue": []
+            };
+
+
+
+            var chartx = new CanvasJS.Chart("IssuesRegionalView",
+            {
+                animationEnabled: true,
+                theme: "light2",
+                //height: 290,
+                exportEnabled: false,
+                //width:700,
+
+                title: {
+                    text: "Regional View", fontSize: 15
+                },
+                axisX: {
+                    interval: intervalCount
+                    //intervalType: "year"
+                },
+                subtitles: [{
+                    text: "",
+                    backgroundColor: "#2eacd1",
+                    fontSize: 16,
+                    fontColor: "white",
+                    padding: 5
+                }],
+                legend: {
+                    fontFamily: "calibri",
+                    fontSize: 14,
+                    labelAngle: -70
+                },
+                data: []
+
+            }
+            );
+
+            chartx.options.data = visitorsData["Geo Issue By Region"];
+            chartx.render();
+        }
+
+
+
+        var GeoIssueByRegionOptions = {
+            animationEnabled: true,
+            theme: "light2",
+            //height: 290,
+            exportEnabled: true,
+            //width:700,
+            title: {
+                text: ""
+            },
+            axisX: {
+                interval: intervalCount
+                //intervalType: "year"
+            },
+            subtitles: [{
+                text: "",
+                backgroundColor: "#2eacd1",
+                fontSize: 16,
+                fontColor: "white",
+                padding: 5
+            }],
+            legend: {
+                fontFamily: "calibri",
+                fontSize: 14,
+                labelAngle: -70
+            },
+            data: []
+        };
+
+        function UniquNamesList(data) {
+            var uniqueNames = [];
+            for (i = 0; i < data.length; i++) {
+                if (uniqueNames.indexOf(data[i].DefinationName) === -1) {
+                    uniqueNames.push(data[i].DefinationName);
+                }
+            }
+            return uniqueNames;
+        }
+
+        function GetNames(data, value) {
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].label == value) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function GroupByIssues22(data) {
+            var group_to_values = data.reduce(function (obj, item) {
+                obj[item.Issue] = obj[item.Issue] || [];
+                obj[item.Issue].push({ label: item.DefinationName, count: item.TotalSite, id: item.DefinationId, Issue: item.Issue, ColorCode: item.ColorCode });
+                return obj;
+            }, {});
+
+            var groups = Object.keys(group_to_values).map(function (key) {
+                return { Issue: key, chartdata: group_to_values[key] };
+            });
+            return groups;
+        }
+
+        function SortByName(a, b) {
+            var aName = a.Issue.toLowerCase();
+            var bName = b.Issue.toLowerCase();
+            return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+        }
+
+
+
+
+        // Level 2 Data
+        function visitorsChartDrilldownHandler(e) {
+            var chartx2 = new CanvasJS.Chart("IssuesRegionalView",
+
+            {
+                animationEnabled: true,
+                theme: "light2",
+                //height: 290,
+                exportEnabled: false,
+                //width:700,
+
+                title: {
+                    text: "Regional View", fontSize: 15
+                },
+                axisX: {
+                    interval: intervalCount
+                    //intervalType: "year"
+                },
+                subtitles: [{
+                    text: "",
+                    backgroundColor: "#2eacd1",
+                    fontSize: 16,
+                    fontColor: "white",
+                    padding: 5
+                }],
+                legend: {
+                    fontFamily: "calibri",
+                    fontSize: 14,
+                    labelAngle: -70
+                },
+                data: []
+            }
+
+
+            );
+
+            //chart.options.title = { text: e.dataPoint.name }
+            GetData(e.dataPoint.id, e.dataPoint.name, SearchFilter);
+            if (e.dataPoint.name == 'Resource Issue') {
+                $('.issue-button').show();
+                backButton1 = 'last';
+                chartx2.options.title.text = e.dataPoint.label + ' ' + 'Market View'
+                chartx2.options.axisX.interval = intervalCount;
+
+                chartx2.options.data = ResourceIssue
+            }
+            else {
+                backButton1 = 'first';
+                chartx2.options.title.text = e.dataPoint.label + ' ' + 'Regional View';
+                TitleText = e.dataPoint.label + ' ' + 'Regional View';
+                chartx2.options.data = marketissue;
+            }
+            chartx2.options.title.horizontalAlign = "left";
+            chartx2.options.title.fontSize = 16;
+            chartx2.render();
+            //$("#backButton11").toggleClass("invisible");
+            //if (e.dataPoint.name == 'Resource Issue') {
+            //    $('.isssuesbtn').show();
+            //    //$("#backButton1").toggleClass("invisible");
+            //    $("#backButton1").removeClass("invisible");
+            //}
+            //if (e.dataPoint.name == 'Market Issue') {
+            //    $("#backButton1").removeClass("invisible");
+            //    //$("#backButton1").toggleClass("invisible");
+            //}
+        }
+
+        function GetData(Id, name, type) {
+            var url = ''
+
+            MarketId = Id;
+            if (name == 'Market Issue') {
+                if (marketid != null) {
+                    url = window.location.origin + '/swi/PM_Dashboard?filter=Get_Market_Issue&ProjectId=' + ProjectId + '&Value1=' + Id + '&TaskIds' + taskid
+                    + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + type
+                }
+                else {
+                    url = window.location.origin + '/swi/PM_Dashboard?filter=Get_Market_Issue&ProjectId=' + ProjectId + '&Value1=' + Id + '&TaskIds=' + taskid
+                    + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + type
+                }
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    async: false,
+                    success: function (data) {
+                        tempdata = []
+                        var uniqueNames = UniquNamesList(data)
+                        var grpMarket = GroupByIssues22(data)
+                        grpMarket = grpMarket.sort(SortByName);
+
+                        for (var i = 0; i < grpMarket.length; i++) {
+                            var issueStackbar = [];
+                            var col = ''
+                            for (var j = 0; j < uniqueNames.length; j++) {
+
+                                if (GetNames(grpMarket[i].chartdata, uniqueNames[j])) {
+                                    var index = grpMarket[i].chartdata.map(function (v) { return v.label; }).indexOf(uniqueNames[j]);
+                                    issueStackbar.push({ label: grpMarket[i].chartdata[index].label, y: grpMarket[i].chartdata[index].count, name: 'Resource Issue', color: grpMarket[i].chartdata[index].ColorCode, id: grpMarket[i].chartdata[index].id, toolTipContent: grpMarket[i].chartdata[index].Issue + ': ' + grpMarket[i].chartdata[index].count });
+                                    col = grpMarket[i].chartdata[index].ColorCode;
+                                }
+                                else {
+                                    issueStackbar.push({ label: uniqueNames[j], y: 0 });
+                                }
+                            }
+
+                            tempdata.push({
+                                type: "stackedColumn",
+                                name: "",
+                                legendText: grpMarket[i].Issue,
+                                legendMarkerColor: col,
+                                click: visitorsChartDrilldownHandler,
+                                showInLegend: true,
+                                dataPoints: issueStackbar
+                            })
+                        }
+                        marketissue = tempdata;
+                    }
+                });
+            }
+
+
+            // Level 3 Data
+            if (name == 'Resource Issue') {
+
+                if (marketid != null) {
+                    var url = window.location.origin + '/swi/PM_Dashboard?filter=Get_Datewise_Issue&ProjectId=' + ProjectId + '&Value1=' + Id + '&TaskIds' + taskid
+                    + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + type
+                }
+                else {
+                    url = window.location.origin + '/swi/PM_Dashboard?filter=Get_Datewise_Issue&ProjectId=' + ProjectId + '&Value1=' + Id + '&TaskIds=' + taskid
+                    + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + type
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    async: false,
+                    success: function (data) {
+                        //-----------------------------
+
+                        var uniqueDates = [];
+                        for (var i = 0; i < data.length ; i++) {
+                            if (uniqueDates.indexOf(data[i].DefinationName) === -1) {
+                                uniqueDates.push(data[i].DefinationName);
+                            }
+                        }
+                        // console.log(uniqueDates.length);
+                        if (uniqueDates.length > 0 && uniqueDates.length <= 15) {
+                            intervalCount = 1;
+                        }
+                        else if (uniqueDates.length > 15 && uniqueDates.length <= 20) {
+                            intervalCount = 2;
+                        }
+                        else if (uniqueDates.length > 20 && uniqueDates.length <= 30) {
+                            intervalCount = 3;
+                        }
+                        else {
+                            intervalCount = 5;
+                        }
+                        //-----------------------------
+
+                        for (var i = 0; i < data.length; i++) {
+                            if (type == 'Daily') {
+                                var date = new Date(moment.utc(data[i].DefinationName));
+                                data[i].DefinationName = ((date.getMonth() + 1) + '/' + date.getDate());
+                            }
+                        }
+                        tempdata = []
+                        var uniqueNames = UniquNamesList(data)
+                        var grpMarket = GroupByIssues22(data)
+                        grpMarket = grpMarket.sort(SortByName);
+                        for (var i = 0; i < grpMarket.length; i++) {
+                            var issueStackbar = [];
+                            var col = '';
+                            for (var j = 0; j < uniqueNames.length; j++) {
+                                if (GetNames(grpMarket[i].chartdata, uniqueNames[j])) {
+                                    var index = grpMarket[i].chartdata.map(function (v) { return v.label; }).indexOf(uniqueNames[j]);
+                                    col = grpMarket[i].chartdata[index].ColorCode;
+                                    issueStackbar.push({ label: grpMarket[i].chartdata[index].label, y: grpMarket[i].chartdata[index].count, color: grpMarket[i].chartdata[index].ColorCode, name: 'Resource Issue', id: grpMarket[i].chartdata[index].id, toolTipContent: grpMarket[i].chartdata[index].Issue + ': ' + grpMarket[i].chartdata[index].count });
+                                }
+                                else {
+                                    //col = grpMarket[i].chartdata[index].ColorCode;
+                                    issueStackbar.push({ label: uniqueNames[j], y: 0 });
+                                }
+                            }
+
+                            tempdata.push({
+                                type: "stackedColumn",
+                                legendText: grpMarket[i].Issue,
+                                legendMarkerColor: col,
+                                name: "New vs Returning Visitors",
+                                //click: visitorsChartDrilldownHandler,
+                                showInLegend: true,
+                                dataPoints: issueStackbar
+                            })
+                        }
+                        ResourceIssue = tempdata;
+                    }
+                });
+            }
+        }
+        //--------------------End Issues Regional View ****************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //-------------------Start Issues-NationalProject View ----------------------------
+        function LoadNationalProgram(SearchFilter) {
+
+            var url = ''
+            var intervalCount = 1;
+            if (marketid != null) {
+                var url = window.location.origin + '/swi/PM_Dashboard?filter=NATIONAL_PROGRAM_ISSUES&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+
+            }
+            else {
+                var url = window.location.origin + '/swi/PM_Dashboard?filter=NATIONAL_PROGRAM_ISSUES&ProjectId=' + ProjectId + '&Value1=' + Value1 + '&TaskIds' + taskid('ProjectTasks')
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=' + SearchFilter
+            }
+
+            series = []
+            $.ajax({
+                //    url: '/Project/Dashboard/GetDashboardCharts?filter=NATIONAL_PROGRAM_ISSUES&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=null&TaskIds' + $.cookie("ProjectTasks")
+                //    + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + FromDate + '&ToDate=' + ToDate + '&SearchFilter=' + searchfilter,
+                url: url,
+                type: 'POST',
+                async: false,
+                success: function (data) {
+
+                    //-----------------------------
+
+                    var uniqueDates = [];
+                    for (var i = 0; i < data.length ; i++) {
+                        if (uniqueDates.indexOf(data[i].DefinationName) === -1) {
+                            uniqueDates.push(data[i].DefinationName);
+                        }
+                    }
+                    // console.log(uniqueDates.length);
+                    if (uniqueDates.length > 0 && uniqueDates.length <= 15) {
+                        intervalCount = 1;
+                    }
+                    else if (uniqueDates.length > 15 && uniqueDates.length <= 20) {
+                        intervalCount = 2;
+                    }
+                    else if (uniqueDates.length > 20 && uniqueDates.length <= 30) {
+                        intervalCount = 3;
+                    }
+                    else {
+                        intervalCount = 5;
+                    }
+                    //-----------------------------
+                    data = GroupProgramIssue(data);
+                    for (var i = 0; i < data.length; i++) {
+                        var issueStackbar = [];
+                        var col = '';
+                        for (var j = 0; j < data[i].data.length; j++) {
+                            if (SearchFilter == 'Daily') {
+                                var date = new Date(moment.utc(data[i].data[j].DefinationName));
+                                sd = { label: ((date.getMonth() + 1) + '/' + date.getDate()), color: data[i].data[j].ColorCode, y: data[i].data[j].y, color: data[i].data[j].ColorCode };
+                                col = data[i].data[j].ColorCode;
+                            }
+                            else {
+                                col = data[i].data[j].ColorCode;
+                                sd = { label: data[i].data[j].DefinationName, y: data[i].data[j].y, color: data[i].data[j].ColorCode, color: data[i].data[j].ColorCode };
+                            }
+
+                            issueStackbar.push(sd);
+                        }
+
+                        series.push({
+                            type: "stackedColumn",
+                            legendText: data[i].Issue,
+                            legendMarkerColor: col,
+                            showInLegend: true,
+                            dataPoints: issueStackbar
+                        })
+
+                    }
+
+
+                }
+            });
+            var chartNationalProgram = new CanvasJS.Chart("IssuesNationalProgram", {
+                animationEnabled: true,
+                colorSet: "CustomColor",
+                //height: 270,
+                theme: "light2",
+                exportEnabled: false,
+                title: {
+                    text: "National Program",
+                    fontSize: 15,
+                    fontWeight: "normal"
+                },
+                axisX: {
+                    interval: intervalCount
+                    //intervalType: "year"
+                },
+                axisY: {
+                    //valueFormatString: "$#0bn",
+                    //gridColor: "#B6B1A8",
+                    //tickColor: "#B6B1A8"
+                },
+                toolTip: {
+                    //shared: true,
+                    //content: toolTipContent
+                },
+                data: series
+            });
+
+            //showDefaultText(chart, "No Data Available");
+            chartNationalProgram.render();
+        }
+
+        function GroupProgramIssue(data) {
+            var group_to_values = data.reduce(function (obj, item) {
+                obj[item.Issue] = obj[item.Issue] || [];
+                obj[item.Issue].push({ DefinationName: item.DefinationName, ColorCode: item.ColorCode, DefinationId: item.DefinationId, y: item.TotalSite, ColorCode: item.ColorCode });
+                return obj;
+            }, {});
+
+            var groups = Object.keys(group_to_values).map(function (key) {
+                return { Issue: key, data: group_to_values[key] };
+            });
+
+            return groups;
+        }
+        //-------------------End Issues-NationalProject View ----------------------------
+
+
+
+
+
+        //------------------- Start Summary Charts ---------------------------------------
+        var picchartSiteStatus = [];
+        var picchartIssueDistribution = [];
+        var picchartIssueAccountibility = [];
+
+
+        function LoadPieChartSiteStatus() {
+            $.ajax({
+                url: window.location.origin + '/swi/PM_SummayCharts?filter=PROGRAM_SUMMARY&ProjectId=' + ProjectId + '&MilestoneId=0&Value1=' + Value1 + '&TaskIds' + taskid
+                + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate,// + '&SearchFilter=' + SearchFilter,
+
+                //&filter=PROGRAM_SUMMARY&ProjectId=20021&MilestoneId=0&Value1=0&TaskIds=50076&LocationIds=163408,163409,163410,163411,163412,163413,163414,163415,163416,163405,163406,163407163408,163409,163410,163411,163412,163413,163414,163415,163416,163405,163406,163407&FromDate=12/31/2017&ToDate=1/31/2018',
+                type: 'POST',
+                async: false,
+                success: function (Object) {
+                    // console.log(Object.SiteStatus);
+                    // debugger
+                    picchartSiteStatus = []
+                    picchartIssueDistribution = [];
+                    picchartIssueAccountibility = [];
+                    var sd = {};
+                    var t1 = Object.SiteStatus;
+                    var t2 = Object.IssueDistribution;
+                    var t3 = Object.IssueAccountibility;
+
+                    sd = {};
+                    for (var i = 0; i < t1.length ; i++) {
+                        sd = { label: t1[i].StatusType, y: t1[i].SiteStatus, legendText: t1[i].StatusType, color: t1[i].ColorCode };
+                        picchartSiteStatus.push(sd);
+
+                    }
+                    sd = {};
+                    if (t2.length > 0 && t2 != undefined) {
+
+
+                        for (var i = 0; i < t2.length ; i++) {
+                            sd = { label: t2[i].IssueType, y: t2[i].TotalIssues, legendText: t2[i].IssueType };
+                            picchartIssueDistribution.push(sd);
+
+                        }
+                    }
+                    sd = {};
+                    if (t3.length > 0 && t3 != undefined) {
+                        for (var i = 0; i < t3.length ; i++) {
+                            sd = { label: t3[i].IssueOwner, y: t3[i].TotalIssues, legendText: t3[i].IssueOwner, color: t3[i].ColorCode };
+                            picchartIssueAccountibility.push(sd);
+
+                        }
+                    }
+                    $('#Site_Status').empty();
+                }
+            , error: function (e) {
+                //debugger
+                // console.log(e);
+            }
+            });
+            var sitestatus = [{
+                type: "pie",
+                height: 200,
+                //width:705,
+                showInLegend: true,
+                indexLabelPlacement: "inside",
+                indexLabelFontSize: 15,
+                indexLabelFontColor: '#fff',
+                indexLabel: "{y}",
+                yValueFormatString: "##\"\"",
+                title: {
+                    text: "Chart Title"
+                    // more attributes
+                },
+                legend: {
+                    verticalAlign: "bottom",  // "top" , "bottom"
+                    horizontalAlign: "center",  // "center" , "right"
+                    fontSize: 15
+                },
+                dataPoints: picchartSiteStatus
+            }]
+            var issueDistribution = [{
+                type: "pie",
+                height: 200,
+                //width:705,
+                showInLegend: true,
+                indexLabelPlacement: "inside",
+                indexLabelFontSize: 15,
+                indexLabelFontColor: '#fff',
+                indexLabel: "{y}",
+                yValueFormatString: "##\"\"",
+                title: {
+                    text: "Chart Title"
+                    // more attributes
+                },
+                legend: {
+                    verticalAlign: "bottom",  // "top" , "bottom"
+                    horizontalAlign: "center",  // "center" , "right"
+                    fontSize: 15
+                },
+                dataPoints: picchartIssueDistribution
+            }]
+            var IssueAccountibility = [{
+                type: "pie",
+                height: 200,
+                //width:705,
+                showInLegend: true,
+                indexLabelPlacement: "inside",
+                indexLabelFontSize: 15,
+                indexLabelFontColor: '#fff',
+                indexLabel: "{y}",
+                yValueFormatString: "##\"\"",
+                title: {
+                    text: "Chart Title"
+                    // more attributes
+                },
+                legend: {
+                    verticalAlign: "bottom",  // "top" , "bottom"
+                    horizontalAlign: "center",  // "center" , "right"
+                    fontSize: 15
+                },
+                dataPoints: picchartIssueAccountibility
+            }]
+            //CanvasJS.addColorSet("PieColor",
+            //              [
+            //              "#7cb5ec",
+            //              "#5c5c61",
+            //              "#90ed7d",
+            //              "#f7a35c",
+            //              "#d0d2f7",
+            //              "#f15c80",
+            //              "#2b908f",
+
+            //              ]);
+            var Date = '@DateTime.Now.ToString("MMM dd, yyyy")';
+            LoadCharts_Summary("Site_Status", 300, sitestatus, "PieColor", "right", " Site Status");
+            LoadCharts_Summary("Issue_Accountibility", 300, IssueAccountibility, "PieColor", "right", "Issue Accountibility");
+            LoadCharts_Summary("Issue_Distribution", 300, issueDistribution, "PieColor", "right", "Issue Distribution");
+        }
+
+
+        function LoadCharts_Summary(id, height, data, color, lagendside, title) {
+            var chartSummary = new CanvasJS.Chart(id, {
+                animationEnabled: true,
+                colorSet: color,
+                theme: "light2",
+                height: height,
+                exportEnabled: false,
+                title: {
+                    text: title, fontSize: 15
+                },
+                width: "480",
+                legend: {
+                    horizontalAlign: lagendside,// "right", // "center" , "right"
+                    verticalAlign: "center",  // "top" , "bottom"
+                    fontSize: 13
+                },
+                data: data
+            });
+
+            showDefaultText(chartSummary, "No Data Available");
+            chartSummary.render();
+
+        }
+        function showDefaultText(chart, text) {
+
+            var isEmpty = !(chart.options.data[0].dataPoints && chart.options.data[0].dataPoints.length > 0);
+
+            if (!chart.options.subtitles)
+                (chart.options.subtitles = []);
+
+            if (isEmpty)
+                chart.options.subtitles.push({
+                    text: text,
+                    verticalAlign: 'center',
+                });
+            else
+                (chart.options.subtitles = []);
+        }
+
+        //--------------------End Summary Charts -----------------------------------------
+    </script>
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/SmartAdmin/js/moment.min.js"></script>
+
+    <script src="~/Areas/Project/Content/ScriptR/vendor.js"></script>
+    <script src="~/Areas/Project/Content/ScriptR/multidaterangepicker.js"></script>
+
+    <script src="~/SmartAdmin/js/bootstrap/bootstrap.min.js"></script>
+
+    <script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+    <script src="https://angular-ui.github.io/ui-select/dist/select.js"></script>
+    <script src="~/Content/js/Project/canvasjs.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+﻿@model SWI.Libraries.AirView.Entities.DashboardStatusVM
+<style>
+    .container-fluid .row .col-sm-2 {
+        display: inline-block;
+        width: 12.5%;
+        min-width: 183px;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <!--Completed-->
+        <div class="col-sm-2">
+            <a href="#" class="link txt-status" data-total="@Model.CompletedSites" data-txt="Completed" onclick="javascript: BtnFilterSitesGrid_Click('Status', '89', '', 'COMPLETEDTotal'); return false;">
+                <div class="small-box COMPLETED_COLOR StatusShadow" style="color:white;">
+                    <div class="inner">
+                        <h3 id="COMPLETEDTotal">@Model.CompletedSites</h3>
+                        <p class="COMPLETED_TITLE">Completed</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-checkmark-round"></i>
+                    </div>
+
+                </div>
+            </a>
+        </div>
+        <!-- Report Submitted-->
+        <div class="col-sm-2">
+            <a href="#" class="link txt-status" data-txt="Report Submitted" onclick="javascript: BtnFilterSitesGrid_Click('Status', '451', '', 'REPORT_SUBMITTEDTotal'); return false;">
+                <div class="small-box REPORT_SUBMITTED_COLOR StatusShadow" style="color:white">
+                    <!--style="  bg-yellow background-color: #6468a8 !important;"-->
+                    <div class="inner">
+                        <h3 id="REPORT_SUBMITTEDTotal">
+                            @Model.ReportSubmitted<sup style="font-size: 20px"></sup>
+                        </h3>
+                        <p class="REPORT_SUBMITTED_TITLE">Report Submitted</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-clipboard"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!--Pending-->
+        <div class="col-sm-2">
+            <a href="#" class="link txt-status" data-txt="Pending Schedule" onclick="javascript: BtnFilterSitesGrid_Click('Status', '90', '', 'PENDING_SCHEDULEDTotal'); return false;">
+                <div class="small-box PENDING_SCHEDULED_COLOR StatusShadow" style="color: white;/*background-color: #1c7175 !important;*/">
+                    <div class="inner">
+                        <h3 id="PENDING_SCHEDULEDTotal">@Model.PendingSites</h3>
+                        <p class="PENDING_SCHEDULED_TITLE">Pending Schedule</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-ios-gear-outline"></i>
+                    </div>
+
+                </div>
+            </a>
+        </div>
+        <!--Scheduled-->
+        <div class="col-sm-2">
+            <a href="#" class="link txt-status" data-txt="Scheduled" onclick="javascript: BtnFilterSitesGrid_Click('Status', '91', '', 'SCHEDULED_Total'); return false;">
+                <div class="small-box SCHEDULED_COLOR StatusShadow" style="color:white">
+                    <!--bg-yellow-->
+                    <div class="inner">
+                        <h3 id="SCHEDULED_Total">
+                            @Model.InProcessSites<sup style="font-size: 20px"></sup>
+                        </h3>
+                        <p class="SCHEDULED_TITLE">Scheduled</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-calendar-check-o"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!--Drive Progress-->
+        <div class="col-sm-2">
+            <a href="#" class="link txt-status" data-txt="In Progress" onclick="javascript: BtnFilterSitesGrid_Click('Status', '450', '', 'IN_PROGRESS_Total'); return false;">
+                <div class="small-box IN_PROGRESS_COLOR StatusShadow" style="color:white">
+                    <!--style="  bg-yellow background-color: #6468a8 !important;"-->
+                    <div class="inner">
+                        <h3 id="IN_PROGRESS_Total">
+                            @Model.InProgress<sup style="font-size: 20px"></sup>
+                        </h3>
+                        <p class="IN_PROGRESS_TITLE">In Progress</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-refresh"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!--Drive Completed-->
+        <div class="col-sm-2">
+            <a href="#" class="link txt-status" data-txt="Drive Completed" onclick="javascript: BtnFilterSitesGrid_Click('Status', '92', '', 'DRIVE_COMPLETED_Total'); return false;">
+                <div class="small-box DRIVE_COMPLETED_COLOR StatusShadow" style="color:white">
+                    <div class="inner">
+                        <h3 id="DRIVE_COMPLETED_Total">
+                            @Model.DriveCompleted<sup style="font-size: 20px"></sup>
+                        </h3>
+                        <p class="DRIVE_COMPLETED_TITLE">Drive Completed</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-automobile"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+
+        <!--Pending with Issues-->
+        <div class="col-sm-2">
+            <a href="#" class="link txt-status" data-txt="Pending With Issues" onclick="javascript: BtnFilterSitesGrid_Click('Status', '93', '', 'PENDING_WITH_ISSUE_Total'); return false;">
+                <div class="small-box PENDING_WITH_ISSUE_COLOR StatusShadow" style="color:white">
+                    <div class="inner">
+                        <h3 id="PENDING_WITH_ISSUE_Total">
+                            @Model.PendingWithIssues<sup style="font-size: 20px"></sup>
+                        </h3>
+                        <p class="PENDING_WITH_TITLE">Pending With Issues</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-remove"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!--Total Sites-->
+        <div class="col-sm-2">
+            <a href="#" class="link txt-status" data-txt="Total Sites" onclick="javascript: BtnFilterSitesGrid_Click('Status', 'Total', '', 'TotalSites'); return false;">
+                <div class="small-box TOTAL_SITES_COLOR StatusShadow" style="color:white">
+                    <!--bg-aqua-->
+                    <div class="inner">
+                        <h3 id="TotalSites">@Model.TotalSites</h3>
+                        <p class="TOTAL_SITES_TITLE">Total Sites</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-pie-chart"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+
+    </div>
+</div>
+
+
+

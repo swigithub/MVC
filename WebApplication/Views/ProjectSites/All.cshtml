@@ -1,0 +1,485 @@
+﻿@{
+    ViewBag.Title = "Projects sites";
+    var Entity = TempData["ProjectEntity"] as AirView.DBLayer.Security.Entities.Sec_UserProjects;
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+<script src="~/Content/js/ui-bootstrap-tpls-0.13.0.js"></script>
+<link href="/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<style>
+    table tr {
+        height: 30px;
+    }
+
+    #tbl-user-header {
+        margin-top: -5px;
+    }
+
+
+    .check {
+        display: block;
+        margin-bottom: 40px;
+        position: relative;
+        width: 40px;
+        height: 21px;
+        -webkit-appearance: none;
+    }
+
+
+    /* Check 1*/
+    .check1 {
+        background: #25CED1;
+        outline: none;
+        border-radius: 60px;
+        box-shadow: inset 0 0 5px rgba(0,0,0,.2);
+        transition: .5s;
+    }
+
+        .check1:checked {
+            background: #26547C;
+        }
+
+        .check1:before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 60px;
+            top: 0;
+            left: 0;
+            transform: scale(1.1);
+            box-shadow: 0 2px 15px rgba(0,0,0,.2);
+            background: #fff;
+            transition: .5s;
+        }
+
+        .check1:checked:before {
+            left: 50%;
+        }
+
+
+
+    /* Check 3*/
+    .check3 {
+        background: #43bd4d;
+        outline: none;
+        box-shadow: inset 0 0 5px rgba(0,0,0,.2);
+        transition: .5s;
+    }
+
+        .check3:checked {
+            background: #ff4c5b;
+        }
+
+        .check3:before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 0;
+            left: 0;
+            transform: scale(1.1);
+            box-shadow: 0 2px 15px rgba(0,0,0,.2);
+            background: #fff;
+            transition: .3s;
+        }
+
+        .check3:checked:before {
+            left: 50%;
+        }
+
+    input[type=checkbox], input[type=radio] {
+        /* margin: 3px 0 0; */
+        margin-bottom: 4px !important;
+        line-height: normal;
+    }
+
+    .header-opts {
+        float: right;
+        margin-right: 10px;
+    }
+
+        .header-opts input {
+            float: left;
+            margin: 5px 10px 0 0 !important;
+        }
+
+        .header-opts .btn {
+            float: left;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+</style>
+
+
+<div class="jarviswidget light-widget" id="wid-id-0" role="widget">
+    @*<div class="jarviswidget-color-darken">*@
+    <header @*style="color:white"*@ role="heading">
+        <div class="jarviswidget-ctrls" role="menu">
+        </div>
+        <span class="widget-icon"> <i class="fa fa-tasks"></i>&nbsp; </span>
+        <h2>@Entity.Plural List </h2>
+        @if (ViewBag.AllowUri("/ProjectSites/New"))
+        {
+
+            <div class="header-opts">
+
+                <input onchange="GetData(this);" type="checkbox" class="check check3">
+                <a href="~/Content/templates/ATT_PROJECT_SITES_IMPORT.csv" class="btn btn-xs btn-success pull-left" style="margin-right:5px;margin-top:4px;">
+                    Download Template
+                </a>
+                @if (ViewBag.AllowUri("/ProjectSites/UploadFile"))
+                {
+                <input type="file" style="margin-top:4px" accept=".csv" class="btn btn-info btn-xs" id="fileUpload" />
+
+                <input type="button" style="margin-left:2px;margin-right:2px;margin-top:4px" class="btn btn-info btn-xs " id="upload" value="Upload" />
+                }
+                <a href="/ProjectSites/New?Id=@ViewBag.Id" class="btn btn-xs btn-info btn-flat">Add New @Entity.Plural</a>
+                <a href="/Project/Dashboard/Index/@ViewBag.Id" class="btn btn-xs btn-success" style="margin-left:5px;">Return to Dashboard</a>
+            </div>
+
+        }
+
+ 
+        <span id="ProjectId" data-ProjectId="@ViewBag.Id"></span>
+
+    </header>
+    <div role="content">
+        <div class="box-body table-responsive  widget-body no-padding">
+            <table class="table @*table-bordered*@ table-striped" id="tbl-user">
+                <thead @*style="background-color:rgba(53, 124, 165, 0.89);color:white"*@>
+                    <tr>
+                        <th data-column-id="ProjectSiteId" data-identifier="true" data-type="string" data-visible="false">ProjectSiteId</th>
+                        <th data-column-id="PMRefId">PM Ref#</th>
+                        <th data-column-id="Region">Region</th>
+                        <th data-column-id="City">Market</th>
+                        <th data-column-id="SubMarket">Sub Market</th>
+                        <th data-column-id="FACode">@Entity.Title Code</th>
+
+
+
+                        <th data-column-id="SiteDate" data-formatter="SiteDate">Submitted On</th>
+                        <th data-column-id="ClusterCode">Cluster Code</th>
+                        <th data-column-id="SiteType">@Entity.Title Type</th>
+                        <th data-column-id="USID">USID</th>
+
+
+                        @*<th data-column-id="CommonId">eNB</th>
+                            <th data-column-id="vMME">vMME</th>
+                            <th data-column-id="ControlledIntro">Controlled Introduction</th>
+                            <th data-column-id="SuperBowl">Super Bowl</th>
+
+                            <th data-column-id="isDASInBuild">DAS/InBuilding</th>
+                            <th data-column-id="FirstNetRAN">FirstNet RAN</th>
+                            <th data-column-id="PaceNo">Pace No</th>
+                            <th data-column-id="IPlanJob">IPlan Job</th>
+                            <th data-column-id="IPlanIssueDate" data-formatter="IPlanIssueDate">IPlan Issue Date</th>*@
+                        <th data-column-id="Status">Status</th>
+
+
+                        <th data-column-id="Id" data-formatter="Active">Active/Deactive</th>
+                        <th data-column-id="Id" data-formatter="action">Action</th>
+                    </tr>
+                </thead>
+                @*<tbody>
+                        @foreach (var item in ViewBag.Projects)
+                        {
+                            <tr>
+                                <td>
+                                  @item.Client
+                                </td>
+                                <td>
+                                    @item.Project
+
+                                </td>
+                                <td>
+                                  @item.SiteClass
+                                </td>
+                                <td>
+                                    @item.SiteType
+
+                                </td>
+                              <td>@item.City</td>
+                                <td>
+                                    <input type="checkbox" class="IsActive" ProjectSite-Id="@item.ProjectSiteId" checked="@item.IsActive" name="IsActive1"  />
+                                </td>
+                                <td>
+                                    <a href="/ProjectSites/Edit?Id=@item.ProjectSiteId" ProjectSite-Id="@item.ProjectSiteId"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>*@
+            </table>
+        </div>
+    </div>
+    @*</div>*@
+</div>
+
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script src="~/Content/js/Plugins/bootgrid/jquery.bootgrid.js"></script>
+    <script src="~/Content/js/Plugins/ContextMenu/contextMenu.min.js"></script>
+
+    <script src="~/AdminLTE/plugins/daterangepicker/js/moment.min.js"></script>
+
+    <script>
+        var loading = $.loading();
+
+        $(function () {
+
+
+            //$('#tbl-user').dataTable({
+            //    "scrollX": true,
+
+            //});
+        });
+    </script>
+}
+@section style{
+    @Styles.Render("~/AdminLTE/plugins/datatables/css")
+    <link href="~/Content/js/Plugins/bootgrid/jquery.bootgrid.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/ContextMenu/contextMenu.min.css" rel="stylesheet" />
+    <style>
+        .table > tbody > tr > td {
+            padding: 1px 10px;
+        }
+    </style>
+    <style>
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            vertical-align: middle;
+        }
+    </style>
+}
+<script src="/Content/js/Plugins/notify/js/notify.js"></script>
+<script>
+
+    var IsActiveStatus = true;
+    var GetData = function (e) {
+        // var ToggleBtnValue = $(this).is(":checked");
+        IsActiveStatus = !IsActiveStatus;
+        $('#tbl-user').bootgrid('reload');
+    }
+</script>
+<script>
+    ///ajax request on change checked (Is Active)
+    //   $(".IsActive").change(function (e) {
+    //         debugger
+    //       $.ajax({
+    //           url: '/ProjectSites/IsActive',
+    //           data: { projectSiteId: $(this).attr('projectsite-id'), IsActive: this.checked, StatusId: $(this).attr('StatusId') },
+    //           type: 'POST',
+    //           dataType: "json",
+    //           success: function (response) {
+    //               if (response.Status == "danger") {
+    //                   // $.notify(response.Message, { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+    //               }
+    //               else {
+    //                   // $.notify(response.Message, { type: "success", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+    //               }
+    //           }
+    //, error: function () {
+    //    // $.notify("Error occured !", { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+
+    //}
+    //       });
+    //});
+    function IsActive(active, id, statusid) {
+        debugger
+        $.ajax({
+            url: '/ProjectSites/IsActive',
+            data: { projectSiteId: id, IsActive: !active, StatusId: statusid },
+            type: 'POST',
+            dataType: "json",
+            success: function (response) {
+                debugger
+                if (response.Status == "danger") {
+                    $.notify(response.Message, { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                }
+                else {
+                    $.notify(response.Message, { type: "success", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                }
+            },
+            error: function () {
+                $.notify("Error occured !", { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+            }
+        });
+        //   $('#tbl-user').bootgrid('reload');
+        return false
+    }
+
+
+    var AllowEdit = '@ViewBag.AllowUri("/ProjectSites/Edit")';
+
+
+
+
+
+    //grid ettings
+    $(function () {
+
+        try{
+            //function formatDate(date) {
+            //       var dateOut = new Date(date);
+            //       return dateOut;
+            //   };
+            var grid = $("#tbl-user").bootgrid({
+                ajax: true,
+                sorting: false,
+                post: function () {
+                    return {
+                        //id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
+                        Status: IsActiveStatus,
+                        PId: '@ViewBag.Id'
+                    };
+                },
+                url: "/ProjectSites/Paging",
+                searchSettings: {
+                    delay: 100,
+                    characters: 3
+                },
+
+                formatters: {
+                    SiteDate: function (column, row) {
+                        if (row.SiteDate != null || row.SiteDate != undefined) {
+                            return (moment(row.SiteDate).format("MM/DD/YY"));
+                        }
+                    },
+                    //IPlanIssueDate: function (column, row) {
+                    //    if (row.IPlanIssueDate != null || row.IPlanIssueDate != undefined) {
+                    //        return (moment(row.IPlanIssueDate).format("MM/DD/YY"));
+                    //    }
+                    //},
+                    action: function (column, row) {
+                        console.log(row);
+                        if (AllowEdit == "True") {
+                            return '<a href="/ProjectSites/Edit?Id=' + $('#ProjectId').attr('data-ProjectId') + '&ProjectSiteId=' + row.ProjectSiteId + '"  ProjectSite-Id="' + row.ProjectSiteId + '"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
+                            //return '<a href="/ProjectSites/New?Id=' + $('#projectId').attr('data-ProjectId') + '&ProjectSiteId=' + row.ProjectSiteId + '"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>'
+                        }
+                    },
+                    Active: function (column, row) {
+                        if (row.IsActive == true && row.Status != 'Active') {
+                            return '<input type="checkbox" onclick="IsActive(' + row.IsActive + ',' + row.ProjectSiteId + ',' + row.StatusId + ')" class="IsActive" ProjectSite-Id="' + row.ProjectSiteId + '" StatusId="' + row.StatusId + '" checked="true" name="IsActive1" />'
+                        }
+                        else if (row.IsActive == false) {
+                            return '<input type="checkbox" onclick="IsActive(' + row.IsActive + ',' + row.ProjectSiteId + ',' + row.StatusId + ')" class="IsActive" ProjectSite-Id="' + row.ProjectSiteId + '" StatusId="' + row.StatusId + '"   name="IsActive1" />'
+                        }
+                        else {
+                            return '<input type="checkbox" class="IsActive" disabled="disabled"  ProjectSite-Id="' + row.ProjectSiteId + '" StatusId="' + row.StatusId + '"   name="IsActive1" />'
+                        }
+                    },
+                },
+
+            });
+            //$('.column-header-anchor').css('color', 'white');
+
+            //$("#tbl-user th").hover(function () {
+            //    $(this).css('background-color', 'rgba(53, 124, 165, 0.89)');
+            //});
+        }
+        catch(e){
+            console.log(e);
+        }
+    });
+
+    try{
+        $.post("/Project/Defination/ToSingle", { Filter: 'ByProjectId', Value: parseInt(@ViewBag.Id) }).then(function (res) {
+            var s = res;
+            var EndDate = "Continue";
+            if (s.EstimateEndDate != null && s.EstimateEndDate != undefined) {
+                EndDate = moment(s.EstimateEndDate).format('DD MMM, YYYY');
+            }
+            var ProjectInfo = '<span style="font-size: 16px;font-family: inherit;color:#000;"><strong>Project: </strong>' + s.ProjectName + '</span>' +
+                '<span style="margin-left:1%;font-size: 16px;font-family: inherit;color:#000;">' +
+                '<strong style="margin-left:2%;color:#000;">Start Date: </strong><span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;;margin-right: 27px;">' + moment(s.EstimateStartDate).format('DD MMM, YYYY') + ' </span> <strong> Expected End Date: </strong> ' +
+                '<span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;">' + EndDate + '</span>';
+            $('#ProjectInfo').html(ProjectInfo);
+        });
+    }
+    catch(e){
+        console.log(e);
+    }
+</script>
+
+<script>
+    $('#fileUpload').change(function () {
+        if ($('#fileUpload').val() == '') {
+            $('#upload').attr('disabled', true)
+        }
+        else {
+            $('#upload').attr('disabled', false);
+        }
+    })
+
+    $('#upload').attr('disabled', true);
+
+    $("#upload").click(function (e) {
+        loading.open();
+        try {
+            var formData = new FormData();
+            var totalFiles = document.getElementById("fileUpload").files.length;
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("fileUpload").files[i];
+                formData.append("FileUpload", file);
+            }
+            $.ajax({
+                type: "POST",
+                url: '/ProjectSites/UploadSites?Id=' + @ViewBag.Id,
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    if(response.Status == "Ok"){
+                        swal(response.Message,"" ,"success");
+                        $('#tbl-user').bootgrid('reload');
+                    }else if(response.Status == "OkWithErrorFile"){
+                        swal({
+                            title: "File could not be uploaded due to errors in file.",
+                            text: "",
+                            type: "error",
+                            showCancelButton: true,
+                            confirmButtonClass: "btn-success",
+                            confirmButtonText: "Download error file",
+                            closeOnConfirm: false,
+                        },
+                        function(isConfirm) {
+                            if (isConfirm) {
+                                e.preventDefault();
+                                window.location.href = response.Value;
+                            }
+                        });
+                    }else if(response.Status == "EmptyFile"){
+                        swal(response.Message, "","error");
+                    }
+                    else if(response.Status == "InvalidProjectID"){
+                        swal(response.Message, "","error");
+                    }else if(response.Status == "ProjectPermissionIssue"){
+                        swal(response.Message, "","error");
+                    }
+                    else{
+                        swal(response.Message, "","error");
+                    }
+                    $("#fileUpload").val('');
+                },
+                error: function (error) {
+                    loading.close();
+                    swal("There is an error. Please try again!" + error.response, "","error");
+                }
+            });
+        }
+        catch (e) {
+            loading.close();
+            swal("There is an error. Please try again!" + e, "","error");
+        }
+        finally{
+            $('#upload').attr('disabled', true);
+        }
+    });
+</script>
+
+

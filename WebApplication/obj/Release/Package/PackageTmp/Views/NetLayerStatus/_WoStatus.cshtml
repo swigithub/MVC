@@ -1,0 +1,31 @@
+﻿@using SWI.Libraries.AirView.Entities;
+@model AV_NetLayerStatus
+
+
+
+<form action="/NetLayerStatus/WoStatus" method="post" onsubmit="LayerWoStatusSubmit(); return false;" id="frm-LayerWoStatus">
+    <div class="row">
+        <div class="col-sm-12">
+           
+            @Html.HiddenFor(m => m.LayerStatusId)
+            <div class="form-group">
+                @Html.Label("Status", htmlAttributes: new { @class = "control-label " })
+                <div class="">
+                    @Html.DropDownList("Status", new SelectList(ViewBag.Status, "Value", "Text"), new { @class = "form-control select", required = "required" })
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Description", htmlAttributes: new { @class = "control-label" })
+                <div class="">
+                    @Html.TextArea("Remarks", new { @class = "form-control", required = "required", rows = "3" })
+                </div>
+            </div>
+            <div class="form-group">
+                    <button class="btn btn-info pull-right">Save</button>
+                </div>
+
+        </div>
+    </div>
+</form>

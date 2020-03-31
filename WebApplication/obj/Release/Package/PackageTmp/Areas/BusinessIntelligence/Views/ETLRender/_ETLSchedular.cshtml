@@ -1,0 +1,36 @@
+﻿<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+<div id="addnew-panel" class="popup-box">
+    <form name=vm.dashboardAndReportInitialInfo ng-submit=vm.saveETLSchedular() novalidate>
+        <div class="widget-title">
+            <div class="title-text">Transaction Table Name</div>
+            <a class="close-popup" ng-click="vm.cancel()" href="#" title=""><i class="fa fa-times"></i></a>
+        </div><!-- Popup Title -->
+
+        <div class="popup-content">
+
+            <div class="row align-items-start">
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <div id="filters">
+                        <div>
+                            <label for="filter-date">Date</label>
+                            <input type="text" name="filter-date" id="filter-date" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="popup-footer align-right">
+            <button type="submit" class="custom-btn medium color1">Save</button>
+            <button type="button" class="custom-btn medium color11" ng-click="vm.cancel()">Cancel</button>
+        </div>
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        'use strict';
+
+        jQuery('#filter-date, #search-from-date, #search-to-date').datetimepicker();
+    });
+</script>

@@ -1,0 +1,94 @@
+﻿<style>
+   div.scrollmenu {
+  overflow: auto;
+  white-space: nowrap;
+}
+</style>
+<div class="row scrollmenu">
+    <div class="col-sm-12">
+
+        <div class="panel-group " id="accordion">
+
+            @foreach (var cat in ViewBag.TestCategory)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <b> <a data-toggle="collapse" data-parent="#accordion" href="#@cat.TestCateoryID">@cat.TestCategory.ToUpper()</a></b>
+                        </h4>
+                    </div>
+                    <div id="@cat.TestCateoryID" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <input type="hidden" class="TextBox" name="TestCatogoryId" id="TestCatogoryId-@cat.TestCateoryID" data-TestCatogoryId="@cat.TestCateoryID" value="@cat.TestCateoryID" />
+
+                            @foreach (var Type in ViewBag.GetTestTypes(cat.TestCateoryID))
+                            {
+                                <table class="table-hover">
+                                    <tr>
+                                        <th style="width:150px;background-color:#f7f5f5;text-align:center;border-bottom:solid 1px;border-color:#bab4b4">
+                                            @Type.TestType
+                                            <input type="hidden" class="TextBox" name="TestTypeId" id="TestType-@Type.TestTypeID" data-TestType="@Type.TestTypeID" value="@cat.TestCateoryID-@Type.TestTypeID" />
+                                        </th>
+                                        @foreach (var kpi in ViewBag.GetKpi(Type.TestTypeID))
+                                        {
+                                            <th style="width:200px;padding-left:20PX;padding-right:12px">
+                                                <label>@kpi.Kpi</label>
+                                                <div class="form-group">
+                                                    @if (kpi.DisplayType == "Text" || kpi.DisplayType == null)
+                                                    {
+                                                        <input type="hidden" class="TextBox" name="KpiId" id="KpiId-@kpi.KpiID" value="@Type.TestTypeID-@kpi.KpiID" />
+                                                        <input type="text" id="kpi-@kpi.KpiID" data-kpi="@kpi.KpiID" data-display="@kpi.DisplayType" data-type="@kpi.Kpi" class="form-control kpiValue TextBox" />
+                                                        <input type="hidden" id="k-@kpi.KpiID" name="KpiValue" />
+                                                    }
+                                                    else if (kpi.DisplayType == "select" && kpi.InputType != null)
+                                                    {
+                                                        string[] arrSelectList = new string[] { };
+                                                        if (!string.IsNullOrEmpty(kpi.SelectList))
+                                                        {
+                                                            arrSelectList = kpi.SelectList.Split(',');
+                                                        }
+                                                        <select id="kpi-@kpi.KpiID" data-kpi="@kpi.KpiID" data-type="@kpi.Kpi" data-display="@kpi.DisplayType" class="kpiValue TextBox form-control">
+                                                            Select
+                                                            @for (int i = 0; i < arrSelectList.Length; i++)
+                                                            {
+                                                                <option id="arrSelectedListData" value="@arrSelectList[i]">@arrSelectList[i]</option>
+                                                            }
+                                                        </select>
+                                                        <input type="hidden" class="TextBox" name="KpiId" id="KpiId-@kpi.KpiID" value="@Type.TestTypeID-@kpi.KpiID" />
+                                                        <input type="hidden" id="k-@kpi.KpiID" name="KpiValue" />
+                                                    }
+                                                    else if (kpi.DisplayType == "mselect" && kpi.InputType != null)
+                                                    {
+                                                        string[] arrSelectList = new string[] { };
+                                                        if (!string.IsNullOrEmpty(kpi.SelectList))
+                                                        {
+                                                            arrSelectList = kpi.SelectList.Split(',');
+                                                        }
+                                                        <select id="kpi-@kpi.KpiID" data-kpi="@kpi.KpiID" data-type="@kpi.Kpi" data-display="@kpi.DisplayType" class="kpiValue TextBox form-control selectMulti"  multiple="multiple">
+                                                            Select
+                                                            @for (int i = 0; i < arrSelectList.Length; i++)
+                                                            {
+                                                                <option id="arrSelectedListData" value="@arrSelectList[i]">@arrSelectList[i]</option>
+                                                            }
+                                                        </select>
+                                                        <input type="hidden" class="TextBox" name="KpiId" id="KpiId-@kpi.KpiID" value="@Type.TestTypeID-@kpi.KpiID" />
+                                                        <input type="hidden" id="k-@kpi.KpiID" name="KpiValue" />
+                                                    }
+                                                </div>
+                                            </th>
+                                        }
+
+                                    </tr>
+                                </table>
+
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>

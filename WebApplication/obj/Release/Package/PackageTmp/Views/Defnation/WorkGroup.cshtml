@@ -1,0 +1,301 @@
+﻿@model AirView.DBLayer.Security.Entities.Sec_Workgroup
+@{
+    ViewBag.Title = "Work Group";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+<style>
+    .form-group select {
+        width: 100%;
+        height: 33px;
+    }
+
+    th.hideme input {
+        display: none;
+    }
+
+    .major-btns {
+        margin: -53px 0 10px;
+        float: right;
+    }
+
+    button.disabled {
+        pointer-events: none;
+    }
+
+    .form-horizontal p {
+        margin: 0;
+        padding-top: 7px;
+    }
+
+    .align-left {
+        text-align: left !important
+    }
+
+    .align-right {
+        text-align: right !important
+    }
+
+    div#table_fleet2_filter label {
+        font-weight: 600;
+    }
+
+    div.dataTables_filter input {
+        border: 1px solid #ddd;
+        height: 28px;
+        margin: 0 0 5px 10px;
+        background: #fff;
+    }
+</style>
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<section class="panel panel-default">
+    <header class="panel-heading font-bold">
+        @ViewBag.Title
+        <div class="btn-group pull-right">
+            <a href="/project/defination/all" class="btn btn-xs btn-primary btn-flat">Back</a>
+            <button type="button" class="btn btn-xs btn-primary btn-flat addRow">New Row</button>
+        </div>
+    </header>
+    <div class="panel-body">
+
+        @using (Html.BeginForm("Group", "Defnation", FormMethod.Post, new { id = "frm-User" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Group Name</label>
+                <label class="col-sm-4 col-form-label">Action</label>
+            </div>
+            <div class="appendRow">
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.WorkgroupName, "", new { @style = "color:red" })
+                        @Html.TextBoxFor(model => model.WorkgroupName, new { @class = "form-control rowData", required = "required" })
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" class="btn btn-default btn-flat delete" title="Delete Group"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <input type="submit" style="display:none" id="PostSubmit" />
+                    <button type="Reset" style="display:none" id="Reset"></button>
+                    <button type="button" class="btn btn-primary btn-flat addRow">New Row</button>
+                    <button type="button" class="btn btn-info btn-flat pull-right SaveData">Save</button>
+
+                    <a href="/project/defination/all" type="button" class="btn btn-danger btn-flat pull-right">Cancel</a>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+
+        var InitializeRow = $('.appendRow').html();
+        var BindModel = [];
+
+        $.ajax({
+            url: "/Defnation/GetGroup/",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+
+                $('.appendRow').empty();
+                var count = $(result).length;
+
+                for (x = 0; x < count; x++) {
+
+                    var dom = '<div class="form-group row" value="' + result[x].WorkgroupId + '">' +
+                        '<div class="col-sm-4">' +
+                        '<span class="field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true" style="color:red"></span>' +
+                        '<input class="form-control rowData" id="Title" name="Title" required="required" type="text" value="' + result[x].WorkgroupName + '">' +
+                        '</div>' +
+                        '<div class="col-sm-4">' +
+                        '<button type="button" class="btn btn-default btn-flat delete" title="Delete Group"><i class="fa fa-times"></i></button>'+
+                        '</div>' +
+                        '</div>';
+
+                    $('.appendRow').append(dom);
+
+                   
+                }
+            }
+        });
+
+
+
+
+        $(document).on('click', '.delete', function () {
+
+            var WGroupId = $(this).parent().parent().eq(0).attr('value');
+            var Curr = $(this);
+            if (WGroupId != undefined){
+            $.ajax({
+                url: "/Defnation/CheckDeleteGroup/?id=" + WGroupId,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+
+                    if (result[0].WorkgroupId != 0) {
+                //        swal({
+                //            title: "Are you sure?",
+                //            text: "Once deleted, you will not be able to recover this record!",
+                //            type: "warning",
+                //            showCancelButton: true,
+                //            confirmButtonColor: "#DD6B55",
+                //            confirmButtonText: "Yes, Delete it!",
+                //            cancelButtonText: "No, cancel please!",
+                //            closeOnConfirm: false,
+                //            closeOnCancel: true
+                //        },
+                //function (isConfirm) {
+                //    if (isConfirm) {
+                //        $.ajax({
+                //            url: "/Defnation/DeleteGroup/?id=" + WGroupId,
+                //            type: "POST",
+                //            contentType: "application/json; charset=utf-8",
+                //            datatype: JSON,
+                //            success: function (result) {
+                //                Curr.parent().parent().remove();
+                //                swal("Deleted !", "Successfully Deleted !", "success");
+                //            },
+                //            error: function (result) {
+                //                swal("Alert !", "There is an error to delete group !", "error");
+                //                //$.notify("There is an error to create group", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                //            }
+                //        });
+                //    } else {
+                //        //swal("Cancelled", "Your imaginary file is safe :)", "error");
+                //    }
+
+                        //});
+                        swal("Cancelled", "This group is userd in task resurces", "error");
+                    } else {
+                        swal({
+                            title: "Are you sure?",
+                            text: "Once deleted, you will not be able to recover this record!",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Yes, Delete it!",
+                            cancelButtonText: "No, cancel please!",
+                            closeOnConfirm: false,
+                            closeOnCancel: true
+                        },
+                                 function (isConfirm) {
+                                     if (isConfirm) {
+                                         if (WGroupId != undefined) {
+                                             //$(this).parent().parent().remove();
+                                             $.ajax({
+                                                 url: "/Defnation/DeleteGroup/?id=" + WGroupId,
+                                                 type: "POST",
+                                                 contentType: "application/json; charset=utf-8",
+                                                 datatype: JSON,
+                                                 success: function (result) {
+                                                     Curr.parent().parent().remove();
+                                                     swal("Deleted !", "Successfully Deleted !", "success");
+                                                 },
+                                                 error: function (result) {
+                                                     swal("Alert !", "There is an error to delete group !", "error");
+                                                     //$.notify("There is an error to create group", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                                                 }
+                                             });
+
+                                         }
+                                         else {
+                                             Curr.parent().parent().remove();
+                                         }
+                                     } else {
+                                         //swal("Cancelled", "Your imaginary file is safe :)", "error");
+                                     }
+                                 });
+
+
+                    }
+                }
+            });
+            } else {
+                Curr.parent().parent().remove();
+            }
+        });
+
+        $(document).on('click', '.addRow', function () {
+            $('.appendRow').append(InitializeRow);
+        });
+        $(document).on('click', '.SaveData', function () {
+            var count = $('input.rowData').length;
+            BindModel = [];
+            for (x = 0; x < count; x++) {
+                var WorkgroupName = $('input.rowData').eq(x).val();
+                var WorkgroupId = $('input.rowData').parent().parent().eq(x).attr('value');
+
+                var model = {
+                    WorkgroupName: WorkgroupName,
+                    WorkgroupId: WorkgroupId
+                };
+
+                BindModel.push(model);
+            }
+            $('#PostSubmit').click();
+        });
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "/Defnation/Group/",
+                contentType: "application/json; charset=utf-8",
+                cache: false,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(BindModel),
+                datatype: JSON,
+                success: function (result) {
+                    $.ajax({
+                        url: "/Defnation/GetGroup/",
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        datatype: JSON,
+                        success: function (result) {
+
+                            $('.appendRow').empty();
+                            var count = $(result).length;
+
+                            for (x = 0; x < count; x++) {
+
+                                var dom = '<div class="form-group row" value="' + result[x].WorkgroupId + '">' +
+                                    '<div class="col-sm-4">' +
+                                    '<span class="field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true" style="color:red"></span>' +
+                                    '<input class="form-control rowData" id="Title" name="Title" required="required" type="text" value="' + result[x].WorkgroupName + '">' +
+                                    '</div>' +
+                                    '<div class="col-sm-4">' +
+                                    '<button type="button" class="btn btn-default btn-flat delete" title="Delete Group"><i class="fa fa-times"></i></button>' +
+                                    '</div>' +
+                                    '</div>';
+
+                                $('.appendRow').append(dom);
+
+
+                            }
+                        }
+                    });
+                    swal("Saved !", "Successfully Created !", "success");
+                    //$.notify("Successfully Created", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                },
+                error: function (result) {
+                    swal("Alert !", "There is an error to create group !", "error");
+                    //$.notify("There is an error to create group", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                }
+            });
+
+        });
+    });
+</script>
+

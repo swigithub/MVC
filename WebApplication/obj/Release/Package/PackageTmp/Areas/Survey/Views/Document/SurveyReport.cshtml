@@ -1,0 +1,1622 @@
+﻿@using System.Text
+@using Library.SWI.Survey.Model
+@using System.Drawing
+@using SWI.AirView.Common
+@using System.Web;
+@model Library.SWI.Survey.Model.TSS_SurveyDocument
+@{
+    ViewBag.Title = "About";
+    var sectionIndex = 1;
+    var innerSectionIndex = 1;
+    var QuestionIndex = 1;
+    ViewBag.ImageCheck = false;
+    ViewBag.ParentName = "";
+
+}
+@helper ShowTree(List<TSS_Section> menusList, long sectionIndex = 0, long questionIndex = 0)
+{
+if (menusList != null)
+{
+    foreach (var item in menusList)
+    {
+
+            <table cellspacing="0" class="sectionTable" width="100%" style="margin-bottom:0px">
+                <thead>
+                    <tr>
+                        @if (item.PSectionId == 0 && item.IsRepeatable == false)
+                        {
+                            <th style="background-color:gray;color:white;text-align:center;">
+                                @item.SectionTitle
+                            </th>
+                        }
+                        else if (item.PSectionId != 0 && item.IsRepeatable == false)
+                        {
+                            <th style="background-color:silver;color:black">
+
+                                @item.SectionTitle
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    <tr>
+                        <td>
+
+
+
+                            <table cellspacing="0" cellpadding="0" id="testTable" width="100%" style="text-align: center; border-collapse: collapse;" class="table table-striped">
+                                <tbody>
+                                    @if (!item.Questions.Any() || item.IsRepeatable)
+                                    {
+                                        <tr style="padding-left: 10px !important;line-height:0;border: 0 !important">
+                                            <td colspan="3" style="border-color: transparent !important;
+    border-width: 0px !important;
+    border-style: solid !important;    padding: 0px !important;"></td>
+                                        </tr>
+
+                                    }
+                                    else
+                                    {
+                                        int questionCount = 1;
+                                        foreach (var itemQuestion in item.Questions)
+                                        {
+                                            <tr style="Padding: 10px; padding-top: 10px; border: 0">
+                                                <td colspan="3" style="border-left: 0;border-right: 0;border-top: 0">
+                                                    <table cellspacing="0" style="text-align: left !important" width="100%">
+                                                        <tr style="border-bottom: 1px solid">
+                                                            <td style="text-align: center !important; border-bottom: 0; border-right: 0" width="5%">&nbsp;&nbsp;&nbsp;@questionCount</td>
+                                                            <td style="border-bottom: 0;border-right:0;" width="35%">@itemQuestion.Question<br /><span style="font-size:9px !important;"><i>@itemQuestion.Description</i></span></td>
+                                                            <td style="border-bottom: 0" width="25%">
+                                                                @{
+                                                                    var responsetext = "";
+                                                                    string[] latlng = new string[] { };
+                                                                    if (itemQuestion.QuestionType != "Table"
+                                                                        && itemQuestion.QuestionType != "Direction & GPS Based Images"
+                                                                        && itemQuestion.QuestionType != "Scale"
+                                                                        && itemQuestion.QuestionType != "Rating"
+                                                                        && itemQuestion.QuestionType != "DateTime"
+                                                                        && itemQuestion.QuestionType != "Range"
+                                                                        && itemQuestion.QuestionType != "Signature"
+                                                                        && itemQuestion.QuestionType != "Multi Line"
+                                                                        && itemQuestion.QuestionType != "Image Options")
+                                                                    {
+                                                                        foreach (var tssResponse in itemQuestion.Responses.Where(s => s.IsChecked).ToList())
+                                                                        {
+                                                                            if (tssResponse.ResponseId > 0)
+                                                                            {
+                                                                                responsetext = responsetext + tssResponse.ResponseText + " ";
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                responsetext = responsetext + tssResponse.ResponseValue + " ";
+                                                                            }
+                                                                        }
+                                                                        <span>@responsetext.ToString() </span>
+                                                                    }
+                                                                    if (itemQuestion.QuestionType == "Image Options")
+                                                                    {
+                                                                        foreach (var tssResponse in itemQuestion.Responses.ToList())
+                                                                        {
+                                                                                responsetext = responsetext + tssResponse.ResponseValue + " ";
+                                                                        }
+                                                                        <span>@responsetext.ToString() </span>
+                                                                    }
+                                                                    if (itemQuestion.QuestionType == "Direction & GPS Based Images")
+                                                                    {
+                                                                        foreach (var tssResponse in itemQuestion.Responses)
+                                                                        {
+                                                                            responsetext = responsetext + tssResponse.ResponseValue + " ";
+                                                                            if (tssResponse.ResponseValue != null && tssResponse.ResponseValue != "")
+                                                                            {
+                                                                                latlng = tssResponse.ResponseValue.Split(',');
+                                                                            }
+                                                                        }
+                                                                        if (latlng.Length > 0)
+                                                                        {
+                                                                            string Dimension = CheckOrientationByBase64String(itemQuestion.MapImage);
+                                                                            string GetHW = GetWidthHeight(itemQuestion.MapImage);
+                                                                            string[] WH = GetHW.Split(',');
+                                                                            @*if (Dimension == "P")
+                                                                            {
+                                                                                <span><img src="@itemQuestion.MapImage" width="400px" height="350px" style="margin-top:10px" /></span>
+                                                                                <span><b>Lat,Lng</b>: @responsetext.ToString()</span>
+                                                                            }
+                                                                            else if (Dimension == "L")
+                                                                            {
+                                                                                <span><img src="@itemQuestion.MapImage" width="400px" height="220px" style="margin-top:10px" /></span>
+                                                                                <span><b>Lat,Lng</b>: @responsetext.ToString()</span>
+                                                                            }
+                                                                            else
+                                                                            {*@
+                                                                                <span><img src="@itemQuestion.MapImage" width="400px" height="350px" style="margin-top:10px" /></span>
+                                                                                <span><b>Lat,Lng</b>: @responsetext.ToString()</span>
+                                                                            //}
+                                                                        }
+
+
+                                                                    }
+                                                                    if (itemQuestion.QuestionType == "Scale" || itemQuestion.QuestionType == "Rating")
+                                                                    {
+                                                                        foreach (var tssResponse in itemQuestion.Responses)
+                                                                        {
+                                                                            responsetext = responsetext + tssResponse.ResponseValue + " ";
+                                                                        }
+                                                                        <span> @responsetext.ToString()</span>
+                                                                    }
+                                                                    if (itemQuestion.QuestionType == "DateTime")
+                                                                    {
+                                                                        foreach (var tssResponse in itemQuestion.Responses)
+                                                                        {
+                                                                            responsetext = responsetext + tssResponse.ResponseValue + " ";
+                                                                        }
+                                                                        <span> @responsetext.ToString()</span>
+                                                                    }
+                                                                    if (itemQuestion.QuestionType == "Range")
+                                                                    {
+                                                                        foreach (var tssResponse in itemQuestion.Responses)
+                                                                        {
+                                                                            responsetext = responsetext + tssResponse.MinValue + ",";
+                                                                            responsetext = responsetext + tssResponse.MaxValue + "";
+                                                                        }
+                                                                        <span> @responsetext.ToString()</span>
+                                                                    }
+                                                                    if (itemQuestion.QuestionType == "Signature")
+                                                                    {
+                                                                        var img = "";
+                                                                        foreach (var tssResponse in itemQuestion.Responses)
+                                                                        {
+                                                                            if (tssResponse.Signature != null && tssResponse.Signature != "")
+                                                                            {
+                                                                                img = tssResponse.Signature;
+                                                                            }
+                                                                        }
+                                                                        if (img != "")
+                                                                        {
+                                                                            <span><img src="@img" width="150" height="100" style="margin-top:10px" /></span>
+                                                                        }
+                                                                    }
+                                                                    if (itemQuestion.QuestionType == "Multi Line")
+                                                                    {
+                                                                        <div>@itemQuestion.Responses[0].ResponseValue</div>
+                                                                    }
+
+                                                                }
+                                                            </td>
+
+                                                            <td style="border-bottom: 0; " width="35%">
+                                                                @{
+                                                                    var isShowNotes = itemQuestion.ReqActions.Any(s => s.ActionTypeId == 1 && s.ActionId > 0);
+                                                                    var firstOrDefault = itemQuestion.ReqActions.FirstOrDefault(s => s.ActionTypeId == 1);
+                                                                    var notes = firstOrDefault != null ? firstOrDefault.RequiredAction : "";
+                                                                    
+                                                                }
+                                                                @if (itemQuestion.QuestionType == "Direction & GPS Based Images")
+                                                                {
+                                                                    if (!string.IsNullOrEmpty(notes))
+                                                                    {
+                                                                    <p style="opacity:0;color:ghostwhite">.</p>
+                                                                    <p style="margin-top:345px !important">@notes (@itemQuestion.Azimuth)</p>
+                                                                    }
+                                                                    else if (!string.IsNullOrEmpty(itemQuestion.Azimuth.ToString()))
+                                                                    {
+                                                                        <p style="opacity:0;color:ghostwhite">.</p>
+                                                                        <p style="opacity:0;color:ghostwhite">.</p>
+                                                                        <p style="margin-top:345px !important;vertical-align:text-bottom">
+                                                                            <span>@itemQuestion.Azimuth</span></p>
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    @notes
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                        @{
+                                                            if (itemQuestion.QuestionType == "Table")
+                                                            {
+                                                                <tr cellpadding="0">
+                                                                    <td colspan="1"></td>
+
+                                                                    <td colspan="3">
+                                                                        <table cellspacing="0" class="tableType" width="100%">
+                                                                            <thead>
+                                                                                <tr style="Padding: 8px !important;color:black">
+                                                                                    @foreach (var s in itemQuestion.Responses)
+                                                                                    {
+                                                                                        <th style="text-align: left">@s.ResponseText</th>
+                                                                                    }
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+
+                                                                                @for (int row = 0; row < itemQuestion.TotalRows; row++)
+                                                                                {
+                                                                                    <tr style="text-align: left;">
+
+
+                                                                                        @for (int col = 0; col < itemQuestion.TotalColumn; col++)
+                                                                                        {
+                                                                                            var columnValue = new string[] { };
+                                                                                            if (itemQuestion.Responses[col].IsReadOnly)
+                                                                                            {
+                                                                                                columnValue = itemQuestion.Responses[col].UserValues.Split(',');
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                columnValue = itemQuestion.Responses[col].SelectedRawResponse.Split('|');
+
+                                                                                            }
+                                                                                            int check = 0;
+                                                                                            <td style="text-align: left;">
+                                                                                                @foreach (var val in columnValue)
+                                                                                                {
+                                                                                                    if (check == row)
+                                                                                                    {
+                                                                                                        <span>@val</span>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <span></span>
+                                                                                                    }
+                                                                                                    check++;
+                                                                                                }
+                                                                                            </td>
+
+
+                                                                                        }
+
+
+                                                                                    </tr>
+                                                                                }
+
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+
+
+
+
+
+                                                        }
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                                                    questionCount = questionCount + 1;
+                                                                }
+
+                                                            }
+
+                                </tbody>
+                            </table>
+
+
+
+
+                        </td>
+                    </tr>
+
+
+
+                    @{
+                        if (item.Signature != null && item.Signature.Length > 5)
+                        {
+                            <tr>
+                                <td style="text-align: left !important">
+                                    <div style="width: 100%">
+
+                                        <p>&nbsp;</p>
+                                        <strong style="margin-top: 15px !important; float: left">Signature:</strong>
+                                        <div style="width: 150px !important; height: auto; ">
+                                            <img style="width: 150px !important;height: 125px !important;" src="@item.Signature" />
+                                        </div>
+
+
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+
+          
+
+                        if (item.Sections.Any())
+                        {
+
+                            @ShowTree(item.Sections)
+
+                        }
+
+                       
+                        if (item.PSectionId == 0 && item.IsRepeatable == false)
+                        {
+
+                            ViewBag.ImageCheck = false;
+                            @CheckImagesParent(item)
+                            @GetImages(item)
+
+
+
+                        }
+
+                        if (item.PSectionId == 0 && item.IsRepeatable == false)
+                        {
+                            <div><br /></div>
+                        }
+                        if (item.PSectionId == 0 && item.IsRepeatable == true)
+                        {
+                            <div><br /></div>
+
+                            ViewBag.ImageCheck = false;
+
+
+                            
+                            @CheckImagesParent(item)
+                            @GetImages(item)
+
+                                }
+
+                            }
+                        }
+}
+
+
+@helper CheckImagesChild(List<TSS_Section> items)
+{
+if (items != null)
+{
+    foreach (var item in items)
+    {
+        ViewBag.ParentName = "";
+
+        if (!item.Questions.Any() || item.IsRepeatable)
+        {
+
+        }
+        else
+        {
+
+            foreach (var itemQuestion in item.Questions)
+            {
+
+
+                var anyImage = itemQuestion.ReqActions.Any(s => s.ActionTypeId == 2 && s.ActionId > 0);
+
+                if (anyImage)
+                {
+                    ViewBag.ImageCheck = true;
+                }
+            }
+
+        }
+
+        if (item.Sections.Any())
+        {
+
+                @CheckImagesChild(item.Sections)
+
+        }
+
+
+    }
+}
+}
+
+@helper CheckImagesParent(TSS_Section item)
+{
+
+
+if (!item.Questions.Any() || item.IsRepeatable)
+{
+
+}
+else
+{
+
+    foreach (var itemQuestion in item.Questions)
+    {
+
+
+        var anyImage = itemQuestion.ReqActions.Any(s => s.ActionTypeId == 2 && s.ActionId > 0);
+
+        if (anyImage)
+        {
+
+            ViewBag.ImageCheck = true;
+        }
+    }
+
+}
+if (item.Sections.Any())
+{
+
+        @CheckImagesChild(item.Sections)
+
+}
+
+}
+
+
+@helper GetSubImages(List<TSS_Section> items)
+{
+    if (items != null)
+    {
+        foreach (var item in items)
+        {
+            if (item.Sections.Count > 0 && !item.IsRepeatable)
+            {
+                ViewBag.ParentName = item.SectionTitle;
+
+            }
+
+            bool anyimagechild = false;
+            if (!item.Questions.Any() || item.IsRepeatable)
+            {
+
+            }
+            else
+            {
+                int questionCount = 1;
+                foreach (var itemQuestion in item.Questions)
+                {
+
+
+                    var anyImage = itemQuestion.ReqActions.Any(s => s.ActionTypeId == 2 && s.ActionId > 0);
+
+                    if (anyImage)
+                    {
+                        anyimagechild = true;
+                    }
+                }
+            }
+
+            if (anyimagechild == true)
+            {
+                <table cellspacing="0" class="sectionTable" width="100%" style="margin-bottom:0px;border:0.5px solid #cfcfdb;">
+                    <thead>
+                        <tr>
+                            @if (item.Sections.Count > 0)
+                            {
+                                <th style="background-color:silver;color:black">
+
+                                    @item.SectionTitle
+                                </th>
+                            }
+                            else
+                            {
+                                <th style="background-color:silver;color:black">
+
+                                    @ViewBag.ParentName @item.SectionTitle
+                                </th>
+                            }
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                        <tr>
+                            <td>
+
+
+
+
+                                @if (!item.Questions.Any() || item.IsRepeatable)
+                                {
+
+                                }
+                                else
+                                {
+
+                                    <div style="width: 100%;">
+                                        @{
+
+
+                                            int questionCount = 1;
+                                            foreach (var itemQuestion in item.Questions)
+                                            {
+                                                if (itemQuestion.Prefix != "")
+                                                {
+                                                    var name = "";
+                                                    if (ViewBag.ParentName != "")
+                                                    {
+                                                        name = ViewBag.ParentName + " " + item.SectionTitle;
+                                                    }
+                                                    else
+                                                    {
+                                                        name = item.SectionTitle;
+                                                    }
+                                                    itemQuestion.Prefix = GetCompletePrefix(itemQuestion.Prefix, name);
+                                                }
+                                                var anyImage = itemQuestion.ReqActions.Any(s => s.ActionTypeId == 2 && s.ActionId > 0);
+
+                                                if (anyImage)
+                                                {
+
+
+                                                    var imgRequiredActions = itemQuestion.ReqActions.Where(s => s.ActionTypeId == 2).ToList();
+
+                                                    foreach (var image in imgRequiredActions)
+                                                    {
+
+                                                        if (System.IO.File.Exists(@image.RequiredAction))
+
+                                                        {
+
+                                                            System.Drawing.Image image1 = System.Drawing.Image.FromFile(image.RequiredAction);
+                                                            //var filePath = System.Web.HttpContext.Current.Server.MapPath(@image.RequiredAction);
+                                                            ////FileInfo file = new FileInfo(filePath);
+                                                            //if (System.IO.File.Exists(filePath))
+                                                            //{
+
+
+
+                                                            if (@image1.Width < @image1.Height)
+                                                            {
+                                                                <div style="width: 231.5px !important; height: 258px !important;float:left;padding-top:5px;">
+
+                                                                    <div style="width:100%;height:227.5px;padding-left:29px !important;padding-right:29px !important;">
+
+                                                                        <img src="@image.RequiredAction" style="width:173.5px;height:227.5px;" />
+                                                                    </div>
+                                                                    <div style="width:100%;height:22.5px;padding-top:3px;">
+                                                                        @{
+                                                                            if (itemQuestion.Prefix != "")
+                                                                            {
+                                                                                if (@image.Remarks != "")
+                                                                                {
+                                                                                    if (image.Azimuth != "")
+                                                                                    {
+                                                                                    <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>@image.Remarks (@image.Azimuth)</span></p>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                  <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span>@image.Remarks</p>
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    if (image.Azimuth != "")
+                                                                                    {
+                                                                                    <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>(@image.Azimuth)</span></p>
+
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                    <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span></p>
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                if (image.Remarks != "")
+                                                                                {
+                                                                                    if (image.Azimuth != "")
+                                                                                    {
+                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>: @image.Remarks (@image.Azimuth)</span></p>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span>: @image.Remarks</p>
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    if (image.Azimuth != "")
+                                                                                    {
+                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>(@image.Azimuth)</span></p>
+
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span></p>
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+
+                                                                    </div>
+
+
+
+                                                                </div>
+                                                                            }
+                                                                            else if (@image1.Width > @image1.Height)
+                                                                            {
+                                                                                <div style="width: 231.5px !important; height: 258px !important;float:left;padding-top:5px;">
+                                                                                    <div style="width:100%;height:227.5px;padding-top:38.5px !important;padding-bottom:38.5px !important;">
+                                                                                        <img src="@image.RequiredAction" style="width:229.5px;height:150.5px !important;padding-left: 1px;padding-right: 1px;" />
+                                                                                    </div>
+                                                                                    <div style="width:100%;height:22.5px;padding-top:3px;">
+                                                                                        @{
+                                                                                            if (itemQuestion.Prefix != "")
+                                                                                            {
+                                                                                                if (@image.Remarks != "")
+                                                                                                {
+                                                                                                    if (image.Azimuth != "")
+                                                                                                    {
+                                                                                                        <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>@image.Remarks (@image.Azimuth)</span></p>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span>@image.Remarks</p>
+                                                                                                    }
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    if (image.Azimuth != "")
+                                                                                                    {
+                                                                                                        <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>(@image.Azimuth)</span></p>
+
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span></p>
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                if (image.Remarks != "")
+                                                                                                {
+                                                                                                    if (image.Azimuth != "")
+                                                                                                    {
+                                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>: @image.Remarks (@image.Azimuth)</span></p>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span>: @image.Remarks</p>
+                                                                                                    }
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    if (image.Azimuth != "")
+                                                                                                    {
+                                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>(@image.Azimuth)</span></p>
+
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span></p>
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    </div>
+
+
+
+                                                                                </div>
+                                                                                            }
+                                                                                            else if (@image1.Width == @image1.Height)
+                                                                                            {
+                                                                                                <div style="width: 231.5px !important; height: 258px !important;float:left;padding-top:5px;">
+                                                                                                    <div style="width:100%;height:227.5px;padding-left:2px;padding-right:2px;">
+                                                                                                        <img src="@image.RequiredAction" style="width:227.5px;height:227.5px !important;" />
+                                                                                                    </div>
+                                                                                                    <div style="width:100%;height:22.5px;padding-top:3px;">
+                                                                                                        @{
+
+                                                                                                            if (itemQuestion.Prefix != "")
+                                                                                                            {
+                                                                                                                if (@image.Remarks != "")
+                                                                                                                {
+                                                                                                                    if (image.Azimuth != "")
+                                                                                                                    {
+                                                                                                                        <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>@image.Remarks (@image.Azimuth)</span></p>
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span>@image.Remarks</p>
+                                                                                                                    }
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    if (image.Azimuth != "")
+                                                                                                                    {
+                                                                                                                        <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>(@image.Azimuth)</span></p>
+
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span></p>
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                if (image.Remarks != "")
+                                                                                                                {
+                                                                                                                    if (image.Azimuth != "")
+                                                                                                                    {
+                                                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>: @image.Remarks (@image.Azimuth)</span></p>
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span>: @image.Remarks</p>
+                                                                                                                    }
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    if (image.Azimuth != "")
+                                                                                                                    {
+                                                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>(@image.Azimuth)</span></p>
+
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        <p style="text-align: center;font-size:11px"><span>Q @questionCount</span></p>
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    </div>
+
+
+
+                                                                                                </div>
+                                                                                                                            }
+
+                                                                                                                        }
+
+                                                                                                                    }
+
+
+                                                                                                                }
+
+
+                                                                                                                questionCount = questionCount + 1;
+                                                                                                            }
+
+                                        }
+                                    </div>
+
+                                                                                                            }
+
+
+
+                            </td>
+                        </tr>
+
+
+
+                    </tbody>
+
+                </table>
+                                                                                                            }
+
+                                                                                                            if (item.Sections.Any())
+                                                                                                            {
+                                                                                                                
+                                                                                                                @GetSubImages(item.Sections)
+
+                                                                                                                    }
+
+                                                                                                                }
+                                                                                                            }
+
+}
+
+@helper GetImages(TSS_Section item)
+{
+    
+if (ViewBag.ImageCheck == true)
+{
+
+
+        <table cellspacing="0" class="sectionTable" width="100%" style="margin-bottom:0px;margin-top:10px;border:0.5px solid #cfcfdb;">
+            <thead>
+                <tr>
+
+                    <th style="background-color:gray;color:white;text-align:center;">
+                        @item.SectionTitle
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+
+                <tr>
+                    <td>
+
+
+
+
+                        @if (!item.Questions.Any() || item.IsRepeatable)
+                        {
+
+                        }
+                        else
+                        {
+
+                            <div style="width: 100%;">
+                                @{
+
+
+                                    int questionCount = 1;
+                                    foreach (var itemQuestion in item.Questions)
+                                    {
+                                        if (itemQuestion.Prefix != "")
+                                        {
+                                            itemQuestion.Prefix = GetCompletePrefix(itemQuestion.Prefix, "");
+                                        }
+                                        var anyImage = itemQuestion.ReqActions.Any(s => s.ActionTypeId == 2 && s.ActionId > 0);
+
+                                        if (anyImage)
+                                        {
+
+
+                                            var imgRequiredActions = itemQuestion.ReqActions.Where(s => s.ActionTypeId == 2).ToList();
+
+                                            foreach (var image in imgRequiredActions)
+                                            {
+
+
+                                                if (System.IO.File.Exists(@image.RequiredAction))
+
+                                                {
+
+                                                    System.Drawing.Image image1 = System.Drawing.Image.FromFile(image.RequiredAction);
+                                                    //var filePath = System.Web.HttpContext.Current.Server.MapPath(@image.RequiredAction);
+                                                    //FileInfo file = new FileInfo(filePath);
+                                                    //if (System.IO.File.Exists(filePath))
+
+                                                    //    {
+
+
+
+                                                    if (@image1.Width < @image1.Height)
+                                                    {
+                                                        <div style="width: 231.5px !important; height: 258px !important;float:left;padding-top:5px;">
+
+                                                            <div style="width:100%;height:227.5px;padding-left:29px !important;padding-right:29px !important;">
+
+                                                                <img src="@image.RequiredAction" style="width:173.5px;height:227.5px;" />
+                                                            </div>
+                                                            <div style="width:100%;height:22.5px;padding-top:3px;">
+                                                                @{
+                                                                    if (itemQuestion.Prefix != "")
+                                                                    {
+                                                                        if (@image.Remarks != "")
+                                                                        {
+                                                                            if (image.Azimuth != "")
+                                                                            {
+                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>@image.Remarks (@image.Azimuth)</span></p>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span>@image.Remarks</p>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (image.Azimuth != "")
+                                                                            {
+                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>(@image.Azimuth)</span></p>
+
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span></p>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (image.Remarks != "")
+                                                                        {
+                                                                            if (image.Azimuth != "")
+                                                                            {
+                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>: @image.Remarks (@image.Azimuth)</span></p>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span>: @image.Remarks</p>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (image.Azimuth != "")
+                                                                            {
+                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>(@image.Azimuth)</span></p>
+
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span></p>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                            </div>
+
+
+
+                                                        </div>
+                                                                    }
+                                                                    else if (@image1.Width > @image1.Height)
+                                                                    {
+                                                                        <div style="width: 231.5px !important; height: 258px !important;float:left;padding-top:5px;">
+                                                                            <div style="width:100%;height:227.5px;padding-top:38.5px !important;padding-bottom:38.5px !important;">
+                                                                                <img src="@image.RequiredAction" style="width:229.5px;height:150.5px !important;padding-left: 1px;padding-right: 1px;" />
+                                                                            </div>
+                                                                            <div style="width:100%;height:22.5px;padding-top:3px;">
+                                                                                @{
+                                                                                    if (itemQuestion.Prefix != "")
+                                                                                    {
+                                                                                        if (@image.Remarks != "")
+                                                                                        {
+                                                                                            if (image.Azimuth != "")
+                                                                                            {
+                                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>@image.Remarks (@image.Azimuth)</span></p>
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span>@image.Remarks</p>
+                                                                                            }
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            if (image.Azimuth != "")
+                                                                                            {
+                                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>(@image.Azimuth)</span></p>
+
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span></p>
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        if (image.Remarks != "")
+                                                                                        {
+                                                                                            if (image.Azimuth != "")
+                                                                                            {
+                                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>: @image.Remarks (@image.Azimuth)</span></p>
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span>: @image.Remarks</p>
+                                                                                            }
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            if (image.Azimuth != "")
+                                                                                            {
+                                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>(@image.Azimuth)</span></p>
+
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span></p>
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            </div>
+
+
+
+                                                                        </div>
+                                                                                    }
+                                                                                    else if (@image1.Width == @image1.Height)
+                                                                                    {
+                                                                                        <div style="width: 231.5px !important; height: 258px !important;float:left;padding-top:5px;">
+                                                                                            <div style="width:100%;height:227.5px;padding-left:2px;padding-right:2px;">
+                                                                                                <img src="@image.RequiredAction" style="width:227.5px;height:227.5px !important;" />
+                                                                                            </div>
+                                                                                            <div style="width:100%;height:22.5px;padding-top:3px;">
+                                                                                                @{
+                                                                                                    if (itemQuestion.Prefix != "")
+                                                                                                    {
+                                                                                                        if (@image.Remarks != "")
+                                                                                                        {
+                                                                                                            if (image.Azimuth != "")
+                                                                                                            {
+                                                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>@image.Remarks (@image.Azimuth)</span></p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span>@image.Remarks</p>
+                                                                                                            }
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            if (image.Azimuth != "")
+                                                                                                            {
+                                                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span><span>(@image.Azimuth)</span></p>
+
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p style="text-align: center;font-size:11px"><span>@itemQuestion.Prefix</span></p>
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        if (image.Remarks != "")
+                                                                                                        {
+                                                                                                            if (image.Azimuth != "")
+                                                                                                            {
+                                                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>: @image.Remarks (@image.Azimuth)</span></p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span>: @image.Remarks</p>
+                                                                                                            }
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            if (image.Azimuth != "")
+                                                                                                            {
+                                                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span><span>(@image.Azimuth)</span></p>
+
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p style="text-align: center;font-size:11px"><span>Q @questionCount</span></p>
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            </div>
+
+
+
+                                                                                        </div>
+                                                                                                                    }
+
+                                                                                                                }
+
+                                                                                                            }
+
+
+                                                                                                        }
+
+
+                                                                                                        questionCount = questionCount + 1;
+                                                                                                    }
+
+                                }
+                            </div>
+
+                                                                                                    }
+
+
+
+                    </td>
+                </tr>
+
+
+
+
+
+
+
+
+            </tbody>
+
+        </table>
+
+
+
+                                                                                                    if (item.Sections.Any())
+                                                                                                    {
+                                                                                                        
+                                                                                                        @GetSubImages(item.Sections)
+
+                                                                                                        }
+                                                                                                    }
+@functions{
+    public string GetCompletePrefix(string Prefix, string SectionTitle)
+    {
+        StringBuilder NewPrefix = new StringBuilder();
+        if (SectionTitle != "")
+        {
+            List<int> p = new List<int>();
+            string[] values = SectionTitle.Split(' ');
+            foreach (var s in values)
+            {
+                try
+                {
+                    p.Add(Convert.ToInt32(s));
+                }
+                catch
+                {
+
+                }
+            }
+            string[] sp = Prefix.Split(new[] { ' ' }, 2);
+            string[] CompletePrefix = sp[0].Split('-');
+            int pid = 0;
+            foreach (var i in CompletePrefix)
+            {
+                try
+                {
+                    if (pid == 0)
+                    {
+                        NewPrefix.Append(i + p[pid].ToString());
+                    }
+                    else
+                    {
+                        NewPrefix.Append("-" + i + p[pid].ToString());
+                    }
+                    if (CompletePrefix.Length < p.Count)
+                    {
+                        if (pid == CompletePrefix.Length - 1)
+                        {
+                            NewPrefix.Append(":");
+                        }
+                    }
+                    else
+                    {
+                        if (pid == p.Count - 1)
+                        {
+                            NewPrefix.Append(":");
+                        }
+
+                    }
+
+                    pid++;
+                }
+                catch
+                {
+
+                }
+            }
+            var lastpart = "";
+            try
+            {
+                lastpart = sp[1];
+            }
+            catch
+            {
+
+            }
+            return NewPrefix.ToString() + lastpart + " ";
+        }
+        else
+        {
+            return Prefix + " ";
+        }
+    }
+    public string CheckOrientationByBase64String(string base64String)
+    {
+        var pieces = base64String.Split(new[] { ',' }, 2);
+        byte[] image = Convert.FromBase64String(pieces[1]);
+        PdfController pf = new PdfController();
+        Image img = pf.GetImageFromBytes(image);
+        if (img.Height > 1000)
+            return "P";
+        else if (img.Height < 1000)
+        {
+            if (img.Width > img.Height)
+                return "L";
+            else if (img.Width < img.Height)
+                return "P";
+            else
+                return "S";
+        }
+        else
+            return "S";
+
+    }
+    public string GetWidthHeight(string base64String)
+    {
+        var pieces = base64String.Split(new[] { ',' }, 2);
+        byte[] image = Convert.FromBase64String(pieces[1]);
+        PdfController pf = new PdfController();
+        Image img = pf.GetImageFromBytes(image);
+        return img.Width+","+img.Height;
+
+    }
+}
+
+}
+
+<style type="text/css">
+    .tableType {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        text-align: center;
+        width: 100%;
+    }
+
+    .sectionTable {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        border-spacing: 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    .tableType td, .tableType th {
+        border-collapse: collapse;
+        border-spacing: 0;
+        border-right-color: #cfcfdb;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-bottom-color: #cfcfdb;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        font-size: 12px;
+        text-align: center !important;
+        padding: 3px;
+    }
+
+    .tableType tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .tableType tr:hover {
+        background-color: #ddd;
+    }
+
+    .tableType th {
+        padding-top: 7px;
+        padding-bottom: 7px;
+        text-align: center !important;
+        background-color: #5297de !important;
+        color: black !important;
+        height: 15px;
+    }
+
+    #testTable {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        text-align: center;
+        width: 100%;
+    }
+
+        #testTable td, #testTable th {
+            border-collapse: collapse;
+            border-spacing: 0;
+            border-right-color: #cfcfdb;
+            border-right-width: 1px;
+            border-right-style: solid;
+            border-bottom-color: #cfcfdb;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            font-size: 11px;
+            text-align: left;
+            padding: 5px;
+        }
+
+            #testTable td div img {
+                text-align: center !important;
+                /*padding: 5px;
+    margin-bottom: 10px !important;*/
+            }
+
+        #testTable tr {
+            border-bottom: 1px solid #dddddd !important;
+        }
+
+
+    .attendeemainTable {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        border-spacing: 0;
+        text-align: center;
+        width: 100%;
+    }
+
+        .attendeemainTable th {
+            padding-top: 7px;
+            padding-bottom: 7px;
+            padding-left: 5px;
+            text-align: left;
+            height: 15px;
+            background-color: #0171be;
+            color: white;
+            font-size: 12px;
+        }
+
+        .attendeemainTable table tr td {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+
+
+    #attendeetable {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        text-align: center;
+        width: 100%;
+        border-color: #cfcfdb !important;
+    }
+
+        #attendeetable tbody tr td {
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-size: 11px;
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+            padding-left: 5px !important;
+            padding-right: 5px !important;
+            text-align: left !important;
+            color: black;
+        }
+
+
+
+
+
+
+
+
+
+    #mainHeadTable td, #mainHeadTable th {
+        font-size: 11px;
+        text-align: left;
+        padding: 3px;
+    }
+
+    .sectionTable th {
+        padding-top: 7px;
+        padding-bottom: 7px;
+        padding-left: 5px;
+        text-align: left;
+        height: 15px;
+        background-color: #0171be;
+        color: white;
+        font-size: 12px;
+    }
+
+    #mainHeadTable {
+        border-collapse: collapse;
+        border-spacing: 0;
+        border-top-color: #cfcfdb;
+        border-top-width: 1px;
+        border-top-style: solid;
+        border-left-color: #cfcfdb;
+        border-left-width: 1px;
+        border-left-style: solid;
+    }
+
+    .sectionTable table tr td {
+        border-collapse: collapse;
+        border-spacing: 0;
+        border-top-color: #cfcfdb;
+        border-top-width: 1px;
+        border-top-style: solid;
+        border-left-color: #cfcfdb;
+        border-left-width: 1px;
+        border-left-style: solid;
+    }
+
+    #mainHeadTable td, #mainHeadTable th {
+        font-size: 11px;
+        text-align: left;
+        padding: 3px;
+        border-collapse: collapse;
+        border-spacing: 0;
+        border-right-color: #cfcfdb;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-bottom-color: #cfcfdb;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+    }
+
+    #testTable tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #testTable tr:hover {
+        background-color: #ddd;
+    }
+
+    #testTable th {
+        padding-top: 7px;
+        padding-bottom: 7px;
+        text-align: center !important;
+        background-color: #eee !important;
+        color: black;
+    }
+
+    .js-signaure-img {
+        width: 150px;
+        height: 90px;
+        margin-left: 0;
+        margin-bottom: 5px;
+        margin-right: 0;
+    }
+
+    .parentsection tbody tr td {
+        border-collapse: collapse;
+        border-spacing: 0;
+        border-right-color: #cfcfdb;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-bottom-color: #cfcfdb;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-left-color: #cfcfdb;
+        border-left-width: 1px;
+        border-left-style: solid;
+        font-size: 11px;
+        text-align: left;
+        padding: 5px;
+    }
+</style>
+<table cellspacing="0" id="mainHeadTable" width="100%">
+    <tr>
+        <td style="width: 15%"><b>Wo Ref#</b></td>
+        <td style="width: 35%">@Model.WoRefId</td>
+        <td style="width: 15%"><b>Site Code</b></td>
+        <td style="width: 35%">@Model.SiteCode</td>
+    </tr>
+    <tr>
+        <td style="width: 15%"><b>Client</b></td>
+        <td style="width: 35%">@Model.ClientName</td>
+        <td style="width: 15%"><b>Survey</b></td>
+        <td style="width: 35%">@Model.SurveyTitle</td>
+    </tr>
+    <tr>
+        <td style="width: 15%"><b>Region</b></td>
+        <td style="width: 35%">@Model.Region</td>
+        <td style="width: 15%"><b>Market</b></td>
+        <td style="width: 35%">	@Model.CityName</td>
+    </tr>
+</table>
+<div><br /></div>
+
+
+@if (Model.Sections.Count > 0)
+{
+    <table cellspacing="0" class="sectionTable parentsection" width="100%">
+        <thead>
+            <tr>
+
+                <th style="width:60%;background-color:gray;color:white;">Section Name</th>
+
+                <th style="width:20%;background-color:gray;color:white;">Completion(%)</th>
+                <th style="width:20%;background-color:gray;color:white;">Status</th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+
+
+            @foreach (var element in Model.CompletetionSections)
+            {
+
+                <tr>
+                    <td>@element.SectionTitle</td>
+
+                    @{
+                        if (Convert.ToString(@Math.Round((Convert.ToDouble(@element.TotalAnswered) / Convert.ToDouble(@element.TotalQuestions)) * 100, 2)) != "NaN")
+                        {
+                            if (@Math.Round((Convert.ToDouble(@element.TotalAnswered) / Convert.ToDouble(@element.TotalQuestions)) * 100, 2) == 0)
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                if (element.DefinationName == "Completed")
+                                {
+                                    <td>100%</td>
+                                }
+                                else
+                                {
+                                    <td> @Math.Round((Convert.ToDouble(@element.TotalAnswered) / Convert.ToDouble(@element.TotalQuestions)) * 100, 2)%</td>
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                    }
+
+
+
+                    <td>@element.DefinationName</td>
+                </tr>
+
+
+
+                        }
+        </tbody>
+    </table>
+    <div><br /></div>
+                        }
+
+
+
+
+@ShowTree(Model.Sections, 1, 1)
+
+
+
+@if (Model.SiteAttendeesList.Count > 0)
+{
+    <table cellspacing="0" class="attendeemainTable" width="100%" style="margin-bottom:0px;border-left:1px solid #cfcfdb; border-right:1px solid #cfcfdb; border-bottom:1px solid #cfcfdb">
+        <thead>
+            <tr>
+
+                <th style="width:70%;background-color:gray;color:white;">Attendee Info</th>
+
+                <th style="width:30%;background-color:gray;color:white;">Signature</th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+
+
+            @foreach (var element in Model.SiteAttendeesList)
+            {
+                <tr>
+                    <td style="width:70%;border-bottom:3px solid #cfcfdb !important;border-right:1px solid #cfcfdb !important">
+                        <table id="attendeetable" width="100%" class="table table-striped">
+                            <tbody>
+                                <tr style="padding: 10px;">
+                                    <td style="width:20%;border-bottom:1px solid #cfcfdb !important;border-right:1px solid #cfcfdb !important;"><b>Name</b></td>
+                                    <td style="width:80%;border-bottom:1px solid #cfcfdb !important;">@element.Name</td>
+                                </tr>
+                                <tr style="padding: 10px;">
+                                    <td style="width:20%;border-bottom:1px solid #cfcfdb !important;border-right:1px solid #cfcfdb !important;"><b>Designation</b></td>
+                                    <td style="width:80%;border-bottom:1px solid #cfcfdb !important;">@element.Designation</td>
+                                </tr>
+                                <tr style="padding: 10px;">
+                                    <td style="width:20%;border-right:1px solid #cfcfdb !important;"><b>Company</b></td>
+                                    <td style="width:80%;">@element.Company</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="width:30%;border-bottom:3px solid #cfcfdb !important;">
+                        <div style="text-align:center;">
+
+                            <img class="js-signaure-img" src="@element.Signature" />
+                        </div>
+
+
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+
+}
+<div><br /></div>
+
+
+@if (Model.AllFanImage != "")
+{
+    <div>
+        <table cellspacing="0" class="sectionTable parentsection" width="100%">
+            <thead>
+                <tr>
+                    <th style="width:60%;background-color:gray;color:white;">Site Information</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <img src="@Model.AllFanImage" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+}

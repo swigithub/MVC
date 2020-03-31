@@ -1,0 +1,215 @@
+﻿@using SWI.Libraries.AD.Entities
+
+@model AD_UEMovement
+
+@{
+    ViewBag.Title = "Equipment Movement";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<script>
+    var UEStatus = '@ViewBag.UEsts';
+    var UEDeviceId = '@ViewBag.UEId';
+    var UEUserId = '@ViewBag.UserId';
+    //alert(UEStatus + ":" + UEDeviceId + ":" + UserId);
+</script>
+
+
+<style>
+
+    /*below are two important css classes for page level transations*/
+
+     .fromUserList{
+        display:none;
+    }
+
+    .issueUserList{
+        display:none;
+    }
+    
+
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border boxHeader">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <a href="@Url.Action("Index","Equipment")" class="btn btn-xs btn-info btn-flat pull-right"> <i class="fa fa-arrow-circle-o-left"></i><b> Back</b></a>
+
+                <a href="@Url.Action("movement","Equipment")" class="btn btn-xs btn-warning btn-flat pull-right"> <i class="fa fa-refresh"></i><b> Reset</b></a>
+
+                <button type="submit" class="btn btn-xs btn-success btn-flat pull-right" id="btn-submit"><i class="fa fa-save"></i><b> Save</b></button>
+            </div>
+
+            <div class="box-body boxBody">
+                <div class="row">
+                    <div class="col-sm-8" style="margin-left:15px;">
+
+                        <div class="form-horizontal">
+                            <style>
+                                .mylabel {
+                                    text-align: left;
+                                    margin-left: 20px;
+                                }
+                            </style>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Transaction Type</label>
+                                        <div class="input-group date" style="width:80%">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-list"></i>
+                                            </div>
+                                            @Html.DropDownListFor(m => m.UEStatusId, new SelectList(ViewBag.UEStatus, "Value", "Text", ViewBag.UEsts), new { @class = "form-control", data_parsley_min = "1" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Date</label>
+
+                                        <div class="input-group" style="width:80%">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" value="@DateTime.Now.ToShortDateString()" disabled class="form-control pull-right" id="datepicker">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="UE Type" style="visibility:hidden" class="control-label mylabel">Equipment Type</label>
+                                        <div class="col-md-10">
+                                            <select id="temp" class="form-control" style="visibility:hidden" disabled>
+                                                <option>-Equipment Type-</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div id="fromUserList" class="form-group">
+                                        <label>Return From User</label>
+                                        <div class="input-group" style="width:80%">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-user"></i>
+                                            </div>
+                                            @*@Html.DropDownList("Users", new SelectList(ViewBag.Users, "Value", "Text", ViewBag.UserId), new { @class = "form-control", data_parsley_min = "1" })*@
+                                            @Html.DropDownListFor(m => m.FromUserId, new SelectList(ViewBag.Users, "Value", "Text", ViewBag.UserId), new { @class = "form-control", data_parsley_min = "1" })
+                                        </div>
+                                    </div>
+
+                                    <div id="issueUserList" class="form-group">
+                                        <label>Issue to User</label>
+                                        <div class="input-group" style="width:80%">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-user"></i>
+                                            </div>
+                                            @Html.DropDownListFor(m => m.UserId, new SelectList(ViewBag.IssueToUsers, "Value", "Text", ViewBag.UserId), new { @class = "form-control", data_parsley_min = "1" })
+
+                                            @*@Html.DropDownList("UserId", new SelectList(ViewBag.IssueToUsers, "Value", "Text", ViewBag.UserId), new { @class = "form-control", data_parsley_min = "1" })*@
+
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Equipment Type</label>
+                                        <div class="input-group date" style="width:80%">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-mobile"></i>
+                                            </div>
+                                            @*<select id="UETypes" class="form-control" disabled>
+                                                    <option>-Equipment Type-</option>
+                                                </select>*@
+                                            @*@Html.DropDownList("UETypes", new SelectList(ViewBag.UETypes, "Value", "Text", "13190"), new { @class = "form-control", data_parsley_min = "1" })*@
+                                            @Html.DropDownListFor(m => m.UETypeId, new SelectList(ViewBag.UETypes, "Value", "Text", ViewBag.UETypeId), new { @class = "form-control", data_parsley_min = "1" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Equipment</label>
+                                        <div class="input-group date" style="width:80%">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-mobile"></i>
+                                            </div>
+                                            <select id="Devices" class="form-control" disabled>
+                                                <option>-Equipment-</option>
+                                            </select>
+                                            @*@Html.DropDownList("Equipments", new SelectList(ViewBag.Equipments, "Value", "Text"), new { @class = "form-control", data_parsley_min = "1" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="box box-solid">
+
+            <!-- /.box-header -->
+            <div class="box-body" style="color:#4063b9">
+                <div class="row">
+                    <div class="col-sm-8">
+                        @using (Html.BeginForm("Movement", "Equipment", FormMethod.Post, new { Id = "frm-Movement" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="UEStatus" id="UEStatus" />
+
+                            <table class="table table-striped  table-bordered" id="tbl-items">
+                                <thead style="background-color:rgba(53, 124, 165, 0.89);color:white">
+                                    <tr style="font-family:'Source Sans Pro',sans-serif">
+                                        <th>Transaction Type</th>
+                                        <th>User</th>
+                                        <th>Equipment Type</th>
+                                        <th>Equipment</th>
+                                        <th style="text-align:center;vertical-align:central"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+    <script src="~/AdminLTE/plugins/select2/js/select2.js"></script><!--dropdown search-->
+    <script src="~/Content/js/EquipmentMovement.js"></script>
+
+
+}
+@section style{
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+    <link href="~/Content/box.css" rel="stylesheet" />
+}

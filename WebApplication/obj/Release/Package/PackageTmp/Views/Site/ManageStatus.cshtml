@@ -1,0 +1,213 @@
+﻿@using SWI.Libraries.Security.Entities
+
+@model Sec_Role
+
+@{
+    ViewBag.Title = "Manage Site Status";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+   
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border boxHeader">
+                <h3 class="box-title">Search Criteria</h3>
+            </div>
+            <div class="box-body boxBody">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                @Html.Label("Type", htmlAttributes: new { @class = "control-label col-md-2" , style = "padding-top: 6px;" })
+                                <div class="col-md-8">
+                                    <select class="form-control" id="ddlType">
+                                        @*<option value="wo">WorkOrder</option>*@
+                                        <option value="Layer">Layer</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group" id="pan-status">
+                                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2", style = "padding-top: 6px;" })
+                                <div class="col-md-8">
+                                    @Html.DropDownList("ddlStatus", ViewBag.WoStatus as List<SelectListItem>, new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="pan-layer">
+                                @Html.Label("Site Code", htmlAttributes: new { @class = "control-label col-md-3", style = "padding-top: 6px;" })
+                                <div class="col-md-8">
+                                   <input type="text" class="form-control" id="txtSiteCode"/>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label class = "control-label col-md-3" style="padding-top: 6px;">From</label>
+                                <div class="input-group date col-md-7">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" id="From" class="form-control date" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label class="control-label col-md-2" style="padding-top: 6px;">To</label>
+
+                                <div class="input-group date col-md-8">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" id="To" class="form-control date" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-1">
+                            <span class="input-group-btn">
+                                <button type="button" id="btnSearch" class="btn btn-success btn-date-filter-search btn-flat"><i class="fa fa-search"></i><b> Search</b></button>
+                            </span>
+                        </div>
+                        
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row" id="panRecord">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border boxHeader">
+                <h3 class="box-title">Work Orders</h3>
+                <button type="submit" class="btn btn-xs btn-success btn-flat pull-right" style="font-size: small;" onclick="btnSave(); return false;" id="btnSave" ><i class="fa fa-save"></i><b> Save</b></button>
+            </div>
+            <div class="box-body boxBody">
+                <div class="row">
+                    <div class="col-md-12" id="secRecord"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datepicker/js")
+
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<script src="~/AdminLTE/plugins/daterangepicker/js/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script>
+        var Filter = '';
+        function btnSave() {
+            var selectedSiteId = [];
+            var selectedStatus = [];
+            var selectedDate = [];
+            $('input:checkbox:checked.SiteSelect').each(function () {
+                var row = $(this).attr('data-row');
+                selectedSiteId.push($(this).val());
+                selectedStatus.push($('#tblStatus-' + row).val());
+                selectedDate.push($('#date-' + row).val());
+            });
+
+            $.ajax({
+                url: '/Site/ManageStatus?Filter=' + Filter,
+                type: 'post',
+                data: { SiteId: selectedSiteId, Status: selectedStatus, Date: selectedDate },
+                success: function (res) {
+                    if (res != 'session expired') {
+                        if (res.Status == 'success') {
+                            $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                        } else {
+                            $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    } else {
+                        $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                },
+                error: function (err) { }
+            });
+
+        }
+        $(function () {
+            var ddlType = $('#ddlType');
+            var ddlStatus = $('#ddlStatus');
+            var pan_status = $('#pan-status');
+            var pan_layer = $('#pan-layer');
+            var btnSearch = $('#btnSearch');
+            var panRecord = $('#panRecord');
+            var secRecord = $('#secRecord');
+            var txtSiteCode = $('#txtSiteCode');
+            
+            var loading = $.loading();
+
+            pan_layer.hide();
+            panRecord.hide();
+
+            function ddlTypeChange(vlaue) {
+                if (vlaue == 'wo') {
+                    pan_status.show();
+                    pan_layer.hide();
+
+                } else {
+                    pan_status.hide();
+                    pan_layer.show();
+                }
+            }
+
+            ddlType.change(function () {
+              var vlaue=  $(this).val()
+              ddlTypeChange(vlaue);
+            });
+
+            ddlTypeChange('Layer');
+         
+
+            btnSearch.click(function () {
+                Filter = $(ddlType).val()
+                var Value = txtSiteCode.val();
+                if (Filter == 'wo') {
+                    Value = ddlStatus.val();
+                }
+                $.ajax({
+                    url: '/Site/ManageStatusList',
+                    data: { Filter: Filter, Value: Value, From: $('#From').val(), To: $('#To').val() },
+                    success: function (res) {
+                        if (res!=null) {
+                            panRecord.show();
+                            secRecord.empty();
+                            secRecord.html(res);
+
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            });
+        });
+      
+       
+    </script>
+}
+@section style{
+    @Styles.Render("~/AdminLTE/plugins/datepicker/css")
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" />
+
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<link href="~/Content/box.css" rel="stylesheet" />
+}

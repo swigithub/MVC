@@ -1,0 +1,65 @@
+﻿@model IEnumerable<SWI.Libraries.AirView.Entities.SectorsVM>
+<div class="simple-tabs">
+    <ul class="nav">
+        @{ var count = 0;}
+        @foreach (var item in ViewBag.TestTypes1)
+        {
+            if (item.KeyCode == "PING" || item.KeyCode == "DOWNLINK" || item.KeyCode == "UPLINK" || item.KeyCode == "CSFB_MO" || item.KeyCode == "CSFB_MT" || item.KeyCode == "SMS_MO" || item.KeyCode == "SMS_MT")
+            {
+                if (count == 0)
+                {
+                    <li class="active"><a href="#@item.KeyCode" title="" data-toggle="tab">@item.DisplayText</a></li>
+                }
+                else
+                {
+                    <li class=""><a href="#@item.KeyCode" title="" data-toggle="tab">@item.DisplayText</a></li>
+                }
+                count++;
+
+            }
+        }
+
+    </ul>
+
+    <div class="btn-group custom-btn-group">
+        @foreach (var item in Model)
+        {
+            <button type="button" class="btn btn-default  getGraphStationarySide" data-sectorID="@item.SectorId" data-NetworkModeId="@ViewBag.NetworkModeId1" data-BandId="@ViewBag.BandId1" data-CarrierId="@ViewBag.CarrierId1" data-ScopeId="@ViewBag.ScopeId1" data-SiteId="@ViewBag.SiteId1" data-Sector="@item.SectorCode">@item.SectorCode</button>
+        }
+
+    </div>
+
+    <div class="tab-content">
+
+        @{ count = 0;}
+        @foreach (var item in ViewBag.TestTypes1)
+        {
+
+            if (item.KeyCode == "PING" || item.KeyCode == "DOWNLINK" || item.KeyCode == "UPLINK" || item.KeyCode == "CSFB_MO" || item.KeyCode == "CSFB_MT" || item.KeyCode == "SMS_MO" || item.KeyCode == "SMS_MT")
+            {
+                if (count == 0)
+                {
+                    <div class="tab-pane fade active in" style="height: 370px; width: 100%;" id="@item.KeyCode">
+                    </div>
+                }
+                else
+                { <div class="tab-pane fade" style="height: 370px; width: 100%;" id="@item.KeyCode">
+        </div>
+
+                }
+                count++;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>

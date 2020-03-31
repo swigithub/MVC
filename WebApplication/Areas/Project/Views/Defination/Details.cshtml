@@ -1,0 +1,3114 @@
+﻿@model List<AirView.DBLayer.Project.Model.PM_KPI>
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.js"></script>
+
+
+@* js and css files for autocomplete widget *@
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="~/Areas/Project/Content/Tokeninput.js"></script>
+<link href="~/Areas/Project/Content/Tokeninput.css" rel="stylesheet" />
+<link href="~/Areas/Project/Content/Tokenstyle.css" rel="stylesheet" />
+<style>
+    #tstable td 
+{
+    text-align: center; 
+    vertical-align: middle;
+}
+     .comboTreeWrapper {
+    position: relative;
+    text-align: left !important;
+    max-width:250px;
+}
+    div.comboTreeDropDownContainer {
+    z-index: 1;
+}
+    .inpt{
+        /*width:120px !important;*/
+    }
+    .tablewrapper {
+    overflow: auto;
+}
+     .table>thead >tr>th{
+         text-align: center;
+       /*padding-left:27px !important;*/
+    }
+    .sweet-alert {
+        background-color: #ffffff;
+        width: 478px;
+        padding: 17px;
+        border-radius: 5px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        margin-left: -256px;
+        margin-top: -200px;
+        overflow: hidden;
+        display: none;
+        z-index: 9999992000 !important;
+    }
+
+    .btn-group-justified > .btn, .btn-group-justified > .btn-group {
+        border: 3px solid white;
+    }
+
+    div.token-input-dropdown {
+        z-index: 9899999999999999 !important;
+    }
+    .page-title{vertical-align:middle}
+
+
+.form-field{margin: 0 0 15px}
+
+button.add-holiday {
+    font-size: 14px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: #57859c;
+    border: 0;
+}
+button.add-holiday span {
+    font-size: 11px;
+    margin-right: 4px;
+}
+
+th label{margin:0}
+
+.ui-widget-content .btn-danger{color:#FFF}
+
+.button-set button {
+    border-radius: 3px;
+}
+#TaskEditForm fieldset > div.row{padding:0}
+#trackergroup .dynatree-container{min-height: 30px}
+</style>
+<script>
+    var Parents = [];
+</script>
+<style>
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x- ng-cloak {
+        display: none !important;
+    }
+
+
+    .ui-widget.ui-widget-content {
+        border: 1px solid #c5c5c5;
+        z-index: 999999999999999999 !important;
+    }
+</style>
+<link href="~/Areas/Project/Content/skin/skin/ui.dynatree.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://angular-ui.github.io/ui-select/dist/select.css">
+<link href="~/Areas/Project/Content/Project/groupMultiSelect.css" rel="stylesheet" />
+<link href="~/Areas/Project/Content/skin/skin/style.css" rel="stylesheet" />
+<script src="~/Content/js/Project/jquery-cookie.js"></script>
+<script src="https://wwwendt.de/tech/dynatree/jquery/jquery-ui.custom.js"></script>
+
+<link href="~/Areas/Project/Content/Drop-Down-Combo-Tree/style.css" rel="stylesheet" />
+<div ng-app="calendarDemoApp" class="ng-cloak" id="CalendarCtrl" ng-controller="CalendarCtrl">
+    <div class="loader-div spinner" style="display: none;">
+        <img ng-src="~/Content/Images/Application/Logo_Loading.gif" class="ajax-loader" />
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+            <span class="page-title txt-color-blueDark" style="font-size: x-large;"> {{s.ProjectName}}</span><span class="label " style="margin-left: 5%;background-color:{{s.StatusColor}};font-size: 14px;"><span style="width:100px"></span> {{s.Status}}</span><br />
+            <span style="font-size: medium;"><strong>Client:</strong> {{s.Client}}</span><span style="margin-left:2%;font-size: medium;"><b>End Client:</b> {{s.EndClient}}</span><br />
+            <span class="ProjectDate"><strong>Start Date:</strong>{{s.EstimateStartDate.replace('/Date(','').replace(')/','') | date : "dd MMM, yyyy" }}</span> 
+            <span class="ProjectDate"><strong> End Date: </strong>{{s.EstimateEndDate.replace('/Date(','').replace(')/','') | date : "dd MMM, yyyy"}}</span>
+
+        </div>
+        <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+            <br /><br />
+            <ul id="sparks" class="">
+                @*
+                    <li class="sparks-info">
+                        <h5> Budget<span class="txt-color-blue">${{s.BudgetCost}}</span></h5>
+                        <div class="sparkline txt-color-blue hidden-mobile hidden-md hidden-sm">
+                            1300, 1877, 2500, 2577, 2000, 2100, 3000, 2700, 3631, 2471, 2700, 3631, 2471
+                        </div>
+                    </li>*@
+                <li class="sparks-info">
+                    @*<div class="sparkline txt-color-purple hidden-mobile hidden-md hidden-sm pull-left" style="margin-right:10px;">
+                        110,150,300,130,400,240,220,310,220,300, 270, 210
+                    </div>*@
+                    @*<h5>Completion <span class="txt-color-purple"><i class="fa fa-arrow-circle-up"></i>{{s.CompletionPercent}}%</span></h5>*@
+                </li>
+                @*
+                    <li class="sparks-info">
+                        <h5> Site Orders <span class="txt-color-greenDark"><i class="fa fa-shopping-cart"></i>&nbsp;2447</span></h5>
+                        <div class="sparkline txt-color-greenDark hidden-mobile hidden-md hidden-sm">
+                            110,150,300,130,400,240,220,310,220,300, 270, 210
+                        </div>
+                    </li>*@
+            </ul>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-3" data-widget-colorbutton="false" role="widget" style="position: relative; opacity: 1; left: 0px; top: 0px;">
+
+                <header role="heading">
+
+                    <span class="widget-icon"> <i class="fa fa-calendar"></i> </span>
+                    <h2>Project Timeline </h2>
+
+                    <div class="widget-toolbar" role="menu">
+
+                        <!-- add: non-hidden - to disable auto hide -->
+                        <div class="btn-group open">
+                            <button class="btn dropdown-toggle btn-xs btn-default" data-toggle="dropdown" aria-expanded="true">
+                                {{SelectedView}}  <i class="fa fa-caret-down"></i>
+                            </button><div class="dropdown-backdrop"></div>
+                            <ul class="dropdown-menu pull-right js-status-update">
+                                <li>
+                                    <a ng-click="View('gantt')" href="javascript:void(0);"> Gantt Chart</a>
+                                </li>
+                                <li>
+                                    <a ng-click="View('calander')" href="javascript:void(0);"> Calender</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                        <!-- <a class="btn btn-xs btn-info" href="#">Add Resources</a>-->
+
+                        @if (ViewBag.AllowUri("/Project/Tasks/New"))
+                        {
+                            @*<a ng-click="NewTaskEvent()" class="btn btn-xs btn-info"  href="#">
+                                Create New Task
+                            </a>*@
+                            <a ng-click="Save()" class="btn btn-xs custom-btn1"  href="#">
+                                Save
+                            </a>
+                        }
+                        <a class="btn dropdown-toggle btn-xs btn-info back" href="/Project/Dashboard/Index/@ViewBag.Id">
+                            Return to Dashboard
+                        </a>
+                    </div>
+                </header>
+
+                <div role="content">
+                    <div ng-show="GanttView">
+                        @Html.Partial("~/Areas/Project/Views/Defination/_GanttView.cshtml")
+
+                    </div>
+
+                    <div ng-show="CalenderView" id="test">
+                        <div style="height:739px" ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade custom-modal" id="TaskModal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" data-backdrop="static" data-keyboard="false">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> {{Header}}</h4>
+                    <button onclick="GridEditor.prototype.ModalClose()" type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <div  id="tabs" class="modal-body" style="max-height:800px;overflow:auto">
+
+                    @*<div id="divTaskTypes" class="btn-group btn-group-justified">
+
+                        <a ng-repeat="item in TaskTypes" ng-disabled="StagesDisable" href="javascript:;" style="font-size: medium;" id="id_{{item.DefinationId}}"
+                           ng-click="setTaskTypeId(item.DefinationId,item.KeyCode,item.ColorCode,item.DefinationName)" class="btn btn-info">{{item.DefinationName}}</a>
+                    </div>*@
+                 
+                    <ul id="myTab1" class="nav nav-tabs bordered">
+                        <li class="active">
+                            <a id="Taber1" href="#s1" data-toggle="tab" aria-expanded="true">Task Information</a>
+                        </li>
+                        <li class="TaskParameter">
+                            <a href="#TaskParameters" data-toggle="tab" aria-expanded="false">Custom Parameter</a>
+                        </li>
+                                            
+                        @if (ViewBag.AllowUri("/Project/Tracker/Index"))
+                        {
+                                                <li class="">
+                                                    <a id="trkrs" href="#Trackers" class="KPITAB" data-toggle="tab" aria-expanded="false">Trackers </a>
+                                                </li>
+                        }
+                        <li class="">
+                            <a href="#ResourcesTab" id="ResourcesTabLink" class="KPITAB" data-toggle="tab" aria-expanded="false">Resources</a>
+                        </li>
+                        <li class="">
+                            <a href="#KpiConfiguration" class="KPITAB" data-toggle="tab" aria-expanded="false">KPIs Configuration</a>
+                        </li>
+                        <li class="">
+                            <a href="#TaskStagesTab" class="TaskStagesTab" data-toggle="tab" aria-expanded="false">Stages</a>
+                        </li>
+                    </ul>
+                   
+
+                    <div id="myTabContent1" class="tab-content padding-10">
+                        <div class="tab-pane fade active in" id="s1">
+                            @Html.Action("New", "Task", new { area = "Project" })
+
+                        </div>  
+                        <div class="tab-pane fade" id="TaskParameters">
+                            <form id="formBuilder"></form>
+                            @*<button type="submit" style="margin-top:20px" ng-click="Save()" class="btn btn-primary pull-right">
+                                Save
+                            </button>*@
+                        </div>
+                        @*<div class="tab-pane" id="Trackers">
+                            <form action="javascript:void(0)" id="Trackersss">
+                                <div id='container'>
+                                    <button type="button" class='add-holiday btn btn-info btn-xs'><span class="glyphicon glyphicon-plus-sign"></span> Add Tracker</button>
+
+                                    <div class="tablewrapper">
+
+                                        <table class="holiday-table table table-bordered table-striped" id="trckerlst">
+                                            @if (ViewBag.Id != 0 && ViewBag.Id < 0)
+                                            {
+                                                <thead>
+                                                    <tr>
+                                                        <th>Groups<label style="color:darkred">*</label></th>
+                                                        <th>Title<label style="color:darkred">*</label></th>
+                                                        <th>Unit<label style="color:darkred">*</label></th>
+                                                        <th>Budgate<label style="color:darkred">*</label></th>
+                                                        <th>Actual</th>
+
+                                                    </tr>
+
+                                                </thead>
+                                            }
+                                            <tbody>
+                                                <tr style="display:none">
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                @if (ViewBag.Id != 0 && ViewBag.Id < 0)
+                                                {
+                                                    <tr>
+                                                        <td><select><option>Select Groups</option></select></td>
+                                                        <td><input type="text" name="Title" id="Title" value="" required /></td>
+                                                        <td><input type="text" name="Unit" id="Unit" value="" required /></td>
+                                                        <td><input type="text" name="Budget" id="Budget" value="" required /></td>
+                                                        <td><input type="text" name="Actual" id="Actual" value="" /></td>
+                                                        <td><a href="#" class="del-holiday btn btn-danger btn-xs">Delete Row</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                @*<button type="submit" class='btn btn-primary pull-right' style="margin-top:20px" id="KPISave">Save</button>
+                            </form>
+
+
+                        </div>*@
+
+
+                        @*<div class="tab-pane fade" id="trackergroup">
+                            <div class="pg">
+                                <div class="pg-rows-top">
+                                    <button class="btn btn-info btn-xs addmorekpi add-new">Add New</button>
+                                </div>
+                                <div class="pg-grids">
+                                    <div class="pg-row-wrap">
+                                        <div class="pg-row">
+                                            <span contenteditable="true">Technology</span>
+                                            <span>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-xs btn-primary add-child"><i class="fa fa-plus-circle"></i> Add Child</button>
+                                                    <button class="btn btn-xs btn-danger delete-node"><i class="fa fa-times"></i> Delete</button>
+                                                </div>
+                                            </span>
+                                        </div><!-- Pg Row -->
+                                    </div><!-- Pg Row Wrap -->
+                                </div><!-- Pg Grids -->
+                            </div><!-- Pg -->
+                        </div>*@
+                        <div class="tab-pane fade" id="ResourcesTab">
+
+                            <!--<div class="form-group row">
+        <label class="col-sm-3 col-form-label">Resource</label>
+        <label class="col-sm-3 col-form-label">Group</label>
+        <label class="col-sm-3 col-form-label">RACI</label>
+        <label class="col-sm-3 col-form-label"></label>
+    </div>
+    <div class="appendRow">
+
+    </div>-->
+                            <div class="button-set">
+                                <button type="button" class="add-holiday btn btn-info btn-sm" id="ResourcesAdd"><span class="glyphicon glyphicon-plus-sign"></span>Add</button>
+                            </div>
+                            <table id='ResourcesTabTable' class="table table-responsive table-bordered table-striped">
+
+                                <thead>
+                                    <tr>
+                                        <th>Resource &nbsp; <sup style="color:red" >*</sup> </th>
+                                        <th>Group &nbsp; <sup style="color:red" >*</sup> </th>
+                                        <th>RACI &nbsp; <sup style="color:red" >*</sup> </th>
+                                        <th>Rate/Hr. &nbsp; <sup style="color:red" >*</sup> </th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="appendRow"></tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="tab-pane fade _TS" id="TaskStagesTab">
+                            <form action="javascript:void(0)" id="TaskStagesTabform">
+                                <div id='container'>
+                                    <div class="button-set">
+                                        <button type="button" class='btn btn-info btn-xs AddMoreTS'><span class="glyphicon glyphicon-plus-sign"></span> Add Stage</button>
+                                        <button type="button" class='DeleteTS  btn btn-danger btn-xs'><span class="glyphicon glyphicon-minus-sign"></span> Delete Stage</button>
+
+                                        <input type="hidden" id="TSformTypeId" name="formTypeId" value="@ViewBag.FormId" />
+                                        <input type="hidden" id="TSdefinationTypeId" name="definationTypeId" value="@ViewBag.DefinationId" />
+                                        <input type="hidden" value="" id="TSTaskId" />
+
+                                    </div>
+
+                                    <div class="tablewrapper">
+                                        <table id='tstable' class="table table-responsive table-bordered table-striped">
+
+                                            <thead>
+                                                <tr>
+                                                    <th style="padding-left:10px !important;"><input class='check_all_ts' type='checkbox' onclick="select_all_ts()" /></th>
+                                                    <th style="width: 30%;">Title <span style="color: red">*</span></th>
+                                                    <th style="display: none"></th>
+                                                    <th style="display: none"></th>
+                                                    <th style="display: none"></th>
+                                                    <th>Description <span style="color: red">*</span></th>
+                                                    <th style="width: 12%;">Sort Order <span style="color: red">*</span></th>
+                                                
+                                            
+                                                </tr>
+                                            </thead>
+                                            <tbody id="TaskStagesBody">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                @*<button type="submit" class='btn btn-primary pull-right' style="margin-top:20px" id="KPISave">Save</button>*@
+                            </form>
+
+                        </div>
+                        <div class="tab-pane fade _KPITAB" id="KpiConfiguration">
+                            <form action="javascript:void(0)" id="KpiConfigurationform">
+                                <div id='container'>
+                                    <div class="button-set">
+                                        <button type="button" class='btn btn-info btn-xs addmorekpi'><span class="glyphicon glyphicon-plus-sign"></span> Add KPI</button>
+                                        <button type="button" class='removekpi  btn btn-danger btn-xs'><span class="glyphicon glyphicon-minus-sign"></span> Delete KPI</button>
+
+                                        <input type="hidden" id="formTypeId" name="formTypeId" value="@ViewBag.FormId" />
+                                        <input type="hidden" id="definationTypeId" name="definationTypeId" value="@ViewBag.DefinationId" />
+                                        <input type="hidden" value="" id="TaskId" />
+
+                                    </div>
+
+                                    <div class="tablewrapper">
+                                        <table id='kpitable' class="table table-responsive table-bordered table-striped">
+
+                                            <thead>
+                                                <tr>
+                                                    <th style="padding-left:10px !important;"><input class='check_all_kpi' type='checkbox' onclick="select_all_kpi()" /></th>
+                                                    <th>KPI</th>
+                                                    <th>Technology</th>
+                                                    <th>Bands</th>
+                                                    <th>Data Type</th>
+                                                    <th>Level</th>
+                                                    <th>KPI Type</th>
+                                                    <th>Weightage</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="kpitablebody">
+                                                <tr class="kpitablebodytr">
+                                                    <td><input type='checkbox' class="kpicheckbox" /></td>
+                                                    <td>
+                                                        <input type="text" value="" name="[$].Kpi_Name" class="required form-control Kpi_Name" />
+                                                        <input type="hidden" value="" class="TaskId" name="[$].TaskId" />
+                                                        <input type="hidden" value="true" class="IsActive" name="[$].IsActive" />
+                                                    </td>
+                                                    <td>
+                                                        <select name="[$].Technology" class="form-control required Technology">
+                                                            <option value="0">--Select--</option>
+
+                                                        </select>
+
+                                                    </td>
+                                                    <td>
+                                                        <select name="[$].BandId" class="form-control required Band">
+                                                            <option value="">--Select--</option>
+
+                                                        </select>
+
+                                                    </td>
+                                                    <td>
+                                                        <select required name="[$].DataType" class="form-control required Datatype">
+                                                            <option value="">--Select--</option>
+
+                                                        </select>
+
+                                                    </td>
+                                                    <td>
+                                                        <select required name="[$].Level" class="form-control required Level">
+                                                            <option value="">--Select--</option>
+
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select required name="[$].Kpi_Type" class="form-control required KpiType">
+                                                            <option value="">--Select--</option>
+                                                        </select>
+
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="[$].Weightage" class="form-control required Weightage" />
+
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="[$].Formula" class="demo-input-custom-labels hidden" />
+                                                    </td>
+                                                </tr>
+                                                @*@Html.Action("GetKPI", "KPI", new { Id = 0, Type = "Partial" })*@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                @*<button type="submit" class='btn btn-primary pull-right' style="margin-top:20px" id="KPISave">Save</button>*@
+                            </form>
+
+                        </div>
+                        <div class="tab-pane fade" id="trackergroup">
+                           
+                           
+                            <div class="col-md-6" >
+                                <label>Tracker Groups Tree</label>
+                                <div id="dnatree">
+                                </div>
+                                @*@Html.Partial("~/Areas/Project/Views/Dashboard/_trackerGroup.cshtml")*@
+                            </div>
+                            <div class="col-md-6">
+                                @*<div class="col-md-6">*@
+                                <label>Tracker Group Title</label>
+                                <input type="text" class="form-control" required id="trckerGrup" placeholder="Enter Group Title" />
+                                <label style="margin-top: 5px;">Map Code </label>
+                                @*<input type="text" class="form-control" id="trckerGrup" placeholder="Enter Group Title" />*@
+                                <input type="text" class="form-control" id="GroupCode" placeholder="Enter Group Code" />
+
+                                @*</div>
+            <div class="col-md-6">
+                <label>Parent Tracker Group </label>
+                <input type="text" class="form-control" id="trckerGrupId" />
+
+            </div>*@
+                            </div>
+                            @*<div class="pg">
+                                <div class="pg-rows-top">
+                                    <button class="btn btn-sm btn-primary add-new">Add New</button>
+                                </div>
+                                <div class="pg-grids">
+                                    <div class="pg-row-wrap">
+                                        <div class="pg-row">
+                                            <span contenteditable="true">Technology</span>
+                                            <span>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-xs btn-primary add-child"><i class="fa fa-plus-circle"></i> Add Child</button>
+                                                    <button class="btn btn-xs btn-danger delete-node"><i class="fa fa-times"></i> Delete</button>
+                                                </div>
+                                            </span>
+                                        </div> Pg Row 
+                                    </div>
+                                </div>
+                           </div>*@
+                           <!-- Pg Row Wrap -->
+                        </div>
+                        <div class="tab-pane" id="Trackers">
+                            <form action="javascript:void(0)" id="Trackersss">
+                                <div id='container'>
+                                    <div class="button-set">
+                                        <button type="button" class='add-holiday btn btn-info btn-sm'><span class="glyphicon glyphicon-plus-sign"></span> Add Tracker</button>
+                                            <button type="button" id="trackrgrup" href="#trackergroup" style="font-size: 14px;padding: 3px 10px;border-radius: 3px;background: #57859c;border: 0;" class='btn btn-info btn-sm' data-toggle="tab"><span class="glyphicon glyphicon-plus-sign"></span> Add Tracker Groups</button>
+                                
+                                    </div>
+
+                                    <div class="tablewrapper">
+
+                                        <table class="table holiday-table table-bordered" id="trckerlst">
+                                            @if (ViewBag.Id != 0 && ViewBag.Id < 0)
+                                            {
+                                                <thead>
+                                                    <tr>
+                                                        <th>Groups<label style="color:darkred">*</label></th>
+                                                        <th>Title<label style="color:darkred">*</label></th>
+                                                        <th>Unit<label style="color:darkred">*</label></th>
+                                                        <th>Budget<label style="color:darkred">*</label></th>
+                                                        <th>Actual</th>
+
+                                                    </tr>
+
+                                                </thead>
+                                            }
+                                            <tbody>
+                                                <tr style="display:none">
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                @if (ViewBag.Id != 0 && ViewBag.Id < 0)
+                                                {
+                                                    <tr>
+                                                        <td><input type="text" placeholder="Select Tracker Group" id="TrackerGroup" class="form-control"  ng-required="true"></td>
+                                                        <td><input type="text" class="inpt" name="Title" id="Title" value="" required /></td>
+                                                        <td><input type="text" class="inpt" name="Unit" id="Unit" value="" required /></td>
+                                                        <td><input type="text" class="inpt" name="Budget" id="Budget" value="" required /></td>
+                                                        <td><input type="text" class="inpt" name="Actual" id="Actual" value="" /></td>
+                                                        <td><a href="#" title="Delete Row" class="del-holiday btn btn-default bg-color-red txt-color-white"><i class="fa fa-trash-o"></i></a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                @*<button type="submit" class='btn btn-primary pull-right' style="margin-top:20px" id="KPISave">Save</button>*@
+                            </form>
+
+
+                        </div>
+
+                            
+
+                        @*<footer style="height: 27px;">
+                        <button type="submit" ng-click="Save()" class="btn btn-primary pull-right">
+                        Save
+                        </button>
+                        </footer>*@
+                        </div>
+                            </div>
+                            @*<footer style="height: 27px;">
+                    <button type="submit" ng-click="Save()" class="btn btn-primary pull-right">
+                        Save
+                    </button>
+                </footer>*@
+                <div class="modal-footer">
+                    <button id="CloseBtn" type="button" onclick="GridEditor.prototype.ModalClose()" class="btn btn-footer2">Close</button>
+                    <a id="ReturnBtn" href="#Trackers"  class="btn btn-info" data-toggle="tab" @*type="button"*@>Back</a>
+                    <button id="TASKSave" type="button" onclick="GridEditor.prototype.EditTask()" class="btn btn-footer1 pull-right">
+                        Save
+                    </button>
+                    <button type="submit" class='btn btn-footer1 pull-right' ng-click="TaskParameterSave()" id="TASKPARAMETERSave">Save</button>
+
+                    <!--<button type="button" class="btn btn-footer1 pull-right" id="ResourcesAdd">New</button>-->
+                    <button type="button" class="btn btn-footer1 pull-right" id="ResourcesSave">Save</button>
+                    <button type="submit" class='btn btn-footer1 pull-right' id="TrackersSave">Save</button>
+                    <button type="submit" class='btn btn-footer1 pull-right' id="KPISave">Save</button>
+                    <button type="submit" class='btn btn-footer1 pull-right' id="TrackerGroupsSave">Save</button>
+                    <button type="submit" class='btn btn-footer1 pull-right' id="taskWorkFlowSaveBtn">Save</button>
+                </div>
+                        </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal  fade" id="ThresholdModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                    <button type="button" style="color:white" class="close" onclick="ThresholdModalClose(this)" aria-hidden="true">
+                        ×
+                    </button>
+                    <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"> <label> Threshold</label></h5>
+                </div>
+                <div class="modal-body" style="max-height:520px;overflow:auto">
+                    <form id="">
+                        <div id='container'>
+                            <br />
+                            <button type="button" class='removethreshold btn btn-default'><span class="glyphicon glyphicon-minus-sign"></span> Delete Threshold</button>
+                            <button type="button" class='btn btn-default addmorethreshold'><span class="glyphicon glyphicon-plus-sign"></span> Add Threshold</button>
+                            <br />
+                            <br />
+
+                            <input type="hidden" id="formTypeId" name="formTypeId" value="@ViewBag.FormId" />
+                            <input type="hidden" id="definationTypeId" name="definationTypeId" value="@ViewBag.DefinationId" />
+
+                            <div class="tablewrapper" >
+                                <table id='thresholdtable' class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding-left:10px !important;"><input class='check_all_threshold' type='checkbox' onclick="select_all_threshold()" /></th>
+                                            <th>KPI</th>
+                                            <th>Condition</th>
+                                            <th>Threshold</th>
+                                            <th>Color</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="thresholdtablebody">
+                                        <tr class="thresholdtabletr">
+                                            <td><input type='checkbox' class="thresholdcheckbox" /></td>
+                                            <td>
+                                                @*<input type="text" disabled class="KPIName  form-control" name="[0].KPIName" />*@
+                                                <div class="label label-default KPIName" style="background-color:white;color:black"></div>
+                                                <input class="KPI form-control" type="hidden" name="[$].KPI" />
+                                                <input type="hidden" value="true" class="IsActive" name="[$].IsActive" />
+                                            </td>
+                                            <td>
+                                                <select required name="[$].Condition" class="form-control required Condition">
+                                                    <option value="">--Select--</option>
+                                                </select>
+
+                                            </td>
+                                            <td>
+                                                <input required type="text" name="[$].Threshold_Name" class="form-control required Threshold_Name" />
+                                                <input type="text" name="[$].ThresholdTo" class="form-control ThresholdTo hidden" />
+                                            </td>
+                                            <td>
+                                                <input required type="color" name="[$].Color" class="form-control required" />
+                                            </td>
+                                            <td>
+                                                <select required name="[$].Action" class="form-control Action required">
+                                                    <option value="0">--Select--</option>
+
+                                                </select>
+
+                                            </td>
+                                        </tr>
+                                        @*@Html.Action("Getthreshold", "KPI", new { Id = 0, Type = "Partial" })*@
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary pull-right" style="margin-top:20px" id="SaveThreshold" KP_ID="">Save</button>
+                    </form>
+                    <footer></footer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal  fade" id="FormulaModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                    <button type="button" style="color:white" class="close" onclick="FormulaModalClose(this)" aria-hidden="true">
+                        ×
+                    </button>
+                    <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"> <label> Formula</label></h5>
+                </div>
+                <div class="modal-body" style="max-height:520px;overflow:auto">
+                    <form id="">
+                        <div id='container'>
+                            <br />
+                            <button type="submit" class="btn btn-default" id="SaveFormula" KP_ID="">Save</button>
+                            <br />
+                            <br />
+
+                        </div>
+                    </form>
+                    <footer></footer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal  fade" id="DropdownModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body" style="max-height:520px;overflow:auto">
+                    <form id="">
+                        <div id='container'>
+                            <br />
+                            <br />
+                            <br />
+
+                            <div class="tablewrapper">
+                                <table id='dropdowntable' class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                              <th>Name</th>
+                                            </tr>
+                                    </thead>
+                                    <tbody id="dropdowntablebody">
+                                        
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                     </form>
+                    <footer></footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <!-- SPARKLINES -->
+<script src="https://code.jquery.com/ui/1.8.23/jquery-ui.min.js"
+        integrity="sha256-sEFM2aY87nr5kcE4F+RtMBkKxBqHEc2ueHGNptOA5XI="
+        crossorigin="anonymous"></script>
+<script> var i18ProjectId = '@ViewBag.Id';</script>
+<script src="~/Content/js/Plugins/angularmultislect/multiselect.js"></script>
+<script src="~/Areas/Project/Content/Project/groupMultiSelect.js"></script>
+<script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+    <script src="~/AdminLTE/plugins/datepicker/js/date.format.js"></script>
+    <script src="~/SmartAdmin/js/plugin/sparkline/jquery.sparkline.min.js"></script>
+    <script src="~/AdminLTE/bootstrap/js/ui-bootstrap-tpls-0.13.0.js"></script>
+    <script src="~/AdminLTE/plugins/momentjs/js/moment.min.js"></script>
+    <script src="~/Content/js/Plugins/CalendarAngular/fullcalendar.js"></script>
+    <script src="~/Content/js/Plugins/CalendarAngular/calendar.js"></script>
+    <script src="~/AdminLTE/plugins/datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="~/AdminLTE/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/Content/js/Plugins/spectrum/spectrum.js"></script>
+    <script src="~/SmartAdmin/js/moment.min.js"></script>
+    <script src="~/SmartAdmin/js/datetime-moment.js"></script>
+    <script src="~/Scripts/gantt/libs/jquery/jquery.livequery.1.1.1.min.js"></script>
+    <script src="~/Scripts/gantt/libs/jquery/jquery.timers.js"></script>
+    <script src="~/Scripts/gantt/libs/utilities.js"></script>
+    <script src="~/Scripts/gantt/libs/forms.js"></script>
+    <script src="~/Scripts/gantt/libs/date.js"></script>
+    <script src="~/Scripts/gantt/libs/dialogs.js"></script>
+    <script src="~/Scripts/gantt/libs/layout.js"></script>
+   
+    <script src="~/Scripts/gantt/libs/i18nJs.js"></script>
+    <script src="~/Scripts/gantt/libs/jquery/dateField/jquery.dateField.js"></script>
+    <script src="~/Scripts/gantt/libs/jquery/JST/jquery.JST.js"></script>
+<script src="~/Areas/Project/Content/Drop-Down-Combo-Tree/comboTreePlugin.js"></script>
+<script src="~/Areas/Project/Content/jquery.dynatree.min.js"></script>
+    @*
+        <script type="text/javascript" src="~/Scripts/gantt/libs/jquery/svg/jquery.svg.min.js"></script>
+        <script type="text/javascript" src="~/Scripts/gantt/libs/jquery/svg/jquery.svgdom.1.8.js"></script>*@
+
+    <script src="~/Scripts/gantt/libs/jquery/svg/jquery.svg.min.js"></script>
+    <script src="~/Scripts/gantt/libs/jquery/svg/jquery.svgdom.1.8.js"></script>
+
+
+
+    <script src="~/Scripts/gantt/ganttUtilities.js"></script>
+    <script src="~/Scripts/gantt/ganttTask.js"></script>
+    <script src="~/Scripts/gantt/ganttDrawerSVG.js"></script>
+    <script src="~/Scripts/gantt/ganttGridEditor.js"></script>
+    <script src="~/Scripts/gantt/ganttMaster.js"></script>
+
+
+    @*
+        <script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+
+        <script src="~/AdminLTE/plugins/select2/js/ngselect2.js"></script>*@
+    @*
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-sanitize.js"></script>*@
+    @*<script src="~/Scripts/angular-sanitize.js"></script>*@
+
+    <script src="~/Content/js/angular-sanitize.js"></script>
+    @*
+        <script src="https://angular-ui.github.io/ui-select/dist/select.js"></script>*@
+
+    <script src="~/Areas/Project/Angular/select.js"></script>
+
+    <script>
+        $("#ReturnBtn").hide();
+        var ProjectId = '@ViewBag.Id';
+        var UserId = '@ViewBag.UserId';
+        var DefaultStatusId, DefaultPriorityId = 0
+        var Resources = [];
+        var NewThis = false;
+        var myData = [];
+        var xx = 0;
+        var tasId=0;
+        $(document).ready(function () {
+
+            $("#TASKSave").show();
+            $("#KPISave").hide();
+            $("#ReturnBtn").hide();
+            $("#taskWorkFlowSaveBtn").hide();
+            /* == Resources Tab == */
+            $('#ResourcesAdd').hide();
+            $('#ResourcesSave').hide();
+            $("#TrackersSave").hide();
+            $("#TrackersSave").hide();
+            $("#TrackerGroupsSave").hide();
+    
+            //"/Project/Task / PopulateResources /? ProjectId = " +ProjectId+" & TaskId=" + $("#TaskId").val(),
+            
+
+
+
+            $(document).on('click', '#ResourcesAdd', function () {
+     
+
+                var dom ='<tr class="ResourceRow">'+
+                    '<td>' +
+                    '<select required class="form-control ResourcesList" >'+
+                    '<option value="">-Resource-</option>' +
+                    '</select>' +
+                    '</td>' +
+                    '<td>' +
+                    '<select required class="form-control GroupList" >' +
+                    '<option value="">-Workgroup-</option>' +
+                    '</select>' +
+                    '</td>' +
+                    '<td>' +
+                    '<select required class="form-control RACIList" >' +
+                    '<option value="">-RACI-</option>' +
+                    '<option value="1">R|Responsible</option>' +
+                    '<option value="2">A|Accountable</option>' +
+                    '<option value="3">C|Consulted</option>' +
+                    '<option value="4">I|Informed</option>' +
+                    '</select>' +
+                    '</td>' +
+                    '<td><input required type="text" class="RatePerHour"></td>' +
+                    '<td><button type="button" class="btn btn-default bg-color-red txt-color-white deleteR" title = "Delete Resource"> <i class="fa fa-trash-o"></i> </button></td>'+
+                    '</tr>';
+              
+                $('.appendRow').append(dom);
+                $.ajax({
+                    url: "/Project/Task/PopulateGroupResources/?ProjectId="+ProjectId,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        $(result).each(function (index, value) {
+
+                            //$('.ResourcesList').append('<option value="' + this.ResourceId + '">' + this.ResourceName + '</option>');
+                            $('.GroupList').last().append('<option value="' + this.GroupId + '">' + this.GroupName + '</option>');
+                           
+                        });
+
+
+                    }
+                });
+                $.ajax({
+                    url: "/Project/Task/PopulateUserResourcesProject/?id=" + ProjectId,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (Innerresult) {
+       
+                      
+                        $(Innerresult).each(function (index, value) {
+
+                            $('.ResourcesList').last().append('<option value="' + this.ResourceId + '">' + this.ResourceName + '</option>');
+                            //$('.GroupList').append('<option value="' + this.GroupId + '">' + this.GroupName + '</option>');
+
+                        });
+
+                        
+                    }
+                });
+                
+            });
+
+            $(document).on('click', '#ResourcesSave', function () {
+                let RequiredFields = true;
+                $('.appendRow').find('input').each(function () {
+                    if (!$(this).prop('required')) {
+                        // console.log("NR");
+                    } else {
+                        //console.log("IR");
+                        if ($(this).val() == "") {
+                            RequiredFields = false
+                        }
+                    }
+                });
+                $('.appendRow').find('select').each(function () {
+                    if (!$(this).prop('required')) {
+
+                    } else {
+                        if ($(this).val() == "" || $(this).val() == "0" || $(this).val() == "?") {
+                            RequiredFields = false
+                        }
+
+                    }
+                });
+
+                if(RequiredFields == true){
+                var count = $('.ResourceRow').children().children('select').length / 3;
+                
+                BindModel = [];
+                for (x = 0; x < count; x++) {
+                    var ResourceId = $('.ResourcesList').eq(x).val();
+                    var ResourceGroupId = $('.GroupList').eq(x).val();
+                    var RACIId = $('.RACIList').eq(x).val();
+                    var TaskId = $("#TaskId").val();
+                    var PMTRId = $('.ResourceRow').eq(x).attr('value');
+                    var RatePerHour = $('.RatePerHour').eq(x).val();
+                    if (PMTRId == 'undefined') {
+                        PMTRId = 0;
+                    }
+                    if (RatePerHour == 'undefined') {
+                        RatePerHour = 0;
+                    }
+                    var model = {
+                        ResourceId: ResourceId,
+                        GroupId: ResourceGroupId,
+                        RACIId: RACIId,
+                        TaskId: TaskId,
+                        ProjectId: ProjectId,
+                        PMTRId: PMTRId,
+                        RatePerHour: RatePerHour
+                    };
+
+                    BindModel.push(model);
+                }
+                
+                $.ajax({
+                    url: "/Project/Task/SetResources/",
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(BindModel),
+                    datatype: JSON,
+                    success: function (result) {
+                        swal("Saved !", "Successfully Created !", "success");
+
+                        $('.appendRow').empty();
+                        $.ajax({
+                            url: "/Project/Task/GetResources/?ProjectId=" + ProjectId + "&TaskId=" + $("#TaskId").val(),
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            datatype: JSON,
+                            success: function (result) {
+                                var RID = this.ResourceId;
+                                var GID = this.GroupId;
+                                var RACIID = this.RACIId;
+                                var RatePerHour = this.RatePerHour;
+
+                                var count = $(result).length;
+                               
+                                if (count != 0) {
+                                    for (x = 0; x < count; x++) {
+
+                                        var dom = '<tr class="ResourceRow" value="' + result[x].PMTRId + '">' +
+                                            '<td>' +
+                                            '<select required class="form-control ResourcesList" >' +
+                                            '<option value="">-Resource-</option>' +
+                                            '</select>' +
+                                            '</td>' +
+                                            '<td>' +
+                                            '<select required class="form-control GroupList" >' +
+                                            '<option value="">-Workgroup-</option>' +
+                                            '</select>' +
+                                            '</td>' +
+                                            '<td>' +
+                                            '<select required class="form-control RACIList" >' +
+                                            '<option value="">-RACI-</option>' +
+                                            '<option value="1">R|Responsible</option>' +
+                                            '<option value="2">A|Accountable</option>' +
+                                            '<option value="3">C|Consulted</option>' +
+                                            '<option value="4">I|Informed</option>' +
+                                            '</select>' +
+                                            '</td>' +
+                                            '<td><input required type="text" class="RatePerHour" value="' + result[x].RatePerHour + '"></td>' +
+                                            '<td><button type="button" class="btn btn-default bg-color-red txt-color-white  deleteR" title="Delete Resource" value="' + result[x].PMTRId + '"> <i class="fa fa-trash-o"></i></button></td>' +
+                                            '</tr>';
+
+                                        $('.appendRow').append(dom);
+
+                                    }
+
+                                    $.ajax({
+                                        url: "/Project/Task/PopulateGroupResources/?ProjectId="+ProjectId,
+                                        type: "POST",
+                                        contentType: "application/json; charset=utf-8",
+                                        datatype: JSON,
+                                        success: function (Innerresult) {
+                                            $(Innerresult).each(function (index, value) {
+
+                                                //$('.ResourcesList').append('<option value="' + this.ResourceId + '">' + this.ResourceName + '</option>');
+                                                $('.GroupList').append('<option value="' + this.GroupId + '">' + this.GroupName + '</option>');
+
+                                            });
+
+
+
+                                            for (x = 0; x < count; x++) {
+                                                $('.ResourcesList').eq(x).val(result[x].ResourceId);
+                                                $('.GroupList').eq(x).val(result[x].GroupId);
+                                                $('.RACIList').eq(x).val(result[x].RACIId);
+
+                                            }
+                                        }
+                                    });
+                                    $.ajax({
+                                        url: "/Project/Task/PopulateUserResourcesProject/?id=" + ProjectId,
+                                        type: "POST",
+                                        contentType: "application/json; charset=utf-8",
+                                        datatype: JSON,
+                                        success: function (Innerresult) {
+                                            $(Innerresult).each(function (index, value) {
+
+                                                $('.ResourcesList').append('<option value="' + this.ResourceId + '">' + this.ResourceName + '</option>');
+                                                //$('.GroupList').append('<option value="' + this.GroupId + '">' + this.GroupName + '</option>');
+
+                                            });
+
+
+                                            for (x = 0; x < count; x++) {
+                                                $('.ResourcesList').eq(x).val(result[x].ResourceId);
+                                                $('.GroupList').eq(x).val(result[x].GroupId);
+                                                $('.RACIList').eq(x).val(result[x].RACIId);
+
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    var dom = '<tr class="ResourceRow">' +
+                                        '<td>' +
+                                        '<select required class="form-control ResourcesList" >' +
+                                        '<option value="">-Resource-</option>' +
+                                        '</select>' +
+                                        '</td>' +
+                                        '<td>' +
+                                        '<select required class="form-control GroupList" >' +
+                                        '<option value="">-Workgroup-</option>' +
+                                        '</select>' +
+                                        '</td>' +
+                                        '<td>' +
+                                        '<select required class="form-control RACIList" >' +
+                                        '<option value="">-RACI-</option>' +
+                                        '<option value="1">R|Responsible</option>' +
+                                        '<option value="2">A|Accountable</option>' +
+                                        '<option value="3">C|Consulted</option>' +
+                                        '<option value="4">I|Informed</option>' +
+                                        '</select>' +
+                                        '</td>' +
+                                        '<td><input required type="text" class="RatePerHour"></td>' +
+                                        '<td><button type="button" class="btn btn-default bg-color-red txt-color-white deleteR" title = "Delete Resource" > <i class="fa fa-trash-o"></i> </button></td>' +
+                                        '</tr>';
+
+                                    $('.appendRow').append(dom);
+
+                                    $.ajax({
+                                        url: "/Project/Task/PopulateGroupResources/?ProjectId="+ProjectId,
+                                        type: "POST",
+                 
+                                        contentType: "application/json; charset=utf-8",
+                                        datatype: JSON,
+                                        success: function (result) {
+                                            $(result).each(function (index, value) {
+
+
+                                                $('.GroupList').append('<option value="' + this.GroupId + '">' + this.GroupName + '</option>');
+
+                                            });
+
+
+                                        }
+                                    });
+
+                                    $.ajax({
+                                        url: "/Project/Task/PopulateUserResourcesProject/?id=" + ProjectId,
+                                        type: "POST",
+                                        contentType: "application/json; charset=utf-8",
+                                        datatype: JSON,
+                                        success: function (Innerresult) {
+                                            $(Innerresult).each(function (index, value) {
+
+                                                $('.ResourcesList').append('<option value="' + this.ResourceId + '">' + this.ResourceName + '</option>');
+
+
+                                            });
+
+
+
+                                        }
+                                    });
+                                }
+
+
+
+                            }
+                        });
+                        
+                        //$.notify("Successfully Created", { type: result.status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                    },
+                    error: function (result) {
+                        swal("Alert !", "There is an error to create resources !", "error");
+                        //$.notify("There is an error to create group", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                });
+                    //$('#PostSubmit').click();
+                }
+                else {
+                    swal({
+                        title: "Fields with * are Compulsary !",
+                        type: "warning",
+                        border: "3px solid red;"
+                    });
+                }
+            });
+
+            $(document).on('click', '.deleteR', function () {
+                var PMTRId = $(this).attr('value');
+                if (PMTRId == undefined) {
+                    $(this).parent().parent().remove();
+                } else {
+                    $(this).parent().parent().remove();
+                    $.ajax({
+                        url: "/Project/Task/DeleteResources/?id="+PMTRId,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        datatype: JSON,
+                        success: function (result) {
+                            swal("Deleted !", "Successfully Deleted !", "success");
+                        },
+                        error: function (result) {
+                            swal("Alert !", "There is an error to delete resources !", "error");
+                            //$.notify("There is an error to create group", { type: data.status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    });
+                }
+                
+
+                
+            });
+            // DO NOT REMOVE : GLOBAL FUNCTIONS!
+           
+            pageSetUp();
+       
+
+          
+        });
+
+    </script>
+    <script src="~/Areas/Project/Content/ProjectDetails.js"></script>
+
+    <script src="~/Areas/Project/Content/LoadGantt.js"></script>
+
+
+}
+@section style{
+
+
+    <link rel=stylesheet href="~/Scripts/gantt/platform.css" type="text/css">
+    <link rel=stylesheet href="~/Scripts/gantt/libs/jquery/dateField/jquery.dateField.css" type="text/css">
+
+    <link href="~/Content/js/Plugins/CalendarAngular/fullcalendar.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/datepicker/css/datepicker3.css" rel="stylesheet" />
+
+
+    <link rel=stylesheet href="~/Scripts/gantt/gantt.css" type="text/css">
+    <link rel=stylesheet href="~/Scripts/gantt/ganttPrint.css" type="text/css" media="print">
+    <link href="~/Content/js/Plugins/spectrum/spectrum.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+    <link rel="stylesheet" href="https://angular-ui.github.io/ui-select/dist/select.css">
+
+
+    @*<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>*@
+
+    @*<link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />*@
+
+    <style>
+        .smart-form section {
+            margin-bottom: 0px !important;
+        }
+
+        .loader-div {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        .ajax-loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -32px; /* -1 * image width / 2 */
+            margin-top: -32px; /* -1 * image height / 2 */
+            display: block;
+        }
+
+        .ProjectDate {
+            font-size: medium;
+        }
+
+        @@media (min-width: 768px) {
+            .modal-dialog {
+                width: 1000px;
+            }
+        }
+    </style>
+    <style>
+        .resEdit {
+            padding: 15px;
+        }
+
+        .resLine {
+            width: 95%;
+            padding: 3px;
+            margin: 5px;
+            border: 1px solid #d0d0d0;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .ganttButtonBar h1 {
+            color: #000000;
+            font-weight: bold;
+            font-size: 28px;
+            margin-left: 10px;
+        }
+
+        svg:not(:root) {
+            overflow: auto !important;
+        }
+
+        body {
+            overflow: scroll !important;
+        }
+
+        .jarviswidget > div {
+            padding: 0;
+        }
+
+        /*ul.token-input-list li input {
+            width: 350px !important;
+        }*/
+
+        .token-input-dropdown-facebook {
+            z-index: 9999999999999999999999999999 !important;
+            width: 300px;
+        }
+        .button-set {
+            margin: 20px 0 10px;
+        }
+
+    </style>
+
+}
+    <script>
+
+        var MyTasks = [];
+        var tasksJsonData = [];
+    var SelectedDefinationTypes=0;
+    var NOTVALIDFORMULA = false;
+    var CurrentParentKpi = 0;
+    var CurrentParentKpiName = "";
+    var KPIFirstRow = $('.kpitablebodytr').html();
+    var TSFirstRow = $('.TaskStagesBodytr').html();
+    var ThresholdFirstrow = $(".thresholdtabletr").html();
+    $(".addmorekpi").on('click', function () {
+        count = $('#kpitablebody tr').length;
+        i = count;
+        var Local = KPIFirstRow;
+        var oldV = "[$].";
+        var newcount = count - 1;
+        var newV = "" + newcount + "]";
+        var str = Local.replace(RegExp(oldV, "gi"), newV);
+        str = str.replace(RegExp("disabled", "gi"), "").replace(RegExp("kpicheckboxfirst", "gi"), "kpicheckbox");
+        $('#kpitablebody').prepend("<tr class='newkpirow' >" + str + "</tr>");
+        i++;
+    });
+    $(".AddMoreTS").on('click', function () {
+        //count = $('#TaskStagesBody tr').length;
+        //i = count;
+        //var Local = TSFirstRow;
+        //var oldV = "[$].";
+        //var newcount = count - 1;
+        //var newV = "" + newcount + "]";
+        //var str = Local.replace(RegExp(oldV, "gi"), newV);
+        //str = str.replace(RegExp("disabled", "gi"), "").replace(RegExp("tscheckboxfirst", "gi"), "tscheckbox");
+        var row = "";
+        row = `<tr class="TaskStagesBodytr">
+                <td>
+                    <input type='checkbox' class="tscheckbox" name="tscheckbox" data-isDeleted="false" />
+                </td>
+                <td style="display: none">
+                    <input type="text" value="0" name="StageId" />
+                </td>
+                <td style="display: none">
+                    <input type="text" value="0" name="TaskId" />
+                </td>
+                <td style="display: none">
+                    <input type="text" value="@ViewBag.Id"  name="ProjectId" />
+                </td>
+                <td>
+                    <input type="text" value="" name="Title" data-required="yes" required/>
+                </td>
+                <td>
+                    <input type="text" value="" name="Description" data-required="yes" required/>
+                </td>
+                <td>
+                    <input type="number" value="" name="SortOrder" data-required="yes" min="1" maxlength="100000" required/>
+                </td>
+            </tr>`;
+        $('#TaskStagesBody').append(row);
+        i++;
+    });
+    $(".addmorethreshold").on('click', function () {
+        count = $('#thresholdtablebody tr').length;
+        i = count;
+        var Local = ThresholdFirstrow;
+        var oldV = "[$].";
+        var newcount = count;
+        var newV = "" + newcount + "]";
+        //    var str = KPIFirstRow.replace("Band-r0", "Band-r" + count + "");
+        var str = Local.replace(RegExp(oldV, "gi"), newV);
+        str = str.replace(RegExp("", "gi"), "").replace(RegExp("thresholdcheckboxfirst", "gi"), "thresholdcheckbox");
+        $('#thresholdtablebody').prepend("<tr class='newthresholdrow' >" + str + "</tr>");
+        $(".KPI").val(CurrentParentKpi);
+        $(".KPIName").html(CurrentParentKpiName);
+        i++;
+    });
+    function select_all_kpi() {
+        $('input[class=kpicheckbox]:checkbox').each(function () {
+            if ($('input[class=check_all_kpi]:checkbox:checked').length == 0) {
+                $(this).prop("checked", false);
+            } else {
+                $(this).prop("checked", true);
+            }
+        });
+    }
+    function select_all_ts() {
+        $('input[class=tscheckbox]:checkbox').each(function () {
+            if ($('input[class=check_all_ts]:checkbox:checked').length == 0) {
+                $(this).prop("checked", false);
+            } else {
+                $(this).prop("checked", true);
+            }
+        });
+    }
+    function select_all_threshold() {
+        $('input[class=thresholdcheckbox]:checkbox').each(function () {
+            if ($('input[class=check_all_threshold]:checkbox:checked').length == 0) {
+                $(this).prop("checked", false);
+            } else {
+                $(this).prop("checked", true);
+            }
+        });
+    }
+    $(".removekpi").on('click', function () {
+        $('.kpicheckbox:checkbox:checked').each(function () {
+            var val = $(this).parents("tr").find(".Kpi_Name").val();
+            if (val == "") {
+                var Actives = $(this).parents("tr").find(".IsActive").attr("value", false)
+                $(this).parents("tr").hide();
+                $('.check_all_kpi').prop("checked", false);
+            }
+            else {
+                var Exist = AllowDeleteKPI(val);
+                if (Exist == -1) {
+                    var Actives = $(this).parents("tr").find(".IsActive").attr("value", false)
+                    $(this).parents("tr").hide();
+                    $('.check_all_kpi').prop("checked", false);
+                }
+                else {
+                    swal("Alert !", "Some KPI's cannot be deleted !", "error");
+                }
+            }
+
+        });
+
+
+        //var Actives = $('.kpicheckbox:checkbox:checked').parents("tr").find(".IsActive").attr("value", false)
+        //$('.kpicheckbox:checkbox:checked').parents("tr").hide();
+        //$('.check_all_kpi').prop("checked", false);
+        return false
+        $('.kpicheckbox:checkbox:checked').parents("tr").remove();
+        $('.check_all_kpi').prop("checked", false);
+        var str = ""
+        $(".newkpirow").get().forEach(function (entry, index, array) {
+            var newcount = index;
+            str += array[index].outerHTML.replace(/\[[^\]]*?\]/i, '[' + newcount + ']');
+            array[index].remove();
+            // Here, array.length is the total number of items
+        });
+        $('.kpitablebodytr').after(str);
+    });
+
+
+    $(".DeleteTS").on('click', function () {
+        
+        $('.tscheckbox:checkbox:checked').each(function () {
+            var tr = $(this).parents("tr");
+            var title = $(tr).find("td:eq(4)").find("input").val();
+            var description = $(tr).find("td:eq(5)").find("input").val();
+            var sortOrder = $(tr).find("td:eq(6)").find("input").val();
+            if(title != null && title != "undefined" && title != undefined && title != "")
+            {
+                if(sortOrder != null && sortOrder != "undefined" && sortOrder != undefined && sortOrder != "")
+                {
+                    if(description != null && description != "undefined" && description != undefined && description != ""){3
+                        $(tr).find("td:eq(0)").find("input").attr("data-isDeleted", "true");
+                        $(this).parents("tr").hide();
+                    }else{
+                        $(this).parents("tr").remove();
+                    }
+
+                }else{
+                    $(this).parents("tr").remove();
+                }
+            }else{
+                $(this).parents("tr").remove();
+            }
+
+        });
+
+        //var StageId = $(this).attr("data-StageId");
+        //var context = this;
+        //$.ajax({
+        //    type: "POST",
+        //    url: "/project/Defination/IsStageUsed?StageId=" + StageId,
+        //    async: false,
+        //    success: function (res) {
+        //        debugger
+        //        if (res.Status == 'used') {
+        //            swal(res.Message, "", "error");
+        //        } else if (res.Status == 'free') {
+        //            $(context).attr("data-isDeleted", "true");
+        //            $(context).parents('tr').hide();
+        //        } else {
+        //            swal(res.Message, "", "error");
+        //        }
+        //    },
+        //    error: function (res) {
+        //        swal("Unhandle Error!", "", "error");
+        //    }
+        //});
+    });
+
+
+    $(".removethreshold").on('click', function () {
+        var Actives = $('.thresholdcheckbox:checkbox:checked').parents("tr").find(".IsActive").attr("value", false)
+        $('.thresholdcheckbox:checkbox:checked').parents("tr").hide();
+        $('.check_all_threshold').prop("checked", false);
+        return false
+        $('.thresholdcheckbox:checkbox:checked').parents("tr").remove();
+        $('.check_all_threshold').prop("checked", false);
+        var str = ""
+        $(".newthresholdrow").get().forEach(function (entry, index, array) {
+            var newcount = index + 1;
+            str += array[index].outerHTML.replace(/\[[^\]]*?\]/i, '[' + newcount + ']');
+            array[index].remove();
+            // Here, array.length is the total number of items
+        });
+        $('.thresholdtabletr').after(str);
+    });
+    //definations
+    var TechnologyArray = [];
+
+    var TaskName = '';
+    function CreateTaskObject(data) {
+        var options = [];[{
+            label: '', subItems: []
+        }];
+        var child = []
+        for (var i = 0; i < data.length; i++) {
+            TaskName = data[0].Title
+            child = [];
+            for (var j = 0; j < data[i].Tracker.length; j++) {
+                child.push(data[i].Tracker[j].Title);
+            }
+            options.push({
+                label: data[i].Title, subItems: child
+            })
+        }
+        return options;
+    }
+    let TasksGroupingdynatree = function (Tracker) {
+        var optgroup2 = '';
+        var options = '';
+        for (var i = 0; i < Tracker.length; i++) {
+            if (Tracker[i].Tracker.length > 0) {
+                var option = TasksGroupingdynatree(Tracker[i].Tracker);
+                options += '<li id="' + Tracker[i].TrackerGroupId + '">' + Tracker[i].Title + '<ul>' + option + '</ul></li>'; //'<li><ul id="' + Tasks[i].Task + '"></ul>' + option + '</li>';
+
+            }
+            else {
+                options += '<li id="' + Tracker[i].TrackerGroupId + '" selected="selected">' + Tracker[i].Title + '</li>';
+            }
+        }
+        return options;
+    }
+    function GegInitailTasks(name) {
+        var initial = {
+        }
+        Initail = [];
+        //if ($.cookie(name) != undefined) {
+        //    Initail = $.cookie(name).split(',')
+        //}
+        if (Initail.length >= 1) {
+            //tsks = '{initial: {parent:"' + Initail[0] + '",children:["' + Initail[1] + '"]}'
+            initial.parent = Initail[0];
+            initial.children = [];
+        }
+        else if (Initail.length >= 2) {
+            initial.parent = Initail[0];
+            initial.children = [1];
+        }
+        if (Initail.length == 0) {
+            initial.parent = TaskName;
+            initial.children = [];
+        }
+        return initial;
+
+    }
+
+    function GetDefinations() {
+
+        $.ajax({
+            url: "/Project/KPI/GetDefinations/",
+            type: "get",
+            async: false,
+        }).done(function (result) {
+
+            if (result.Status == true) {
+                for (i = 0; i < result.data.length; i++) {
+                    if (result.data[i].DefinationType == 'NetworkMode') {
+                        $(".Technology").append("<option value='" + result.data[i].DefinationId + "' >" + result.data[i].DefinationName + "</option>");
+
+                    }
+                    else if (result.data[i].DefinationType == 'KPI_DataType') {
+                        $(".Datatype").append("<option value='" + result.data[i].DefinationId + "' >" + result.data[i].DefinationName + "</option>");
+                    }
+                    else if (result.data[i].DefinationType == 'Kpi_Level') {
+                        $(".Level").append("<option value='" + result.data[i].DefinationId + "' >" + result.data[i].DefinationName + "</option>");
+                    }
+                    else if (result.data[i].DefinationType == 'Column_Type') {
+                        $(".KpiType").append("<option value='" + result.data[i].DefinationId + "' >" + result.data[i].DefinationName + "</option>");
+                    }
+                    else if (result.data[i].DefinationType == 'Conditions') {
+                        $(".Condition").append("<option value='" + result.data[i].DefinationId + "' >" + result.data[i].DefinationName + "</option>");
+                    }
+                    else if (result.data[i].DefinationType == 'KPI_Actions') {
+                        $(".Action").append("<option value='" + result.data[i].DefinationId + "' >" + result.data[i].DefinationName + "</option>");
+                    }
+                    else if (result.data[i].DefinationType == 'Band') {
+                        TechnologyArray.push(result.data[i]);
+                        //$(".Band").append("<option value='" + result.data[i].DefinationId + "' >" + result.data[i].DefinationName + "</option>");
+                    }
+                }
+                KPIFirstRow = $('.kpitablebodytr').html();
+                TSFirstRow = $('.TaskStagesBodytr').html();
+                ThresholdFirstrow = $(".thresholdtabletr").html();
+
+            }
+            else {
+                swal("Error !", "Error occured :(", "error");
+               
+            }
+        });
+    }
+    function getChilds(tasks) {
+        let subTasks = [];
+        $.each(tasks, function (key, value) {
+            let subs = {
+                id: value.TrackerGroupId,
+                title: value.Title
+            }
+            let sbs = getChilds(value.Tracker);
+            if (sbs.length > 0) {
+                subs.subs = sbs;
+                //  getChilds(value.Tasks);
+            }
+            subTasks.push(subs);
+        });
+        return subTasks;
+    }
+
+    GetDefinations();
+    $("#tabs").tabs({
+        activate:  function (event, ui) {
+            // alert('The current tab is: ' + ui.newTab.text());
+            if (ui.newTab.text().trim() == "KPIs Configuration") {
+                $("#taskWorkFlowSaveBtn").hide();
+                $("#TASKSAVEButton").hide();
+                $("#TASKPARAMETERSave").hide();
+                $("#ResourcesSave").hide();
+                $("#KPISave").show();
+                $("#CloseBtn").show();
+                $('#ResourcesAdd').hide();
+                $('#TASKSave').hide();
+                $('#TrackerGroupsSave').hide();
+                $('#TrackersSave').hide();$("#ReturnBtn").hide();
+            }
+            else if (ui.newTab.text().trim() == "Custom Parameter") {
+                $("#taskWorkFlowSaveBtn").hide();
+                $("#TASKSAVEButton").hide();
+                $("#TASKPARAMETERSave").show();
+                $("#TASKSAVEButton").hide();
+                $("#KPISave").hide();
+                $("#TASKSave").hide();
+                $("#CloseBtn").show();
+                $("#TrackersSave").hide();
+                $("#TrackerGroupsSave").hide();
+                $("#ReturnBtn").hide();
+                /* == Resources Tab == */
+                $('#ResourcesAdd').hide();
+                $('#ResourcesSave').hide();
+
+            }
+            else if (ui.newTab.text().trim() == "Resources") {
+                $("#taskWorkFlowSaveBtn").hide();
+                $("#TASKPARAMETERSave").hide();
+                $("#KPISave").hide();
+                $('#TASKSave').hide();
+                $('#TrackersSave').hide();
+                $("#CloseBtn").show();
+                $('#ResourcesAdd').show();
+                $('#ResourcesSave').show();
+                $("#TrackerGroupsSave").hide();$("#ReturnBtn").hide();
+                /* == Resources Data Population == */
+                $('.appendRow').empty();
+                $.ajax({
+                    url: "/Project/Task/GetResources/?ProjectId=" + ProjectId + "&TaskId=" + $("#TaskId").val(),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    success: function (result) {
+                        var RID = this.ResourceId;
+                        var GID = this.GroupId;
+                        var RACIID = this.RACIId;
+                        var RatePerHour = this.RatePerHour;
+
+                        var count = $(result).length;
+                  
+                        if (count != 0) {
+                            for (x = 0; x < count; x++) {
+
+                                var dom = '<tr  class="ResourceRow" value="' + result[x].PMTRId + '">' +
+                                    '<td>' +
+                                    '<select required required class="form-control ResourcesList" >' +
+                                    '<option value="">-Resource-</option>' +
+                                    '</select>' +
+                                    '</td>' +
+                                    '<td>' +
+                                    '<select required class="form-control GroupList" >' +
+                                    '<option value="">-Workgroup-</option>' +
+                                    '</select>' +
+                                    '</td>' +
+                                    '<td>' +
+                                    '<select required class="form-control RACIList" >' +
+                                    '<option value="">-RACI-</option>' +
+                                    '<option value="1">R|Responsible</option>' +
+                                    '<option value="2">A|Accountable</option>' +
+                                    '<option value="3">C|Consulted</option>' +
+                                    '<option value="4">I|Informed</option>' +
+                                    '</select>' +
+                                    '</td>' +
+                                    '<td><input required type="text" class="RatePerHour" value="' + result[x].RatePerHour + '"></td>' +
+                                    '<td><button type="button" class="btn btn-default bg-color-red txt-color-white  deleteR" title="Delete Resource" value="' + result[x].PMTRId + '"> <i class="fa fa-trash-o"></i></button></td>' +
+                                    '</tr>';
+
+                                $('.appendRow').append(dom);
+
+                            }
+
+                            $.ajax({
+                                url: "/Project/Task/PopulateGroupResources/?ProjectId="+ProjectId,
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                datatype: JSON,
+                                success: function (Innerresult) {
+                                    $(Innerresult).each(function (index, value) {
+
+                                        //$('.ResourcesList').append('<option value="' + this.ResourceId + '">' + this.ResourceName + '</option>');
+                                        $('.GroupList').append('<option value="' + this.GroupId + '">' + this.GroupName + '</option>');
+
+                                    });
+
+
+
+                                    for (x = 0; x < count; x++) {
+                                        $('.ResourcesList').eq(x).val(result[x].ResourceId);
+                                        $('.GroupList').eq(x).val(result[x].GroupId);
+                                        $('.RACIList').eq(x).val(result[x].RACIId);
+
+                                    }
+                                }
+                            });
+                            $.ajax({
+                                url: "/Project/Task/PopulateUserResourcesProject/?id=" + ProjectId,
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                datatype: JSON,
+                                success: function (Innerresult) {
+                                    $(Innerresult).each(function (index, value) {
+
+                                        $('.ResourcesList').append('<option value="' + this.ResourceId + '">' + this.ResourceName + '</option>');
+                                        //$('.GroupList').append('<option value="' + this.GroupId + '">' + this.GroupName + '</option>');
+
+                                    });
+
+
+                                    for (x = 0; x < count; x++) {
+                                        $('.ResourcesList').eq(x).val(result[x].ResourceId);
+                                        $('.GroupList').eq(x).val(result[x].GroupId);
+                                        $('.RACIList').eq(x).val(result[x].RACIId);
+
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            var dom = '<tr class="ResourceRow">' +
+                                '<td>' +
+                                '<select required class="form-control ResourcesList" >' +
+                                '<option value="">-Resource-</option>' +
+                                '</select>' +
+                                '</td>' +
+                                '<td>' +
+                                '<select required class="form-control GroupList" >' +
+                                '<option value="">-Workgroup-</option>' +
+                                '</select>' +
+                                '</td>' +
+                                '<td>' +
+                                '<select required class="form-control RACIList" >' +
+                                '<option value="">-RACI-</option>' +
+                                '<option value="1">R|Responsible</option>' +
+                                '<option value="2">A|Accountable</option>' +
+                                '<option value="3">C|Consulted</option>' +
+                                '<option value="4">I|Informed</option>' +
+                                '</select>' +
+                                '</td>' +
+                                '<td><input required type="text" class="RatePerHour"></td>' +
+                                '<td><button type="button" class="btn btn-default bg-color-red txt-color-white deleteR" title = "Delete Resource" > <i class="fa fa-trash-o"></i> </button></td>' +
+                                '</tr>';
+
+                            $('.appendRow').append(dom);
+
+                            $.ajax({
+                                url: "/Project/Task/PopulateGroupResources/?ProjectId="+ProjectId,
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                datatype: JSON,
+                                success: function (result) {
+                                    $(result).each(function (index, value) {
+
+
+                                        $('.GroupList').append('<option value="' + this.GroupId + '">' + this.GroupName + '</option>');
+
+                                    });
+
+
+                                }
+                            });
+
+                            $.ajax({
+                                url: "/Project/Task/PopulateUserResourcesProject/?id=" + ProjectId ,
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                datatype: JSON,
+                                success: function (Innerresult) {
+                                    $(Innerresult).each(function (index, value) {
+
+                                        $('.ResourcesList').append('<option value="' + this.ResourceId + '">' + this.ResourceName + '</option>');
+
+
+                                    });
+
+
+
+                                }
+                            });
+                        }
+
+
+
+                    }
+                });
+
+            }
+            else if (ui.newTab.text().trim() == "Stages")
+            {
+                $("#TASKPARAMETERSave").hide();
+                $("#TASKSAVEButton").hide();
+                $("#TASKSAVEButton").hide();
+                $("#KPISave").hide();
+                $("#TASKSave").hide();
+                $("#CloseBtn").show();
+                $("#TrackersSave").hide();
+                $("#TrackerGroupsSave").hide();
+                $("#ReturnBtn").hide();
+                /* == Resources Tab == */
+                $('#ResourcesAdd').hide();
+                $('#ResourcesSave').hide();
+                $("#taskWorkFlowSaveBtn").show();
+                $.ajax({
+                    method: "POST",
+                    url: '/Project/Defination/GetTaskOrProjectStages?TaskId=' + $("#TaskId").val() + "&ProjectId="+ @ViewBag.Id,
+                    success: function (result) {
+                        var row = "";
+                        for(var i = 0; i < result.length; i++){
+                            row += `<tr class="TaskStagesBodytr">
+                                                    <td>
+                                                        <input type='checkbox' class="tscheckbox" name="tscheckbox" data-isDeleted="false"/>
+                                                    </td>
+                                                    <td style="display: none">
+                                                        <input type="text" value="`+result[i].StageId+`" name="StageId" />
+                                                    </td>
+                                                    <td style="display: none">
+                                                        <input type="text" value="`+result[i].TaskId+`" name="TaskId" />
+                                                    </td>
+                                                    <td style="display: none">
+                                                        <input type="text" value="`+result[i].ProjectId+`"  name="ProjectId" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" value="`+result[i].Title+`" data-required="yes" name="Title" required/>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" value="`+result[i].Description+`" data-required="yes" name="Description" required/>
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" value="`+result[i].SortOrder+`" data-required="yes" min="1" maxlength="100000"  name="SortOrder" required/>
+                                                    </td>
+                                                </tr>`;
+                        }
+                        $("#TaskStagesBody").html(row);
+                    }
+                });
+
+            }
+            else if (ui.newTab.text().trim() == "Trackers") {
+                $("#taskWorkFlowSaveBtn").hide();
+                $("#TrackersSave").show();
+                $("#TASKSave").hide();
+                $("#KPISave").hide();
+                $("#ReturnBtn").hide();
+                $("#TrackerGroupsSave").hide();
+                $("#TASKPARAMETERSave").hide();
+                $('#ResourcesAdd').hide();
+                $('#ResourcesSave').hide();
+                $("#CloseBtn").show();
+
+
+                $(".holiday-table  tbody").empty();
+                GetGroupTracker();
+                gettrackers()
+
+                $(".add-holiday").off("click");
+                $(".add-holiday").on("click", function () {
+                    if (xx == 0) {
+                        var holidaythread = $.parseHTML(`<thead><tr><th>Groups<label style="color:darkred">*</label></th><th>Title<label style="color:darkred">*</label></th><th>Unit<label style="color:darkred">*</label></th><th>Budget<label style="color:darkred">*</label></th><th>Actual</th><th>Delete</th></tr></thead>`);
+                        $(".holiday-table ").append(holidaythread);
+                        xx++;
+                    }
+                    var holidayRow = $.parseHTML(`<tr><td><input type="text" placeholder="Select Tracker Group" id="TrackerGroup" class="form-control aaa"  ></td><td><input type="text" name="Title" id="Title" value="" /></td><td><input type="text"class="inpt" name="Unit" id="Unit" value="" /></td><td><input type="text"class="inpt" name="Budget" id="Budget"value=""  /></td><td><input type="text"class="inpt" name="Actual" id="Actual"value="" /></td><td style="Display:none;"><input type="text"class="inpt" name="TrackerId" id="TrackerId"value="0" /></td><td style="Display:none;"><input type="text"class="inpt" name="IsDeleted" id="IsDeleted" value="False" /></td><td><a href="#" class="del-holiday btn btn-default bg-color-red txt-color-white"><i class="fa fa-trash-o"></i></a></td></tr>`);
+                    $(".holiday-table tbody").append(holidayRow);
+                    window.tasksComboTree = $('.aaa').comboTree({
+                        source:  tasksJsonData,
+                        isMultiple: false,
+                    });
+                    holidayRow='';
+
+                });
+                $("body").on("click", ".del-holiday", function () {
+                    //var d = "True";
+                    var a = $(this).closest('td').siblings().find('#IsDeleted');
+                    a.val("True");
+                    $(this).parents('tr').css("display", "none");
+                });
+
+
+                function list_to_tree(list) {
+                    var map = {}, node, roots = [], i;
+                    for (i = 0; i < list.length; i += 1) {
+                        map[list[i].id] = i; // initialize the map
+                        list[i].children = []; // initialize the children
+                    }
+                    for (i = 0; i < list.length; i += 1) {
+                        node = list[i];
+                        if (node.ParentId !== "0") {
+                            // if you have dangling branches check that map[node.parentId] exists
+                            list[map[node.ParentId]].children.push(node);
+                        } else {
+                            roots.push(node);
+                        }
+                    }
+                    return roots;
+                }
+
+                //function getChilds(tasks) {
+                //    let subTasks = [];
+                //    $.each(tasks, function (key, value) {
+                //        let subs = {
+                //            id: value.TaskId,
+                //            title: value.Task
+                //        }
+                //        let sbs = getChilds(value.Tasks);
+                //        if (sbs.length > 0) {
+                //            subs.subs = sbs;
+                //            //  getChilds(value.Tasks);
+                //        }
+                //        subTasks.push(subs);
+                //    });
+                //    return subTasks;
+                //}
+
+                //window.tasksComboTree = $('#TrackerGroup').comboTree({
+                //    source: myData,
+                //    isMultiple: false,
+                //});
+
+
+
+            }
+            else if (ui.newTab.text().trim() == "Tracker Groups") {
+
+
+                //   $.ajax({
+                //    method: "POST",
+                //    url: '/Project/Tracker/TrackerGroupsDynatree',
+                //    data: { 'filter': "Get_Tasks_Trackers_Groups", TaskId: TaskID },
+                //    success: function (result) {
+                //        JsonData = [];
+                //        $.each(result, function (key, value) {
+                //            let tasks = {
+                //                id: value.TrackerGroupId,
+                //                title: value.Title
+                //            }
+                //            let subs = getChilds(value.Tracker);
+                //            if (subs.length > 0) {
+                //                tasks.subs = subs;
+                //            }
+                //            JsonData.push(tasks);
+                //        });
+                //        window.tasksComboTree = $('#trckerGrupId').comboTree({
+                //            source: JsonData,
+                //            isMultiple: false,
+                //        });
+                //    }
+
+
+                //});
+
+
+
+            }
+            else {
+                $("#taskWorkFlowSaveBtn").hide();
+                $("#TASKSave").show();
+                $("#KPISave").hide();
+                /* == Resources Tab == */
+                $('#ResourcesAdd').hide();
+                $('#ResourcesSave').hide();
+                $("#TrackersSave").hide();
+                $("#TrackersSave").hide();
+                $("#CloseBtn").show();
+                $("#TrackerGroupsSave").hide();
+                $("#TASKPARAMETERSave").hide();
+                $("#ReturnBtn").hide();
+            }
+        }
+    });
+
+
+    $(function(){
+        $('#ReturnBtn').click(function(e){
+            $("#CloseBtn").show();
+            $("#ReturnBtn").hide();
+            $("#TrackersSave").show();
+            $("#TrackerGroupsSave").hide();
+            GetGroupTracker();
+        });
+    })
+
+    $("#trackrgrup").click(function(){
+
+        $("#TASKSave").hide();
+        $("#KPISave").hide();
+        $("#TrackersSave").hide();
+        $("#TrackerGroupsSave").show();
+        $("#CloseBtn").hide();
+        $("#ReturnBtn").show();
+
+
+
+        $('#ResourcesAdd').hide();
+        $('#ResourcesSave').hide();
+        GetDynaTree();
+
+
+    });
+
+    function GetGroupTracker(){
+        var TaskID = $("#TaskId").val();
+        $.ajax({
+            method: "POST",
+            url: '/Project/Tracker/TrackerGroupsDynatree',
+            async: false,
+            data: { 'filter': "Get_Tasks_Trackers_Groups", TaskId: TaskID },
+            success: function (result) {
+
+                tasksJsonData = [];
+                $.each(result, function (key, value) {
+                    let tasks = {
+                        id: value.TrackerGroupId,
+                        title: value.Title
+                    }
+                    let subs = getChilds(value.Tracker);
+                    if (subs.length > 0) {
+                        tasks.subs = subs;
+                    }
+                    tasksJsonData.push(tasks);
+                });
+            }
+
+        });
+    }
+    function  gettrackers(){
+        var TaskID = $("#TaskId").val();
+        $.ajax({
+            method: "POST",
+            url: '/Project/Tracker/GetTaskTrackers',
+            async: false,
+            data: { 'filter': "Get_Tasks_Trackers", TaskId: TaskID },
+            success: function (res) {
+
+
+                if (res.length > 0) {
+                    if(xx != 1){
+                        var holidaythread = $.parseHTML(`<thead><tr><th>Groups<label style="color:darkred">*</label></th><th>Title<label style="color:darkred">*</label></th><th>Unit<label style="color:darkred">*</label></th><th>Budget<label style="color:darkred">*</label></th><th>Actual</th><th>Delete</th></tr></thead>`);
+                        $(".holiday-table").append(holidaythread);
+                        xx = 1;
+                    }
+                    for (var i = 0; i < res.length; i++) {
+
+
+                        var title = '<tr><td><input type="text" class="form-control aaa" placeholder="Select Tracker Group" id="TrackerGroup" value="' + res[i].TrackerGroup+" | "+ res[i].GroupCode + '"   ></td><td><input type="text" class="inpt" required  value="' + res[i].Title  + '" /></td>'
+                        var Unit = '<td><input type="text" class="inpt"  value="' + res[i].Unit + '" /></td>'
+                        var Budget = '<td><input type="text" class="inpt"  value="' + res[i].Budget + '" /></td>';
+                        var Actual = '<td><input type="text" class="inpt"  value="' + res[i].Actual + '" /></td><td style="Display:none;"><input type="text"class="inpt" name="TrackerId" id="TrackerId" value="' + res[i].TrackerId + '" /></td><td style="Display:none;"><input type="text"class="inpt" name="IsDeleted" id="IsDeleted" value="False" /></td><td><a href="#" class="del-holiday  btn btn-default bg-color-red txt-color-white"><i class="fa fa-trash-o"></i></a></td>';
+                        var holidayRow = $.parseHTML(title + Unit + Budget + Actual);
+                        $(".holiday-table tbody").append(holidayRow);
+
+                    }
+                }
+                window.tasksComboTree = $('.aaa').comboTree({
+                    source: tasksJsonData,
+                    isMultiple: false,
+                });
+            }
+
+        });
+
+    }
+    function GetDynaTree(){
+        var TaskID = $("#TaskId").val();
+        $.ajax({
+            method: "POST",
+            url: '/Project/Tracker/TrackerDynatree',
+            data: { 'filter': "Get_Tasks_Trackers_Groups", TaskId: TaskID },
+            success: function (result) {
+                $("#dnatree").empty();
+                $("#dnatree").html(result);
+                $('#DefinationType-tree').dynatree({
+                    checkbox: true,
+                    selectMode: 1,
+                    minExpandLevel: 100,
+                    onSelect: function (flag, node) {
+                        // get selected Clients
+                        var selectedNodes = node.tree.getSelectedNodes();
+                        var selectedKeys = $.map(selectedNodes, function (node) {
+                            return node.data.key;
+                        });
+                        SelectedDefinationTypes = selectedKeys;
+
+                    }
+                });
+            }
+
+        });
+    };
+    $("#TrackersSave").click(function (e) {
+        //var rowValues = [];
+        var TaskID = $("#TaskId").val();
+        var Data = [];
+        var Result = true;
+        var isValid = $("#Trackersss").valid();
+        if (isValid) {
+            var NotNull = true;
+            var Coont=0;
+            e.preventDefault();
+            $('#trckerlst tbody tr').each(function (i, e) {
+                var cols = $(e).find('td');
+                if ($(cols[1]).find('input').val() != undefined) {
+                    var rowValues = {
+                        TrackerGroup: $(cols[0]).find('#TrackerGroup').val(),
+                        Title: $(cols[1]).find('input').val(),
+                        Unit: $(cols[2]).find('input').val(),
+                        Budget: $(cols[3]).find('input').val(),
+                        Actual: $(cols[4]).find('input').val(),
+                        TrackerId: $(cols[5]).find('input').val(),
+                        IsDeleted: $(cols[6]).find('#IsDeleted').val(),
+                        TaskId:TaskID,
+
+                    };
+
+                    Data.push(rowValues);
+
+                    //$.each(cols, function(ii,ee){
+                    //})
+                }
+            })
+            for (var i = 0; i < Data.length; i++) {
+
+                Coont=0;
+                if (Data[i].TrackerGroup == "" && Data[i].IsDeleted != "True") {
+                    swal("Error !", "Select Tracker Group", "error");
+                    Result = false;
+                }
+                else if (Data[i].Title == "" && Data[i].IsDeleted != "True") {
+                    swal("Error !", "Select Tracker Title.", "error");
+                    Result = false;
+                }
+                else if (Data[i].Unit == "" && Data[i].IsDeleted != "True") {
+                    swal("Error !", "Select Tracker Unit.", "error");
+                    Result = false;
+                }
+                else if (Data[i].Budget == "" && Data[i].IsDeleted != "True") {
+                    swal("Error !", "Select Tracker Budget.", "error");
+                    Result = false;
+                }
+                else if (Data[i].TaskId == "" && Data[i].IsDeleted != "True") {
+                    swal("Error !", "Error.", "error");
+                    Result = false;
+                }
+                else {
+                    for (var j = 0; j < Data.length; j++) {
+                        if(Data[i].Title == Data[j].Title && Data[i].TrackerGroup == Data[j].TrackerGroup && Data[i].IsDeleted != "True"&& Data[j].IsDeleted != "True" ){
+                            if(Coont ==1){
+                             swal("Error !", "Selected Group and Selected Title can't added Multiple time.", "error");
+                             Result = false;
+                            }else{
+                                Coont++;
+                            }
+                        }
+
+                    }
+                }
+            }
+            if (Data.length >0){
+            if(Result==true){
+            $.ajax({
+                type: "POST",
+                url: "/Project/Tracker/Index",
+                data: { Data: Data },
+                success: function (data) {
+                    swal("Saved !", "Task Trackers  have been Saved !", "success");
+                    $(".holiday-table  tbody").empty();
+                    gettrackers();
+                },
+            });
+            }
+            }
+
+        }
+    });
+    function checkValue(value,arr){
+        var status = 'Not exist';
+
+        for(var i=0; i<arr.length; i++){
+            var name = arr[i];
+            if(name == value){
+                status = 'Exist';
+                break;
+            }
+        }
+
+        return status;
+    }
+
+
+    $("#taskWorkFlowSaveBtn").click(function (e) {
+
+        var isRequiredFieldEmpty = false;
+        var isSortOrder = false;
+        var TaskStagesList = [];
+        $('#TaskStagesBody').find('tr').each(function(i ,item){
+            var isDeleted = $(item).find("td:eq(0)").find("input").attr("data-isDeleted") == "true" ? true : false;
+         
+            var StageId = parseInt($(item).find("td:eq(1)").find("input").val());
+            var TaskId = parseInt($(item).find("td:eq(2)").find("input").val());
+            var ProjectId = parseInt($(item).find("td:eq(3)").find("input").val());
+            var Title = $(item).find("td:eq(4)").find("input").val();
+            var Description = $(item).find("td:eq(5)").find("input").val();
+            var SortOrder = parseInt($(item).find("td:eq(6)").find("input").val());
+         TaskStagesList.push({isDeleted, StageId, TaskId, ProjectId, Title, Description, SortOrder});
+            if(SortOrder >9999){
+                isRequiredFieldEmpty = true;
+
+                swal({
+                    title: "ShortOrder value should be less then 9999 !",
+                    type: "warning",
+                    border: "3px solid red;"
+                });
+                isSortOrder =true;
+            }
+            if(Title == ""){
+                isRequiredFieldEmpty = true;
+
+                //    $(item).find("td:eq(4)").find("input").addClass("dangerAlert");
+
+            }
+          
+                //    $(item).find("td:eq(4)").find("input").addClass("dangerAlert");
+
+            
+            if(Description == ""){
+                isRequiredFieldEmpty = true;
+              //  $(item).find("td:eq(5)").find("input").addClass("dangerAlert");
+            }
+            if($(item).find("td:eq(6)").find("input").val() == ""){
+                isRequiredFieldEmpty = true;
+             //   $(item).find("td:eq(6)").find("input").addClass("dangerAlert");
+            }
+        });
+        if(isSortOrder== false){
+        if(isRequiredFieldEmpty == false){
+            if(TaskStagesList.length > 0){
+                $.ajax({
+                    url: "/Project/Defination/AddTaskStages?TaskId="+ $("#TaskId").val() + "&ProjectId="+ @ViewBag.Id + "&Stages=" + JSON.stringify(TaskStagesList),
+                    type: "post",
+                    async: false,
+                }).done(function (result) {
+                    swal("", "Stages saved successfully!", "success");
+                    $("#TaskModal").modal('hide');
+                });
+
+            }
+        }else
+        {
+            swal({
+                title: "Fields with * are Compulsary !",
+                type: "warning",
+                border: "3px solid red;"
+            });
+        }
+        }
+    });
+
+    $("#TrackerGroupsSave").click(function (e) {
+        var GropName = $("#trckerGrup").val();
+        var Gcode = $("#GroupCode").val();
+        var PId =@ViewBag.Id;
+        var ParentID  = SelectedDefinationTypes;
+        if( ParentID.length ==0){
+            ParentID=0;
+        }
+        var Data={
+            ProjectId:PId,
+            TaskId : $("#TaskId").val(),
+            Title : GropName,
+            GroupCode :Gcode,
+            ParentId  : ParentID
+        }
+        @*var PId =@ViewBag.Id;
+        var TaskID = $("#TaskId").val();
+        var GropName = $("#trckerGrup").val();
+        var GropCode = $("#GroupCode").val();
+        var ParentID  = SelectedDefinationTypes;
+        if( ParentID.length ==0){
+            ParentID=0;
+        }*@
+        if(Data !== "" && GropName !=""){
+            $.ajax({
+                type: "POST",
+                url: "/Project/Tracker/NewTrackerGroup",
+                data: { Data: Data },
+                success: function (data) {
+                    //swal("Saved !", "Tracker Groups have been Saved !", "success");
+                    $("#trckerGrup").val('');
+                    $("#GroupCode").val('');
+                    GetDynaTree();
+                    SelectedDefinationTypes=0;
+                },
+            });
+        }
+
+    });
+    //$("#TrackerGroupsSave").click(function (e) {
+    //    var PId = 0;
+    //    $('div.pg-grids ').children('').each(function (i,e) {
+
+    //     //   e.children('pg-row span[contenteditable=true]').text
+    //        //console.log(e.find('div.pg-row span[contenteditable=true]').text());
+    //        tasksJsonData = [];
+    //        $.each(e, function (key, value) {
+    //            let tasks = {
+    //                id: value.TaskId,
+    //                title: value.Task,
+    //                ParentId: PId
+    //            }
+    //            let subs = getChilds(value.Tasks, value.TaskId);
+    //            if (subs.length > 0) {
+    //                tasks.subs = subs;
+    //            }
+    //            tasksJsonData.push(tasks);
+    //        });
+
+    //    });
+
+
+    //});
+
+    //function getChilds(tasks, PId) {
+    //    let sub = [];
+    //    $.each(tasks, function (key, value) {
+    //        let subs = {
+    //            id: value.TaskId,
+    //            title: value.Task,
+    //            ParentId: PId
+    //        }
+    //        PId = PId + 1;
+    //        let sbs = getChilds(value.Tasks,value.TaskId);
+    //        if (sbs.length > 0) {
+    //            subs.subs = sbs;
+    //        }
+    //        sub.push(subs);
+    //    });
+    //    return subTasks;
+    //}
+    ///KPIsave
+    $("#KPISave").click(function (e) {
+        if (e.which != 13) {
+            EFormulaValidator();
+            $(".TaskId").val(parseInt($("#TaskId").val()));
+            var isValid = $("#KpiConfigurationform").valid(); //$(this).closest("form").valid()
+            // return false;
+            if (isValid) {
+                var NotNull = true;
+                e.preventDefault();  //prevent default form submit behaviour
+              //  validating if formula is valid or not
+                //$(".ExistedKpiType").each(function (entry, index, array) {
+                //    if ($(this).find("option:selected").text() == "Formula") {
+                //        var Val = $(this).parent().parent().find(".demo-input-custom-labels").val();
+                //        if (Val == "") {
+                //            NotNull = false;
+
+                //        }
+                //    }
+                //    else {
+
+                //    }
+
+                //});
+                if (NOTVALIDFORMULA == false) {
+                    $(".ExistedKpiType").each(function (entry, index, array) {
+                        if ($(this).find("option:selected").text() == "Formula") {
+
+                        }
+                        else {
+                            $(this).parent().parent().find(".demo-input-custom-labels").val("");
+
+                        }
+
+                    });
+
+                    $.post("@Url.Action("Save","KPI")",
+                                $("#KpiConfigurationform").serialize(), function (response) {
+                                    if (response.Status == true) {
+                                        $.ajax({
+                                            url: "/Project/KPI/GetKPI?Id=" + parseInt($("#TaskId").val()),
+                                            type: "get",
+                                            async: false,
+                                        }).done(function (result) {
+                                            $('#kpitablebody').html("");
+                                            //  $('#kpitablebody').append("<tr class='kpitablebodytr' >" + KPIFirstRow + "</tr>");
+                                            $('#kpitablebody').append(result);
+                                            OrderKPI();
+                                            GetTagsAndSelected();
+                                            EFormulaValidator();
+                                        });
+                                        $(".ExistedKpiType").each(function (entry, index, array) {
+                                            if ($(this).find("option:selected").text() == "Formula") {
+                                                $(this).parents('tr').next('tr').addClass('phisaljao');
+                                            }
+                                            else {
+                                                $(this).parents('tr').next('tr').removeClass('phisaljao');
+                                            }
+
+                                        });
+                                        swal("Saved !", "KPI's have been Saved !", "success");
+                                    }
+                                    else {
+                                        swal("Error !", "Error occured :(", "error");
+                                      //  console.log(result.error)
+                                    }
+                                });
+                }
+                else {
+                    $(".invalid").removeClass("invalid");
+                    $("em[class*='invalid']").html("");
+                    swal("Formula should be Valid !", "error", "error");
+
+                }
+            }
+            else {
+                swal("All fields are necessary !", "error");
+            }
+        }
+
+    });
+    ///ThresholdSave
+    ///save
+    $("#SaveThreshold").click(function (e) {
+        var isValid = $(this).closest("form").valid()
+        // return false;
+        if (isValid) {
+            e.preventDefault();  //prevent default form submit behaviour
+            CurrentParentKpi = parseInt($(this).attr("kp_id").replace("[", "").replace("]", ""));
+            $.post("@Url.Action("SaveThreshold", "KPI")",
+                            $(this).closest("form").serialize(), function (response) {
+                                if (response.Status == true) {
+                                    $.ajax({
+                                        url: "/Project/KPI/GetThreshold?Id=" + CurrentParentKpi.toString(),
+                                        type: "get",
+                                        async: false,
+                                    }).done(function (result) {
+                                        $('#thresholdtablebody').html("");
+                                        // $('#thresholdtablebody').append("<tr class='thresholdtabletr' >" + ThresholdFirstrow + "</tr>");
+                                        $('#thresholdtablebody').append(result);
+                                        $(".KPIName").html(CurrentParentKpiName);
+                                        // OrderThreshold();
+
+                                    });
+                                    swal("Saved !", "Threshold's have been Saved !", "success");
+                                }
+                                else {
+                                    swal("Error !", "Error occured :(", "error");
+                                  //  console.log(result.error)
+                                }
+                            });
+        }
+    });
+    function ThresholdModalClose() {
+        $('#ThresholdModal').modal('hide');
+    }
+
+    //  $(".OpenThresholdModal").on('click', function () {
+    $(document).on("click", ".OpenThresholdModal", function (e) {
+        //   function OpenThresholdModal(e) {
+        CurrentParentKpi = parseInt($(this).attr("unique").replace("[", "").replace("]", ""));
+        CurrentParentKpiName = $(this).attr("Parent-name").replace("[", "").replace("]", "");
+        $.ajax({
+            url: "/Project/KPI/GetThreshold?Id=" + CurrentParentKpi.toString(),
+            type: "get",
+            async: false,
+        }).done(function (result) {
+            $('#thresholdtablebody').html("");
+            var Local = ThresholdFirstrow;
+            var oldV = "[$].";
+            var newV = "" + 0 + "]";
+            var str = Local.replace(RegExp(oldV, "gi"), newV);
+            //  $('#thresholdtablebody').append("<tr class='thresholdtabletr' >" + str + "</tr>");
+            $('#thresholdtablebody').append(result);
+            $('#ThresholdModal').modal('show');
+            $("#SaveThreshold").attr("KP_ID", CurrentParentKpi.toString());
+            $(".KPI").val(CurrentParentKpi);
+            $(".KPIName").html(CurrentParentKpiName);
+            //  OrderThreshold();
+
+        });
+
+    });
+
+    function OrderKPI() {
+        var str = ""
+        $(".newkpirow").get().forEach(function (entry, index, array) {
+            var newcount = index;
+            // console.log(entry.innerHTML);
+            str += array[index].outerHTML.replace(/\[[^\]]*?\]/g, '[' + newcount + ']');
+            array[index].remove();
+            // Here, array.length is the total number of items
+        });
+        $('#kpitablebody').prepend(str);
+    }
+    function OrderThreshold() {
+        var str = ""
+        $(".newthresholdrow").get().forEach(function (entry, index, array) {
+            var newcount = index + 1;
+            str += array[index].outerHTML.replace(/\[[^\]]*?\]/g, '[' + newcount + ']');
+            //  console.log(array[index].outerHTML.replace(/\[[^\]]*?\]/g, '[' + newcount + ']'));
+            array[index].remove();
+            // Here, array.length is the total number of items
+        });
+        $('#thresholdtablebody').append(str);
+    }
+    ///threshold condition equal to
+    $(document).on("change", ".Condition", function (e) {
+        $(this).parent().parent().find(".ThresholdTo").attr("value", "");
+        var Hide = $(this).parent().parent().find(".ThresholdTo").hasClass("hidden");
+        if ($(this).find("option:selected").text() == "BETWEEN" || $(this).find("option:selected").text() == "NOT BETWEEN") {
+            if (Hide) {
+                $(this).parent().parent().find(".ThresholdTo").removeClass("hidden")
+                $(this).parent().parent().find(".ThresholdTo").attr("required", true)
+            }
+            else {
+            }
+        }
+        else {
+            if (Hide) {
+
+            }
+            else {
+                $(this).parent().parent().find(".ThresholdTo").addClass("hidden")
+                $(this).parent().parent().find(".ThresholdTo").attr("required", false)
+            }
+        }
+    });
+    ///KpiType change condition
+    $(document).on("change", ".ExistedKpiType", function (e) {
+        // $(this).parent().parent().find(".demo-input-custom-labels").attr("value", "");
+        //$(this).parent().parent().find(".demo-input-custom-labels").attr("value", "");//demo-input-custom-labels
+        //  $(this).parent().parent().find(".token-input-list-facebook").remove(); //token - input - list
+        $(this).parent().parent().find(".demo-input-custom-labels").addClass("hidden");
+        $(this).parent().parent().find(".formula-icon").removeClass("hidden");
+        var Hide = $(this).parent().parent().find(".demo-input-custom-labels").hasClass("hidden");
+        if ($(this).find("option:selected").text() == "Formula") {
+            $(this).parent().parent().find(".formula-icon").removeClass("hidden");
+            $(this).parents('tr').next('tr').addClass('phisaljao');
+            if (Hide) {
+                var Init = $(this).parent().parent().find(".token-input-list-facebook");
+                if (Init.length == 0) {
+                    $(this).parent().parent().find(".demo-input-custom-labels").tokenInput(availableTags, {
+                        theme: "facebook",
+                        onAdd: function (item) {
+                            var CurrentName = $(this).parent().parent().parent().find(".Kpi_Name").val();
+                            var CLevel = $(this).parent().parent().parent().find(".Level").find("option:selected").text();
+                            var CDataType = $(this).parent().parent().parent().find(".Datatype").find("option:selected").text();
+                             //   var  AllNames = $(this).text().split("×");
+                            //  AllNames = AllNames[AllNames.length-1];
+                            if (item.name == CurrentName) {
+                                $(this).tokenInput("remove", { name: CurrentName });
+                                swal("Cannot Refer Itself in formula !");
+                            }
+                            // alert("Added " + item.name);
+                        }
+                    });
+                }
+                $(this).parent().parent().find(".token-input-list-facebook").removeClass("hidden");
+                $(this).parent().parent().find(".demo-input-custom-labels").removeClass("hidden");
+                $(this).parent().parent().find(".demo-input-custom-labels").attr("required", true);
+            }
+            else {
+
+            }
+        }
+        else {
+            $(this).parent().parent().find(".demo-input-custom-labels").attr("formula", "");
+            $(this).parent().parent().find(".formula-icon").addClass("hidden");
+            $(this).parent().parent().find(".demo-input-custom-labels").addClass("hidden");
+            //$(this).parent().parent().find(".demo-input-custom-labels").tokenInput(availableTags, {
+            //    theme: "facebook",
+            //    onAdd: function (item) {
+            //        debugger
+            //        var CurrentName = $(this).parent().parent().parent().find(".Kpi_Name").val();
+            //           var  AllNames = $(this).text().split("×");
+            //          AllNames = AllNames[AllNames.length-1];
+            //        if (item.name == CurrentName) {
+            //            $(this).tokenInput("remove", { name: CurrentName });
+            //            swal("Cannot Refer Itself in formula !");
+            //        }
+            //         alert("Added " + item.name);
+            //    }
+            //});
+            $(this).parent().parent().find(".token-input-list-facebook").addClass("hidden");
+            $(this).parents('tr').next('tr').removeClass('phisaljao');
+            if (Hide) {
+
+            }
+            else {
+                $(this).parent().parent().find(".token-input-list-facebook").addClass("hidden");
+                $(this).parent().parent().find(".demo-input-custom-labels").addClass("hidden");
+                $(this).parent().parent().find(".demo-input-custom-labels").attr("required", false);
+            }
+        }
+    });
+    /////preselect formula and get available tags on modal shown
+    var availableTags = [];
+    function GetTagsAndSelected() {
+        $.ajax({
+            url: "/Project/KPI/GetKPIJson?Id=" + parseInt($("#TaskId").val()),
+            type: "get",
+            async: false,
+        }).done(function (result) {
+            if (result.Status == true) {
+                availableTags = [];
+
+                for (i = 0; i < result.data.length; i++) {
+                    var Mobject = { id: result.data[i].KPI, name: result.data[i].Kpi_Name, cvalue: result.data[i].ComputedValue, DataType: result.data[i].DataTypeName, Level: result.data[i].LevelName };
+                    availableTags.push(Mobject);
+
+                }
+                $.ajax({
+                    url: "/Project/KPI/GetDefinations/",
+                    type: "get",
+                    async: false,
+                }).done(function (result) {
+
+                    if (result.Status == true) {
+                        for (i = 0; i < result.data.length; i++) {
+                            if (result.data[i].DefinationTypeId == 100065) {
+                                var Mobject = { id: result.data[i].DefinationId, name: result.data[i].DefinationName, cvalue:result.data[i].ComputedValue };
+                                availableTags.push(Mobject);
+
+                            }
+
+                        }
+                        //   KPIFirstRow = $('.kpitablebodytr').html();
+                        ThresholdFirstrow = $(".thresholdtabletr").html();
+
+                        $('.ExistedFormula').each(function () {
+                            var Value = $(this).attr("Formula");
+                            var Initialized = $(this).attr("Initialize");
+                            var ComputedValue = $(this).attr("Computed-Value");
+                            var IsFormula = $(this).parents("tr").find(".ExistedKpiType").find("option:selected").text();
+                            //if (Value == "") {
+
+                            //}
+                            if (Value != "" || IsFormula == "Formula") {
+                                var Chunks = Value.split(",");
+                                if (Chunks.length > 0 && Chunks[0] != "") {
+                                    var Preselected = [];
+                                    for (i = 0; i < Chunks.length; i++) {
+                                        var obj = availableTags.filter(x => x.id === parseInt(Chunks[i]));
+                                        if (obj.length == 0) {
+                                            var Type = isNaN(Chunks[i]);
+
+                                            if (Type == false) {
+                                                if (availableTags.indexOf(Chunks[i]) == -1) {
+                                                    var Mobject = { id: parseInt(Chunks[i]), name: Chunks[i],cvalue:parseInt(Chunks[i]) };
+                                                    availableTags.push(Mobject);
+                                                    Preselected.push(Mobject);
+                                                }
+                                            }
+                                        }
+                                        else { Preselected.push(obj[0]); }
+
+                                    }
+                                    if (Initialized == "false") {
+                                        var CArray = [];
+                                        var CLevel = $(this).parent().parent().parent().find(".Level").find("option:selected").text();
+                                        var CDataType = $(this).parent().parent().parent().find(".Datatype").find("option:selected").text();
+                                        CArray = availableTags.filter(x => (x.Level === CLevel || x.Level === undefined) && x.DataType != "Date");
+                                       $(this).tokenInput(CArray, {
+                                            prePopulate: Preselected,
+                                            theme: "facebook",
+                                            onAdd: function (item) {
+                                                var CurrentName = $(this).parent().parent().parent().find(".Kpi_Name").val();
+                                                var CLevel = $(this).parent().parent().parent().find(".Level").find("option:selected").text();
+                                                var CDataType = $(this).parent().parent().parent().find(".Datatype").find("option:selected").text();
+                                                //   var  AllNames = $(this).text().split("×");
+                                                //  AllNames = AllNames[AllNames.length-1];
+                                                if (item.name == CurrentName) {
+                                                    $(this).tokenInput("remove", { name: CurrentName });
+                                                    swal("Cannot Refer Itself in formula !");
+                                                }
+                                               // alert("Added " + item.name);
+                                            }
+                                        });
+                                        $(this).attr("Initialize", true);
+                                    }
+                                }
+                                else {
+                                    var CArray = [];
+                                    var CLevel = $(this).parent().parent().parent().find(".Level").find("option:selected").text();
+                                    var CDataType = $(this).parent().parent().parent().find(".Datatype").find("option:selected").text();
+                                    CArray = availableTags.filter(x => (x.Level === CLevel || x.Level === undefined) && x.DataType != "Date");
+                                    $(this).tokenInput(CArray, {
+                                        //  prePopulate: Preselected,
+                                        theme: "facebook",
+                                        onAdd: function (item) {
+                                            var CurrentName = $(this).parent().parent().parent().find(".Kpi_Name").val();
+                                            var CLevel = $(this).parent().parent().parent().find(".Level").find("option:selected").text();
+                                            var CDataType = $(this).parent().parent().parent().find(".Datatype").find("option:selected").text();
+                                            //   var  AllNames = $(this).text().split("×");
+                                            //  AllNames = AllNames[AllNames.length-1];
+                                            if (item.name == CurrentName) {
+                                                $(this).tokenInput("remove", { name: CurrentName });
+                                                swal("Cannot Refer Itself in formula !");
+                                            }
+                                            // alert("Added " + item.name);
+                                        }
+                                    });
+                                    $(this).attr("Initialize", true);
+                                }
+                            }
+
+                        });
+
+                        ///formula value
+                       // console.log(availableTags);
+                       // return false;
+                        $('.ExistedFormula').each(function () {
+                            var Value = $(this).attr("Formula").split(",");
+                            if (Value[0] != "") {
+                                var Initialized = $(this).attr("Initialize");
+                                var IsFormula = $(this).parents("tr").find(".ExistedKpiType").find("option:selected").text();
+                                var CString = "";
+                                function Exist(val) {
+                                    var obj = availableTags.filter(x => x.id === parseInt(val));
+                                    if (obj.length > 0) {
+                                        if (obj[0].cvalue != undefined) {
+                                            return " " + obj[0].cvalue.toString() + " ";
+
+                                        }
+                                        else {
+                                            return " " + obj[0].name + " ";
+                                        }
+                                    }
+                                    else {
+
+                                    }
+                                }
+                                function myFunction(item, index) {
+                                    CString += Exist(item);
+                                }
+                                Value.forEach(myFunction)
+                              //  console.log(CString+"------", eval(CString));
+                            }
+                        });
+
+                        ///formula value end
+
+                    }
+                    else {
+                        swal("Error !", "Error occured :(", "error");
+                     //   console.log(result.error)
+
+                    }
+                });
+            }
+            else {
+                swal("Error !", "Error occured :(", "error");
+              //  console.log(result.error)
+            }
+        });
+    }
+    ///////Cascading Bands dropdown
+    $(document).on("change", ".Technology", function (e) {
+        var Options = "";
+        var Selected = $(this).find("option:selected").val();
+        var CELEMENT = $(this).parent().next().find(".Band");
+        CELEMENT.html("")
+       //  console.log(TechnologyArray);
+        var obj = TechnologyArray.filter(x => x.PDefinationId === parseInt(Selected));
+        function myFunction(item, index) {
+            CELEMENT.append("<option value='" + item.DefinationId + "' >" + item.DefinationName + "</option>");
+        }
+        obj.forEach(myFunction)
+        //$(".Band").append("<option value='" + result.data[i].DefinationId + "' >" + result.data[i].DefinationName + "</option>");
+    });
+    $('#TaskModal').on('shown.bs.modal', function () {
+
+        //   if (availableTags.length == 0) {
+        GetTagsAndSelected();
+        EFormulaValidator();
+        $(".Weightage").each(function () {
+            var value = parseInt($(this).val());
+            if (value <= 0) {
+                $(this).val("");
+            }
+            else {
+
+            }
+        });
+        //   }
+    });
+
+    ///formula validator
+    $(document).on("keyup click blur keydown", ".token-input-list-facebook", function (e) {
+       // NOTVALIDFORMULA = false;
+        if (event.key != 'Enter') {
+            var names = [];
+            names = $(this).text().split("×");
+            names = names[names.length - 1];
+            var Type = isNaN(names);
+            var obj = availableTags.filter(x => x.name === names);
+            if (Type == false && obj.length == 0 && names != "") {
+                // if (availableTags.indexOf(names) == -1) {
+                var Mobject = { id: parseInt(names), name: names, cvalue: parseInt(names) };
+                availableTags.push(Mobject);
+                // }
+            }
+        }
+        if (event.key === 'Enter' || event.key != 'Enter') {
+            var names = $(this).text().split("×").slice(0, -1);
+            var CString = "";
+            function Exist(val) {
+                // var obj = availableTags.filter(x => x.name.toString === val.toString());
+                if (val == "+" || val == "-" || val == ")" || val == "(" || val == "/" || val == "*") {
+                    return val;
+                }
+                else {
+                    return " 10";
+                }
+
+            }
+            function myFunction(item, index) {
+                CString += Exist(item);
+            }
+            names.forEach(myFunction)
+            try {
+                if (CString == "") {
+                    $(this).css("background-color", "#88b7ca");
+                    $(this).addClass("invalid");
+                    $(this).find("#token-input-").css("background-color", "#88b7ca")
+                }
+                else {
+                    eval(CString)
+                    $(this).css("background-color", "#b6e0b6")
+                    $(this).removeClass("invalid");
+                    $(this).find("#token-input-").css("background-color", "#b6e0b6")
+                }
+            } catch (e) {
+                NOTVALIDFORMULA = true;
+                $(this).css("background-color", "#eabebe");
+                $(this).addClass("invalid");
+                $(this).find("#token-input-").css("background-color", "#eabebe")
+                if (e instanceof SyntaxError) {
+                    // alert(e.message);
+
+                }
+            }
+
+        }
+
+    });
+    /////existed formula validator
+    function EFormulaValidator() {
+        NOTVALIDFORMULA = false;
+        $(".token-input-list-facebook").each(function () {
+           //   if (event.key === 'Enter') {
+            var names = $(this).text().split("×").slice(0, -1);
+            var CString = "";
+            function Exist(val) {
+                // var obj = availableTags.filter(x => x.name.toString === val.toString());
+                if (val == "+" || val == "-" || val == ")" || val == "(" || val == "/" || val == "*") {
+                    return val;
+                }
+                else {
+                    return " 10";
+                }
+
+            }
+            function myFunction(item, index) {
+                CString += Exist(item);
+            }
+            names.forEach(myFunction)
+            try {
+                if (CString == "") {
+                    $(this).css("background-color", "#88b7ca");
+                    $(this).addClass("invalid");
+                    $(this).find("#token-input-").css("background-color", "#88b7ca")
+                }
+                else {
+                    eval(CString);
+                   // console.log(eval(CString), +"  " + CString);
+                    $(this).css("background-color", "#b6e0b6")
+                    $(this).removeClass("invalid");
+                    $(this).find("#token-input-").css("background-color", "#b6e0b6")
+                }
+            } catch (e) {
+               NOTVALIDFORMULA = true;
+                $(this).css("background-color", "#eabebe");
+                $(this).addClass("invalid");
+                $(this).find("#token-input-").css("background-color", "#eabebe")
+                if (e instanceof SyntaxError) {
+                    // alert(e.message);
+
+                }
+            }
+
+            //  }
+        });
+        $(".newkpirow").show();
+    }
+    ////check if KPI is using
+    var AllKPIString = [];
+    function AllowDeleteKPI(search) {
+        AllKPIString = [];
+        $(".token-input-list-facebook").each(function () {
+            //   if (event.key === 'Enter') {
+            var names = $(this).text().split("×").slice(0, -1);
+            function myFunction(item, index) {
+                AllKPIString.push(item);
+            }
+            names.forEach(myFunction)
+
+        });
+        return AllKPIString.indexOf(search);
+    }
+
+
+    //   $(document).on("ready", function () {
+    $(document).on("click", ".formula-icon", function (e) {
+        $(this).parent('.formulaf1').addClass('active');
+        $(this).parents('.modal-content').addClass('disable');
+        e.stopPropagation();
+    });
+
+    $(document).on("click", "ul.token-input-list-facebook", function (e) {
+        e.stopPropagation();
+    });
+
+    $(document).on("dblclick", "html", function (e) {
+        $('.formulaf1').removeClass('active');
+        $('.modal-content').removeClass('disable');
+    });
+    // });
+    ///Weightage minimum value Value
+    $(document).on("keyup", ".Weightage", function (e) {
+        var value = parseInt($(this).val());
+        if (value <= 0) {
+            $(this).val("");
+        }
+        else {
+
+        }
+    });
+    </script>
+<script src="~/Areas/Project/Content/Project/KPI_Threshold.js"></script>
+
+<style>
+/*=============== PG ROWS TOP ===================*/
+.pg-rows-top {
+    /*background: #f6f6f6;
+    padding: 5px 10px;
+    border-bottom: 1px solid #ececec;*/
+    margin:0 0 5px;
+}
+.pg{width: 60%}
+.pg-row span:last-child .btn-group {
+    border-radius: 20px;
+    overflow: hidden;
+}
+button.custom-btn {
+    background: #37a6dd;
+    border: 0;
+    color: #FFF;
+    padding: 5px 20px;
+    border-radius: 30px;
+    border: 1px solid #FFF;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    font-size: 13px;
+}
+.pg-row-wrap{
+  padding-top: 5px;
+  padding-left:0;
+  position:relative;
+ }
+.pg-row-wrap .pg-row-wrap {
+    padding: 5px 0 0 30px;
+}
+.pg-row {
+    display: flex;
+    align-items: center;
+    background: #fefae3;
+    border: 1px solid #f3e074;
+    -webkit-border-radius: 40px;
+    -moz-border-radius: 40px;
+    border-radius: 40px;
+}
+.pg-row-wrap:hover > .pg-row{ background: #fff8d2 }
+.pg-row span:first-child{border: 0}
+.pg-row span {
+    padding: 5px 15px;
+    border-left: 1px solid #ddd;
+    color: #929292;
+    font-size: 13px;
+    flex: 1;
+}
+.pg-row span:last-child {
+    border: 0;
+    margin-left: auto;
+    flex: none;
+    padding: 5px 5px;
+}
+.pg-row span:last-child .btn-group {
+    overflow: hidden;
+    font-size: 11px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+.pg-row span:last-child .btn-group .btn-primary {
+    background: #7ca1cd;
+    border-color: #6081a7;
+}
+.pg-row span:last-child .btn-group .btn-danger {
+    background: #d56363;
+    border-color: #992121;
+}
+.dangerAlert{
+    border-color: red !important;
+}
+
+.successAlert{
+    background-color: white !important;
+}
+</style>
+<script>
+
+			var row = `<div class="pg-row-wrap"><div class="pg-row"> <span contenteditable="true">Techonology</span> <span> <div class="btn-group"> <button class="btn btn-xs btn-primary add-child"><i class="fa fa-plus-circle"></i> Add Child</button> <button class="btn btn-xs btn-danger delete-node"><i class="fa fa-times"></i> Delete</button> </div> </span> </div></div>`;
+			$(".add-new").on("click",function(){
+				$(".pg-grids").append(row);
+			});
+			$("body").on("click",".add-child",function(){
+			    $(this).closest('.pg-row-wrap').append(row);
+			});
+
+			$("body").on("click",".delete-node",function(){
+				$(this).closest('.pg-row-wrap').remove();
+			});
+
+			$.post("/Project/Defination/ToSingle", { Filter: 'ByProjectId', Value: parseInt(@ViewBag.Id) }).then(function (res) {
+			    var s = res;
+			    var EndDate = "Continue";
+			    if (s.EstimateEndDate != null && s.EstimateEndDate != undefined) {
+			        EndDate =  moment(s.EstimateEndDate).format('DD MMM, YYYY');
+			    }
+			    var ProjectInfo = '<span style="font-size: 16px;font-family: inherit;color:#000;"><strong>Project: </strong>' + s.ProjectName + '</span>' +
+                    '<span style="margin-left:1%;font-size: 16px;font-family: inherit;color:#000;">' +
+                    '<strong style="margin-left:2%;color:#000;">Start Date: </strong><span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;;margin-right: 27px;">' + moment(s.EstimateStartDate).format('DD MMM, YYYY') + ' </span> <strong> Expected End Date: </strong> ' +
+                    '<span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;">' + EndDate + '</span>';
+			    $('#ProjectInfo').html(ProjectInfo);
+			    var Deshboard = '<span> <a title="Project Dashboard" href="/Project/Dashboard/Index?Id=' +@ViewBag.Id + '"><i class="fa fa-dashboard"></i></a> </span>'
+			    $('#Deshboard').html(Deshboard);
+
+			    var Edit = '<span> <a title="Edit Project" href="/Project/Defination/new/' + @ViewBag.Id + '"><i class="fa fa-edit"></i></a> </span>'
+			    $('#edit').html(Edit);
+			    var template = '<span> <a title="Project Template" href="/Project/Template/list?ProjectId=' + @ViewBag.Id + '"><i class="fa fa-list-alt"></i></a> </span>'
+			    $('#template').html(template);
+
+			    var seting = '<span> <a  title="Project Chart Settings" href= "/Project/Dashboard/Configuration?Id=' +@ViewBag.Id  + '"><i class="fa fa-cog"></i></a> </span>'
+			    $('#setting').html(seting);
+
+			    var _worklogs = '<span> <a title="Worklog" href="/Project/Worklog/Index?projectid=' +@ViewBag.Id + '"><i class="fa fa-tasks"></i></a> </span>'
+  
+			    $('#worklogs').html(_worklogs);
+			});
+
+    $(document).on("focusin", "input:focus", function(){
+        $(this).removeClass("dangerAlert");
+    });
+
+</script>
+

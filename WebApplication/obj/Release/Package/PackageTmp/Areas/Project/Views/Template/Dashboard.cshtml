@@ -1,0 +1,770 @@
+﻿
+@{
+    string id = ViewBag.Id;
+    string PageType = ViewBag.PageType;
+    //int? StartIndex = ViewBag.PageStartIndex;
+    //int? EndIndex = ViewBag.PageEndIndex;
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+<link href="/Areas/Project/Content/CustomBootstrap/bootstrap.css" rel="stylesheet" />
+<link href="/Content/js/Plugins/gridstack/gridstack.css" rel="stylesheet" />
+<link href="/Content/js/Plugins/AngularQueryBuilder/css/StyleQueryBuilderTemplate.css" rel="stylesheet" />
+<link href="~/Content/Stylesheet.css" rel="stylesheet" />
+<style type="text/css">
+    .default-cell-icon{
+        display: none !important;
+    }
+
+    /* Node Styling */
+    @@font-face {
+        font-family: DeliciousRoman;
+        src: url(http://youngfb.com/cdn/bootstrap/fonts/glyphicons-halflings-regular.ttf);
+    }
+
+    @@font-face {
+        font-family: DeliciousRoman;
+        src: url(http://youngfb.com/cdn/bootstrap/fonts/glyphicons-halflings-regular.woff);
+    }
+
+    .bodyarea {
+        width: inherit;
+    }
+
+    .topbar {
+        z-index: 999;
+    }
+
+    .setting {
+        background-image: url('../../../../Content/Images/GridStackImg/settings-black.png');
+        background-repeat: no-repeat;
+    }
+
+    .NodePropertyWindow {
+        display: none;
+        float: right;
+        width: 40%;
+        border-left: 1px solid;
+        position: fixed;
+        top: 0px;
+        right: 0;
+        bottom: 1px;
+        background-color: white;
+        overflow-y: auto;
+        padding: 25px;
+    }
+
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+
+        .settingBtn {
+            visibility: hidden;
+        }
+
+        #report_stack, #report_stack * {
+            visibility: visible;
+        }
+
+            #report_stack > div:nth-child(n+2) {
+                page-break-before: always;
+            }
+
+        * {
+            -webkit-print-color-adjust: exact !important;
+            -moz-print-color-adjust: exact !important;
+            -o-print-color-adjust: exact !important;
+            -ms-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .container {
+            width: 800px !important;
+        }
+    }
+
+    .bodyarea {
+        border: 0;
+        position: relative;
+    }
+    a.canvasjs-chart-credit {
+    display: none;
+    }
+
+</style>
+
+<style type="text/css">
+
+
+    /* Node Styling */
+    #notification {
+        margin-top: -20px;
+        position: fixed;
+        right: 4px;
+        width: 100%;
+        z-index: 105;
+        text-align: center;
+        font-weight: normal;
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        background-color: #cc4944;
+        padding: 5px;
+    }
+
+        #notification span.dismiss {
+            padding: 0 5px;
+            cursor: pointer;
+            float: right;
+            margin-right: 10px;
+        }
+
+        #notification a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+    .condition {
+        margin-top: 18px;
+        margin-bottom: 15px;
+        margin-left: 35px !important;
+    }
+
+    .ng-scope.select.input-sm {
+        height: 30px !important;
+        padding: 0px 10px !important;
+    }
+
+    .parent-class {
+        border: none !important;
+    }
+
+    .topbar {
+        background: dimgrey;
+        color: white;
+        padding: 5px;
+        height: 25px;
+    }
+
+    .bodyarea {
+        font-size: 17px;
+        height: inherit;
+        background-color: white;
+        width: 100%;
+        position: absolute;
+        border: 1px solid;
+    }
+
+
+
+    .grid-stack-item-content {
+        color: #2c3e50;
+        border: 1px solid black;
+        overflow: hidden;
+    }
+
+    .remove {
+        background-image: url('../../../../Content/Images/GridStackImg/remove-button.png');
+        background-repeat: no-repeat;
+    }
+
+    .grippy {
+        background-image: url('../../../../Content/Images/GridStackImg/move-option.png');
+        background-repeat: no-repeat;
+        cursor: move;
+    }
+
+    .setting {
+        background-image: url('../../../../Content/Images/GridStackImg/settings.png');
+        background-repeat: no-repeat;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    li {
+        float: left;
+    }
+
+        li a {
+            display: block;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+    .NodePropertyWindow {
+        display: none;
+        float: right;
+        width: 40%;
+        position: fixed;
+        top: 50px;
+        right: 0;
+        bottom: 1px;
+        background-color: white;
+        overflow-y: auto;
+        -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .sticky0 {
+        position: fixed;
+        top: 0;
+    }
+
+    .sticky45 {
+        position: fixed;
+        top: 90px;
+    }
+
+    .bodyarea {
+        border: 0;
+        position: relative;
+    }
+
+    .parent-class {
+        padding: 0 5px !important;
+    }
+
+    .topbar {
+        width: 100%;
+        background: white !important;
+        color: #333 !important;
+    }
+
+    div#grid-stack-DIV {
+        float: left;
+        width: 100%;
+    }
+
+    .grid-stack.grid-stack-instance-441.grid-stack-animate {
+        float: left;
+        width: 100%;
+    }
+
+    ul#settingsTab {
+        background: #3276b1;
+        border: 0;
+    }
+
+        ul#settingsTab li {
+            margin: 0;
+        }
+
+            ul#settingsTab li a {
+                margin: 0 !important;
+                border: 0;
+                color: #FFF;
+                padding: 10px 20px !important;
+            }
+
+            ul#settingsTab li.active a {
+                color: #3e3e3e;
+            }
+
+            ul#settingsTab li a:hover {
+                background: #8c8c8c;
+            }
+
+    .grid-stack.container {
+        padding: 0;
+    }
+
+    div#grid-stack-DIV {
+        float: left;
+        width: 100%;
+        padding-bottom: 20px;
+        background: #e0e0e0;
+    }
+
+/*paging*/
+
+
+
+
+    .disabled {
+    background-color: rgba(0,0,0,0.1) !important;
+    color: black !important;
+ 
+}
+
+
+</style>
+
+
+
+<!-- Add Node Modal -->
+<div class="modal fade" id="QueryBuilder" role="dialog" ng-app="Myapp" ng-controller="Myctrl">
+    <div class="modal-dialog" style="width:1000px;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Query Builder</h4>
+            </div>
+            <div class="modal-body" style="min-height:300px;">
+                <!-- Add Node Modal -->
+                <input type="hidden" id="QueryBuilderModalId" />
+                <div id="notification" style="display: none;">
+                    <span class="dismiss"><a title="dismiss this notification">x</a></span>
+                </div>
+                <div id="QueryBuilder" style="padding:20px;">
+                    <query-builder group="filter.group"></query-builder>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" data-dismiss="modal" class="btn btn-default">Cancel</button>
+                <button type="submit" id="QueryBuilderModalBtnOk" data-dismiss="modal" class="btn btn-default">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+@{
+    if (PageType != "fullpaged")
+    {
+        <div class="container" ; style="margin: auto; padding:2px; width: 100% !important;">
+            <div id="report_stack" style="width: inherit;" class="grid-stack grid-stack-instance-7377 container">
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div>
+            <div id="report_stack" style="width: inherit;" class="grid-stack grid-stack-instance-7377 container">
+
+            </div>
+        </div>
+    }
+}
+
+
+<!-- Edit Settings Modal   class="propertyWindow" id="propertyWindow" -->
+<div class="NodePropertyWindow" id="NodePropertyWindow" style="width: 25%; padding: 0 !important;">
+    <div style="background-color: #3276b1; padding: 10px; color: white; ">Query Builder</div>
+    <div class="widget-body" style="margin-top: 5px; margin-top: 5px;padding: 20px;">
+        <div class="tab-pane fade in active">
+            <div id="baseSettings">
+                <div id="advanceSettings">
+                    @using (@Html.BeginForm("PostFormBuilderValues", "Template", FormMethod.Post))
+                    {
+                        <input type="hidden" id="selectedNodeId" name="selectedNodeId" />
+                        <input type="hidden" id="routeTemplateId" name="routeTemplateId" value="@id" />
+
+                        <div id="advanceSettingsdynamicForm">
+                            <!-- Form to render dynamically  -->
+                        </div>
+
+                        <br />
+                        <button type="submit" id="editAdvancedSettingsBtnOk" class="btn btn-success">Save</button>
+                        <button type="button" class="editSettingsBtnCancel btn btn-danger">Cancel</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/SmartAdmin/js/libs/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+<script src="/Content/js/Plugins/gridstack/gridstack.js"></script>
+@*<script src="/Content/js/Plugins/gridstack/gridstack.jQueryUI.js"></script>*@
+
+<script src="~/SmartAdmin/js/libs/jquery-ui-1.10.3.min.js"></script>
+<script src="~/Scripts/angular.js"></script>
+
+<script src="~/AdminLTE/bootstrap/js/bootstrap.js"></script>
+<script src="~/Content/js/Plugins/canvasjs/canvasjs.min.js"></script>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAdDzJ4ggDZu4WAguesEjYlVEl1Y80YYDI&sensor=false&libraries=geometry&bogusParam=.js"></script>
+
+<script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+<script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+<script src="~/Content/js/GoogleMapsNTL.js"></script>
+<script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/angular.min.js"></script>
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/QueryBuilderDirective.js"></script>
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/ui-bootstrap-tpls-0.13.3.js"></script>
+
+
+<link rel="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" type="text/css" />
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+@if (PageType == "fullpaged")
+    {
+           <style>
+               #content {
+                    padding: 10px 8px !important;
+                    position: relative  !important;
+                }
+           </style>
+}
+else
+{
+    <style>
+        .container {
+            width: 1400px;
+        }
+        .grid-stack {
+            background: #f3f3f3 !important;
+            border-left: 5px solid #f3f3f3;
+            border-right: 5px solid #f3f3f3;
+            border-bottom: 10px solid #f3f3f3;
+            border-top: 10px solid #f3f3f3;
+        }
+    </style>
+}
+
+<script type="text/javascript">
+    
+    $(document).ready(function(){
+        var loading = $.loading();
+        loading.ajax(true);
+        jQuery(document).bind("keyup keydown", function(e){
+            if(e.ctrlKey && e.keyCode == 80){
+                $('.MapControls').hide();
+                $('.canvasjs-chart-toolbar').hide();
+                $('.btn-default').hide();
+
+                window.print();
+
+                $('.MapControls').show();
+                $('.canvasjs-chart-toolbar').show();
+                $('.btn-default').show();
+            }
+        });
+    });
+
+    $(function () {
+        var gridData = "";
+        var serializedData = "";
+        var routeTemplateId = @id;
+        $.ajax({
+            url: "/Project/Template/GetNodeData/",
+            type: "GET",
+            data: {
+                TemplateId: routeTemplateId,
+                nocache: Math.random(),
+            },
+            async: false,
+            cache: false,
+        }).done(function (data) {
+                //alert("CODE");
+            gridData = JSON.parse(JSON.stringify(data.NodeJson));
+
+            if (data.TemplateCoreSetting != null) {
+                if (data.TemplateCoreSetting.BackgroundColor != null) {
+                    $('.grid-stack').css("background-color", data.TemplateCoreSetting.BackgroundColor);
+                }
+                if (data.TemplateCoreSetting.PageType == "contained") {
+                    $('.grid-stack').addClass("container");
+                }
+            }
+
+            if (gridData != null && gridData != "") {
+                serializedData = gridData;
+                var items =JSON.parse(serializedData)
+
+                $(items).each(function(i){
+                    $("#report_stack").append(`
+                                    <div class="parent-class grid-stack-item-content grid-stack-item" id="grid-stack-id-` + items[i].id + `" data-gs-x="`+items[i].x+`" data-gs-y="`+items[i].y+`" data-gs-width="`+items[i].width+`" data-gs-height="`+items[i].height+`" data-gs-id="`+items[i].id+`">
+                                         <div id="dv` + items[i].id + `" class="bodyarea">
+                                         </div>
+                                    </div>`);
+                });
+
+                      var options = {
+                        cellHeight: 70,
+                        verticalMargin: 10
+                    };
+                    $('#report_stack').gridstack(options);
+
+                    $(items).each(function(count){
+                
+                    $.get("/Project/Template/GetNodeWidget", {
+                        NodeId: items[count].id,
+                        CurrentPageURL: window.location.href,
+                        WithPartialView: true,
+                        page: 1,
+                        StartIndex: 0,
+                        EndIndex: 10,
+                    }).done(function (PageData) {
+                      
+                        $('#report_stack').find('#dv'+items[count].id).append(PageData);
+                    });
+                });
+
+                $('.btn-default').css('z-index','999');
+
+            }
+        });
+
+    });
+
+
+
+
+    function ChangeNodeSettings(id) {
+
+        var tempId = @id;
+        var nodeTemplateURL = "";
+        $('#selectedNodeId').val(id)
+
+        // Dropdown of Id's in partial view
+        var selectListDOMIds = "<select class='DomIdSelectList form-control'>";
+        selectListDOMIds += "<option value='-1'> Select ID to Map </option>";
+        $('#dv' + id).find('*').each(function () {
+            if ($(this).attr('id') != undefined && $(this).attr('id').includes('_')) {
+
+                if (isUpperCase($(this).attr('id'))) {
+                    selectListDOMIds += "<option value=" + $(this).attr('id') + ">" + $(this).attr('id') + "</option>";
+                }
+            }
+        });
+        selectListDOMIds += "</select>"
+
+        $.ajax({
+            url: "/Project/Template/GetFormBuilderForQueryRenderedHTML/",
+            type: "post",
+            data: {
+                FormTypeId: "node",
+                NodeId: id,
+                TemplateId: tempId,
+            },
+            async: false,
+        }).done(function (data) {
+
+            $('#advanceSettingsdynamicForm').html(data.FormHtml);
+            $('#editAdvancedSettingsBtnOk').show();
+            if (data.FormHtml == "") {
+                $('#advanceSettingsdynamicForm').html("<h3> No Query Builder </h3>");
+                $('#editAdvancedSettingsBtnOk').hide();
+            }
+
+            $('div.nodeTitleName').html(data.NodeBasicInfo.NodeTitle);
+            $('#nodeTitle').val(data.NodeBasicInfo.NodeTitle);
+            $('#nodeTemplateURL').html(data.NodeTempList);
+            $('#nodeSQLQuery').val(data.NodeBasicInfo.NodeSQL);
+            $('div.DomIdsList').html(selectListDOMIds);
+            $('#nodeTitleForSetting').html(toTitleCase(data.NodeBasicInfo.NodeTitle));
+
+            // Adjust dropdown values and assign name
+            var DOMIdList = data.MappingIds;
+            $('.DomIdSelectList').each(function (i) {
+                $(this).attr("name", "AdvSettingMappingId" + i);
+                if (DOMIdList[i] != null) {
+                    $(this).val(DOMIdList[i]);
+                }
+            });
+        });
+
+        $("div.NodePropertyWindow").toggle();
+    }
+
+    $('.editSettingsBtnCancel').click(function () {
+        $("div.NodePropertyWindow").hide();
+        $('#editAdvancedSettingsBtnOk').show();
+    });
+
+    function OpenQueryBuilder(COntrolType, Id) {
+        $('#QueryBuilderModalId').val(Id);
+
+        $('#QueryBuilder').modal('show');
+    }
+
+    function toTitleCase(str) {
+        return str.replace(/\w\S*/g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    }
+
+    function isUpperCase(str) {
+        return str === str.toUpperCase();
+    }
+
+</script>
+
+<script>
+    var app = angular.module('Myapp', ['queryBuilder']);
+    app.controller('Myctrl', ['$scope', '$http', '$timeout', '$rootScope', '$compile', function ($scope, $http, $timeout, $rootScope, $compile) {
+        function CSS() {
+            $('div').removeClass("wrapper");
+            $('.content-wrapper').css("min-height", "0");
+            $('footer').remove();
+            $('.removeborber').each(function (i) {
+
+                if (i % 2 == 0) {
+                    $(this).css({ 'background': "white" });
+                }
+                else {
+                    $(this).css({ 'background': "#d2d2d2" });
+                }
+            });
+            $('.MainGroup').css({ "background": "#eee" });
+        }
+
+        var data = '{"group": {"operator": "AND","rules": []}}';
+
+        function htmlEntities(str) {
+            return String(str) //.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function addremoveqoute(str, flag) {
+            if (flag == "System.DateTime") {
+                dt = new Date(str);
+                str = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
+            }
+            if (flag == "System.Integer") {
+                return String(str);
+            }
+            else {
+                str = "'" + str + "'"
+                return String(str);
+            }
+        }
+
+        $scope.isShow = 0;
+        var haskey = null;
+
+        function computed(group) {
+            $timeout(function () {
+                CSS();
+            }, 100);
+            $timeout(function () {
+                if (group.rules.length == 0 && $scope.isShow == 0) {
+                    $('.first').last().hide();
+                    $('.first1').last().hide();
+                    $('.first2').last().hide();
+                    $('.first3').last().hide();
+                    $('.removeborber').first().css("border", "0");
+                    $scope.isShow = 1;
+                }
+            }, 500);
+
+            $('.removeborber').first().css("border", "0");
+            for (i = 0; i < group.rules.length; i++) {
+                //This code is for the buttons on the last row of condition
+                try {
+                    if (group.rules[i].group) {
+                        group.rules[i - 1].groupstart = true;
+                    }
+                } catch (e) {
+                    //alert(e)
+                }
+
+                //This code is for removing the buttons from the group top
+                try {
+                    if (group.rules[i].group) {
+                        if (group.rules[i].group.rules[0].field != undefined) {
+                            group.rules[i].group.firstgroup = true;
+                            if (group.rules[i].group.rules[group.rules[i].group.rules.length - 1].group.rules[0].field != "") {
+                                group.rules[1].group.rules[0].group.firstgroup = true;
+                            }
+                        }
+                    }
+                } catch (e) {
+                }
+            }
+            if (!group) return "";
+            for (var str = "(", i = 0; i < group.rules.length; i++) {
+                if (group.rules[0].group) {
+                    $('.btnremove').hide();
+                    $('.btnremove:first').show();
+                    $('.btnremoveclrAll').hide();
+                    $('.btnremoveclrAll:first').show();
+                    group.rules[0].group.removefirstcondition = false;
+                }
+
+                //This code is for removing condition operator before sub group.
+                if (!group.rules[i].group) {
+                    try {
+                        if (group.rules[i + 1].group != undefined) {
+                            group.rules[i].isoperator = false;
+                        }
+                        else {
+                            group.rules[i].isoperator = true;
+                        }
+                    } catch (e) {
+                        group.rules[i].isoperator = true;
+                    }
+                }
+
+                // This code is adding group operator in string
+                if (i > 0 && group.rules[i].group) {
+                    (str += group.rules[i].group.operator)
+                    if (i > 0) {
+                        group.rules[i].isgroupoperator = false
+                    }
+                }
+                str += group.rules[i].group ?
+                    computed(group.rules[i].group) :
+                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + addremoveqoute(group.rules[i].data, group.rules[i].type) + " " + group.rules[i].operator + " ";
+            }
+
+            str1 = str;
+            $scope.Querystring = str + ")";
+            return str + ")";
+        }
+        $scope.getstring = function () {
+
+            return $scope.Querystring;
+        }
+        $scope.filter = JSON.parse(data);
+        $scope.$watch('filter', function (newValue) {
+            $(".branch-value").remove("ng-hide")
+            $scope.json = JSON.stringify(newValue, null, 2);
+            $scope.json.object = newValue;
+            $scope.output = computed(newValue.group);
+        }, true);
+
+
+        $scope.Report;
+        $scope.Column = [];
+        $scope.ColumnId = [];
+
+        $scope.CallDirective = function () {
+            $rootScope.$emit('callDirective', $scope.Column);
+        };
+
+        $http.get("/ReportTest/GetReportrecord?reportFilter=TEST_LOG_REPORT" + '&where=1=0' + '&select=*&group=null').then(function (response) {
+            $scope.Column = response.data;
+            $scope.CallDirective();
+            $rootScope.testing = response.data;
+        })
+
+        $scope.getAllReports = function () {
+            $http.get("/ReportTest/GetReport?Filter=byDefinationType").then(function (response) {
+                $scope.Report = response.data;
+            })
+        }
+
+        $('#QueryBuilderModalBtnOk').click(function () {
+            var FieldId = $('#QueryBuilderModalId').val();
+            //console.log(FieldId);
+            $('#' + FieldId).val($scope.Querystring);
+            //console.log($scope.Querystring);
+        });
+
+    }]);
+    
+    $(document).ready(function () {
+        var Areaheight = document.getElementById("report_stack").style.height;
+        document.getElementById("report_stack").style.height = parseInt(Areaheight.replace("px", "")) + 20+"px";
+        $("#report_stack").css("background-color", "#f3f3f3"); 
+    });
+    $(document).ajaxStop(function() {
+        $(".parent-class").css("background-color","white");
+        });
+
+</script>

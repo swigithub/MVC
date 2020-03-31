@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewBag.Title = "Admin Dashboard";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div id="myToolbar"></div>
+<div class="row " >
+    <div class="col-sm-12 DragBody" style="padding:10px;"></div>
+</div>
+
+
+@section scripts{
+<script src="~/Content/js/Object.js"></script>
+<script src="~/Content/js/Plugins/cookies.js"></script>
+<script src="~/Content/js/Plugins/draggabilly/draggabilly.pkgd.js"></script>
+<script src="~/Content/js/Plugins/draggabilly/custom.js"></script>
+<script src="~/Content/js/AdminDashboard.js"></script>
+
+<link rel="stylesheet" type="text/css" href="http://w2ui.com/src/w2ui-1.4.min.css" />
+<script type="text/javascript" src="http://w2ui.com/src/w2ui-1.4.min.js"></script>
+<script src="~/AdminLTE/plugins/jquery-ui/jquery-ui.js"></script>
+
+<script>
+    $(function () {
+
+        
+
+        var MenuType = 'Table';
+
+        $('#myToolbar').w2toolbar({
+            name: 'toolbar',
+            items: [
+                {
+                    type: 'menu', id: 'item2', caption: 'Widgets', img: 'icon-folder', items: [
+                        @foreach (var item in ViewBag.Widgets)
+                        {
+                            @: { text: '@item.Tilte' ,id:'@item.WidgetId',  icon: 'icon-page' },
+                        }
+                    ]
+                },
+                { type: 'break', id: 'break1' },
+                { type: 'radio', id: 'Table', group: '1', caption: 'Table', icon: 'fa-star', checked: true },
+                { type: 'radio', id: 'Chart', group: '1', caption: 'Chart', icon: 'fa-star-empty' },
+            ],
+            onClick: function (event) {
+               // debugger;
+                if (event.item.type == 'radio') {
+                    MenuType = event.item.text;
+                }
+
+                
+                if (event.item.type == 'menu' && event.item.text == 'Widgets') {
+                    if (event.subItem != undefined) {
+                      //  console.log(event.subItem.text);
+
+                        $('.DragBody').append('<div id="pan' + event.subItem.id + '"></div>');
+                        if (MenuType=='Table') {
+                            NewPanel('pan' + event.subItem.id, event.subItem.text, null, '/AdminDashboard/TableResult?Filter=WidgetQueryResult&Value=' + event.subItem.id);
+
+                        } else if (MenuType == 'Chart') {
+                            NewPanel('pan' + event.subItem.id, event.subItem.text, null, '/AdminDashboard/Chart?Filter=WidgetQueryResult&Value=' + event.subItem.id);
+                        }
+                        
+
+                    }
+                }
+                // console.log(MenuType);
+               // console.log(event);
+                //console.log('item ' + event.target + ' is clicked.');
+            }
+        });
+
+      
+
+        //$("#pan1 .box").resizable({
+        //    handleSelector: ".btn-resize",
+        //    resize: function (event, ui) {
+        //        alert('sdfsdf');
+        //    },
+        //    start: function (event, ui) {
+        //        console.log('sdfds');
+        //    }
+        //    , stop: function (event, ui) {
+        //        console.log(event);
+        //    }
+        //});
+
+        //$("#pan1 .box").on("resizestart", function (event, ui) {
+        //    console.log('sdfds');
+        //});
+
+        //$("#pan1 .box").on("resizestop", function (event, ui) {
+
+        //    console.log('sdfds');
+        //});
+
+    });
+
+</script>
+}
+@section style{
+<link href="~/AdminLTE/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    }

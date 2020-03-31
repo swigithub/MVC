@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<name>Routes</name>
+<description>Routes For Site</description>
+<Style id="LineId0">
+<LineStyle>
+<color>ff0000CC</color>
+<width>4</width>
+
+</LineStyle>
+</Style><Placemark>
+<name>route</name>
+<styleUrl>#LineId0</styleUrl>
+<LineString>
+<altitudeMode>relative</altitudeMode> 
+<coordinates>
+-89.25941124623932,40.102485792032674,0
+-89.25877824491181,40.10160769980296,0
+-89.25900355046906,40.100984001242324,0
+-89.25990477269806,40.10024540344736,0
+</coordinates>
+</LineString>
+</Placemark>
+</Document>
+</kml>

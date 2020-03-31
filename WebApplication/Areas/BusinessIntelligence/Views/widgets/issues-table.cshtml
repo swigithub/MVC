@@ -1,0 +1,36 @@
+<div class="table-container">
+        <table>
+                <thead>
+                        <tr>
+                                <th></th>
+                                <th>FA Code</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Task</th>
+                                <th>Description</th>
+                                <th>Assigned To</th>
+                                <th>Target</th>
+                                <th></th>
+                        </tr>
+                </thead>
+                <tbody>
+                        <tr class="tablerow"  ng-repeat="iss in issuestable">
+                                <td><span class="status-clr {{iss.color}}"></span></td>
+                                <td>{{iss.code}}</td>
+                                <td>{{iss.priority}}</td>
+                                <td>{{iss.status}}</td>
+                                <td>{{iss.task}}</td>
+                                <td class="description">{{iss.description}}</td>
+                                <td>{{iss.assignedto}}</td>
+                                <td>{{iss.target}}</td>
+                                <td>
+                                        <div class="action-btns">
+                                                <a class="open-popup" href="#issue-ticket" title=""><img src="images/table-icon1.png" alt="" /></a>
+                                                <a class="open-popup" href="#change-issue-status" title=""><img src="images/table-icon2.png" alt="" /></a>
+                                                <a class="open-popup" href="#work-log" title=""><img src="images/table-icon3.png" alt="" /></a>
+                                        </div>
+                                </td>
+                        </tr>
+                </tbody>
+        </table>
+</div>

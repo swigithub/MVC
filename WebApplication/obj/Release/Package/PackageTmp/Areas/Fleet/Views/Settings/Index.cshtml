@@ -1,0 +1,723 @@
+﻿@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<style>
+    
+label.select-label {
+    width: 80px;
+    margin: 0;
+}
+
+label.threshold-label {
+    margin-left: 10px;
+    margin-right: 0;
+    width: 170px;
+}
+
+label.alerts-label {
+    margin-left: 10px;
+}
+
+</style>
+
+<script>
+    $(document).ready(function () {
+        GetAllTrackers();
+        $(".AlarmDropDownOptions").append($("<option></option>").val(0).html('OFF'));
+        $(".AlarmDropDownOptions").append($("<option></option>").val(1).html('ON'));
+        $('.Thresholdtxt').attr('readonly', true);
+    });
+
+    function GetAllTrackers() {
+        $.ajax({
+            url: window.location.origin + "/swi/Fleet/GetAllTrackers",
+            type: "Get",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+
+                if (result != "") {
+                    $(result).each(function () {
+                        var TrackerCombination = this.ManuName + ' | ' + this.IMEI + ' | ' + this.RegistrationNumber;
+                        $('.TrackersSection').append('<div class="radio"> <label> <input type="radio" name = "Trackers" class ="trackers_radio" value =' + this.IMEIId + ' data-imei = ' + this.IMEI + '>' + TrackerCombination + '</label> </div>');
+                        $('.ChkBxTrackersList').append('<div class="checkbox"> <label> <input class="chkBxTrackers" type="checkbox" value =' + this.IMEIId + ' data-ChkboxIMEI = ' + this.IMEI + '>' + TrackerCombination + '</label> </div>');
+                        //$("#ManuName").append($("<option></option>").val(this.ManuId).html(this.ManuName));
+                        //<input type="radio" id="huey" name="drone" value="huey"
+                        //checked>
+                    });
+                }
+            },
+            error: function (data) { }
+        });
+
+        ResetControls;
+    }
+
+    $(document).on('click', '.save', function () {
+        var ListModel = [];
+        var ReqSpan = $('.Required');
+        if (ReqSpan.length > 0)
+        {
+            ReqSpan.parent().find('span.Required').remove()
+            //ReqSpan.parentNode.removechild(ReqSpan);
+        }
+
+
+        if (!$("input[name='Trackers']:checked").val()) {
+            $.notify("No Tracker Selected", { color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+        }
+        else {
+            var CurrentTrackerVal = $("input[name='Trackers']:checked").val();
+            var ModifiedBy = @ViewBag.UserId;
+            var ModifiedOn = Current_date();
+            var Applied = false;
+            var ProcessSave = true;
+
+            $('.Alarms').each(function () {
+
+                var AlarmStatus = $(this).find('select').eq(0).val();
+                var Thresholdval;
+                var IsNotific;
+                var AlrmCd,IsEnable;
+                AlrmCd = $(this).attr('value');
+                
+                
+                if (AlarmStatus == "1")
+                {
+                    if ($(this).find('input').length > 1)
+                    {
+                        Thresholdval = $(this).find('input').eq(0).val();
+
+                        if (!Thresholdval)
+                        {
+                            $(this).find('input').eq(0).parent().parent().append('<span style = "color:red" class= "Required"> Required </span>');
+                            ProcessSave = false;
+                        }
+                    }
+                    IsEnable = true;
+                }
+                else {
+                    IsEnable = false;
+                    Thresholdval = SetThresholdValues(AlrmCd);
+                }
+               
+
+                if (ProcessSave)
+                {
+                    if ($(this).find('input').length > 1)
+                    {
+                        IsNotific = $(this).find('input').eq(1).is(":checked");
+                    }
+                    else if ($(this).find('input').length = 1)
+                    {
+                        IsNotific = $(this).find('input').eq(0).is(":checked");
+                    }
+
+                    
+                    $(this).data("IMEI")
+
+                    var model = {
+                        TrackerId: $("input[name='Trackers']:checked").val(),
+                        IMEI: $("input[name='Trackers']:checked").data("imei"),
+                        ModifiedBy: ModifiedBy,
+                        ModifiedOn: ModifiedOn,
+                        AlrmCodes: AlrmCd,
+                        ThresholdValues: Thresholdval,
+                        IsEnabled: IsEnable,
+                        IsNotification: IsNotific,
+                        IsApplied: false
+                    };
+
+                    ListModel.push(model);
+                }
+            });
+
+            if (ProcessSave)
+            {
+                var IsSaved= false;
+                $.ajax({
+                    url: window.location.origin + "/swi/Fleet/SaveTrackerAlarmConfig",
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(ListModel),
+                    datatype: JSON,
+                    async:false,
+                    success: function (result) {
+                        IsSaved = true;
+                        //$.notify("Tracker Settings Saved Successfully.", { color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                    }
+                });
+
+                if (IsSaved){
+                    if (formStatus =="Update")
+                    {
+                        $.notify("Tracker Settings Updated Successfully.", { color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                    }
+                    else
+                    {
+                        $.notify("Tracker Settings Saved Successfully.", { color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                        formStatus ="Update";
+                    }
+                }
+            }
+        }
+
+    });
+
+
+    $(document).on('click', '.MultipleTrackerSave', function () {
+        var ListModel = [];
+  
+        if (!$(".chkBxTrackers:checked").length > 0) {
+            $.notify("No Tracker Selected", { color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+        }
+        else 
+        {
+            var CurrentTrackerVal = $(".chkBxTrackers:checked").val();
+            var ModifiedBy = @ViewBag.UserId;
+            var ModifiedOn = Current_date();
+            var Applied = false;
+            var ProcessSave = true;
+
+            $(".chkBxTrackers:checked").each(function ()
+            {                    
+                var model = {
+                    TrackerId:$(this).val(),
+                    IMEI:$(this).data("chkboximei"),
+                    ModifiedBy:ModifiedBy,
+                    ModifiedOn:ModifiedOn,
+                    AlarmConfig:[]
+                };
+                
+                $('.MltplTrkrsAlarms').each(function () {
+                  
+                    var AlarmStatus = $(this).find('select').eq(0).val();
+                    var Thresholdval;
+                    var IsNotific;
+                    var AlrmCd,IsEnable;                   
+
+                   
+                    if ($(this).find('input').length > 1)
+                    {
+                        IsNotific = $(this).find('input').eq(1).is(":checked");
+                    }
+                    else if ($(this).find('input').length = 1)
+                    {
+                        IsNotific = $(this).find('input').eq(0).is(":checked");
+                    }
+
+                    if (AlarmStatus == "1")
+                    {
+                        IsEnable = true;
+                    }
+                    else
+                    {
+                        IsEnable = false;
+                    }
+
+                    AlrmCd = $(this).attr('value');
+                    Thresholdval = SetThresholdValues(AlrmCd);
+                    
+                    //$(this).data("chkboximei")
+
+                    var AlarmConfig ={
+                        AlrmCodes:AlrmCd,
+                        ThresholdValues:Thresholdval,
+                        IsEnabled:IsEnable,
+                        IsNotification:IsNotific,
+                        IsApplied:false
+                    };
+                    
+                    model.AlarmConfig.push(AlarmConfig);
+                   
+                });
+                ListModel.push(model);
+            });
+                      
+            $.ajax({
+                url: window.location.origin + "/swi/Fleet/SaveMultipleTrackersAlarmConfig",
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(ListModel),
+                datatype: JSON,
+                async:false,
+                success: function (result) {
+                    IsSaved = true;
+                    //$.notify("Tracker Settings Saved Successfully.", { color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                }
+            });                        
+                
+            $.notify("Settings Saved Successfully Against Selected Trackers .", { color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });            
+
+            $('.MultipleTrackersCustom-Configurations').find('select').val(0);
+            var Collection = $('.MultipleTrackersCustom-Configurations').find('input:checkbox');
+
+            $.each(Collection, function (index, item) {
+                $(this).prop('checked', false)
+            });
+        }
+    });
+
+    function Current_date() {
+        var dateObj = new Date();
+        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var day = dateObj.getUTCDate();
+        var year = dateObj.getUTCFullYear();
+        var hour = dateObj.getUTCHours();
+        var hour = dateObj.getUTCHours();
+        var min = dateObj.getMinutes();
+        var sec = dateObj.getSeconds();
+
+        return newdate = year + "-" + month + "-" + day + ' ' + hour + ':' + min + ':' + sec;
+    }
+
+    $(document).on('click', '.trackers_radio', function () {
+        debugger;
+        ResetControls();
+
+        var ReqSpan = $('.Required');
+        if (ReqSpan.length > 0)
+        {
+            ReqSpan.parent().find('span.Required').remove()
+            //ReqSpan.parentNode.removechild(ReqSpan);
+        }
+
+        var radio_input_val = $(this).attr("value");
+        formStatus = "New";
+        $.ajax({
+            url: window.location.origin + "/swi/Fleet/GetAlarmConfigByTID",
+            type: "Get",
+            contentType: "application/json; charset=utf-8",
+            data: {
+                TID: radio_input_val
+            },
+            datatype: JSON,
+            success: function (response) {
+
+                $.each(response, function (index, item) {
+                    var alarms = $(".custom-configurations").find("[value=  " + this.AlrmCodes + "]");
+                    var length = alarms.find('input').length;
+
+                    if (length > 1) {
+                        alarms.find('input').eq(0).val(this.ThresholdValues);
+
+                        alarms.find('input').eq(1).prop('checked', this.IsNotification);
+                    }
+                    else if (length == 1) {
+                        alarms.find('input').eq(0).prop('checked', this.IsNotification);
+                    }
+
+                    alarms.find('select').eq(0).val(0);
+                    if (this.IsEnabled) {
+                        var enable = alarms.find('select').eq(0).val(1)
+                    }
+
+                    formStatus = "Update";
+                });
+
+                $('.AlarmDropDownOptions').trigger("change");
+            },
+            error: function (data) { }
+        });
+    });
+
+    $(document).on('change','.AlarmDropDownOptions',function(){
+        if ($(this).val() ==0)
+        {
+            $(this).next().find('input').attr('readonly', true);
+        }
+        else
+        {
+            $(this).next().find('input').attr('readonly', false)
+        }
+
+    });
+
+    function ResetControls() {
+        $('.custom-configurations').find('input').val('');
+        $('.custom-configurations').find('select').val(0);
+        var Collection = $('.custom-configurations').find('input:checkbox');
+
+        $.each(Collection, function (index, item) {
+            $(this).prop('checked', false)
+        });
+    }
+    
+    function SetThresholdValues(AlarmCod)
+    {
+        switch(AlarmCod) {
+            case "Spd":
+              return 120;  
+              // code block
+            
+            case   "HrdAcc":
+                return 0.4;  
+            
+            case "EngnTmp":
+                return 98;  
+
+            case "HghRPM":
+                return 4500;  
+
+            case "LwVltg":
+                return 10.5;
+                
+            case "IdlEngn":
+                return 15;
+
+            case "QkLnChg":
+                return 0.4;
+
+            case "ShrpTrn":
+                return 0.5;
+
+            case "FatgDrv":
+                return 240 ;
+
+            case "Crsh":
+                return 1.5;          
+              // code block
+            
+          default:
+                return 0
+    }
+    }
+
+    $(document).on('keydown keyup', '.Thresholdtxt', function () {
+    debugger;
+    if ($(this).val() > 9999) {
+       $(this).val(9999);
+    }
+});
+
+</script>
+
+<section class="panel panel-default">
+    <header class="panel-heading font-bold flex">
+        Fleet Settings
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tracker" data-toggle="tab">Tracker</a></li>
+            <li><a href="#fleet" data-toggle="tab">Fleet</a></li>
+        </ul>
+    </header>
+    <div class="panel-body no-padding">
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="tracker">
+                <div class="filter-wrapper">
+                    <div class="filters">
+                        <h3 class="filter-title">Filters</h3>
+                        <div class="form-group TrackersSection">
+                        </div>
+                    </div>
+                    <div class="filter-results">
+                        <ul class="nav flex">
+                            <li class="active"><a href="#alarms" data-toggle="tab" aria-expanded="true">Alarms</a></li>
+                            @*<li><a href="#Fleet" data-toggle="tab" aria-expanded="true">Fleet</a></li>*@
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active" id="alarms">
+                                <div class="custom-configurations">
+                                    <div class="row">
+
+                                        <div class="col-lg-12 col-md-12 ">
+                                            <div class="inline-field">
+                                                <label>Alarms </label>
+                                                <label class="select-label">Action </label>
+                                                <label class="threshold-label">Threshold </label>
+                                                <label class="alerts-label">  Alerts </label><div class="checkbox">    </div>
+                                            </div>
+                                        </div>
+                                            @*<span class="nextline"></span>*@
+                                            <div class="col-lg-12 col-md-12 SpeedAlarm">
+                                                <div class="inline-field Alarms" value="Spd">
+                                                    <label>Speeding :</label>
+                                                    <select class="custom-select AlarmDropDownOptions Spd"></select>
+                                                    <div class="inline-input">
+                                                        <label><input type="number" step="any" class="Spd Thresholdtxt" min="0" max="9999"> km/h</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="Spd">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+                                        @*<span class="nextline"></span>*@
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="inline-field Alarms" value="HrdAcc">
+                                                    <label>Hard acceleration : </label>
+                                                    <select class="custom-select AlarmDropDownOptions HrdAcc"></select>
+                                                    <div class="inline-input">
+                                                        <label> <input type="number" step="any" class="HrdAcc Thresholdtxt" min="0" max="9999"> g</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="HrdAcc">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+                                        @*<span class="nextline"></span>*@
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="inline-field Alarms" value="EngnTmp">
+                                                    <label>Temperature :</label>
+                                                    <select class="custom-select AlarmDropDownOptions EngnTmp"></select>
+                                                    <div class="inline-input">
+                                                        <label> <input type="number" step="any" class="EngnTmp Thresholdtxt" min="0" max="9999"> °C</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="EngnTmp">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+                                        @*<span class="nextline"></span>*@
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="inline-field Alarms" value="HghRPM">
+                                                    <label>High Rpm :</label>
+                                                    <select class="custom-select AlarmDropDownOptions HghRPM"></select>
+                                                    <div class="inline-input">
+                                                        <label> <input type="number" step="any" class="HghRPM Thresholdtxt" min="0" max="9999"> rpm</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="HghRPM">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+                                            @*Low Voltage Alarm*@
+                                        @*<span class="nextline"></span>*@
+                                            <div class="col-lg-12 col-md-12 ">
+                                                <div class="inline-field Alarms " value="LwVltg">
+                                                    <label>Low Voltage :</label>
+                                                    <select class="custom-select AlarmDropDownOptions LwVltg"></select>
+                                                    <div class="inline-input">
+                                                        <label> <input type="number" step="any" class="LwVltg Thresholdtxt" min="0" max="9999"> V</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="LwVltg">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+                                            @*Extended Engine Idling Alarm*@
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="inline-field Alarms" value="IdlEngn">
+                                                    <label>Extended Engine Idling :</label>
+                                                    <select class="custom-select AlarmDropDownOptions IdlEngn"></select>
+                                                    <div class="inline-input">
+                                                        <label> <input type="number" step="any" class="IdlEngn Thresholdtxt" min="0" max="9999"> min</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="IdlEngn">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+
+                                        @*<span class="nextline"></span>*@
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="inline-field Alarms" value="QkLnChg">
+                                                    <label>Quick Change Line :</label>
+                                                    <select class="custom-select AlarmDropDownOptions QkLnChg"></select>
+                                                    <div class="inline-input">
+                                                        <label> <input type="number" step="any" class="QkLnChg Thresholdtxt" maxlength="4"> g</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="QkLnChg">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+
+                                        @*<span class="nextline"></span>*@
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="inline-field Alarms" value="ShrpTrn">
+                                                    <label>Sharp Turn :</label>
+                                                    <select class="custom-select AlarmDropDownOptions ShrpTrn"></select>
+                                                    <div class="inline-input">
+                                                        <label> <input type="number" step="any" class="ShrpTrn Thresholdtxt" maxlength="4"> g</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="ShrpTrn">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="inline-field Alarms" value="FatgDrv">
+                                                    <label>Fatigue Driving :</label>
+                                                    <select class="custom-select AlarmDropDownOptions FatgDrv"></select>
+                                                    <div class="inline-input">
+                                                        <label> <input type="number" step="any" class="FatgDrv Thresholdtxt" maxlength="4"> min</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="FatgDrv">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="inline-field Alarms" value="Crsh">
+                                                    <label>Crash :</label>
+                                                    <select class="custom-select AlarmDropDownOptions Crsh"></select>
+                                                    <div class="inline-input">
+                                                        <label> <input type="number" step="any" class="Crsh Thresholdtxt" maxlength="4"> g</label>
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="Crsh">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="inline-field Alarms" value="MIL">
+                                                    <label>MIL fault :</label>
+                                                    <select class="custom-select AlarmDropDownOptions MIL"></select>
+                                                    <div class="inline-input">
+                                                        @*<span>Recommended value is 120 km/h, input range (0 - 300 km/h)</span>*@
+                                                    </div>
+                                                    <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MIL">  </label> </div>
+                                                </div><!-- inline Field -->
+                                            </div>
+                                        </div>
+                                </div><!-- Custom Configurations -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-success save">Save</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="fleet">
+                <div class="filter-wrapper">
+                    <div class="filters">
+                        <h3 class="filter-title">Filters</h3>
+                        <div class="form-group ChkBxTrackersList">
+                           @* Dynamic Trackers added from ajax  *@
+                        </div>
+                    </div>
+                    <div class="filter-results">
+                        <ul class="nav flex">
+                            <li class="active"><a href="#alarms" data-toggle="tab" aria-expanded="true">Alarms</a></li>
+                            @*<li><a href="#Fleet" data-toggle="tab" aria-expanded="true">Fleet</a></li>*@
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active" id="alarms">
+                                <p class="note">Note: Alarms Existing Threshold Values Will Be Applied.</p>
+                                <div class="MultipleTrackersCustom-Configurations">
+                                    <div class="row">
+
+                                        <div class="col-lg-12 col-md-12 ">
+                                            <div class="inline-field">
+                                                <label>Alarms </label>
+                                                <label class="select-label">Action </label>                                               
+                                                <label class="alerts-label">  Alerts </label><div class="checkbox">    </div>
+                                            </div>
+                                        </div>
+                                        @*<span class="nextline"></span>*@
+                                        <div class="col-lg-12 col-md-12 MltplTrkrsSpeedAlarm">
+                                            <div class="inline-field MltplTrkrsAlarms" value="Spd">
+                                                <label>Speeding :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsSpd"></select>                                              
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MltplTrkrsSpd">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+                                        @*<span class="nextline"></span>*@
+
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="inline-field MltplTrkrsAlarms" value="HrdAcc">
+                                                <label>Hard acceleration : </label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsHrdAcc"></select>                                                
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="HrdAcc">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+                                        @*<span class="nextline"></span>*@
+
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="inline-field MltplTrkrsAlarms" value="EngnTmp">
+                                                <label>Temperature :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsEngnTmp"></select>                                               
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MltplTrkrsEngnTmp">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+                                        @*<span class="nextline"></span>*@
+
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="inline-field MltplTrkrsAlarms" value="HghRPM">
+                                                <label>High Rpm :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsHghRPM"></select>
+                                                
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MltplTrkrsHghRPM">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+                                        @*Low Voltage Alarm*@
+                                        @*<span class="nextline"></span>*@
+
+
+                                        <div class="col-lg-12 col-md-12 ">
+                                            <div class="inline-field MltplTrkrsAlarms " value="LwVltg">
+                                                <label>Low Voltage :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsLwVltg"></select>                                                
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MltplTrkrsLwVltg">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+                                        @*Extended Engine Idling Alarm*@
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="inline-field MltplTrkrsAlarms" value="IdlEngn">
+                                                <label>Extended Engine Idling :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsIdlEngn"></select>                                                
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MltplTrkrsIdlEngn">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+
+                                        @*<span class="nextline"></span>*@
+
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="inline-field MltplTrkrsAlarms" value="QkLnChg">
+                                                <label>Quick Change Line :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsQkLnChg"></select>                                                
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="QkLnChg">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+                                        @*<span class="nextline"></span>*@
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="inline-field MltplTrkrsAlarms" value="ShrpTrn">
+                                                <label>Sharp Turn :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsShrpTrn"></select>                                                
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MltplTrkrsShrpTrn">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="inline-field MltplTrkrsAlarms" value="FatgDrv">
+                                                <label>Fatigue Driving :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsFatgDrv"></select>                                               
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MltplTrkrsFatgDrv">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="inline-field MltplTrkrsAlarms" value="Crsh">
+                                                <label>Crash :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsCrsh"></select>                                            
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MltplTrkrsCrsh">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="inline-field MltplTrkrsAlarms" value="MIL">
+                                                <label>MIL fault :</label>
+                                                <select class="custom-select AlarmDropDownOptions MltplTrkrsMIL"></select>                                              
+                                                <div class="checkbox"> <label> <input name="alert" type="checkbox" class="MltplTrkrsMIL">  </label> </div>
+                                            </div><!-- inline Field -->
+                                        </div>
+                                    </div>
+                                </div><!-- Custom Configurations -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-success MultipleTrackerSave">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

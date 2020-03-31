@@ -1,0 +1,91 @@
+<div class="row grid muuri page" ng-controller="grids" data-pagename="newpermissions">
+
+	<div class="col-xl-6 col-lg-12" data-position="1">
+		<div class="widget"  ng-controller="table">
+			<div class="title-bar" style="background:{{titlebg_01}};">
+				<h3><i class="fa fa-table"></i>
+					<span class="update-name">{{widgetname_01}}</span>
+					<span class="cache-value"></span>
+					<input ng-model="widgetname_01" ng-init="widgetname_01='New Permission'" type="text" />
+				</h3>
+
+				<div class="buttons-sets">
+					<a class="custom-btn icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+					<a class="custom-btn icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+					<a class="custom-btn icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+					<ul class="opt-dropdown" >
+						<li class="has-children"><a href="#" title="">Panel Size</a>
+							<ul class="column-size">
+		                                                <li><a class="onesixth" href="#" title="">One Sixth <img src="images/onesixth.png" alt=""> </a></li>
+		                                                <li><a class="onethird" href="#" title="">One Third <img src="images/onethird.png" alt=""> </a></li>
+		                                                <li><a class="half" href="#" title="">Half <img src="images/half.png" alt=""></a></li>
+		                                                <li><a class="twothird" href="#" title="">Two Thrid <img src="images/twothird.png" alt=""></a></li>
+		                                                <li><a class="fivesixth" href="#" title="">Five Sixth <img src="images/fivesixth.png" alt=""> </a></li>
+		                                                <li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+		                                        </ul>
+						</li>
+						<li class="has-children"><a href="#" title="">Panel Color</a>
+							<ul class="panel-color">
+								<li>
+									<a href="#" title=""><input class="bgcolor"  type="text"  value="#fff" ng-model="titlebg_01"  ng-init="titlebg_01 = '#fff'"  />
+									<div class="colorpickerwrapper style2"><div colorpicker></div></div></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+			<div class="content-wrapper">
+				<form>
+					<div class="row">
+						<div class="col-lg-12 col-md-12 inline">
+							<label for="">Module</label>
+							<select name="" id="">
+								<option value="0">-Module-</option>
+								<option value="163365">AirView v1.0</option>
+								<option value="163366">AirView Nemo v1.0</option>
+								<option value="33229">AirView Portal</option>
+								<option value="33230">AirView Android</option>
+							</select>
+						</div>
+						<div class="col-lg-12 col-md-12 inline">
+							<label for="">Parent Id</label>
+							<input type="text" placeholder="0" />
+						</div>
+						<div class="col-lg-12 col-md-12 inline">
+							<label for="">Title</label>
+							<input type="text" placeholder="" />
+						</div>
+						<div class="col-lg-12 col-md-12 inline">
+							<label for="">URL</label>
+							<input type="text" placeholder="" />
+						</div>
+						<div class="col-lg-12 col-md-12 inline">
+							<label for="">Key Code</label>
+							<input type="text" placeholder="" />
+						</div>
+						<div class="col-lg-12 col-md-12 inline">
+							<label for="">Icon</label>
+							<input type="text" placeholder="" />
+						</div>
+						<div class="col-lg-12 col-md-12">
+							<input id="checkbox1" name="checkbox1"  type="checkbox" />
+							<label for="checkbox1">Is Menu Item</label>
+						</div>
+						<div class="col-lg-12 col-md-12">
+							<input id="checkbox2" name="checkbox2"  type="checkbox" />
+							<label for="checkbox2">Is Active</label>
+						</div>
+					</div>
+					<div class="form-footer">
+						<button class="custom-btn medium color1">Save</button>
+						<button class="custom-btn medium color3">Reset</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+</div>

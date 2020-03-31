@@ -1,0 +1,30 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_WoTracker>
+@{
+    string style = string.Empty;
+}
+
+
+<div class="direct-chat-messages">
+    @foreach (var item in Model)
+    {
+        style = string.Empty;
+        if (item.TestType == "Drive Completed")
+        {
+            style = "background-color:#7DFA9C;";
+        }
+        <div class="direct-chat-msg">
+            <div class="direct-chat-info clearfix">
+                <span class="direct-chat-name pull-left">@item.TesterFullName</span>
+                <span class="direct-chat-timestamp pull-right">@item.TrackerTimestamp.ToString("dd MMM yyy HH:mm")</span>
+            </div>
+            <img class="direct-chat-img" src="@item.Picture" alt="message user image"><!-- /.direct-chat-img -->
+            <div class="direct-chat-text" style="@style">
+                @item.Description
+            </div>
+        </div>
+    }
+
+
+</div>
+

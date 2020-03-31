@@ -1,0 +1,218 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model AD_ClientAddress
+@if (ViewBag.Count ==0)
+{
+    <div class="box box-solid">
+        <div class="box-header with-border BoxHeaderBgcolor">
+            <h3 class="box-title" style="text-align:center">Address Detail</h3>
+            <a class="btn btn-sm btn-info pull-right" id="btn-NewRows">New Row</a>
+        </div>
+        <div class="box-body">
+
+            <table class="table table-hover" id="tbl-clnt">
+                <tr>
+                    <th>Country</th>
+                    <th>State</th>
+                    <th>City</th>
+                    @*<th>Client</th>*@
+                    <th>Address</th>
+                    <th>Street</th>
+                    <th>ZipCode</th>
+                    <th>IsHeadOffice</th>
+                    <th>IsActive</th>
+
+                </tr>
+                @Html.HiddenFor(m => m.AddressId)
+                <tr id="NewRows">
+                    <td>
+                        @Html.DropDownListFor(m => m.CountryId, ViewBag.SelectedCountry as List<SelectListItem>, new { @class = "form-control select2 Row CountryId", id = "CountryId-r0", data_required = "yes", data_parsley_min = "1", data_name = "CountryId", data_row = "r0", name = "CountryId" })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.StateId, ViewBag.SelectedState as List<SelectListItem>, new { @class = "form-control select2 Row StateId", id = "StateId-r0", data_required = "yes", data_parsley_min = "1", data_name = "StateId", data_row = "r0", name = "StateId" })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.CityId, ViewBag.Cities as List<SelectListItem>, new { @class = "form-control select2 Row CityId", id = "CityId-r0", data_required = "yes", data_parsley_min = "1", data_name = "CityId", data_row = "r0", name = "CityId" })
+                    </td>
+                    @Html.HiddenFor(m => m.ClientId)
+                    @*<td>
+                             @Html.DropDownList("ClientId", ViewBag.SelectedPClient as List<SelectListItem>, new { @class = "form-control select2 Row ClientId", id = "StateId-r0", required = "required", data_parsley_min = "1", data_name = "ClientId", data_row = "r0", name = "ClientId" })
+                        </td>*@
+                    <td>
+                        @Html.EditorFor(m => m.Address, new { htmlAttributes = new { @class = "form-control Row", data_required = "yes", name = "Address", data_name = "Address", id = "Address" , required = "required" } })
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => m.Street, new { htmlAttributes = new { @class = "form-control Row", data_required = "yes", name = "Street", data_name = "Street", id = "Street", required = "required" } })
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => m.ZipCode, new { htmlAttributes = new { @class = "form-control Row ZipCode", data_required = "yes", name = "ZipCode", data_name = "ZipCode", id = "ZipCode", required = "required" } })
+                    </td>
+
+                    <td>
+                        @Html.CheckBoxFor(m => m.IsHeadOffice, new { @class = "Row IsHeadOffice", data_required = "yes", data_name = "IsHeadOffice", data_row = "r0", @checked = "", name = "IsHeadOffice" })
+                        @*<input type="checkbox" class="Row IsHeadOfficebox" checked data-name="IsHeadOfficebox" data-row="r0" name="IsHeadOfficebox" />*@
+                        <input type="hidden" data_required="no" value="true" data-name="IsHeadOffice" id="IsHeadOffice-r0" />
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(m => m.IsActive, new { @class = "Row IsActive", data_name = "IsActive", data_row = "r0", @checked = "", value = "true", name = "IsActive" , data_required = "yes" })
+                        @*<input type="checkbox" class="Row IsActivebox" checked data-name="IsActivebox" data-row="r0" name="IsActivebox" />*@
+                        <input type="hidden" data_required="no" value="true" data-name="IsActive" id="IsActive-r0" />
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="box box-solid">
+        <div class="box-header with-border BoxHeaderBgcolor">
+            <h3 class="box-title" style="text-align:center">Address Detail</h3>
+            <a class="btn btn-sm btn-info pull-right" id="btn-NewRows">New Row</a>
+        </div>
+        <div class="box-body">
+
+            <table class="table table-hover" id="tbl-clnt">
+                <tr>
+                    <th>Country</th>
+                    <th>State</th>
+                    <th>City</th>
+                    @*<th>Client</th>*@
+                    <th>Address</th>
+                    <th>Street</th>
+                    <th>ZipCode</th>
+                    <th>IsHeadOffice</th>
+                    <th>IsActive</th>
+
+                </tr>
+               @foreach (var item in Model.Addresses)
+               {
+                @Html.HiddenFor(m => item.AddressId)
+                <tr id="NewRows">
+                    <td>
+                        @Html.DropDownListFor(m => item.CountryId, ViewBag.SelectedCountry as List<SelectListItem>, new { @class = "form-control select Row CountryId", data_PreValue = item.CountryId, data_parsley_required_message = "Mandatory Field", id = "CountryId-r0", data_required = "yes", data_parsley_min = "1", data_name = "CountryId", data_row = "r0", name = "CountryId" })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => item.StateId, ViewBag.SelectedState as List<SelectListItem>, new { @class = "form-control select Row StateId", data_PreValue = item.StateId, id = "StateId-r0", data_required = "yes", data_parsley_min = "1", data_name = "StateId", data_parsley_required_message = "Mandatory Field", data_row = "r0", name = "StateId" })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => item.CityId, ViewBag.Cities as List<SelectListItem>, new { @class = "form-control select Row", @id = "CityId", required = "required", data_PreValue = item.CityId, data_parsley_min = "1", data_name = "CityId", @data_parsley_required_message = "Mandatory Field", data_row = "r0", name = "CityId" })
+                       </td>
+                    @Html.HiddenFor(m => item.ClientId)
+                    @*<td>
+                             @Html.DropDownList("ClientId", ViewBag.SelectedPClient as List<SelectListItem>, new { @class = "form-control select2 Row ClientId", id = "StateId-r0", required = "required", data_parsley_min = "1", data_name = "ClientId", data_row = "r0", name = "ClientId" })
+                        </td>*@
+                    <td>
+                        @Html.EditorFor(m => item.Address, new { htmlAttributes = new { @class = "form-control Row", data_required = "yes", name = "Address", data_name = "Address", id = "Address"} })
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => item.Street, new { htmlAttributes = new { @class = "form-control Row", data_required = "yes", name = "Street", data_name = "Street", id = "Street" } })
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => item.ZipCode, new { htmlAttributes = new { @class = "form-control Row ZipCode", data_required = "yes", name = "ZipCode", data_name = "ZipCode", id = "ZipCode" } })
+                    </td>
+
+                    <td>
+                        @Html.CheckBoxFor(m => item.IsHeadOffice, new { @class = "Row IsHeadOffice", data_required = "yes", data_name = "IsHeadOffice", data_row = "r0", @checked = "", name = "IsHeadOffice" })
+                        @*<input type="checkbox" class="Row IsHeadOfficebox" checked data-name="IsHeadOfficebox" data-row="r0" name="IsHeadOfficebox" />*@
+                        <input type="hidden" data_required="no" value="true" data-name="IsHeadOffice" id="IsHeadOffice-r0" />
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(m => item.IsActive, new { @class = "Row IsActive", data_required = "yes", data_name = "IsActive", data_row = "r0", @checked = "", name = "IsActive" })
+                        @*<input type="checkbox" class="Row IsActivebox" checked data-name="IsActivebox" data-row="r0" name="IsActivebox" />*@
+                        <input type="hidden" data_required="no" value="true" data-name="IsActive" id="IsActive-r0" />
+                    </td>
+                </tr>
+               }
+            </table>
+
+        </div>
+
+    </div>
+}
+<script>
+        $(function () {
+            var NewRowHTML = $('#NewRows').html();
+            var count = 1;
+            var SelectedStateId = 0;
+            var SelectedCityId = 0;
+
+
+
+
+
+
+            $(document).on('click', '#btn-NewRows', function () {
+
+                NewRow();
+            });
+
+            $(document).on('keydown', '.RowLast', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (keyCode == 9) {
+                    e.preventDefault();
+                    NewRow();
+                }
+            });
+
+            function NewRow() {
+
+
+                var str = NewRowHTML.replace("Band-r0", "Band-r" + count+ "");
+
+                var RowsFields = (str.match(new RegExp("r0", "g")) || []).length;
+
+                for (var i = 0; i < RowsFields; i++) {
+                    str = str.replace("r0", "r" + count + "");
+                }
+
+                $('#tbl-clnt').append('<tr class="NewRow">' + str + '</tr>');
+
+                $('.RowFirst').last().focus();
+
+                count++;
+
+            }
+
+            // delete row
+            $(document).on('keydown', '.Row', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (e.keyCode == 46) {
+                    e.preventDefault();
+                    $(this).closest('tr').remove();
+                    $('.RowLast').last().focus();
+                }
+
+            });
+
+            //parsley()
+            $("#frm-clientE").parsley();
+            //type change of zipcode number to text
+            $(".ZipCode").attr("type", "text");
+            
+               $('.ZipCode').keyup(function () {
+                   if (this.value.match(/[^0-9]/g)) {
+                       this.value = this.value.replace(/[^0-9]/g, '');
+                   }
+               });
+          
+        });
+    @*var Address = '@ViewBag.Address';
+    if(Address != null){
+        $(".CountryId").val(parseFloat(Address.CountryId));
+        $(".StateId").val(parseFloat(Address.StateId));
+        $(".CityId").val(parseFloat(Address.CityId));
+    }*@
+    $("#tbl-clnt select").each(function (j) {
+
+        var selected = $(this).attr('data-PreValue');
+        if (selected != undefined) {
+            
+            $(this).val(selected);          
+        }
+
+    });
+</script>

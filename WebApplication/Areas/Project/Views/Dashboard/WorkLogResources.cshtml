@@ -1,0 +1,226 @@
+﻿
+@{
+    ViewBag.Title = "Work Log Resources";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+<link rel="stylesheet" href="~/Areas/Project/Content/stylesR/daterangepicker.css">
+
+@*<script src="~/Content/js/ui-bootstrap-tpls-0.13.0.js"></script>*@
+<script src="~/Areas/Project/Content/ScriptR/vendor.js"></script>
+<script src="~/Areas/Project/Content/ScriptR/multidaterangepicker.js"></script>
+
+@*<script src="Scripts/jquery-1.10.2.min.js"></script>*@
+<script src="SmartAdmin/js/moment.min.js"></script>
+<script src="~/Content/js/Project/canvasjs.min.js"></script>
+<script src="~/Areas/Project/Content/Project/WorklogResources.js"></script>
+<script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
+
+<div id="idWlog" ng-app="WorklogApp" ng-controller="WorklogsCtrl">
+
+    <style>
+        table tr {
+            height: 30px;
+        }
+    </style>
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#WorkLog">WorkLogs</a></li>
+        <li><a class="ApprovedWorkLog" data-toggle="tab" href="#ApprovedWorkLog">Approved WorkLogs</a></li>
+    </ul>
+    <div class="tab-content" style="margin-top:5px !important">
+
+        <div id="WorkLog" class="tab-pane fade in active">
+            <form role="form" name="myForm">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-row" style="margin-left:-11px;">
+                            <div class="col-sm-2">
+                                <input class="daterangepicker-field form-control" title="Work Logs" />
+                            </div>
+                            <div class="col-sm-2" style="margin-left: -20px;">
+                                <select class="form-control" name="selectworklogs" ng-init="selectedOption=0" ng-model="selectedOption" style="padding:2px;">
+                                    <option ng-value="0" selected>Un-Approved</option>
+                                    <option ng-value="1">Approved</option>
+                                    <option ng-value="2">All</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2" style="margin-left: -20px;">
+                                <button class="btn  btn-success" ng-click="GetWorklogs(selectedOption)">Get Worklog</button>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <br />
+                <table id="tblWorklogs" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="hidden">WLogId</th>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Log Type</th>
+                            <th>Description</th>
+                            <th>Work Hours</th>
+                            <th>Approve?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tableRow" ng-repeat="w in Worklogs">
+                            <td class="hidden"> {{w.WLogId}}</td>
+                            <td class="text-center"><img height="32" ng-src="{{w.Picture}}" alt="User Picture"> </td>
+                            <td> {{w.Name}}</td>
+                            <td> {{w.LogDate| date:"MMM/dd/yyyy"}}</td>
+                            <td> {{w.LogType}}</td>
+                            <td> {{w.Description}}</td>
+                            <td> {{w.LogHours}}</td>
+                            <td><input class="apprvWLog" type="checkbox" id="IsApproved" ng-model="w.IsApproved" ng-checked="{{w.IsApproved}}" ng-change="ApproveWorklog({{w.WLogId}},w.IsApproved, selectedOption)" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <h2 ng-if="Worklogs == null || Worklogs == '' || Worklogs == 'undefined'">Record not found!</h2>
+                </div>
+                
+            </form>
+        </div>
+
+        <div id="ApprovedWorkLog" class="tab-pane fade">
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-row" style="margin-left:-11px;">
+                        <div class="col-sm-3">
+                            <input class="daterangepickerCost form-control" title="Work Logs " />
+                        </div>
+                        <div class="col-sm-2" style="margin-left: -20px">
+                            <button class="btn  btn-success" ng-click="WorkLogsCost()"> Worklogs Cost</button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            </div>
+
+            <div class="row" id="ChartsDiv">
+                <br />
+                <div class="pull-left col-sm-6 col-md-6 col-lg-6" id="chart_IssuesTasks" style="height: 350px;"></div>
+                <div class="pull-right col-sm-6 col-md-6 col-lg-6" id="chart_IssuesTasks_Cost" style="height: 350px;"></div>
+            </div>
+
+            <br />
+            <br />
+            <div class="row" id="tblLogCost">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="hidden">WLogId</th>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Log Type</th>
+                            <th style="text-align:right;width:130px;">Work Hours</th>
+                            <th style="text-align:right;width:130px;">Rate PerUnit</th>
+                            <th style="text-align:right;width:150px;">Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tr class="tableRow" ng-repeat="cost in WlogsCost">
+                        <td class="hidden"> {{cost.WLogId}}</td>
+                        <td class="text-center"><img height="32" ng-src="{{cost.Picture}}" alt="User Picture"></td>
+                        <td> {{cost.Name}}</td>
+                        <td> {{cost.LogType}}</td>
+                        <td style="text-align:right;"> {{cost.LogHours}}</td>
+                        <td style="text-align:right;"> {{ (cost.RatePerUnit > 0 ? cost.RatePerUnit : 0) }} </td>
+                        <td style="text-align:right;"> {{cost.LogHours * (cost.RatePerUnit > 0 ? cost.RatePerUnit : 0) | currency}} </td>
+                    </tr>
+                </table>
+
+                <footer>
+                    <div style="float:right;">
+                        <label style="margin-right:235px;"><strong>Total Work Hours: {{totalHours}}</strong></label>
+                        <label style="padding-right:10px;"><strong>Total Cost: {{totalCost | currency}}</strong></label>
+                    </div>
+                </footer>
+                </div>
+
+            </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        $(".daterangepicker-field").daterangepicker({
+            forceUpdate: true,
+            startDate: new Date(),
+            endDate: new Date(),
+            minDate: moment().add(-5, 'years'),
+            maxDate: moment().add(5, 'years'),
+            callback: function (startDate, endDate, period) {
+                var title = startDate.format('L') + '-' + endDate.format('L');
+                $(this).val(title);
+
+                var selectedDates = $(".daterangepicker-field").val();
+                var parts = selectedDates.split("-");
+
+                var first_date = parts[0];
+                var last_date = parts[1];
+
+                //var datesReturned = '';
+                //var targetType = period;
+
+                //angular.element('#idWlog').scope().GetWorklogDates(period, first_date, last_date);
+                //angular.element(document.getElementById('yourControllerElementID')).scope().$apply();
+            }
+        });
+
+        $(".daterangepickerCost").daterangepicker({
+            forceUpdate: true,
+            startDate: new Date(),
+            endDate: new Date(),
+            minDate: moment().add(-5, 'years'),
+            maxDate: moment().add(5, 'years'),
+            callback: function (startDate, endDate, period) {
+                var title = startDate.format('L') + '-' + endDate.format('L');
+                $(this).val(title);
+
+                var selectedDates = $(".daterangepickerCost").val();
+                var parts = selectedDates.split("-");
+
+                var first_date = parts[0];
+                var last_date = parts[1];
+                //angular.element('#idWlog').scope().GetWorklogDates(period, first_date, last_date);
+                //angular.element(document.getElementById('yourControllerElementID')).scope().$apply();
+            }
+        });
+    });
+
+    /// disable calendate date input fields
+    $(function () {
+        // list of All elements inside div
+        var $children = $('.custom-range-inputs').children();
+        $.each($children, function () {
+            $(this).attr('disabled', true);
+        });
+        $('.custom-range-inputs').children().attr('disabled', true)
+    });
+
+    //----------------------------
+    $("#tblWorklogs").on('click', '.apprvWLog', function () {
+        $(this).closest('tr').remove();
+    });
+    //----------------------------
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

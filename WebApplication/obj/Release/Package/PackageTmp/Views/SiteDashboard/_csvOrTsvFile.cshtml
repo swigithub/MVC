@@ -1,0 +1,54 @@
+﻿@using System.Data;
+
+<div class="pull-right"><a class="downloadFile" data-id=""><i class="fa fa-download fa-2x" aria-hidden="true"></i></a></div>
+<div style="margin-top:30px;margin-left:169px;">
+    
+    <table id="CSVDataTable" style="overflow-y: auto;
+    display: block;
+    overflow-x: auto;
+    height: 800px;" cellspacing="2" cellpadding="2" border="1">
+        <caption>@ViewBag.title</caption>
+        @if (ViewBag.Data != null)
+        {
+            <tr>
+                @foreach (DataColumn column in (ViewBag.Data as DataTable).Columns)
+                {
+                    <th>@column.ColumnName.ToUpper()</th>
+                }
+            </tr>
+
+            if ((ViewBag.Data as DataTable).Rows.Count > 0)
+            {
+                foreach (DataRow dr in (ViewBag.Data as DataTable).Rows)
+                {
+                    <tr>
+                        @foreach (DataColumn column in (ViewBag.Data as DataTable).Columns)
+                        {
+                            <td data-title='@column.ColumnName'>@dr[column].ToString()</td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                int count = (ViewBag.Data as DataTable).Columns.Count;
+                <tr>
+                    <td colspan='@count' style="color:red;">
+                        No Data Found.
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            if (ViewBag.Error != null)
+            {
+                <tr>
+                    <td style="color:red;">
+                        @(ViewBag.Error != null ? ViewBag.Error.ToString() : "")
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>

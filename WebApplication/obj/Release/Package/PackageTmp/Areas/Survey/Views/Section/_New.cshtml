@@ -1,0 +1,70 @@
+﻿@model Library.SWI.Survey.Model.TSS_Section
+
+
+
+<div>
+    @* method="post" action="/Survey/Section/New" onsubmit="SectionSave(this);  return false;"*@
+    <form ng-submit="SubmitSection()" id="frm-section">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="btn-group pull-right">
+                   
+                   
+                   
+                   
+                    <button type="Submit" class="btn btn-s-md btn-success">Save</button><button class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret "></span></button>                 
+                    &nbsp;  &nbsp;  &nbsp;  &nbsp;
+                    <button style="border-radius:3px;" class="btn btn-default pull-right" type="button" ng-click="clearFields()">Clear</button>
+                     <ul class="dropdown-menu">
+                        <li><a href="/Survey/Template/Index/{{SurveyId}}">Add Section from Template</a></li>
+                    </ul>                 
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Section Title<span style="color:red">*</span></label>
+                    <input type="text" ng-model="sec.SectionTitle" class="form-control" required />
+                    <input type="hidden" ng-model="sec.SurveyId" />
+                    <input type="hidden" ng-model="sec.SectionId" />
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Parent</label>
+                    <select class="form-control" ng-model="sec.PSectionId">
+                        <option value="">--Section--</option>
+                        <option ng-value="{{item.SectionId}}" ng-repeat="item in Sections">{{item.SectionTitle}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control" rows="3" ng-model="sec.Description"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-model="sec.IsRepeatable"> <strong>Repeatable</strong></label>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-model="sec.IsApplicable"> <strong>Applicable</strong></label>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-model="sec.IsSignatureRequired"> <strong>Signature</strong></label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

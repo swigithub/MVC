@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html lang="en" ng-app="app" style="height: 100%;">
+<head>
+    <title>Query Builder</title>
+    <meta charset="utf-8" />
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/styles.css" rel="stylesheet" />
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../../../../../AdminLTE/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />    
+    <link href="../css/StyleQueryBuilder.css" rel="stylesheet" />
+    <style>
+        
+multiselect {
+    display:block;
+}
+multiselect .btn {
+    width: 100%;
+    background-color: #ffffff;
+    float:right;
+    border: 1px solid #e5e5e5;
+}
+multiselect .btn:focus, .btn:active:focus  {
+    
+    /*background-color: #ffffff;*/
+    
+}
+multiselect .btn.error{
+    border: 1px solid #da4f49 !important;
+}
+multiselect .dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+}
+multiselect .dropdown-menu {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 2px;
+}
+multiselect .dropdown-menu > li > a {
+    padding: 3px 10px;
+    cursor:pointer;
+}
+        multiselect .dropdown-menu {
+            width:100%;
+        }
+        multiselect input[type='text'] {
+            width:100%;
+        }
+        .grid {
+  margin-top: 0px;
+    width: 102%;
+    float: right;
+    margin-left: 0px;
+    margin-right: -16px;
+}
+        div.relative {
+    position: relative;
+   
+} 
+
+div.absolute {
+    position: absolute;
+
+}
+ 
+         @media print and (color) {
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+           
+   body {
+      color: #000;
+      background: #000;
+   }
+
+        }
+
+        @page {
+            /* size: 7in 9.25in;*/
+            /*size: 794px 1122pixels;
+              size: A4 landscape;
+
+            */
+            size: A4 landscape ;
+            /*margin: 1mm 2mm 2mm 2mm;*/
+            margin: 2mm 1mm 2mm 1mm;
+            border: dotted 1px;
+        }
+        table {
+                page-break-inside: auto;
+            }
+
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+    
+    
+
+
+    </style>
+    
+
+</head>
+<body style="height: 100%;">
+    
+
+    <div ng-controller="QueryBuilderCtrl" style="height: 100%;">
+
+        <div class="col-md-12" style="height: 53px;width: 100%;background-color: #efefef;">
+            <label style="margin-top: 15px;float:left">Reports</label>
+            
+            <select style="width:220px;left:1%;margin-top:10px;" class="form-control input-sm col-md-3" ng-model="ReportId" ng-change="getColumnByReportId()" ng-options="rep.DefinationName as rep.DefinationName for rep in Report"></select>
+            <a style="margin-top: 10px;float: right;font-size: 26px;" data-toggle="collapse" data-target="#collapseOne" href="#collapseOne"><span class="fa fa-align-justify"></span></a>
+        </div>
+
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default" id="panel1">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                     
+                        
+                    </h4>
+
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="panel-body" style="padding:0">
+                        <div class="col-md-12" style="height: 32px;background-color: #e3e3e3;margin-left:-14px">
+                            <div class="col-md-8" style="height:30px;">
+                                <label style="margin-top:6px;">Query Builder</label>
+                            </div>
+                            <div class="col-md-4" style="height: 32px;background-color: #e3e3e3;right:-46px;">
+                                <label style="margin-top:6px;    margin-left: -49px;">Query Settings</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="height: auto;border: 1px solid #d4d3d3">
+
+                            <div class="col-md-8" style="width: 67%;height:auto;border: 1px solid #d4d3d3;max-height: 300px;overflow-y: auto;min-height:90px;margin-left:-15px;">
+
+                                <!--<div class="exmapleHeader">
+                <strong>Query Preview</strong><br>
+
+            </div>
+            <div class="exmaple">
+
+                <span ng-bind-html="output"></span>
+            </div>-->
+
+                                <div>
+
+                                    <query-builder group="filter.group"></query-builder>
+                                    
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-md-4" style="height: auto;border-left: 0;min-height: 90px;max-width: 580px;width: auto;">
+                                <div style="margin-top:10px">
+                                    <label style="margin-top: 6px;"> Display Column</label>
+
+                                    <multiselect style="width: 246px;float: right;margin-right: 110px;" class="input-xlarge" multiple="true"
+                                                 ng-model="ColumnId"
+                                                 options="rep.name as rep.name  for rep in Column"
+                                                 ng-change="GroupBy()"
+                                                 template-url="../js/multiselect.tmpl.html"
+                                                 change="selected()"></multiselect>
+                                </div>
+                                <div style="margin-top:10px">
+                                    <label style="margin-top: 6px;">Group By </label>
+
+                                    <multiselect style="width: 246px;float: right;margin-right: 110px;" class="input-xlarge" multiple="true"
+                                                 ng-model="selectedColumnId"
+                                                 options="rep.name as rep.name  for rep in selectedColumns"
+                                                 ng-change="ReorderList()"
+                                                 template-url="../js/multiselect.tmpl.html"
+                                                 change="selected()"></multiselect>
+                                </div>
+                                <!--<div class="floatleft" style="border: 1px solid #e2e2e2;margin-top: 10px;width: 250px;height:227px;max-height: 227px;">
+                <ul ui-sortable="sortableOptions" ng-model="list" class="list">
+                    <li ng-repeat="item in list" class="item">
+                        {{item}}
+                    </li>
+                </ul>
+            </div>-->
+                                <!--<div style="margin-top:10px">
+                <label style="margin-top: 6px;">Select Display Column</label>
+
+                <multiselect style="width: 168px;float: right;margin-right: 170px;" class="input-xlarge" multiple="true"
+                             ng-model="ColumnId"
+                             options="rep.name as rep.name  for rep in Column"
+                             change="selected()"></multiselect>
+            </div>-->
+
+                            </div>
+                        </div>
+                        <!--<div style="height:100%;margin-left:-5px;" ng-if="GridShow" id="grid1" ui-grid="gridOptions" ui-grid-pagination ui-grid-exporter class="grid"></div>-->
+
+                        
+                    </div>
+                </div>
+                <div style="width:100%;height:40px;background-color:#e5e5e5;" class="col-md-12">
+                    <!--<label style="margin-top:8px;">{{ReportId}}</label>-->
+                    <button ng-click="Search()" style="margin-top: 3px;float:right" class="btn btn-s-md btn-success">View Report</button>
+               </div>
+                
+
+                <div id="printSectionId" class="col-md-12" style="overflow-y:scroll;max-height:600px;min-height:450px;">
+                    <label  style="margin-left:42%;margin-top: 10px;font-size: 24px;"> {{ReportId}}</label>
+                    <label ng-hide="hidefromtabel" style="float:right"><button pdf-save-button="idOne"  pdf-name="someone.pdf" style="float: right;position: relative;"  ng-click="printToCart('printSectionId')"  class="btn btn-default btn-s-md hidefromtabel"><img src="../img/pdf_x32_1.png" /></button></label>
+                    <label ng-hide="hidefromtabel" style="float:right"><button  ng-click="exportToExcel('#tableToExport')" pdf-save-button="idOne" pdf-name="someone.pdf" style="float: right;position: relative; margin-right: 2px;"class="btn btn-default btn-s-md hidefromtabel"><img src="../img/excel_x32.png" /></button></label>
+
+
+    <table id="tableToExport" class="table table-striped" style="max-height: 400px;height: auto;overflow: auto;margin-top: 15px;">
+        <thead style="background-color: #e8e9e5;font-weight: bold;" ng-if="Columselect">
+            <tr>
+                <td ng-repeat="item in selectedColumns">{{item.name}}</td>
+
+
+            </tr>
+        </thead>
+        <thead style="background-color: #e8e9e5;font-weight: bold;" ng-if="!Columselect">
+            <tr>
+                <td ng-repeat="item in Column">{{item.name}}</td>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="(key, value) in Table">
+
+                <td ng-repeat="v in value">{{v.Value}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+            </div>
+        </div>
+        </div>
+           
+
+            <script src="../js/jquery.min.js"></script>
+
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="../../jQuery.print.js"></script>
+            <script src="../js/angular.min.js"></script>
+    <!--<script src="http://alasql.org/console/alasql.min.js"></script>
+    <script src="http://alasql.org/console/xlsx.core.min.js"></script>-->
+            <!--<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>-->
+            <!--<script src="https://cdn.rawgit.com/niklasvh/html2canvas/0.5.0-alpha2/dist/html2canvas.min.js"></script>-->
+    <script src="../js/html2canvas.min.js"></script>
+            <script src="../js/jspdf.debug.js"></script>
+            <script src="http://hearsid.github.io/angular-html-to-pdf-save/dist/saveHtmlToPdf.min.js"></script>
+            <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-touch.js"></script>
+            <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.js"></script>
+            <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+            <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
+            <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
+            <script src="http://ui-grid.info/release/ui-grid.js"></script>
+            <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
+
+            <script src="../js/multiselect.js"></script>
+            <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+        <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+            <script src="https://rawgithub.com/angular-ui/ui-sortable/master/src/sortable.js"></script>
+            <script src="../js/angular-sanitize.min.js"></script>
+            <script src="../js/query-builder.js"></script>
+
+</body>
+</html>

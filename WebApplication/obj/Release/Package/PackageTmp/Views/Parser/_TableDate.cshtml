@@ -1,0 +1,47 @@
+﻿@model WebApplication.Models.Generics
+@using System.Data
+
+
+
+<thead>
+    <tr>
+        @try
+        {
+            foreach (DataColumn col in Model.ColumnsList)
+            {
+                <th>
+                    @col.ColumnName
+                </th>
+            }
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+
+    </tr>
+</thead>
+@foreach (DataRow row in Model.RowsList)
+{
+    <tr>
+        @try
+                {
+                    foreach (DataColumn col in Model.ColumnsList)
+                    {
+                <td>
+                    @row[col.ColumnName]
+                </td>
+            }
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+
+    </tr>
+}
+
+
+

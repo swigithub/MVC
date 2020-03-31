@@ -1,0 +1,107 @@
+<div class="sideheader" ng-controller="sideheader as vm1">
+
+    <div class="icon-menu">
+        <div class="menu-btn-secondary"><a href="#" title=""><i></i></a></div>
+        <ul>
+            <li><a href="dashboard/dashboard" title=""><i class="fa fa-tachometer-alt"></i></a>
+            <li><a href="designdashboardreports" title=""><i class="fa fa-edit"></i></a>
+            <li><a href="alerts" title=""><i class="fa fa-exclamation-triangle"></i></a></li>
+            <li><a href="charts/highcharts" title=""><i class="fa fa-chart-bar"></i></a></li>
+            <li><a href="" title=""><i class="fa fa-box"></i></a></li>
+            <li><a href="email/inbox" title=""><i class="fa fa-envelope"></i></a></li>
+            <li><a href="forms" title=""><i class="fab fa-wpforms"></i></a></li>
+            <li><a href="tables" title=""><i class="fa fa-table"></i></a></li>
+            <li><a href="formbuilder" title=""><i class="fab fa-wpforms"></i></a></li>
+            <li><a href="abcd" title=""><i class="fa fa-exclamation-circle"></i></a></li>
+        </ul>
+    </div>
+
+    <div class="menu-btn-secondary"><a href="#" title=""><i></i></a></div>
+    <ul>
+        <li style="display:none" ng-class="getClass('/dashboard')">
+            <a href="#" title=""><i class="fa fa-tachometer-alt"></i> Dashboards</a>
+            <ul>
+                <li><a ui-sref=".Dashboard" title="">{{vm1.TitleName}}</a></li>
+                <li><a ui-sref=".Dashboard1" title="">Airview Xcelerate 1</a></li>
+                <li>
+                    <a href="dashboard/dashboard2" title="">Airview</a>
+                    <ul>
+                        <li>
+                            <a href=" " title="">Settings & Configurations</a>
+                            <ul>
+                                <li><a ui-sref=".TestSettings" title="">Test Settings</a></li>
+                                <li>
+                                    <a href="" title="">Master Data</a>
+                                    <ul>
+                                        <li><a href="" title="">Definition Types</a></li>
+                                        <li><a ui-sref=".SetupDefination" title="">Setup Definition</a></li>
+                                    </ul>
+                                </li>
+                                <li><a ui-sref=".MarketConfiguration" title="">Market Configurations</a></li>
+                            </ul>
+                        </li>
+                        <li><a ui-sref=".Dashboard2" title="">Dashboards</a></li>
+                        <li><a ui-sref=".WorkOrder" title="">Work Orders</a></li>
+                        <li><a ui-sref=".WoStatus" title="">WO Status</a></li>
+                    </ul>
+
+                </li>
+                <li>
+                    <a href="#" title="">Security</a>
+                    <ul>
+                        <li><a ui-sref="Permission" title="">Permissions</a></li>
+                        <li><a ui-sref="Error404" title="">New Permissions</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li ng-class="getClass('/designdashboardreports')"><a ui-sref=".DashboardAndReport" title=""><i class="fa fa-edit"></i> AirView BI</a></li>
+        <li ng-class="getClass('/designdashboardreports')"><a ui-sref=".DocumentViewer" title=""><i class="fa fa-edit"></i>  Document Viewer</a></li>
+        <li style="display:none" ng-class="getClass('/alerts')"><a ui-sref=".alerts" title=""><i class="fa fa-exclamation-triangle"></i> Alerts</a></li>
+        <li ng-class="getClass('/workflow')"><a ui-sref=".workflow" title=""><i class="fa fa-exclamation-triangle"></i> Workflow</a></li>
+        <li style="display:none" ng-class="getClass('/formbuilder')"><a ui-sref=".formbuilder" title=""><i class="fab fa-wpforms"></i> Form Builder</a></li>
+        <li style="display:none" ng-class="getClass('/modeler')"><a ui-sref=".modeler" title=""><i class="fab fa-wpforms"></i> Modeler</a></li>
+
+        <li style="display:none" ng-class="getClass('/charts')">
+            <a href="" title=""><i class="fa fa-chart-bar"></i> Charts</a>
+            <ul>
+                <li><a ui-sref="Charts" title=""> HighCharts</a></li>
+                <li><a ui-sref="Canvascharts" title=""> Canvas Charts</a></li>
+                <li><a ui-sref="Amcharts" title=""> AM Charts</a></li>
+                <li><a ui-sref="Sparkline" title=""> Sparkline Charts</a></li>
+            </ul>
+        </li>
+        <li style="display:none" ng-class="getClass('/elements')">
+            <a href="" title=""><i class="fa fa-box"></i> Elements</a>
+            <ul>
+                <li><a ui-sref="Buttons" title=""> Buttons</a></li>
+                <li><a ui-sref="Profile" title=""> Profile</a></li>
+                <li><a ui-sref="Timeline" title="">  Timeline</a></li>
+                <li><a ui-sref="Gallery" title=""> Gallery</a></li>
+                <li><a ui-sref="Tree" title=""> Tree View</a></li>
+                <li><a ui-sref="Nestable" title=""> Nestable Lists</a></li>
+                <li><a ui-sref="Editors" title=""> Text Editor</a></li>
+                <li><a ui-sref="Canlender" title=""> Calendar</a></li>
+                <li><a ui-sref="Chat" title=""> Live Chat</a></li>
+                <li><a ui-sref="ProgressBar" title=""> Progress Bars</a></li>
+                <li><a ui-sref="Tabs" title=""> Tabs Style</a></li>
+                <li><a ui-sref="Maps" title=""> Maps Styles</a></li>
+                <li><a ui-sref="Range" title=""> Range Sliders</a></li>
+                <li><a ui-sref="Toggle" title=""> Toggles</a></li>
+                <li><a ui-sref="Boxes" title="">  Boxes Style</a></li>
+                <li><a ui-sref="Views" title="">  Views</a></li>
+            </ul>
+        </li>
+        <li style="display:none" ng-class="getClass('/email')">
+            <a href="" title=""><i class="fa fa-envelope"></i> Email</a>
+            <ul>
+                <li><a ui-sref="Inbox" title=""> Inbox</a></li>
+                <li><a ui-sref="EmailOpen" title=""> Mail Open</a></li>
+                <li><a ui-sref="ComposeEmail" title=""> Compose Mail</a></li>
+            </ul>
+        </li>
+        <li style="display:none" ng-class="getClass('/forms')"><a ui-sref="Forms" title=""><i class="fab fa-wpforms"></i> Forms</a></li>
+        <li style="display:none" ng-class="getClass('/tables')"><a ui-sref="Tables" title=""><i class="fa fa-table"></i> Tables</a></li>
+        <li style="display:none" ng-class="getClass('/abcd')"><a ui-sref="Error404" title=""><i class="fa fa-exclamation-circle"></i> 404 Page</a></li>
+    </ul>
+</div>

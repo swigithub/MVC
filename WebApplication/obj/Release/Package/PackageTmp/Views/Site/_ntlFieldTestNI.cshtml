@@ -1,0 +1,303 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    Layout = null;
+}
+@if (Model != null && Model.Count() > 0)
+{
+
+    var First = Model.FirstOrDefault();
+    string NetworkMode = First.NetworkMode;
+	string City = First.City;
+
+    <style>
+        .tbl-heading {
+            background-color: #004B99;
+            color: white;
+        }
+
+        .tbl-data {
+            background-color: #dbdbdd;
+            color: #2332de;
+        }
+    </style>
+
+    if (ViewBag.mail == "yes")
+    {
+        <div class="ForMail">
+            <br /><br /><br /><b>Dear Client,</b>
+            <br /><br /> Please find below quick summary of site @First.Site for @First.Band carrier @First.Carrier .<br /><br />
+        </div>
+    }
+
+    if (ViewBag.HeaderFooter == "yes")
+    {
+        <h1 id="FIELD_TEST" data-type="BOOLEAN,STRING" class="heading" data-preValue="@First.Site"></h1>
+
+    }
+    <table class="tbl-fieldTest font" id="tbl-fieldTest" style="font-family:Arial;text-align:left;width:100%;">
+        <tr class="">
+            @if (NetworkMode == "LTE")
+            {
+                <th style="width: 40%!important;" class="tbl-heading">LTE Call Scope-Stationary @First.Band _ @First.Carrier</th>
+            }
+            else if (NetworkMode == "WCDMA")
+            {
+                <th style="width: 40%!important;" class="tbl-heading">WCDMA Call Scope- Stationary @First.Band _ @First.Carrier</th>
+            }
+            else if (NetworkMode == "GSM")
+            {
+                <th style="width: 40%!important;" class="tbl-heading">GSM Call Scope-Stationary @First.Band _ @First.Carrier</th>
+            }
+
+            
+
+            @foreach (var item in Model.OrderBy(m=>m.Sector))
+            {
+                <th style="width:100px" class="tbl-heading">@item.Sector</th>
+            }
+        </tr>
+        <tr>
+            <th class="tbl-heading2">Data Session</th>
+            @foreach (var item in Model)
+            {
+                <td class="tbl-data">
+                    @if (item.DownlinkStatus == true)
+                    {
+                        <span class="bold DL_STATUS_TRUE" data-type="BOOLEAN,STRING" id="DL_STATUS_TRUE"></span>
+                    }
+                    else if (item.DownlinkStatus == false)
+                    {
+                        <span class="bold DL_STATUS_FALSE" data-type="BOOLEAN,STRING" id="DL_STATUS_FALSE"></span>
+                    }
+                </td>
+            }
+       
+        </tr>
+		@if (City == "Houston")
+        {
+				<tr>
+					<th class="tbl-heading2">DL Speed (Mbps)</th>
+				   
+					@foreach (var item in Model)
+					{			
+						<td class="tbl-data">                   
+								<span class="bold">@item.DownlinkMaxResult.ToString("0.00")</span>
+						</td>
+					}
+				</tr>
+		}
+        <tr>
+            @if (NetworkMode == "LTE")
+            {
+                <th class="tbl-heading2">VoLTE Mobile Originated</th>
+            }
+            else if (NetworkMode == "GSM" || NetworkMode == "WCDMA")
+            {
+                <th class="tbl-heading2">Voice Call Mobile Originated</th>
+            }
+
+
+            @foreach (var item in Model)
+            {
+                <td class="tbl-data">
+                    @if (NetworkMode == "LTE")
+                    {
+                        if (item.VMoStatus == true)
+                        {
+                            <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                        }
+                        else if (item.VMoStatus == false)
+                        {
+                            <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                        }
+                    }
+                    else if (NetworkMode == "GSM" || NetworkMode == "WCDMA")
+                    {
+                        if (item.MoStatus == true)
+                        {
+                            <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                        }
+                        else if (item.MoStatus == false)
+                        {
+                            <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                        }
+                    }
+
+                </td>
+            }
+        </tr>
+        <tr>
+            @if (NetworkMode == "LTE")
+            {
+                <th class="tbl-heading2">VoLTE Mobile Terminated</th>
+            }
+            else if (NetworkMode == "GSM" || NetworkMode == "WCDMA")
+            {
+                <th class="tbl-heading2">Voice Call Mobile Terminated</th>
+            }
+            @foreach (var item in Model)
+                {
+                <td class="tbl-data">
+                    @if (NetworkMode == "LTE")
+                    {
+                        if (item.VMtStatus == true)
+                        {
+                            <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                        }
+                        else if (item.VMtStatus == false)
+                        {
+                            <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                        }
+                    }
+                    else if (NetworkMode == "GSM" || NetworkMode == "WCDMA")
+                    {
+                        if (item.MtStatus == true)
+                        {
+                            <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                        }
+                        else if (item.MtStatus == false)
+                        {
+                            <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                        }
+                    }
+
+                </td>
+            }
+        </tr>
+        @if (NetworkMode == "GSM")
+        {
+            <tr>
+                <th class="tbl-heading2">SMS Mobile Originated</th>
+                @foreach (var item in Model)
+                {
+                    <td class="tbl-data">
+                        @if (item.SMoStatus == true)
+                        {
+                            <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                        }
+                        else if (item.SMoStatus == false)
+                        {
+                            <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                        }
+
+                    </td>
+                }
+            </tr>
+
+            <tr>
+                <th class="tbl-heading2">SMS Mobile Terminated</th>
+                @foreach (var item in Model)
+                    {
+                    <td class="tbl-data">
+                        @if (item.SMtStatus == true)
+                        {
+                            <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                        }
+                        else if (item.SMtStatus == false)
+                        {
+                            <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                        }
+
+                    </td>
+                }
+            </tr>
+        }
+
+       
+
+        @if (NetworkMode == "LTE")
+        {
+           @* <tr>
+                <th class="tbl-heading2">Carrier Aggregation</th>
+                @foreach (var item in Model)
+                {
+
+                    <td class="tbl-data">
+                        @if (item.CarrierAggregationStatus == true)
+                        {
+                            <span class="bold DL_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="DL_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                        }
+                        else if (item.CarrierAggregationStatus == false)
+                        {
+                            <span class="bold DL_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="DL_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                        }
+
+                    </td>
+
+                }
+            </tr>*@
+
+            <tr>
+                <th class="tbl-heading2">CSFB Mobile Originated</th>
+                @foreach (var item in Model)
+                {
+                    <td class="tbl-data">
+                        @if (item.MoStatus == true)
+                        {
+                            <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                        }
+                        else if (item.MoStatus == false)
+                        {
+                            <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                        }
+                    </td>
+                }
+
+            </tr>
+            <tr>
+                <th class="tbl-heading2">CSFB Mobile Terminated</th>
+                @foreach (var item in Model)
+                    {
+                    <td class="tbl-data">
+                        @if (item.MtStatus == true)
+                        {
+                            <span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE" style="color: rgb(0, 128, 0);">Pass</span>
+                        }
+                        else if (item.MtStatus == false)
+                        {
+                            <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE" style="color: rgb(0, 128, 0);">Fail</span>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+
+
+        <tr>
+            <th class="tbl-heading2">E911 Call</th>
+            @foreach (var item in Model)
+            {
+                <td class="tbl-data">
+                    @if (item.E911Status == true)
+                    {
+                        <span class="bold E911_STATUS_TRUE" data-type="BOOLEAN,STRING" id="E911_STATUS_TRUE"></span>
+                    }
+                    else if (item.E911Status == false)
+                    {
+                        <span class="bold E911_STATUS_FALSE" data-type="BOOLEAN,STRING" id="E911_STATUS_FALSE"></span>
+                    }
+                </td>
+            }
+        </tr>
+    </table>
+
+    if (ViewBag.HeaderFooter == "yes")
+    {
+        <div style="position:relative;top: 440px;">
+            @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+        </div>
+    }
+
+    if (ViewBag.mail == "yes")
+    {
+        <div class="ForMail">
+            For Detail Reoprt: <a target="_blank" href="@ViewBag.Domain/site/netlayerreport?SiteId=@First.SiteId&BandId=@First.BandId&Carrier=@First.CarrierId&NetworkMode=@First.NetworkModeId&CircleRadios=17&AzmuthRadius=200&Auto=0">Click Here</a>
+            <br /><br /><br /> Regards, <br /><br /><br />
+            <img src="http://airview.swius.com/Content/Images/Application/swi_logo.png" width="131" height="50" /><br />
+            <b>Sublime Wireless Inc.</b>
+            <br /><br />
+            <span style="color:#1F497D;font-size: 11.0pt;font-family:Calibri,sans-serif;text-align:justify;"> This electronic transmission and any documents which may accompany it, contain information from SWI, SWI's Entity and SWIs's Clients which is intended only for the use of the individual (s) or entity to which it is addressed, and which may contain information that is privileged, confidential, and/or otherwise exempt from disclosure under applicable law. If the reader of this message is not the intended recipient or the employee or agent responsible for delivering the message to the intended recipient, any disclosure, dissemination, distribution, copying or other use of this communication or its substance is prohibited. If you have received this communication in error, please immediately notify us by telephone to arrange for the destruction of the communication or its return to us at our expense. Thank you.</span>
+        </div>
+    }
+}

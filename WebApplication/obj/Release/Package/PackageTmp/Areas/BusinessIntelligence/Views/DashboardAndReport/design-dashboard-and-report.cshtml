@@ -1,0 +1,138 @@
+
+<div class="overlay rmt" style="display:none;">
+    <div class="overlay__inner">
+        <div class="overlay__content">
+            <span class="spinner"></span>
+        </div>
+    </div>
+</div>
+<div ng-controller="dashboardAndReportController as vm">
+    <div class="new-template">
+
+    </div>
+    <a class="sidepanel-btn" ng-if="vm.coreModeTypeInte=='EDIT'" ng-show="vm.modeType=='edit'" ng-click="vm.resizeAllWidgetOnCrossButton()" href="#" title=""><i class="bar"></i></a>
+    <div ng-if="vm.coreModeTypeInte=='EDIT'" class="side-panel" sidepanel ng-show="vm.modeType=='edit'">
+        <ul class="nav">
+            <li><a class="active penalSettings" data-toggle="tab" data-target="#tab1" title="">Settings</a></li>
+            <li><a class="querybuilder" ng-click="vm.reloadingOfMurri()" data-toggle="tab" data-target="#queryBuilderSection" title="">Query Builder</a></li>
+        </ul>
+        <!-- <h3>Settings Panel</h3> -->
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab1">
+                <div class="toggle scrollbar" aircodaccordion>
+                    <div class="toggle-item">
+                        <h2><i class="fa fa-columns"></i> Panels</h2>
+                        <div class="content">
+                            <div class="row narrow panels">
+                                <div class="col-lg-4 col-md-12" ng-repeat="item in  vm.standardWidgets track by $index">
+                                    <div class="panel-box draggable" data-type="{{item.type}}" title="{{item.title}}">
+                                        <span><i class="{{item.icon}}"></i></span>
+                                        <h5>{{item.title}}</h5>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div><!-- Toggle Item -->
+
+                    <div class="toggle-item">
+                        <h2><i class="fa fa-cog"></i>Page Settings</h2>
+                        <div class="content">
+                            <form>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <label>Page Color</label>
+                                        <input id="pagecolor" class="bgcolor" type="text" value="#fafafa" />
+                                        <div class="colorpickerwrapper"><div colorpicker></div></div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <input id="contained" name="contained" type="checkbox" /> <label for="contained">Contained</label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="toggle-item" ng-show="vm.dynamicPridefinedWidget.length>0">
+                        <h2><i class="fa fa-columns"></i> Predefined Widgets</h2>
+                        <div class="content">
+                            <div class="row narrow panels">
+                                <div class="col-lg-4 col-md-12" ng-repeat="item in  vm.dynamicPridefinedWidget track by $index ">
+                                    <div class="panel-box draggable" data-type="{{item.type}}" core-data-type="{{item.coreType}}" title="{{item.title}}">
+                                        <span><i class="{{item.icon}}"></i></span>
+                                        <h5>{{item.title}}</h5>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="queryBuilderSection">
+            </div>
+        </div>
+
+    </div>
+</div>
+@*@Html.Action("ReturnAttachmentPartialView", "Document", new { @area = "DMS", @FilePath = "~/Areas/DMS/Views/Document/_DocumentIntegration.cshtml", @moduleId = 14, @featureId = 1402, @InstanceId = 11 })*@
+@*<div>
+        @Html.Action("GetPartialForEntity1", new { @FilePath = "~/Areas/Inventory/Views/IssueNote/_EntityInventory.cshtml", @EntityId = 164920 })
+
+    </div>*@
+@*<div>
+        @Html.Action("GetPartialForEntity1", new { @FilePath = "~/Areas/Entity/Views/EntityDashboard/_EntityAccessInfo.cshtml", @EntityId = 164920 })
+    </div>*@
+@*@Html.Action("ReturnGeneralPartialForUpload", new { @FilePath = "~/Areas/DMS/Views/Document/_DocumentIntegration.cshtml", @EntityId = 164920 })*@
+@*@Html.Action("EntityLocationPartial", new { @FilePath = "~/Areas/Entity/Views/Entity/_EntityLocation.cshtml",  @EntityId = 164920 })*@
+<!--market map filter modal-->
+@*<div class="modal fade" id="marketfiltermodal" tabindex="-1" role="dialog" aria-labelledby="marketfiltermodal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header widget-title">
+                    <h5 class="title-text" style="margin-bottom:0px;">Select City(s)</h5>
+
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <select id="ddmarketfiltercountries" style="width:100%;margin-bottom: 10px;"></select>
+                        </div>
+                        <div class="col-md-12">
+                            <p style="text-align:right"><b style="font-weight: 600;">Max Limit:</b> 10000</p>
+                            <div class="col-md-12" id="chkmarketfilters" style="height: 350px;overflow: auto;font-size: 13px;margin-top: 10px;">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer form-footer" style="margin: 0px;width: 100%;background: #fafafa;padding: 15px 20px;display: inherit;">
+                    <div class="col-md-6">
+                        <p><b style="font-weight: 600;">Total Counts:</b> <span id="totalcounts">0</span></p>
+                    </div>
+                    <div class="col-md-6" style="text-align: right;    padding-right: 0px;">
+                        <button type="button" id="btnsavemarketfiltermodal" class="custom-btn medium color11">Save</button>
+                        <button type="button" id="btncancelmarketfiltermodal" class="custom-btn medium color1" style="margin-right: 0px;">Cancel</button>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+
+
+
+
+<link href="~/Areas/BusinessIntelligence/assets/css/querybuilder.css" rel="stylesheet" />
+@*<script src="~/Areas/BusinessIntelligence/Scripts/formio.full.min.js"></script>*@
+
+@*<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>*@

@@ -1,0 +1,235 @@
+﻿#pan-settings {
+    position: fixed;
+    left: 10px;
+    top: 50px;
+    background-color: #333;
+    color: white;
+    width: 190px;
+    display: none;
+    box-shadow: 3px 4px 9px 8px rgba(135, 135, 135, 0.95);
+    -moz-box-shadow: 3px 4px 9px 8px rgba(135, 135, 135, 0.95);
+    -webkit-box-shadow: 3px 4px 9px 8px rgba(135, 135, 135, 0.95);
+}
+
+.page {
+    width: initial;
+    min-height: initial;
+    page-break-after: always;
+    height: 990px;
+    margin: 2px;
+    position: relative;
+}
+
+.footer {
+    display: block;
+    font-family: Arial;
+    font-size: 16px;
+    position: absolute;
+    bottom: 0;
+}
+
+.settingHeading {
+    background-color: #004B99;
+    margin-bottom: 10px;
+    text-align: center;
+    height: 24px;
+    font-weight: bold;
+    padding-top: 3px;
+}
+
+.settingFooter {
+    background-color: #004B99;
+    margin-top: 10px;
+    text-align: center;
+    height: 24px;
+    padding-top: 3px;
+}
+
+.heading {
+    color: #3b39e2;
+    text-align: center;
+}
+
+@media print and (color) {
+
+    * {
+        -webkit-print-color-adjust: exact;
+        -moz-print-color-adjust: exact;
+        -o-print-color-adjust: exact;
+        -ms-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+@page {
+    size: A3 landscape;
+    margin: 0mm 2mm 0mm 2mm;
+    border: dotted 1px;
+}
+
+
+@media print {
+    .page {
+        /*width: initial;
+                    min-height: initial;
+                    page-break-after: always;*/
+    }
+    .imgesss{
+        height:770px !important;
+    }
+}
+
+.wrap {
+    position: absolute;
+}
+
+.header {
+    position: absolute;
+    height: auto;
+    width: 100%;
+    top: 0;
+}
+
+.footer {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    bottom: 0;
+}
+
+.content {
+    height: 100%; /* What should this be?? */
+    position: relative;
+    padding: 20px 0; /* padding height of header/footer */
+}
+
+.bgcolor {
+    background: #004B99;
+}
+
+.breakhere {
+    page-break-after: always;
+}
+
+table td {
+    padding: 8px;
+}
+
+table th {
+    padding: 8px;
+}
+
+
+.tbl-heading {
+    background-color: #004B99;
+    color: white;
+}
+
+.tbl-heading2 {
+    background-color: #217ddc;
+    color: white;
+}
+
+
+.tbl-data {
+    background-color: #dbdbdd;
+    color: #2332de;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.PageBorder {
+    border: dotted 1px;
+}
+
+.pan-map {
+    width: 1400px;
+    height: 860px;
+    position: relative;
+}
+
+.googlemap {
+    border: solid 3px;
+    border-color: #3b39e2;
+}
+
+.lagendHeader {
+    text-align: center;
+    background-color: #056d7d;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    left: 1168px;
+}
+
+.customBox {
+    margin-top: 7px;
+    position: absolute;
+    font-weight: bold;
+    color: #201eea;
+    font-size: small;
+    background-color: #fdfffe;
+    opacity: 0.7;
+}
+
+.colorBox {
+    height: 22px;
+    width: 22px;
+    color: white;
+    border: solid 1px;
+    border-color: black;
+    margin-bottom: -7px;
+}
+
+.PciLegend {
+    position: absolute;
+    bottom: 15%;
+    background-color: white;
+    border: solid 2px;
+    width: 170px;
+    right: 36px;
+}
+
+.pciText {
+    margin-top: 7px;
+    position: absolute;
+    font-weight: bold;
+    color: #ffffff;
+    font-size: x-small;
+    background-color: #000000;
+    opacity: 1;
+}
+
+.ooklaImages {
+    width: 213px;
+    height: 365px;
+      margin-top: 4px;
+        margin-bottom: 4px;
+    margin-right: 35px;
+}
+
+
+
+
+/*#load{
+            width:100%;
+            height:100%;
+            position:fixed;
+            z-index:9999;
+            background:url("https://www.creditmutuel.fr/cmne/fr/banques/webservices/nswr/images/loading.gif") no-repeat center center rgba(0,0,0,0.25)
+        }*/

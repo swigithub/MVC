@@ -1,0 +1,284 @@
+﻿
+@model IEnumerable<SWI.Libraries.AirView.Entities.BandVM>
+
+
+@{
+    var IsShowReDrive = "false";
+    foreach (var item in Model)
+    {
+        if (item.isReDrive == true)
+        {
+            IsShowReDrive = "true";
+            //return false;
+          //  return;
+        }
+    }
+
+    var ShowReDrive = "";
+    if (IsShowReDrive == "true")
+    {
+        ShowReDrive = "<th>Re-Drive Type</th><th>Re-Drive Reason</th><th>WO Ref#</th>";
+    }
+    var SiteId = ViewBag.SiteId;
+}
+
+    <table class="table table-bordered table-striped child-table tbl-Scope" id="tbl_@ViewBag.SiteId" cellpadding="5" cellspacing="5" border="0" style="margin-left:20px; margin-top:-10; margin-bottom:10px;width:100%;">
+ 
+    <thead>
+      
+        <tr>
+           
+            <th style="max-width:50px; width:50px;"></th>
+            
+            <th>Network Mode</th>
+            
+            <th>Band</th>
+            
+            <th>Carrier</th>
+            
+            <th>Tester</th>
+            
+            <th>Scope</th>
+            @*ShowReDrive*@ 
+            
+            <th>Status</th>
+            
+            <th></th>
+           
+        </tr>
+    </thead>
+    
+    <tbody>
+        @foreach (var band in Model)
+        {
+            var SiteKpi = "";
+            var ScannerKpi = "";
+            var IssueTracker = "";
+            var NetLayerReport = "";
+            var EditNetLayerReport = "";
+            var observation = "";
+            var Redrive = "";
+            var PendingWithIssue = "";
+            var ReportSubmitOrApprove = "";
+            var Email = "";
+            var IsActive = "";
+            var LayerWoStatus = "";
+            var Script = "";
+            var Export = "";
+            var KPI = "";
+            var BIReport = "";
+
+            var NetLayer = band.SiteCode +"/"+ band.NetworkMode +"_"+ band.BandName +"_"+ band.Carrier;
+            var NetLayerSec =  "/" + band.NetworkMode + "_" + band.BandName + "_" + band.Carrier+"/";
+
+            var view = "<a class='view'    data-siteid=" + SiteId + " NetworkMode=" + band.NetworkModeId + " BandId=" + band.BandId + " Carrier=" + band.CarrierId + " title='View'><i class='white fa fa-eye fa-2x' aria-hidden='true'></i></a>";
+            if (band.Status != "Pending Schedule" && band.Scope!="NI")
+            {
+
+                if (ViewBag.AllowUri("/site/netLayerReport"))
+                {
+
+                    // NetLayerReport = "<a class='Net LayerReport' title='Net Layer Report' target='_blank' href='/site/netlayerreport?SiteId= + @SiteId +"&BandId="+ @band.BandId +"&Carrier="+ @band.CarrierId +"&NetworkMode="+ @band.NetworkModeId +"&CircleRadios=17&AzmuthRadius=200&Auto=0'><span><img src='/Content/Images/Common/netlayer_x32.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+
+                    if (ViewBag.RoleName == "Client POC")
+                    {
+
+                    }
+                    else if(band.Scope == "IND")
+                    {
+                        NetLayerReport = "<a class='Net LayerReport' title='Net Layer Indoor Report' target='_blank'  href='/site/netlayerIndoorreport?SiteId=" + SiteId + "&BandId=" + band.BandId + "&Carrier=" + band.CarrierId + "&NetworkMode=" + band.NetworkModeId + "&CircleRadios=17&AzmuthRadius=50&Auto=0' <span><img src='/Content/Images/Common/netlayer_x32.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                    }
+                    else
+                    {
+                        NetLayerReport = "<a class='Net LayerReport' title='Net Layer Report' target='_blank'  href='/site/netlayerreport?SiteId=" + SiteId + "&BandId=" + band.BandId + "&Carrier=" + band.CarrierId + "&NetworkMode=" + band.NetworkModeId + "&CircleRadios=20&AzmuthRadius=75&Auto=0' <span><img src='/Content/Images/Common/netlayer_x32.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                    }
+
+                }
+            }
+            if (ViewBag.AllowUri("/SiteTrackerIssue/NetLayer"))
+            {
+                IssueTracker = "<a href='#' title='Tracker' onclick='ActivityPopup("+ SiteId + ","+ band.NetworkModeId + ","+ band.CarrierId + ","+ band.ScopeId + ","+ band.BandId + ","+ band.TesterId + "); return false;'><span><img src='/Content/Images/Common/activity_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+            }
+            // SiteKpi
+            if (ViewBag.AllowUri("/TemplateSetting/Site"))
+            {
+                if (band.Status == "Pending Schedule" || @band.Status == "Scheduled" || @band.Status == "In Progress")
+                {
+                    SiteKpi = "<a title='Test Configuration & KPI' href='/TemplateSetting/site?SiteId="+ SiteId + "&NetworkModeId="+ band.NetworkModeId + " &BandId="+ band.BandId + "' target='_blank'><span><img src='/Content/Images/Common/kpi_x24.png' alt='Site Kpi' style='margin-right:20px;' /></span></a>";
+                }
+                if (band.Status == "Pending Schedule" || @band.Status == "Scheduled" || @band.Status == "In Progress")
+                {
+                    ScannerKpi = "<a title='Scanner Configuration' href='/TemplateSetting/Scanner?SiteId=" + SiteId + "&NetworkModeId=" + band.NetworkModeId + " &BandId=" + band.BandId + "' target='_blank'><span><img src='/Content/Images/Common/kpi_x244.png' alt='Site Kpi' style='margin-right:20px;' /></span></a>";
+                }
+            }
+
+            //  Report Submit Or Approve
+            if (ViewBag.AllowUri("/NetLayerStatus/SetStatus"))
+            {
+                if (band.Status == "Drive Completed" || band.Status == "Pending With Issues")
+                {
+                    ReportSubmitOrApprove = " <a href='#' title='Submit Report' onclick='ReportSubmitOrApprove("+ SiteId + ", "+ band.NetworkModeId + " , "+ band.CarrierId + ","+ band.ScopeId + " ,"+ band.BandId + ",\"REPORT_SUBMITTED\"); return false;'><span><img src='/Content/Images/Common/reportsubmitted_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+                if (band.Status == "Report Submitted")
+                {
+                    ReportSubmitOrApprove = "<a title='Approve Report' href='#' onclick='ReportSubmitOrApprove(" + SiteId + ", " + band.NetworkModeId + " , " + band.CarrierId + "," + band.ScopeId + " ," + band.BandId + ",\"COMPLETED\"); return false;'><span><img src='/Content/Images/Common/reportapproved_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+            }
+            //console.log(band);
+
+            if (ViewBag.AllowUri("/Site/Mail"))
+            {
+                if (band.Status == "Approved" || @band.Status == "Report Submitted")
+                {
+                    Email = "<a href='#' title='Send Email' class='btn-email' data-City='" + band.City + "' data-Region='" + band.Region + "' data-Scope='" + band.Scope + "' data-SiteCode='" + band.SiteCode + "' data-NetworkMode='" + band.NetworkMode + "' data-NetworkModeId='" + band.NetworkModeId +"' data-TesterId='" + band.TesterId + "' data-BandId='"+ band.BandId + "' data-Band='"+ band.BandName +"' data-CarrierId='"+ band.CarrierId +"' data-Carrier='"+ band.Carrier +"' data-ScopeId='"+ band.ScopeId +"' data-SiteId='"+ SiteId +"'><span><img src='/Content/Images/Common/email_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+            }
+            //  EditNetLayerReport
+            if (ViewBag.AllowUri("/site/EditNetLayerReport"))
+            {
+
+                if (band.Status == "Drive Completed" || band.Status == "In Progress")
+                {
+                    EditNetLayerReport = "<a target='_blank' title='Edit Net Layer Report' href='/site/EditNetLayerReport/"+ SiteId + "/"+ band.BandId + "/"+ band.Carrier + "/"+ band.NetworkMode + "'><span><img src='/Content/Images/Common/update_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+
+            }
+
+            //  observation
+            if (ViewBag.AllowUri("/NetLayerStatus/NewObservation"))
+            {
+
+                if (band.Status == "Drive Completed")
+                {
+                    observation = "<a href='#' title='Report Observations' onclick='ObservationPopup("+ SiteId + ", "+ band.NetworkModeId + ","+ band.CarrierId + " ,"+ band.ScopeId + " ,"+ band.BandId + "); return false;'><span><img src='/Content/Images/Common/observe_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+
+            }
+
+            //  Redrive
+            if (ViewBag.AllowUri("/ReDrive/NewRequest"))
+            {
+
+                if (band.Status == "Pending With Issues")
+                {
+                    Redrive = "<a href='#' title='Re-Drive Request' onclick='RedrivePopup("+SiteId+", " + band.NetworkModeId + ","+ band.CarrierId + ","+ band.ScopeId + ","+ band.BandId + "); return false;' data-NetworkModeId='"+ band.NetworkModeId + "' data-TesterId='" + band.TesterId + "' data-BandId='" + band.BandId + "' data-CarrierId='" + band.CarrierId + "' data-ScopeId='" + band.ScopeId + "' data-SiteId='" + SiteId + "'><span><img src='/Content/Images/Common/redrive_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+
+            }
+
+
+            //  PendingWithIssue
+            if (ViewBag.AllowUri("/NetLayerStatus/NewPendingIssue"))
+            {
+
+                if (band.Status == "Scheduled" || band.Status == "In Progress" || band.Status == "Drive Completed" || band.Status == "Report Submitted" || band.Status == "Pending With Issues")
+                {
+                    PendingWithIssue = "<a href='#' title='Pending with Issue' title='Site Issues' onclick='PendingIssuesPopup("+SiteId+","+ band.NetworkModeId + ","+ band.CarrierId + ","+ band.ScopeId + ","+ band.BandId + "); return false;'><span><img src='/Content/Images/Common/issuetracker_x32.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+
+            }
+
+
+
+            if (ViewBag.AllowUri("/SiteTestLog/Export"))
+            {
+
+                Export = "<a title='Export Logs' href='/SiteTestLog/Export?SiteId="+ SiteId + "&NetworkmodeId=" + band.NetworkModeId + "&BandId="+ band.BandId + "&CarrierId="+ band.CarrierId + "&ScopeId="+ band.ScopeId + "'><span><img src='/Content/Images/Common/testlogs_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+
+            }
+
+
+            //  LayerWoStatus
+            if (ViewBag.AllowUri("/NetLayerStatus/WoStatus"))
+            {
+
+                if (band.Status != "Pending Schedule")
+                {
+                    LayerWoStatus = "<a href='#' title='Change Layer Status' onclick='LayerWoStatus("+ band.LayerStatusId +"); return false;' title='Layer Status'><span><img src='/Content/Images/Common/movestatus_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+
+            }
+
+            ShowReDrive = "";
+            if (IsShowReDrive == "true")
+            {
+                ShowReDrive = "<td>"+ band.RedriveType +"</td><td>"+ band.RedriveReason +"</td><td>"+ band.PWoRefID +"</td>";
+            }
+
+            if (ViewBag.AllowUri("/NetLayerStatus/Script"))
+            {
+                //onclick='Script("+ band.LayerStatusId +","+ SiteId +","+ band.NetworkModeId +","+ band.BandId +","+ band.CarrierId +","+ band.ScopeId +"); return false;'
+                Script = "<a target = '_blank' href = '/NetLayerStatus/Script?LayerId="+ band.LayerStatusId +"&SiteId="+ SiteId +"&NetworkModeId="+ band.NetworkModeId +"&BandId="+ band.BandId+"&CarrierId=" + band.CarrierId + "&Scope=" + band.Scope +"' title = 'Script' ><span><img src = '/Content/Images/Common/script_x24.png' height = '24' width = '24' style = 'margin-right:20px;' /></ span></a>";
+            }
+            if (ViewBag.AllowUri("/NetLayerStatus/IsActive"))
+            {
+
+                if (band.IsActive)
+                {
+                    IsActive = "<a href='#' title='Disable Layer' onclick='LayerIsActive("+ band.LayerStatusId +",false,0); return false;'><span><img src='/Content/Images/Common/disable_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                }
+                else
+                {
+                    IsActive = "<a href='#' title='Enable Layer' onclick='LayerIsActive("+ band.LayerStatusId +",truem,0); return false;'><span><img src='/Content/Images/Common/enable_x24.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+                    IssueTracker = "";
+                    observation = "";
+                    NetLayerReport = "";
+
+                    EditNetLayerReport = "";
+                    PendingWithIssue = "";
+                    Redrive = "";
+                    SiteKpi = "";
+                    ReportSubmitOrApprove = "";
+                    Email = "";
+                    Export = "";
+                    LayerWoStatus = "";
+                    ScannerKpi = "";
+                }
+
+            }
+            if (@ViewBag.RequestFrom == "KPI")
+            {
+                KPI = "<a class='KPI' title='' target='_blank'  href='/KPI/Monitoring/Add?Type=Carrier&Site=" + @ViewBag.SiteId + "&Carrier=" + band.CarrierId + "' > <span><img src='/Content/Images/Common/netlayer_x32.png' height='24' width='24' style='margin-right:20px;' /></span></a>";
+            }
+            if (Convert.ToBoolean(ViewBag.IsReport)) {
+
+                BIReport= "<a class='BIReport' title='' target='_blank'  href='/BusinessIntelligence/DashboardsnReports/LandingPage?ModuleType=RPT&moduleId=3&viewMode=VIEW' > <span><img src='/Content/Images/Common/BIReport_x24.png' height='24' width='24' style='margin-left: 10px;border: 0px solid;border-radius:5px;zoom: 1.1;padding: 2px; ' /></span></a>";
+            }
+            string Icons = IssueTracker + observation+ NetLayerReport+ EditNetLayerReport + PendingWithIssue+ Redrive+ SiteKpi+ ScannerKpi + ReportSubmitOrApprove+ Email+ IsActive+ Export+ LayerWoStatus+ Script+KPI+ view + BIReport;
+
+            <tr class="BandRow" data-NetLayer="@NetLayer" data-networkLayerSec="@NetLayerSec" data-NetLayerId="@band.LayerStatusId" data-child-value='@band.BandId' data-NetworkModeId="@band.NetworkModeId" data-BandId="@band.BandId" data-CarrierId="@band.CarrierId" data-ScopeId="@band.ScopeId" data-SiteId="@ViewBag.SiteId">
+                <td title="Sectors" class="detail-control" data-NetworkModeId="@band.NetworkModeId" data-BandId="@band.BandId" data-CarrierId="@band.CarrierId" data-ScopeId="@band.ScopeId" data-SiteId="@ViewBag.SiteId"></td>
+                <td>@band.NetworkMode</td>
+                <td>@band.BandName</td>
+                <td>@band.Carrier</td>
+                <td>@band.TesterName</td>
+                <td>@band.Scope</td>
+                @*@ShowReDrive*@
+                <td><span class="label " style="background-color:@band.StatusColor !important">@band.Status</span></td>
+                <td> @Html.Raw(Icons)</td>
+             
+            </tr>
+            }
+    </tbody>
+
+</table>
+        
+
+<script>
+  var tbl=  $("#tbl_@ViewBag.SiteId").DataTable({"paging": false,"ordering": false,"info": false,"searching": false,Filter: false});
+    $("#tbl_@ViewBag.SiteId").on("click", "td.detail-control", function () {
+        var tr = $(this).closest("tr");
+        debugger;
+        var row = tbl.row(tr);
+        if (row.child.isShown()) {
+           row.child.hide();
+            tr.removeClass("shownband");
+            tr.removeClass("shown");
+        } else {
+            var temp;
+            temp=format($(this).attr("data-BandId"),$(this).attr("data-SiteId"),$(this).attr("data-NetworkModeId"),$(this).attr("data-ScopeId"),$(this).attr("data-CarrierId"),'');
+
+             row.child(temp).show();
+           tr.addClass("shownband");}});
+</script>
+

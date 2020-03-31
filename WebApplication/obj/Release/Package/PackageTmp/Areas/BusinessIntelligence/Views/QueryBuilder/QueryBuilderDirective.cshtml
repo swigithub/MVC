@@ -1,0 +1,119 @@
+﻿<!--<script type="text/ng-template" id="myModalContent.html">
+
+    <div class="modal-header" style="background-color:#4c4f53;color:white!important;height:57px;">
+        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+            ×
+        </button>
+        <h3 style="margin-top:0px;">Warning</h3>
+    </div>
+
+    <div class="modal-body">
+        <h4 class="modal-title">Are You Sure?</h4>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="cancel('cancil')">Cancel</button>
+        <button class="btn btn-danger" ng-click="submit('delete')">Yes</button>
+    </div>
+
+</script>-->
+
+<select ng-options="o.name as o.name for o in operators" ng-if="group.removefirstcondition" ng-model="group.operator" class="form-control input-sm group-operator"></select>
+<div class="alert alert-group outerdiv">
+
+
+    <div class="form-inline btnDiv first3">
+        <button ng-click="addGroup()" class="btn btn-sm btn-success innerButton" title="Add Group"><span class="fa fa-plus-circle"></span></button>
+        <button ng-click="addCondition()" class="btn btn-sm btn-success first innerButton" title="Add Condition"><span class="fa fa-plus"></span></button>
+        <button ng-click="removeGroup()" class="btn btn-sm btn-danger first1 innerButton btnremovegroup" title="Clear Group"><span class="fa fa-minus"></span></button>
+    </div>
+    <div class="group-conditions">
+        <div ng-repeat="rule in group.rules track by $index" class="condition">
+
+            <div ng-switch="rule.hasOwnProperty('group')">
+                <div ng-switch-when="true">
+                    <query-builder group="rule.group"></query-builder>
+                </div>
+
+                <div ng-switch-default="ng-switch-default" style="margin-bottom:-16px; color:#000;">
+
+                    <table class="tbl-query-builder">
+
+                        <tr ng-if="rule.isoperator">
+                            <td>
+                                <select ng-options="o.name as o.name for o in operators" ng-model="rule.operator" class="form-control input-sm conditionOperator"></select>
+                                @*<ui-select ng-model="rule.operator" class="conditionOperatorUiSelect" theme="select2" title="Choose a operation"><ui-select-match placeholder="Please select operation...">{{$select.selected.name}}</ui-select-match><ui-select-choices repeat="c.name as c in  operators | propsFilter: {name: $select.search}"><div ng-bind-html="c.name | highlight: $select.search"></div></ui-select-choices></ui-select>*@
+                            </td>
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+
+                                <div class="col-md-10" style="display: flex;">
+
+                                    <ui-select ng-model="rule.field" ng-change="addType($index)" theme="select2" title="Choose a Column"><ui-select-match placeholder="Select column name...">{{$select.selected.name}}</ui-select-match><ui-select-choices repeat="c.name as c in  fields | propsFilter: {name: $select.search}"><div ng-bind-html="c.name | highlight: $select.search"></div></ui-select-choices></ui-select>
+
+                                    <ui-select ng-if="rule.type=='System.String' || rule.type=='select'" ng-model="rule.condition" ng-change="checkfromCondition(rule.condition,$index)" theme="select2" title="Choose a condition"><ui-select-match placeholder="Please select condition...">{{$select.selected.name}}</ui-select-match><ui-select-choices repeat="c.name as c in  stringconditions | propsFilter: {name: $select.search}"><div ng-bind-html="c.name | highlight: $select.search"></div></ui-select-choices></ui-select>
+
+                                    <ui-select ng-if="rule.type=='System.Int32'|| rule.type=='System.Double'" ng-model="rule.condition" ng-change="checkfromCondition(rule.condition,$index)" theme="select2" title="Choose a condition"><ui-select-match placeholder="Please select condition...">{{$select.selected.name}}</ui-select-match><ui-select-choices repeat="c.name as c in  intcondtion | propsFilter: {name: $select.search}"><div ng-bind-html="c.name | highlight: $select.search"></div></ui-select-choices></ui-select>
+
+                                    <ui-select ng-if="rule.type=='System.DateTime'" ng-model="rule.condition" ng-change="checkfromCondition(rule.condition,$index)" theme="select2" title="Choose a condition"><ui-select-match placeholder="Please select condition...">{{$select.selected.name}}</ui-select-match><ui-select-choices repeat="c.name as c in  dateconditions | propsFilter: {name: $select.search}"><div ng-bind-html="c.name | highlight: $select.search"></div></ui-select-choices></ui-select>
+                                    <input type="text" ng-model="rule.data" ng-if="rule.type=='System.String' && rule.condition !='IS NULL' && rule.condition !='IS NOT NULL' && rule.condition !='Drilldown' && rule.condition !='{EMSRefId}'" class="customSelect form-control input-sm custom-select-input" style="width: 24% !important;margin-right: 3px !important;    background: white;">
+
+                                    <input type="number" ng-model="rule.data" ng-if="(rule.type=='System.Int32'|| rule.type=='System.Double') && rule.condition !='IS NULL' && rule.condition !='IS NOT NULL' && rule.condition !='IS NOT NULL' && rule.condition !='Drilldown'&& rule.condition !='{EMSRefId}'" class="customSelect form-control input-sm custom-select-input" style="width: 24% !important;margin-right: 3px !important;    background: white;">
+
+                                    <input type="date" ng-model="rule.data" value="{{rule.data}}" ng-if="rule.type=='System.DateTime' && rule.condition !='IS NULL' && rule.condition !='IS NOT NULL' && rule.condition !='Drilldown'&& rule.condition !='{EMSRefId}'" class="customSelect form-control input-sm custom-select-input" style="width: 24% !important;margin-right: 3px !important;    background: white;">
+
+                                    <input type="number" ng-model="rule.databetween" ng-if="(rule.type=='System.Int32'|| rule.type=='System.Double') && rule.condition=='BETWEEN' && rule.condition !='IS NULL' && rule.condition !='IS NOT NULL' && rule.condition !='Drilldown'&& rule.condition !='{EMSRefId}'" class="customSelect form-control input-sm custom-select-input" style="width: 24% !important;margin-right: 3px !important;    background: white;">
+
+                                    <input type="date" ng-model="rule.databetween" value="{{rule.data}}" ng-if="rule.type=='System.DateTime' && rule.condition=='BETWEEN' && rule.condition !='IS NULL' && rule.condition !='IS NOT NULL' && rule.condition !='Drilldown'&& rule.condition !='{EMSRefId}'" class="customSelect form-control input-sm custom-select-input" style="width: 24% !important;margin-right: 3px !important;    background: white;">
+
+
+                                    <ui-select ng-model="rule.data" ng-if="rule.type=='select' && rule.condition !='IS NULL' && rule.condition !='IS NOT NULL' && rule.condition !='Drilldown'&& rule.condition !='{EMSRefId}'" theme="select2" title="Choose a Value"><ui-select-match placeholder="Please Select Value...">{{$select.selected.DefinationName}}</ui-select-match><ui-select-choices repeat="rep.DefinationName as rep in  rule.definition | propsFilter: {DefinationName: $select.search}"><div ng-bind-html="rep.DefinationName | highlight: $select.search"></div></ui-select-choices></ui-select>
+                                    <button ng-click="removeCondition($index)" title="Remove Condition" class="btn btn-sm btn-danger btnremovecondition" style="line-height: 1.4;height: 30px;margin-left: 10px;"><span class="fa fa-minus"></span></button>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-inline btnDiv first3" style="background:0;margin-left:14px;    margin-top: 2px;
+">
+                                        <button ng-click="addGroup()" title="Add Group" class="btn btn-sm btn-success innerButton"><span class="fa fa-plus-circle"></span></button>
+                                        <button ng-click="addCondition()" title="Add Condition" class="btn btn-sm btn-success first innerButton"><span class="fa fa-plus"></span> </button>
+                                        <button ng-click="removeGroup()" title="Clear Group" class="btn btn-sm btn-danger first1 innerButton"><span class="fa fa-minus"></span></button>
+                                    </div>
+                                </div>
+
+
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $(".btnDiv:first").find("button:eq(2)").attr('style', 'display:none');
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+

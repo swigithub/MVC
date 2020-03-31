@@ -1,0 +1,335 @@
+﻿@using SWI.Libraries.Security.Entities
+@using SWI.Libraries.AD.Entities
+
+@model IEnumerable<Sec_Permission>
+@{
+    ViewBag.Title = "User Permissions";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+@helper GetTreeView(List<Sec_Permission> Per, Int64 ParentId)
+{
+
+foreach (var item in Per.Where(m => m.ParentId.Equals(ParentId)))
+{
+    var subItems = Per.Where(m => m.ParentId.Equals(item.Id)).Count();
+        <li Id="@item.Id" class="control">
+            @item.Title
+            @if (subItems > 0)
+            {
+                <ul>
+                    @GetTreeView(Per, item.Id)
+                </ul>
+            }
+        </li>
+}
+}
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">User Permissions</h3>
+                <a href="@Url.Action("all","User")" class="btn btn-sm btn-info btn-flat pull-right">Back</a>
+            </div>
+
+            <div class="box-body">
+
+                @if (ViewBag.UId > 0)
+                {
+                    <div class="row">
+
+                        <div class="col-sm-2">
+                            <div>
+                                <h4>Module Permissions</h4>
+                                <div id="permission-tree">
+                                    <ul>
+                                        @if (Model != null && Model.Count() > 0)
+                                        {
+
+                                        @GetTreeView(Model.ToList(), Model.OrderBy(m => m.Id).FirstOrDefault().ParentId)
+
+                                        }
+                                    </ul>
+                                    <input type="text" style="visibility:hidden" id="txt-selected" />
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-2">
+                            <div id="pan-Region">
+                                <h4>Regions</h4>
+
+                                <div id="region-tree">
+                                    <ul>
+                                        @if (ViewBag.Region != null)
+                                        {
+                                            foreach (var item in ViewBag.Region)
+                                            {
+                                                <li Id="r-@item.DefinationId">
+
+                                                    @item.DefinationName
+
+                                                    @{
+                                                        var subItems = (ViewBag.Cities as ICollection<AD_Defination>).Where(m => m.PDefinationId.Equals(item.DefinationId)).ToList();
+                                                        if (subItems.Count > 0)
+                                                        {
+                                                            <ul>
+                                                                @foreach (var sub in subItems)
+                                                                {
+                                                                    <li Id="c-@sub.DefinationId">@sub.DefinationName</li>
+                                                                }
+
+                                                            </ul>
+                                                        }
+                                                    }
+
+                                                </li>
+                                               }
+                                          }
+                                    </ul>
+                                    <input type="text" style="visibility:hidden" id="txt-selected" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div id="pan-client">
+                                <h4>Clients</h4>
+                                @if (ViewBag.Clients != null)
+                                {
+                                <div id="tree-client" style="margin-top:33px;">
+                                    <ul id="tree-client-data">
+
+                                        @foreach (var Client in ViewBag.Clients)
+                                            {
+                                            <li Id="@Client.ClientId"> @Client.ClientName</li>
+                                            }
+                                    </ul>
+                                </div>
+                                }
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div id="pan-Scopes">
+                                <h4>Scopes</h4>
+                                @if (ViewBag.Scopes != null)
+                                {
+                                <div id="tree-Scopes" style="margin-top:33px;">
+                                    <ul id="tree-Scopes-data">
+
+                                        @foreach (var item in ViewBag.Scopes)
+                                            {
+                                            <li Id="@item.DefinationId"> @item.DefinationName</li>
+                                            }
+                                    </ul>
+                                </div>
+                                }
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div id="pan-Scopes">
+                                <h4>Projects</h4>
+                                @if (ViewBag.Projects != null)
+                                {
+                                    <div id="tree-Projects" style="margin-top:33px;">
+                                        <ul id="tree-Projects-data">
+
+                                            @foreach (var item in ViewBag.Projects)
+                                            {
+                                                <li Id="@item.ProjectId"> @item.ProjectName</li>
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <hr />
+                        <div class="form-group">
+                            <input type="button" id="btn-save" value="Save" class="btn btn-success pull-right" />
+                        </div>
+
+
+                  }
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<input type="hidden" id="PIds" value="@ViewBag.PIds" />
+
+
+
+@section scripts{
+<script src="~/Content/js/Plugins/treeView/ui.custom.js"></script>
+<script src="~/Content/js/Plugins/treeView/dynatree.js"></script>
+    <script>
+        $(function () {
+            var arr = [];
+            var Cients = [];
+            var SelectedCities = [];
+            var SelectedScopes = [];
+            var SelectedProjects = [];
+          //  $('#pan-client').hide();
+          //  $('#pan-Region').hide();
+
+            $("#permission-tree").dynatree({
+                checkbox: true,
+               // selectMode: 3, // 1:single, 2:multi, 3:multi-hier
+                onSelect: function (flag, node) {
+                    if (node.data.title == 'AirView') {
+                        //if (node.bSelected) {
+                        //    $('#pan-client').show();
+                        //    $('#pan-Region').show();
+
+                        //} else {
+
+                        //    $('#pan-client').hide();
+                        //    $('#pan-Region').hide();
+                        //}
+                    }
+                    var selectedNodes = node.tree.getSelectedNodes();
+                    var selectedKeys = $.map(selectedNodes, function (node) {
+                        return node.data.key;
+                    });
+                    arr = selectedKeys;
+                }
+            });
+
+
+            // clients list to tree
+            $("#tree-client").dynatree({
+                checkbox: true,
+               
+                onSelect: function (flag, node) {
+                    // get selected Clients
+                    var selectedNodes = node.tree.getSelectedNodes();
+                    var selectedKeys = $.map(selectedNodes, function (node) {
+                        return node.data.key;
+                    });
+                    Cients = selectedKeys;
+                    //console.log(Cients);
+                }
+            });
+            // Region list to tree
+            $('#region-tree').dynatree({
+                checkbox: true,
+                selectMode: 3,
+                onSelect: function (flag, node) {
+                    // get selected Clients
+                    var selectedNodes = node.tree.getSelectedNodes();
+                    var selectedKeys = $.map(selectedNodes, function (node) {
+                        return node.data.key;
+                    });
+                    SelectedCities = selectedKeys;
+                    // console.log(SelectedCities);
+                }
+            });
+
+
+            $('#tree-Scopes').dynatree({
+                checkbox: true,
+                onSelect: function (flag, node) {
+                    // get selected Clients
+                    var selectedNodes = node.tree.getSelectedNodes();
+                    var selectedKeys = $.map(selectedNodes, function (node) {
+                        return node.data.key;
+                    });
+                     SelectedScopes = selectedKeys;
+                }
+            });
+
+            $('#tree-Projects').dynatree({
+                checkbox: true,
+                onSelect: function (flag, node) {
+                    // get selected Clients
+                    var selectedNodes = node.tree.getSelectedNodes();
+                    var selectedKeys = $.map(selectedNodes, function (node) {
+                        return node.data.key;
+                    });
+                    SelectedProjects = selectedKeys;
+                }
+            });
+            @if (ViewBag.UserScopes != null)
+            {
+                foreach (var item in ViewBag.UserScopes)
+                {
+                    @: $("#tree-Scopes").dynatree("getTree").selectKey('@item.DefinationId');
+                }
+
+            }
+
+
+
+            // for select permissions
+            var Role = $('#PIds').val().split(',');
+            var i;
+            for (i = 0; i < Role.length; ++i) {
+
+                $("#permission-tree").dynatree("getTree").selectKey(Role[i]);
+            }
+            // for select Clients
+            @if (ViewBag.UserClients!=null)
+            {
+                foreach (var item in ViewBag.UserClients)
+                {
+                 @:  $("#tree-client").dynatree("getTree").selectKey('@item.ClientId');
+                }
+
+            }
+
+            // for select Projects
+            @if (ViewBag.UserProjects != null)
+            {
+                foreach (var item in ViewBag.UserProjects)
+                {
+                    @:  $("#tree-Projects").dynatree("getTree").selectKey('@item.ProjectId');
+                }
+
+            }
+
+            // for select Cities
+            @if (ViewBag.UserCities != null)
+            {
+                foreach (var city in ViewBag.UserCities)
+                {
+                  @:$("#region-tree").dynatree("getTree").selectKey('c-@city.CityId');
+                }
+            }
+            // btn save
+            $('#btn-save').click(function () {
+                if (Cients.length == 0) {
+                    Cients.push(0);
+                }
+                $.ajax({
+                    url: '/permission/Byuser',
+                    data: { UserId: '@ViewBag.UId', PermissionIds: arr, Clients: Cients, cities: SelectedCities, Scopes: SelectedScopes, Projects: SelectedProjects },
+                    type: 'post',
+                    success: function () {
+                        window.location.reload();
+                    }
+                });
+
+            });
+
+        });
+    </script>
+
+}
+@section style{
+<link href="~/Content/js/Plugins/treeView/skin/ui.dynatree.css" rel="stylesheet" />
+}

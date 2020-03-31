@@ -1,0 +1,2309 @@
+﻿@{
+    ViewBag.Title = "Template Dev";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+<link href="~/Content/js/Plugins/gridstack/gridstack.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/AngularQueryBuilder/css/StyleQueryBuilderTemplate.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">
+
+<style type="text/css">
+
+  #filterShow {
+        color: black;
+    }
+
+    #QueryBuilderTable tbody {
+        display: block;
+        max-height: 470px;
+        overflow-y: scroll;
+    }
+
+        #QueryBuilderTable thead,
+        #QueryBuilderTable tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+    .tableColumnsItem:hover {
+        cursor: pointer;
+    }
+
+    #QueryBuilderBody > tr:hover {
+        background-color: #cdffb9;
+    }
+
+    .CheckBoxContainer {
+        border: 2px solid #ccc;
+        width: 100%;
+        height: 398px;
+        overflow-y: scroll;
+    }
+
+    .NewRowAnim {
+        transition: background 3s linear;
+    }
+
+    .NewRowHighlight {
+        background: #cdffb9;
+    }
+
+    .normal {
+        background: transparent;
+    }
+
+    .multiselect-container:hover {
+        background-color: white;
+    }
+
+    .dataTableCols {
+        cursor: pointer;
+    }
+    /* Node Styling */
+    #notification {
+        margin-top: -20px;
+        position: fixed;
+        right: 4px;
+        width: 100%;
+        z-index: 105;
+        text-align: center;
+        font-weight: normal;
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        background-color: #cc4944;
+        padding: 5px;
+    }
+
+        #notification span.dismiss {
+            padding: 0 5px;
+            cursor: pointer;
+            float: right;
+            margin-right: 10px;
+        }
+
+        #notification a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+    .condition {
+        /*margin-top: 18px;
+        margin-bottom: 15px;
+        margin-left: 35px !important;*/
+        margin-top: 0px;
+        margin-bottom: 15px;
+        margin-right: 0px;
+        margin-left: 0px !important;
+    }
+
+
+    .ng-scope.select.input-sm {
+        height: 30px !important;
+        padding: 0px 10px !important;
+    }
+
+    .parent-class {
+        border: none !important;
+    }
+
+    /*.topbar {
+        background: dimgrey;
+        color: white;
+        padding: 5px;
+        height: 25px;
+    }*/
+
+    .topbar {
+    background: dimgrey;
+    color: white;
+    padding: 5px;
+    position: relative;
+    height: 25px;
+    z-index: 1;
+}
+
+    .bodyarea {
+        font-size: 17px;
+        height: inherit;
+        background-color: white;
+        width: 100%;
+        position: absolute;
+        border: 1px solid;
+    }
+
+    .grid-stack {
+        background: #e0e0e0 !important;
+        border-left: 5px solid #e0e0e0;
+        border-right: 5px solid #e0e0e0;
+        border-bottom: 10px solid #e0e0e0;
+        border-top: 10px solid #e0e0e0;
+    }
+
+    .grid-stack-item-content {
+        color: #2c3e50;
+        border: 1px solid black;
+        overflow: hidden;
+    }
+
+    .remove {
+        background-image: url('../../../../Content/Images/GridStackImg/remove-button.png');
+        background-repeat: no-repeat;
+    }
+
+    .grippy {
+        background-image: url('../../../../Content/Images/GridStackImg/move-option.png');
+        background-repeat: no-repeat;
+        cursor: move;
+    }
+
+    .setting {
+        background-image: url('../../../../Content/Images/GridStackImg/settings.png');
+        background-repeat: no-repeat;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    li {
+        float: left;
+    }
+
+        li a {
+            display: block;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+    .NodePropertyWindow {
+        display: none;
+        float: right;
+        width: 40%;
+        position: fixed;
+        top: 50px;
+        right: 0;
+        z-index: 1;
+        bottom: 1px;
+        background-color: white;
+        overflow-y: auto;
+        -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .sticky0 {
+        position: fixed;
+        top: 0;
+    }
+
+    .sticky45 {
+        position: fixed;
+        top: 90px;
+    }
+
+    .bodyarea {
+        border: 0;
+        position: relative;
+    }
+
+    .parent-class {
+        padding: 0 5px !important;
+    }
+
+    .topbar {
+        width: 100%;
+        background: white !important;
+        color: #333 !important;
+    }
+
+    div#grid-stack-DIV {
+        float: left;
+        width: 100%;
+    }
+
+    .grid-stack.grid-stack-instance-441.grid-stack-animate {
+        float: left;
+        width: 100%;
+    }
+
+    ul#settingsTab {
+        background: #3276b1;
+        border: 0;
+    }
+
+        ul#settingsTab li {
+            margin: 0;
+        }
+
+            ul#settingsTab li a {
+                margin: 0 !important;
+                border: 0;
+                color: #FFF;
+                padding: 10px 20px !important;
+            }
+
+            ul#settingsTab li.active a {
+                color: #3e3e3e;
+            }
+
+            ul#settingsTab li a:hover {
+                background: #8c8c8c;
+            }
+
+    .grid-stack.container {
+        padding: 0;
+    }
+
+    div#grid-stack-DIV {
+        float: left;
+        width: 100%;
+        padding-bottom: 20px;
+        background: #e0e0e0;
+    }
+
+    .body-icon {
+        position: absolute;
+        top: 50%;
+        text-align: center;
+        width: 100%;
+        left: 0;
+        font-size: 120px;
+        opacity: 0.1;
+        -webkit-transform: translateY(-50%);
+        -moz-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    .select-table {
+        background: #eff6f8;
+        padding: 30px 20px;
+        margin: -20px 0 -20px -20px;
+        min-height: 600px;
+        border-right: 1px solid #ddd;
+        min-width: 220px;
+    }
+
+    h3.popup-custom-title {
+        margin: 0 0 20px;
+        font-weight: 600;
+        font-size: 16px;
+        color: #707475;
+        text-transform: uppercase;
+    }
+
+    .custom-btn {
+        background: #2c90ad;
+        margin-top: 20px;
+        border: 0;
+        color: #FFF;
+        font-size: 14px;
+        padding: 5px 20px;
+        border-radius: 5px;
+        position: relative;
+        z-index: 1;
+        font-weight: 500;
+        -webkit-box-shadow: 1px 3px 7px 2px rgba(0, 0, 0, 0.25);
+        -moz-box-shadow: 1px 3px 7px 2px rgba(0, 0, 0, 0.25);
+        box-shadow: 1px 3px 7px 2px rgba(0, 0, 0, 0.25);
+    }
+
+        .custom-btn:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(#FFF,#000);
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+    .popup-table-top {
+        display: flex;
+        align-items: center;
+        margin: 0 0 20px;
+    }
+
+        .popup-table-top .popup-custom-title {
+            margin: 0;
+        }
+
+        .popup-table-top .button-set {
+            margin-left: auto;
+        }
+
+            .popup-table-top .button-set button {
+                margin: 0 0 0 10px;
+            }
+
+                .popup-table-top .button-set button.danger {
+                    background: #a40026;
+                }
+
+    .custom-btn i.fa {
+        font-size: 12px;
+        margin-right: 5px;
+        vertical-align: middle;
+        margin-bottom: 3px;
+    }
+
+    #QueryBuilderMainArea table {
+        margin: 0;
+    }
+
+    .create-query {
+        padding: 30px 20px;
+        height: 600px;
+        overflow: auto;
+        margin: -20px -20px -20px 0px;
+        background: #eff6f8;
+        border-left: 1px solid #e4e6e7;
+    }
+
+        .create-query .mainButtonDiv {
+            padding: 0 !important;
+            display: inline-block;
+        }
+
+            .create-query .mainButtonDiv button {
+                float: none !important;
+                margin: 0 0 10px;
+                font-size: 13px;
+                padding: 3px 17px;
+                width: auto !important;
+                border-radius: 4px;
+                margin-right: 6px !important;
+                border: 0;
+            }
+
+        .create-query .alert {
+            background: #fff !important;
+            margin: 0 !important;
+            border: 1px solid #ddd;
+            height: auto;
+            padding: 10px 20px !important;
+        }
+
+            .create-query .alert .condition {
+                /*margin: 0 !important;*/
+            }
+
+        .create-query table {
+            margin: 0 !important;
+        }
+
+        .create-query .groupOperator {
+            margin: -10px 0 10px !important;
+            width: auto;
+        }
+
+        .create-query .btnDiv {
+            margin: 0 !important;
+        }
+
+    .query-builder-popup {
+        display: flex;
+    }
+
+    .querybuilderarea {
+        width: 750px;
+        padding: 0 20px;
+    }
+
+    .create-query-area {
+        flex: auto;
+    }
+
+
+
+    /*---Abrara Code-----*/
+    .mainButtonDiv {
+        padding-bottom: 10px;
+    }
+
+        .mainButtonDiv .btnMain {
+            margin-top: 2px;
+            display: inline-block;
+        }
+
+    .first3 {
+        background: 0;
+        margin-left: 14px;
+    }
+
+        .first3 .innerButton {
+            margin-left: 5px;
+            width: 21px;
+            margin-top: 0px;
+        }
+
+    .custom-select-dropdown-columns {
+        width: 160px;
+    }
+
+    .custom-select-rules {
+        width: 100px;
+    }
+
+    .custom-select-input {
+        margin-left: 10px;
+        width: 154px;
+    }
+
+    .custom-select-data-dropdown {
+        width: 100px;
+    }
+
+    .btnremovecondition {
+        margin-left: 5px;
+        height: 25px;
+        padding: 3px;
+        width: 28px;
+        border-radius: 0;
+        margin-top: 2px;
+    }
+
+    .tbl-query-builder {
+        margin-bottom: -38px;
+        margin-left: 14px;
+        margin-top: -14px;
+    }
+
+    .rules-row-td {
+        display: inline;
+        float: left;
+    }
+
+    .conditionOperator {
+        margin-bottom: 4px;
+    }
+
+    .group-operator {
+        margin-bottom: 4px;
+        font-weight: bold;
+        width: 60px;
+        padding: 2px;
+        margin-top: 20px !important;
+    }
+
+    .first-time-buttons {
+        text-align: left;
+    }
+</style>
+
+
+<div class="modal fade1" id="AddNodeModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                New Node
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Select Node Type: </label>
+                <select id="ddNodeTypeId" class="form-control" required></select>
+                <label class="text-danger ddNodeTypeError"></label>
+                <br />
+                <label>Height: </label>
+                <input type="number" min="1" id="nodeHeight" class="form-control" placeholder="Node Height" value="5" required />
+                <label class="text-danger nodeHeightError"></label>
+                <br />
+                <label>Width: </label>
+                <input type="number" min="1" max="12" id="nodeWidth" class="form-control" placeholder="Node Width" value="6" required />
+                <label class="text-danger nodeWidthError"></label>
+                <br />
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="nodeSettingmodalBtnOk" class="btn btn-success">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Node Query -->
+<div id="NodeQueryModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Node Query</h4>
+            </div>
+            <div class="modal-body">
+
+                <label for="SQLQueryForNode">SQL Query</label>
+                <pre><textarea class="form-control" id="SQLQueryForNode" rows="25"></textarea></pre>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" id="NodeQueryModalSave" class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Advance Control Setting -->
+<div id="AdvanceControlSettingModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Control Setting</h4>
+            </div>
+            <div class="modal-body">
+
+                <input type="hidden" id="advControlSettingInputId" />
+
+                <div id="advControlSetting">
+                    @*Advance Control Setting Form*@
+                    NO Setting
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button id="advControlSettingModalSave" type="button" class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- File Manager Control -->
+<div id="FileManagerModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">File Manager</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="fileManagerSelectedFileName">
+
+                <div id="fileManager" style="overflow-y: auto; height: 400px;">
+                </div>
+                @* Image Upload Control *@
+                <br />
+                <div class="form-group row">
+                    <input type="hidden" id="currentFolderPath" />
+                    <div class="col-xs-8">
+                        <input type="file" class="form-control" id="fileUploadFileMgr" multiple />
+                    </div>
+                    <div class="col-xs-4">
+                        <input type="button" class="form-control" style="background-color:dimgrey; color:white;" id="btnUploadFileFileManager" value="Upload File" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Node Modal -->
+<div class="modal fade" id="QueryBuilder" role="dialog" ng-app="Myapp" ng-controller="Myctrl" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" style="width: 95%;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Query Builder</h4>
+            </div>
+            <div class="modal-body" style="min-height:300px;">
+
+                <div class="query-builder-popup">
+                    <div class="select-table">
+                        <h3 class="popup-custom-title">Select DataSet</h3>
+                        @Html.DropDownList("TablesList", (SelectList)ViewBag.TablesName, "--SELECT DataSet--", new { @class = "form-control" })
+                        <br />
+                        <div class="form-control CheckBoxContainer" name="TableColumnName" id="TableColumnName">
+
+                        </div>
+
+                        <button id="AddColumnToQueryBtn" class="custom-btn pull-right">Add</button>
+                    </div>
+                    <div class="querybuilderarea">
+                        <div class="popup-table-top">
+                            <h3 class="popup-custom-title">Columns</h3>
+                            <div class="button-set">
+                                <button style="" class="custom-btn danger" id="DeleteSelected"><i class="fa fa-times"></i> Delete Selected</button>
+                                <button style="" class="custom-btn danger" id="DeleteAll"><i class="fa fa-times"></i> Delete All</button>
+                            </div>
+                        </div>
+
+                        <div id="QueryBuilderMainArea">
+                            <table class="table" id="QueryBuilderTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 2%;"></th>
+                                        <th style="width: 3%;">
+                                            <input type="checkbox" id="SelectAllQueryBuilderRows" value="selectAll" style="width: 30px; height: 14px;">
+                                        </th>
+                                        <th style="width: 12%">Columns</th>
+                                        <th style="width: 12%">Alias</th>
+                                        <th style="width: 8%;">Funtion</th>
+                                        <th style="width: 5%;">Group</th>
+                                        <th style="width: 7%;">Sort</th>
+                                        <th style="width: 3%;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="QueryBuilderBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="create-query-area">
+                        <div class="create-query">
+                            <h3 class="popup-custom-title">FILTER</h3>
+                            <input type="hidden" id="QueryBuilderModalId" />
+                            <div id="notification" style="display: none;">
+                                <span class="dismiss"><a title="dismiss this notification">x</a></span>
+                            </div>
+                            <div id="QueryBuilder" class="querybuilderwhere">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" data-dismiss="modal" class="btn btn-danger">Cancel</button>
+                <button type="submit" id="QueryBuilderModalBtnOk" data-dismiss="modal" class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+
+    <div style="background-color: #666363; padding: 7px; box-shadow: 5px 5px 14px #888888;">
+        <span style="color: white">
+            <span class="widget-icon"> <i class="fa fa-dedent"></i> </span>
+            <span>Design Template </span>
+        </span>
+        <div class="pull-right">
+            <button class="btn btn-info btn-xs" id="add-node"><span class="glyphicon glyphicon-plus-sign"></span> Add Node</button>
+            <button class="btn btn-info btn-xs" id="save-grid"><span class="glyphicon glyphicon-floppy-disk"></span> Save Grid</button>
+            <button onclick="goBack();" class="btn btn-info btn-xs" id="edit-grid"><span class="glyphicon glyphicon-backward"></span> Go Back</button>
+        </div>
+        <div class="clearfix">
+
+        </div>
+    </div>
+
+    <div id="grid-stack-DIV">
+        <div class="grid-stack" style="min-height:20px;">
+        </div>
+    </div>
+    <hr />
+</div>
+
+
+<!-- Edit Settings Modal   class="propertyWindow" id="propertyWindow" -->
+<div class="NodePropertyWindow" id="NodePropertyWindow">
+
+    <div class="widget-body">
+        <ul id="settingsTab" class="nav nav-tabs">
+            <li class="active">
+                <a href="#settingsTab1" data-toggle="tab">Basic Setting</a>
+            </li>
+            <li>
+                <a href="#settingsTab2" data-toggle="tab">Advanced Setting</a>
+            </li>
+        </ul>
+
+        <div id="settingsContent" class="tab-content padding-10">
+            <h3 id="nodeTitleForSetting"></h3>
+            <div class="tab-pane fade in active" id="settingsTab1">
+                <div id="nodemessage"></div>
+                <div id="baseSettings" style="padding:15px;">
+                    <div>
+                        <label>Node Title</label>
+                        <br />
+                        <input type="text" id="nodeTitle" name="nodeTitle" class="form-control" placeholder="Node Title" />
+                        <input type="hidden" id="_NodeTitleAreaHidden" name="nodeTitle" />
+                        <br />
+                        <label>Node Template URL</label>
+                        <select id="nodeTemplateURL" name="nodeTemplateURL" class="form-control"> </select>
+                        <br />
+                        <label style="display: none">Node SQL Query</label>
+                        <input type="hidden" id="nodeSQLQuery" name="nodeSQLQuery" class="form-control" style="cursor: pointer;" placeholder="Node SQL Query" readonly />
+                    </div>
+                    <br />
+                    <button type="button" id="ediBaseSettingsBtnOk" class="btn btn-success">Save</button>
+                    <button type="button" class="editSettingsBtnCancel btn btn-danger">Cancel</button>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="settingsTab2">
+                <div id="nodeSettingmessage"></div>
+                <div id="advanceSettings">
+                    <form id="AdvanceSettingForm">
+                        <input type="hidden" id="selectedNodeId" name="selectedNodeId" />
+                        <input type="hidden" id="routeTemplateId" name="routeTemplateId" value="@Url.RequestContext.RouteData.Values["id"]" />
+                        <input type="hidden" name="DataSetColumnsHidden" id="DataSetColumnsHidden" value="[]" />
+                        <input type="hidden" name="FilterClauseHidden" id="FilterClauseHidden" value="[]" />
+                        <div id="advanceSettingsdynamicForm">
+
+                            Form to render dynamically
+                        </div>
+                        <br />
+                        <div class="pull-right" style="margin-right: 92px;">
+                            <button type="button" class="editSettingsBtnCancel btn btn-danger">Cancel</button>
+                            <button type="button" id="editAdvancedSettingsBtnOk" class="btn btn-success">Save</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="clearfix"></div>
+                <p style="margin-top: 20px; "><b style="color: red">NOTE: </b>By default, Data for Dashboard Map is filtered by current month.</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="saveGridModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Warning</h4>
+            </div>
+            <div class="modal-body">
+                <p>Please Save Grid First!.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+<script src="~/AdminLTE/bootstrap/js/bootstrap.js"></script>
+<script src="~/Content/js/Plugins/stickyfill/stickyfill.js"></script>
+<script src="~/Content/js/Plugins/gridstack/lodash.min.js"></script>
+<script src="~/Content/js/Plugins/gridstack/gridstack.js"></script>
+<script src="~/Content/js/Plugins/gridstack/gridstack.jQueryUI.js"></script>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAdDzJ4ggDZu4WAguesEjYlVEl1Y80YYDI&sensor=false&libraries=geometry&bogusParam=.js"></script>
+<script src="~/Content/js/Plugins/canvasjs/canvasjs.min.js"></script>
+<script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+<script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+<script src="~/Content/js/GoogleMapsNTL.js"></script>
+
+<script src="~/Areas/Project/Content/moment/moment.js"></script>
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/angular.min.js"></script>
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/ui-bootstrap-tpls-0.13.3.js"></script>
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/QueryBuilderDirective.js"></script>
+<script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script><!--loading-->
+
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" type="text/css" />
+
+<script type="text/javascript">
+    var loading = $.loading();
+    loading.ajax(true);
+
+    function ConvertQuerBuilderTableToJSON(TableBodyId) {
+        var Json = [];
+        var FinalJSON = {};
+        var selectedTableName = $("#TablesList").val();
+        $("#" + TableBodyId).find("tr").each(function (i, item) {
+            var row = $(item);
+            Json.push({
+                ColumnName: row.find("td:eq(2) > input[name='ColumnName']").val(),
+                Alias: row.find("td:eq(3) > input[name='Alias']").val(),
+                Funtion: row.find("td:eq(4) > select option:selected").val(),
+                GroupBy: row.find("td:eq(5) > input[name='GroupBy']").is(':checked'),
+                SortBy: row.find("td:eq(6) > select option:selected").val(),
+                DataType: row.find("td:eq(0) > input[name='DataType']").val(),
+            });
+        });
+        FinalJSON = `{"QuerySetting":{"Table": "` + selectedTableName + `", "MetaData": ` + JSON.stringify(Json) + `}}`;
+        console.log(FinalJSON);
+        return FinalJSON;
+    }
+
+    $(document).ready(function () {
+        $('.ColsNameMultiSelector').multiselect({
+            buttonWidth: '100%'
+        });
+    });
+
+    function Notify(Message) {
+
+        $("#notification").fadeIn("slow").empty();
+        $("#notification").fadeIn("slow").append(Message);
+
+        $("#notification").delay(4000).fadeOut("slow");
+
+        $(".dismiss").click(function () {
+            $("#notification").fadeOut("slow");
+        });
+    }
+
+    $(document).ajaxStop(function () {
+        $(".pagination").hide();
+        $(".table-row").hide();
+        $(".bodyarea").css("background-color", "white");
+        $(".jarviswidget-color-darken").hide();
+    });
+
+
+    $(function () {
+
+
+
+        //window scrolling event
+        $(window).on('scroll', function () {
+            var propertyWindowSideBar = document.getElementById("NodePropertyWindow");
+
+            if (window.pageYOffset >= 90) {
+                propertyWindowSideBar.classList.add("sticky0");
+                propertyWindowSideBar.classList.remove("sticky45");
+            } else if (window.pageYOffset >= 45) {
+                propertyWindowSideBar.classList.add("sticky45");
+                propertyWindowSideBar.classList.remove("sticky0");
+            }
+            else {
+                propertyWindowSideBar.classList.remove("sticky0");
+                propertyWindowSideBar.classList.remove("sticky45");
+            }
+        });
+
+        /// MAKE ADD NODE BUTTON DRAGABLE
+        var globalID = 0;
+        $("#add-node").draggable({
+            helper: "clone"
+        });
+
+        $("#grid-stack-DIV").droppable({
+            accept: "#add-node",
+
+            drop: function (event, ui) {
+                switch (ui.draggable.attr('id')) {
+                    case "add-node":
+                        bindNodeTypeList();
+                        $('#AddNodeModal').modal('show');
+                        break;
+                }
+            }
+        });
+
+        $('#add-node').click(function () {
+            bindNodeTypeList();
+            $('#AddNodeModal').modal('show');
+        });
+
+        $('#ddlTemplateName').change(function () {
+            loadGrid();
+        });
+
+        $("#ddNodeTypeId").change(function () {
+            $(".ddNodeTypeError").html("");
+        });
+        $("#nodeHeight").change(function () {
+            $(".nodeHeightError").html("");
+        });
+        $("#nodeWidth").change(function () {
+            $(".nodeWidthError").html("");
+        });
+
+        var IconBinderToNode = function (NodeType) {
+            var Icon = "";
+            switch (NodeType) {
+                case "133322":  // Chart
+                    Icon = `<div class="body-icon"><i class="fa fa-bar-chart"></i></div>`;
+                    break;
+                case "133323":  // Table
+                    Icon = '<div class="body-icon"><i class="fa fa-table"></i></div>';
+                    break;
+                case "133324":  // Map
+                    Icon = `<div class="body-icon"><i class="fa fa-globe"></i></div>`;
+                    break;
+                case "133325":  // Page
+                    Icon = `<div class="body-icon"><i class="fa fa-clipboard"></i></div>`;
+                    break;
+                case "153342":  // Images
+                    Icon = `<div class="body-icon"><i class="fa fa-image"></i></div>`;
+                    break;
+                case "153348":  // Table With Map
+                    Icon = `<div class="body-icon"><i class="fa fa-globe"></i></div>`;
+                    break;
+            }
+            return Icon;
+        }
+
+
+        var NodePage = function (NodeType) {
+            var Nodeurl = "";
+
+            return Nodeurl;
+        }
+
+        $('#nodeSettingmodalBtnOk').click(function () {
+            if ($("#ddNodeTypeId").val() != "-1") {
+                if ($('#nodeHeight').val() != "") {
+                    if (parseInt($('#nodeHeight').val()) >= 1) {
+                        if ($('#nodeWidth').val() != "") {
+                            if (parseInt($('#nodeWidth').val()) <= 12 && parseInt($('#nodeWidth').val()) >= 1) {
+                                var nodeHeight = $('#nodeHeight').val();
+                                var nodeWidth = $('#nodeWidth').val();
+                                var nodeType = $('#nodeType').val();
+                                var nodeTypeId = $('#ddNodeTypeId option:selected').val() + "-" + $('#ddNodeTypeId option:selected').text();
+
+                                var nodeId = $('#nodeId').val();
+
+                                grid = $('.grid-stack').data('gridstack');
+                                grid.addWidget($('<div class="parent-class grid-stack-item-content" id="grid-stack-id-' + nodeId + '">                                      \
+                                    <div class="topbar handler">                                                        \
+                                        <div class="grippy">                                                            \
+                                            <span style="float:left" class="fa fa-bars"> </span>                        \
+                                        </div>                                                                          \
+                                    <div class="remove">                                                                \
+                                        <span style="float:right;" class="fa fa-times"> </span>                         \
+                                    </div>                                                                              \
+                                    <div class="changeSetting" onclick="ChangeNodeSettings(\'' + nodeId + '\')">        \
+                                        <span style="float:right;  padding-right:13px;" class="fa fa-cog"> </span>      \
+                                    </div>                                                                              \
+                                    <div style="text-align: center;" id="nodeTitleArea_' + nodeId + '"> Node Title </div> </div>      \
+                                    <div class="bodyarea">' + IconBinderToNode($("#ddNodeTypeId").val()) + '                        \
+                                    </div>                                                                              \
+                                </div>'), 0, 0, nodeWidth, nodeHeight, true, null, null, null, null, nodeTypeId);
+                                $('#AddNodeModal').modal('hide');
+                            } else {
+                                $(".nodeWidthError").html("Width should be between 1 - 12");
+                            }
+                        } else {
+                            $(".nodeWidthError").html("Width can not be empty.");
+                        }
+                    } else {
+                        console.log("Height should be greater than 1.");
+                        $(".nodeHeightError").html("Height should be greater than 1.");
+                    }
+                } else {
+                    $(".nodeHeightError").html("Height can not be empty.");
+                }
+            } else {
+                $(".ddNodeTypeError").html("Please select a Node Type first.");
+            }
+
+
+        });
+
+        var options = {
+            animate: true,
+            verticalMargin: 10,
+            draggable: {
+                handle: '.grippy',
+            }
+        };
+
+        $('.grid-stack').gridstack(options);
+
+        new function () {
+            grid = $('.grid-stack').data('gridstack');
+            grid.batch_update();
+
+            loadGrid = function () {
+                localStorage.removeItem("dataForGridStack");
+                grid.removeAll();
+                var gridData = "";
+                serializedData = "";
+
+                var routeTemplateId = $('#routeTemplateId').val();
+
+                $.ajax({
+                    url: "/Project/Template/GetNodeData/",
+                    type: "GET",
+                    data: {
+                        TemplateId: routeTemplateId,
+                        CurrentPageURL: window.location.href
+                    },
+                    async: false,
+                }).done(function (data) {
+                    serializedData = JSON.parse(data.NodeJson);
+
+                    if (data.TemplateCoreSetting != null) {
+                        if (data.TemplateCoreSetting.BackgroundColor != null) {
+                            $('.grid-stack').css("background-color", data.TemplateCoreSetting.BackgroundColor);
+                        }
+                        if (data.TemplateCoreSetting.PageType == "contained") {
+                            // $('.grid-stack').addClass("container");
+                        }
+                    }
+                });
+
+
+                var items = GridStackUI.Utils.sort(serializedData);
+
+                _.each(items, function (node) {
+                    grid.addWidget($('  <div class="parent-class grid-stack-item-content" id="grid-stack-id-' + node.id + '">                          \
+                                <div class="topbar handler">                                                        \
+                                        <div class="grippy">                                                            \
+                                            <span style="float:left" class="fa fa-bars"> </span>                        \
+                                        </div>                                                                          \
+                                    <div class="remove">                                                                \
+                                        <span style="float:right;" class="fa fa-times"> </span>                         \
+                                    </div>                                                                              \
+                                    <div class="changeSetting" onclick="ChangeNodeSettings(\'' + node.id + '\')">       \
+                                        <span style="float:right;  padding-right:13px;" class="fa fa-cog"> </span>      \
+                                    </div>                                                                              \
+                                    <div style="text-align: center;" id="nodeTitleArea_' + node.id + '"> ' + node.title + ' </div> </div>                  \
+                                    <div id="dv' + node.id + '" class="bodyarea">                                       \
+                                        ' + node.Data + '                                                                    \
+                                    </div>                                                                              \
+                                </div>'), node.x, node.y, node.width, node.height, false, null, null, null, null, node.id);
+                    //$.get("/Project/Template/GetNodeWidget", {
+                    //    NodeId: node.id,
+                    //    CurrentPageURL: window.location.href,
+                    //    WithPartialView: false,
+                    //    async: false,
+                    //}).success(function (data) {
+
+                    //    grid.addWidget($('  <div class="parent-class grid-stack-item-content" id="grid-stack-id-' + node.id + '">                          \
+                    //            <div class="topbar handler">                                                        \
+                    //                    <div class="grippy">                                                            \
+                    //                        <span style="float:left" class="fa fa-bars"> </span>                        \
+                    //                    </div>                                                                          \
+                    //                <div class="remove">                                                                \
+                    //                    <span style="float:right;" class="fa fa-times"> </span>                         \
+                    //                </div>                                                                              \
+                    //                <div class="changeSetting" onclick="ChangeNodeSettings(\'' + node.id + '\')">       \
+                    //                    <span style="float:right;  padding-right:13px;" class="fa fa-cog"> </span>      \
+                    //                </div>                                                                              \
+                    //                <div style="text-align: center;" id="nodeTitleArea_' + node.id + '"> ' + node.title + ' </div> </div>                  \
+                    //                <div id="dv' + node.id + '" class="bodyarea">                                       \
+                    //                    ' + data + '                                                                    \
+                    //                </div>                                                                              \
+                    //            </div>'), node.x, node.y, node.width, node.height, false, null, null, null, null, node.id);
+
+                    //})
+
+                }, this);
+
+                grid.commit();
+
+                return false;
+            }.bind(this);
+
+            addNewNode = function () {
+                var nodeId = $('#nodeId').val();
+                if (nodeId != null) {
+
+                    $.get("/Project/Template/GetNodeWidget", {
+                        NodeId: node.id,
+                        async: false,
+                    }).done(function (data) {
+
+                        grid = $('.grid-stack').data('gridstack');
+                        grid.addWidget($('<div class="parent-class grid-stack-item-content" id="grid-stack-id-' + nodeId + '">                                    \
+                                            <div class="topbar handler">                                                        \
+                                                <div class="grippy">                                                            \
+                                                    <span style="float:left" class="fa fa-bars">                                \
+                                                    </span>                                                                     \
+                                                </div>                                                                          \
+                                            <div class="remove">                                                                \
+                                                <span style="float:right;" class="fa fa-times">                                 \
+                                                </span>                                                                         \
+                                            </div>                                                                              \
+                                            <div class="changeSetting" onclick="ChangeNodeSettings(\'' + nodeId + '\')">        \
+                                                <span style="float:right;  padding-right:13px;" class="fa fa-cog">              \
+                                                </span>                                                                         \
+                                            </div>                                                                              \
+                                            <div style="text-align: center;" id="nodeTitleArea_' + nodeId + '">                                                    \
+                                                Node Title                                                                      \
+                                            </div>                                                                              \
+                                          <div id="dv' + nodeId + '" class="bodyarea">' + nodeId + '</div>                      \
+                                        </div>'), 0, 0, 1, 1, false, null, null, null, null, "" + idForNode + "");
+                    });
+                }
+
+            }.bind(this);
+
+            saveNodeGrid = function () {
+
+                serializedData = _.map($('.grid-stack > .grid-stack-item:visible'), function (el) {
+                    el = $(el);
+                    var node = el.data('_gridstack_node');
+
+                    if (node != null) {
+                        return {
+                            id: node.id,
+                            x: node.x,
+                            y: node.y,
+                            width: node.width,
+                            height: node.height
+                        };
+                    }
+                }, this);
+
+                $.post("/Project/Template/SaveNodeGrid", {
+                    GridInfoJSON: JSON.stringify(serializedData, null, '     '),
+                    TemplateId: $('#routeTemplateId').val()
+                }).done(function (data) {
+                    location.reload()
+                });
+
+                $('#saved-data').val(JSON.stringify(serializedData, null, '     '));
+
+            }.bind(this);
+
+            clearGrid = function () {
+                grid.removeAll();
+                return false;
+            }.bind(this);
+
+            remove_grid = function () {
+                var grid = $('.grid-stack').data('gridstack'),
+                el = $(this).closest('.grid-stack-item')
+                grid.removeWidget(el);
+            }.bind(this);
+
+            $('#save-grid').click(saveNodeGrid);
+            $('#load-grid').click(loadGrid);
+            $('#clear-grid').click(clearGrid);
+            $('#add-node-grid').click(addNewNode);
+            $('.fa-remove').click($(this).remove_grid);
+
+            loadGrid();
+
+            $('body').on('click', '.remove', function (e) {
+
+                e.preventDefault();
+                var grid = $('.grid-stack').data('gridstack'),
+                el = $(this).closest('.grid-stack-item')
+                var node = el.data('_gridstack_node');
+
+                grid.removeWidget(el);
+            });
+
+
+            $('#editingSettingsModalBtnOk').click(function (e) {
+
+                $.post("/Project/Template/AddNodeRelaventData", {
+                    NodeId: $("#settingModalId").val(),
+                    NodeType: $("#ddlNodeRenderType").val(),
+                    NodeQuery: $('#queryLogic').val()
+                }).done(function (data) {
+                    loadGrid();
+                });
+            });
+        };
+    });
+    var filterClause = "";
+    function ChangeNodeSettings(id) {
+        var whereClauseJson = "";
+        $("#_NodeTitleAreaHidden").val(id);
+        if (id == null || id == '' || id == 'undefined') {
+            $("#saveGridModal").modal("show");
+            //alert('please save grid structure first');
+        }
+        else {
+            $("#QueryBuilderBody").html("");
+            console.log("selected" + $("#TablesList option:selected").val());
+            var tempId = $('#routeTemplateId').val();
+            var nodeTemplateURL = "";
+            $('#selectedNodeId').val(id)
+            // Dropdown of Id's in partial view
+            var selectListDOMIds = "<select class='DomIdSelectList form-control'>";
+            selectListDOMIds += "<option value='-1'> Select ID to Map </option>";
+            $('#dv' + id).find('*').each(function () {
+                if ($(this).attr('id') != undefined && $(this).attr('id').includes('_')) {
+
+                    if (isUpperCase($(this).attr('id'))) {
+                        selectListDOMIds += "<option value=" + $(this).attr('id') + ">" + $(this).attr('id') + "</option>";
+                    }
+
+                }
+            });
+            selectListDOMIds += "</select>"
+
+
+            $.ajax({
+                url: "/Project/Template/GetFormBuilderRenderedHTML/",
+                type: "post",
+                data: {
+                    FormTypeId: "node",
+                    NodeId: id,
+                    TemplateId: tempId
+                },
+                async: false,
+            }).done(function (data) {
+                console.log("DATA");
+                console.log(data);
+
+                $("#TablesList").val("");
+                $("#TableColumnName").html("");
+                var i = 0;
+                var Result = JSON.parse(data.UserDataTableCols);
+                if (Result != null) {
+                    if (Result.QuerySetting != null) {
+                        $("#TablesList").val(Result.QuerySetting.Table);
+                        console.log(Result.QuerySetting);
+                        $.ajax({
+                            url: "/Project/Template/GetDbTableColumnName",
+                            type: "POST",
+                            data: {
+                                ViewName: Result.QuerySetting.Table
+                            },
+                            async: false,
+                        }).done(function (result) {
+                           // SelectedTablesColumnName = [];
+                            $("#TableColumnName").append('<input class="tableColumnsItem" type="checkbox" id="SelectAllColumns" value="SelectAllColumns" /><label class="tableColumnsItem" style="margin-left: 7px" for="SelectAllColumns">Select All</label><br/>');
+                            $.each(result, function (i, item) {
+                                $("#TableColumnName").append(`<input data-columnDataType="` + item.DataType + `" class="tableColumnsItem" type="checkbox" id="` + "checkbox_" + i + `" value="` + item.ColumnName + `" /><label class="tableColumnsItem" style="margin-left: 7px" for="` + "checkbox_" + i + `">` + item.ColumnName + `</label> <br/>`);
+                                var dataType = 'System.String';
+                                var DataType = "[" + item.ColumnName + "]";
+                                if (item.DataType == 'int' || item.DataType == 'numeric') {
+                                    dataType = "System.Int32";
+                                } else if (item.DataType == 'varchar' || item.DataType == 'nvarchar') {
+                                    dataType = "System.String";
+                                } else if (item.DataType == 'float') {
+                                    dataType = "System.Double";
+                                } else if (item.DataType == 'datetime' || item.DataType == 'date') {
+                                    dataType = "System.DateTime";
+                                }
+                                SelectedTablesColumnName.push({ name: item.ColumnName, DataType: dataType, DisplayType: item.IsSelectType, $$hashKey: "object:" + i });
+                                i++;
+                            });
+                        });
+                    }
+                }
+
+                if (Result != null && Result != 'undefined') {
+                    $("#QueryBuilderBody").html("");
+                    if (Result.QuerySetting != null && Result.QuerySetting != 'undefined') {
+                        var SettingList = Result.QuerySetting.MetaData;
+                        $(SettingList).each(function (i, item) {
+
+                            var ColumnDataType = item.DataType;
+                            var FunctionsList = ``;
+                            if (ColumnDataType == "numeric" || ColumnDataType == "float" || ColumnDataType == "real" || ColumnDataType == "int") {
+                                FunctionsList = `<select name="AggFunction" class="form-control">
+                                    <option value="-1" selected>--Empty--</option>
+                                    <option value="SUM">SUM</option>
+                                    <option value="COUNT">COUNT</option>
+                                    <option value="MAX">MAX</option>
+                                    <option value="MIN">MIN</option>
+                                </select>`;
+                            } else {
+                                FunctionsList = `<select name="AggFunction" class="form-control">
+                                    <option value="-1" selected>--Empty--</option>
+                                    <option value="COUNT">COUNT</option>
+                                </select>`;
+                            }
+
+                            var TableRow = $(`<tr class="QueryRow NewRowAnim NewRowHighlight">
+                            <td style="width: 2%;">
+                                <input class ="text-center" name="DataType" type="hidden" value= "`+ ColumnDataType + `" />
+                                <span class ="glyphicon glyphicon-move"></span>
+                            </td>
+                            <td style="width: 3%;">
+                                <input class ="text-center RowSelection" name="RowSelection" type="checkbox" value="false" style="width: 30px; height: 14px" />
+                            </td>
+                            <td style="width: 12%;">
+                                <input type="text" value= "`+ item.ColumnName + `" readonly class ="form-control" name="ColumnName" />
+                            </td>
+                            <td style="width: 12%;">
+                                <input type="text" value= "`+ item.Alias + `" class ="form-control" name="Alias" />
+                            </td>
+                            <td style="width: 8%;">
+                                `+ FunctionsList + `
+                            </td>
+                            <td style="width: 5%;" class ="text-center">
+                                <input class ="text-center" type="checkbox" value="false" name="GroupBy" style="width: 30px; height: 14px" disabled readonly />
+                            </td>
+                            <td style="width: 7%;" class ="text-center">
+                                <select name="SortBy" class ="form-control">
+                                    <option value="-1" selected>--Empty--</option>
+                                    <option value="ASC">ASC</option>
+                                    <option value="DESC">DESC</option>
+                                </select>
+                            </td>
+                            <td style="width: 3%;">
+                                <span class="glyphicon glyphicon-remove DeleteRowBtn"></span>
+                            </td>
+                        </tr>`);
+                            TableRow.find("select[name='AggFunction']").val(item.Funtion);
+                            TableRow.find("select[name='SortBy']").val(item.SortBy);
+                            TableRow.find("input[name='GroupBy']").prop("checked", item.GroupBy);
+                            if (TableRow.find("select[name='AggFunction']").val() != "-1") {
+                                TableRow.find("select[name='SortBy']").val("-1");
+                                TableRow.find("select[name='SortBy']").attr("disabled", true);
+                            }
+                            
+                            TableRow.appendTo("#QueryBuilderBody");
+                            TableRow.addClass('normal');
+                        });
+                        $("#DataSetColumnsHidden").val(ConvertQuerBuilderTableToJSON("QueryBuilderBody"));
+                    }
+                }
+                $('#advanceSettingsdynamicForm').html(data.FormHtml);
+                $('div.nodeTitleName').html(data.NodeBasicInfo.NodeTitle);
+                $('#nodeTitle').val(data.NodeBasicInfo.NodeTitle);
+                $('#nodeTemplateURL').html(data.NodeTempList);
+                $('#nodeSQLQuery').val(data.NodeBasicInfo.NodeSQL);
+                $('div.DomIdsList').html(selectListDOMIds);
+
+                whereClauseJson = data.WhereClauseJson;
+                $('#nodeTitleForSetting').html(toTitleCase(data.NodeBasicInfo.NodeTitle));
+                filterClause = data.WhereClause;
+                if (filterClause == "()" || filterClause == null || filterClause == "null") {
+                    filterClause = "";
+                }
+                //$(".group-conditions").append("<span id='filterShow'>" + filterClause + "</span>");
+                $("#CustomQueryTextArea").val(JsonToQuery(data.UserDataTableCols, data.WhereClause));
+                // Adjust dropdown values and assign name
+                var DOMIdList = data.MappingIds;
+                $('.DomIdSelectList').each(function (i) {
+                    $(this).attr("name", "AdvSettingMappingId" + i);
+                    if (DOMIdList[i] != null) {
+                        $(this).val(DOMIdList[i]);
+                    }
+                });
+            });
+
+           var data = '{"group": {"operator": "AND","rules": []}}';
+            // var data = '{"group":{"operator":"AND","rules":[{"condition":"=","field":"Network Mode","data":"WCDMA","isoperator":false,"removefirstcondition":true,"operator":"","type":"select","isString":true,"definition":[{"DefinationId":233505,"DefinationName":"GSM","DisplayType":"","$$hashKey":"object:14"},{"DefinationId":233506,"DefinationName":"WCDMA","DisplayType":"","$$hashKey":"object:15"},{"DefinationId":233507,"DefinationName":"LTE","DisplayType":"","$$hashKey":"object:16"},{"DefinationId":233508,"DefinationName":"NA","DisplayType":"","$$hashKey":"object:17"}]},{"condition":"=","field":"Longitude","data":"21","isoperator":true,"removefirstcondition":true,"operator":"OR","type":"System.String","isString":true,"definition":[]},{"group":{"operator":"AND","rules":[{"condition":"=","field":"Band","data":"LTE 2300","isoperator":false,"removefirstcondition":true,"operator":"","type":"select","isString":false,"definition":[{"DefinationId":73,"DefinationName":"LTE 700","DisplayType":"","$$hashKey":"object:50"},{"DefinationId":74,"DefinationName":"LTE 1900","DisplayType":"","$$hashKey":"object:51"},{"DefinationId":75,"DefinationName":"LTE 2100","DisplayType":"","$$hashKey":"object:52"},{"DefinationId":104,"DefinationName":"UMTS 1900","DisplayType":"","$$hashKey":"object:53"},{"DefinationId":105,"DefinationName":"UMTS 2100","DisplayType":"","$$hashKey":"object:54"},{"DefinationId":121,"DefinationName":"LTE 2300","DisplayType":"TEXT","$$hashKey":"object:55"},{"DefinationId":122,"DefinationName":"GSM 1900","DisplayType":"TEXT","$$hashKey":"object:56"},{"DefinationId":3165,"DefinationName":"LTE 800","DisplayType":"","$$hashKey":"object:57"},{"DefinationId":3166,"DefinationName":"LTE 2500","DisplayType":"","$$hashKey":"object:58"},{"DefinationId":153332,"DefinationName":"NA","DisplayType":"","$$hashKey":"object:59"}]},{"condition":"=","field":"Network Mode","data":"NA","isoperator":true,"removefirstcondition":true,"operator":"OR","type":"select","isString":true,"definition":[{"DefinationId":233505,"DefinationName":"GSM","DisplayType":"","$$hashKey":"object:65"},{"DefinationId":233506,"DefinationName":"WCDMA","DisplayType":"","$$hashKey":"object:66"},{"DefinationId":233507,"DefinationName":"LTE","DisplayType":"","$$hashKey":"object:67"},{"DefinationId":233508,"DefinationName":"NA","DisplayType":"","$$hashKey":"object:68"}]},{"group":{"operator":"OR","rules":[{"condition":"=","field":"Cluster","data":"12","isoperator":false,"removefirstcondition":true,"operator":"","type":"System.String","isString":true,"definition":[]}],"removefirstcondition":true}}],"removefirstcondition":true}}]}}';
+            // var data = '{"group":{"operator":"AND","rules":[{"condition":"=","field":"Network Mode","data":"LTE","isoperator":false,"removefirstcondition":true,"operator":"","type":"select","isString":true,"definition":[{"DefinationId":233505,"DefinationName":"GSM","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:14"},{"DefinationId":233506,"DefinationName":"WCDMA","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:15"},{"DefinationId":233507,"DefinationName":"LTE","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:16"},{"DefinationId":233508,"DefinationName":"NA","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"NETWORKMODE","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:17"}]},{"condition":"=","field":"Carrier","data":"2300","isoperator":true,"removefirstcondition":true,"operator":"AND","type":"select","isString":true,"definition":[{"DefinationId":76,"DefinationName":"5035","PDefinationId":73,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-12","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:25"},{"DefinationId":77,"DefinationName":"1100","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:26"},{"DefinationId":78,"DefinationName":"1125","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:27"},{"DefinationId":79,"DefinationName":"1175","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:28"},{"DefinationId":80,"DefinationName":"2300","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:29"},{"DefinationId":88,"DefinationName":"2250","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:30"},{"DefinationId":106,"DefinationName":"2250","PDefinationId":28,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:31"},{"DefinationId":107,"DefinationName":"9766","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:32"},{"DefinationId":108,"DefinationName":"1987","PDefinationId":105,"DefinationTypeId":11,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:33"},{"DefinationId":109,"DefinationName":"650","PDefinationId":26,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:34"},{"DefinationId":120,"DefinationName":"725","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"LTE_1900","DisplayType":"TEXT","ColorCode":"#000000","InputType":"TEXT","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:35"},{"DefinationId":123,"DefinationName":"1075","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:36"},{"DefinationId":124,"DefinationName":"625","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:37"},{"DefinationId":125,"DefinationName":"650","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:38"},{"DefinationId":126,"DefinationName":"700","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:39"},{"DefinationId":127,"DefinationName":"925","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:40"},{"DefinationId":128,"DefinationName":"1126","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:41"},{"DefinationId":129,"DefinationName":"1172","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:42"},{"DefinationId":130,"DefinationName":"900","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:43"},{"DefinationId":131,"DefinationName":"950","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:44"},{"DefinationId":132,"DefinationName":"1000","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:45"},{"DefinationId":133,"DefinationName":"2325","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:46"},{"DefinationId":134,"DefinationName":"2225","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:47"},{"DefinationId":135,"DefinationName":"2175","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:48"},{"DefinationId":136,"DefinationName":"2350","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:49"},{"DefinationId":137,"DefinationName":"2001","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:50"},{"DefinationId":138,"DefinationName":"9787","PDefinationId":121,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-30","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:51"},{"DefinationId":139,"DefinationName":"9809","PDefinationId":121,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-30","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:52"},{"DefinationId":140,"DefinationName":"437","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:53"},{"DefinationId":141,"DefinationName":"9666","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:54"},{"DefinationId":142,"DefinationName":"9709","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:55"},{"DefinationId":143,"DefinationName":"9762","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:56"},{"DefinationId":144,"DefinationName":"9737","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:57"},{"DefinationId":145,"DefinationName":"462","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:58"},{"DefinationId":146,"DefinationName":"662","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:59"},{"DefinationId":147,"DefinationName":"9662","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:60"},{"DefinationId":148,"DefinationName":"9683","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:61"},{"DefinationId":149,"DefinationName":"9687","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:62"},{"DefinationId":150,"DefinationName":"9712","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:63"},{"DefinationId":151,"DefinationName":"9741","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:64"},{"DefinationId":152,"DefinationName":"9837","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:65"},{"DefinationId":153,"DefinationName":"537","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:66"},{"DefinationId":154,"DefinationName":"562","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:67"},{"DefinationId":155,"DefinationName":"587","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:68"},{"DefinationId":156,"DefinationName":"612","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:69"},{"DefinationId":157,"DefinationName":"412","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:70"},{"DefinationId":158,"DefinationName":"2037","PDefinationId":105,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:71"},{"DefinationId":159,"DefinationName":"2062","PDefinationId":105,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:72"},{"DefinationId":160,"DefinationName":"2087","PDefinationId":105,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:73"},{"DefinationId":161,"DefinationName":"1539","PDefinationId":105,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:74"},{"DefinationId":162,"DefinationName":"1912","PDefinationId":105,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:75"},{"DefinationId":163,"DefinationName":"2012","PDefinationId":105,"DefinationTypeId":11,"KeyCode":"-","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:76"},{"DefinationId":181,"DefinationName":"1150","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"TEXT","ColorCode":"#000000","InputType":"TEXT","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:77"},{"DefinationId":182,"DefinationName":"924","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"TEXT","ColorCode":"#000000","InputType":"TEXT","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:78"},{"DefinationId":429,"DefinationName":"875","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"TEXT","ColorCode":"#000000","InputType":"TEXT","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:79"},{"DefinationId":430,"DefinationName":"2275","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"TEXT","ColorCode":"0","InputType":"TEXT","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:80"},{"DefinationId":432,"DefinationName":"PSC 1900","PDefinationId":122,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"1900 PCS","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:81"},{"DefinationId":439,"DefinationName":"775","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:82"},{"DefinationId":440,"DefinationName":"626","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:83"},{"DefinationId":441,"DefinationName":"975","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:84"},{"DefinationId":442,"DefinationName":"1025","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:85"},{"DefinationId":452,"DefinationName":"850","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:86"},{"DefinationId":456,"DefinationName":"687","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2 Add","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:87"},{"DefinationId":470,"DefinationName":"675","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:88"},{"DefinationId":511,"DefinationName":"9787","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:89"},{"DefinationId":522,"DefinationName":"9809","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"TEX","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:90"},{"DefinationId":523,"DefinationName":"9841","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:91"},{"DefinationId":3131,"DefinationName":"9890","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:92"},{"DefinationId":3138,"DefinationName":"5800","PDefinationId":73,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-12","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:93"},{"DefinationId":3139,"DefinationName":"776","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:94"},{"DefinationId":3143,"DefinationName":"2100","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:95"},{"DefinationId":3144,"DefinationName":"9713","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:96"},{"DefinationId":3154,"DefinationName":"650","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:97"},{"DefinationId":3155,"DefinationName":"975","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:98"},{"DefinationId":3156,"DefinationName":"876","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:99"},{"DefinationId":3160,"DefinationName":"5780","PDefinationId":73,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-17","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:100"},{"DefinationId":3161,"DefinationName":"5230","PDefinationId":73,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-13","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:101"},{"DefinationId":3162,"DefinationName":"2050","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:102"},{"DefinationId":3163,"DefinationName":"8665","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-25","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:103"},{"DefinationId":3164,"DefinationName":"8321","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-25","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:104"},{"DefinationId":3167,"DefinationName":"8763","PDefinationId":3165,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-26","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:105"},{"DefinationId":3168,"DefinationName":"41078","PDefinationId":3166,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-41","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:106"},{"DefinationId":3169,"DefinationName":"41276","PDefinationId":3166,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-41","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:107"},{"DefinationId":3170,"DefinationName":"41474","PDefinationId":3166,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-41","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:108"},{"DefinationId":3171,"DefinationName":"976","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:109"},{"DefinationId":3172,"DefinationName":"512","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:110"},{"DefinationId":3173,"DefinationName":"901","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:111"},{"DefinationId":3174,"DefinationName":"901","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:112"},{"DefinationId":13191,"DefinationName":"9935","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:113"},{"DefinationId":13192,"DefinationName":"2125","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:114"},{"DefinationId":13193,"DefinationName":"1937","PDefinationId":105,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:115"},{"DefinationId":13194,"DefinationName":"9863","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:116"},{"DefinationId":13196,"DefinationName":"1026","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:117"},{"DefinationId":13197,"DefinationName":"1001","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:118"},{"DefinationId":13198,"DefinationName":"8440","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-25","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:119"},{"DefinationId":13199,"DefinationName":"40086","PDefinationId":3166,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-41","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:120"},{"DefinationId":13200,"DefinationName":"40269","PDefinationId":3166,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-41","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:121"},{"DefinationId":13205,"DefinationName":"1076","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:122"},{"DefinationId":23202,"DefinationName":"1174","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:123"},{"DefinationId":23203,"DefinationName":"926","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:124"},{"DefinationId":23204,"DefinationName":"9765","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"-","ColorCode":"#000000","InputType":"-","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:125"},{"DefinationId":23206,"DefinationName":"5060","PDefinationId":73,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-12","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:126"},{"DefinationId":23207,"DefinationName":"825","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:127"},{"DefinationId":23208,"DefinationName":"1050","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:128"},{"DefinationId":23209,"DefinationName":"2075","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:129"},{"DefinationId":23210,"DefinationName":"2150","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:130"},{"DefinationId":23211,"DefinationName":"2200","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-4","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:131"},{"DefinationId":23212,"DefinationName":"9840","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:132"},{"DefinationId":23213,"DefinationName":"9859","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:133"},{"DefinationId":23214,"DefinationName":"9884","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:134"},{"DefinationId":23215,"DefinationName":"9891","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:135"},{"DefinationId":23216,"DefinationName":"9910","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:136"},{"DefinationId":23217,"DefinationName":"9909","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:137"},{"DefinationId":23218,"DefinationName":"9913","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:138"},{"DefinationId":23219,"DefinationName":"9916","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:139"},{"DefinationId":23220,"DefinationName":"9838","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:140"},{"DefinationId":23221,"DefinationName":"9860","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:141"},{"DefinationId":23222,"DefinationName":"9888","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:142"},{"DefinationId":23223,"DefinationName":"9738","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:143"},{"DefinationId":23224,"DefinationName":"9912","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:144"},{"DefinationId":23225,"DefinationName":"9937","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:145"},{"DefinationId":23226,"DefinationName":"2375","PDefinationId":75,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:146"},{"DefinationId":23227,"DefinationName":"637","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:147"},{"DefinationId":33227,"DefinationName":"726","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"Band-2","Definations":[],"$$hashKey":"object:148"},{"DefinationId":33241,"DefinationName":"487","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:149"},{"DefinationId":33243,"DefinationName":"5110","PDefinationId":73,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-12","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:150"},{"DefinationId":33244,"DefinationName":"851","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:151"},{"DefinationId":33245,"DefinationName":"9813","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:152"},{"DefinationId":33248,"DefinationName":"9812","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"Band-2","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:153"},{"DefinationId":43279,"DefinationName":"1101","PDefinationId":74,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:154"},{"DefinationId":153333,"DefinationName":"NA","PDefinationId":153332,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:155"},{"DefinationId":153338,"DefinationName":"9887","PDefinationId":104,"DefinationTypeId":11,"KeyCode":"CARRIER","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:156"}]},{"group":{"operator":"AND","rules":[{"condition":"=","field":"Network Mode","data":"NA","isoperator":false,"removefirstcondition":true,"operator":"","type":"select","isString":true,"definition":[{"DefinationId":233505,"DefinationName":"GSM","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:173"},{"DefinationId":233506,"DefinationName":"WCDMA","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:174"},{"DefinationId":233507,"DefinationName":"LTE","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:175"},{"DefinationId":233508,"DefinationName":"NA","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"NETWORKMODE","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:176"}]},{"group":{"operator":"OR","rules":[{"condition":"=","field":"ScopeId","data":31,"isoperator":false,"removefirstcondition":true,"operator":"","type":"System.Int32","isString":true,"definition":[]},{"condition":"=","field":"ScopeId","data":42,"isoperator":true,"removefirstcondition":true,"operator":"OR","type":"System.Int32","isString":true,"definition":[]}],"removefirstcondition":true}}],"removefirstcondition":true}}]}}';
+         //   var data = '{"group":{"operator":"AND","rules":[{"condition":"=","field":"Network Mode","data":"LTE","isoperator":false,"removefirstcondition":true,"operator":"","type":"select","isString":true,"definition":[{"DefinationId":233505,"DefinationName":"GSM","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:14"},{"DefinationId":233506,"DefinationName":"WCDMA","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:15"},{"DefinationId":233507,"DefinationName":"LTE","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"","DisplayType":"","ColorCode":"","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:16"},{"DefinationId":233508,"DefinationName":"NA","PDefinationId":0,"DefinationTypeId":120072,"KeyCode":"NETWORKMODE","DisplayType":"","ColorCode":"#000000","InputType":"","MaxLength":0,"SortOrder":0,"IsActive":true,"DisplayText":"","DefinationType":null,"PDefinationName":null,"MapColumn":"","Definations":[],"$$hashKey":"object:17"}]},{"group":{"operator":"AND","rules":[{"condition":"=","field":"Sector","data":"12","isoperator":false,"removefirstcondition":true,"operator":"","type":"System.String","isString":true,"definition":[]}],"removefirstcondition":true}}]}}';
+           if (whereClauseJson != "" && whereClauseJson != "undefined") {
+               data = whereClauseJson;
+           }
+            LoadData(data);
+            $("div.NodePropertyWindow").toggle();
+        }
+  
+    }
+    $(function () {
+        $(document).on("click", `[ng-click="addGroup('m')"]`, function () {
+            //$("#filterShow").html("");
+        });
+
+        $(document).on("click", `[ng-click="submit('delete')"]`, function () {
+            // $("#filterShow").html("");
+        });
+    });
+    $('#ediBaseSettingsBtnOk').click(function () {
+        var id = $('#selectedNodeId').val()
+        var title = $('#nodeTitle').val()
+        var url = $('#nodeTemplateURL').val()
+        var sqlQuery = $('#nodeSQLQuery').val()
+
+        if (title != null && url != null) {
+            $.ajax({
+                url: "/Project/Template/BaseSettingsFormValues/",
+                type: "post",
+                data: {
+                    NodeId: id,
+                    NodeTitle: title,
+                    NodeURL: url,
+                    NodeQuery: sqlQuery
+                },
+                async: false,
+            }).done(function (data) {
+
+                if (data == "ok") {
+                    // change grid cell title too
+                    var areaId = $("#_NodeTitleAreaHidden").val();
+                    $("#nodeTitleArea_" + areaId).html(title);
+                    $("#nodemessage").html(`<div class="alert alert-success alert-dismissible fade in">
+                        <a href="#" class ="close" data-dismiss="alert" aria-label="close">&times; </a>
+                  <strong>Success!</strong> Setting saved succesfully.
+                </div>`);
+                } else if (data == "error") {
+                    $("#nodemessage").html(`<div class="alert alert-danger alert-dismissible fade in">
+                        <a href="#" class ="close" data-dismiss="alert" aria-label="close">&times; </a>
+                  <strong>Error!</strong> There is an error. Please try again.
+                </div>`);
+                }
+            });
+
+        }
+    });
+
+    $('#nodeSQLQuery').click(function () {
+        var query = $('#nodeSQLQuery').val();
+        if (query != null || query != "") {
+            $('#SQLQueryForNode').val(query);
+        }
+        $('#NodeQueryModal').modal('show');
+    });
+
+    $('#NodeQueryModalSave').click(function () {
+        var sqlQueryValue = $('#SQLQueryForNode').val();
+        sqlQueryValue.replace(/\s/gm, " ");
+
+        $('#nodeSQLQuery').val(sqlQueryValue.replace(/\s/gm, " "));
+        $('#NodeQueryModal').modal('hide');
+    });
+
+    function bindNodeTypeList() {
+        var nodeTypeList;
+        $('#ddNodeTypeId').html('');
+
+        $.ajax({
+            url: "/Project/Template/SavedFormInfo/",
+            type: "post",
+            data: { FormId: "-1" },
+            async: false,
+        }).done(function (data) {
+
+            nodeTypeList = data.FormTypeList;
+            $('#ddNodeTypeId').append("<option value='-1'> Select </option>");
+            $(nodeTypeList).each(function (i) {
+                $('#ddNodeTypeId').append("<option value='" + nodeTypeList[i].DefinationId + "'> " + nodeTypeList[i].DefinationName + " </option>");
+            });
+
+        });
+    }
+
+    $('.editSettingsBtnCancel').click(function () {
+        $("div.NodePropertyWindow").hide();
+    });
+
+    function AdvanceControlSetting(controlName, id) {
+        var fontList = ['cursive monospace',
+                        'serif',
+                        'sans-serif',
+                        'fantasy',
+                        'Arial',
+                        'Arial Black',
+                        'Arial Narrow',
+                        'Arial Rounded MT Bold',
+                        'Bookman Old Style',
+                        'Bradley Hand ITC',
+                        'Century',
+                        'Century Gothic',
+                        'Comic Sans MS',
+                        'Courier',
+                        'Courier New',
+                        'Georgia',
+                        'Gentium',
+                        'Impact',
+                        'King',
+                        'Lucida Console',
+                        'Lalit',
+                        'Modena',
+                        'Monotype Corsiva',
+                        'Papyrus',
+                        'Tahoma',
+                        'TeX',
+                        'Times',
+                        'Times New Roman',
+                        'Trebuchet MS',
+                        'Verdana,Verona']
+
+        // font family list HTML
+        var fontFamilySelectList = '<option value="-1"> Select Font</option> ';
+        $(fontList).each(function (i) {
+            fontFamilySelectList += '<option value="' + fontList[i] + '">' + fontList[i] + '</option>';
+        });
+
+        var controlSettingForm = "";
+        // if control name is image generate image related properties and show on settings popup
+        if (controlName.toLowerCase() == "image") {
+            controlSettingForm += " <label>Height</label>                                                           \
+                                        <input type='number' name='height' class='form-control'>                    \
+                                    <label>Width</label>                                                            \
+                                        <input type='number' name='width' class='form-control'>                     \
+                                    <label>Align</label>                                                            \
+                                        <select class='form-control' name='align'>                                  \
+                                            <option value='-1'>Select Align</option>                                \
+                                            <option value='left'>Left</option>                                      \
+                                            <option value='right'>Right</option>                                    \
+                                            <option value='center'>Center</option>                                  \
+                                        </select>";
+        }
+        // if control name is text or date
+        if (controlName.toLowerCase() == "text" || controlName.toLowerCase() == "date") {
+            // if control name is date
+            if (controlName.toLowerCase() == "date") {
+                controlSettingForm += "<label>Date Format</label>                                       \
+                                        <select class='form-control' name='date-format'>                \
+                                            '<option value='-1'> Select Date Format</option> '          \
+                                            '<option value='short_date'>Short Date</option>'            \
+                                            '<option value='long_date'>Long Date</option>'              \
+                                        </select> ";
+            }
+
+            controlSettingForm += "<label>Font Family</label>                                           \
+                                    <select class='form-control' name='font-family'>                    \
+                                        " + fontFamilySelectList + "                                    \
+                                    </select>                                                           \
+                                    <label>Font Size</label>                                            \
+                                        <input type='number' name='font-size' class='form-control'>     \
+                                    <label>Align</label>                                                \
+                                        <select class='form-control' name='align'>                      \
+                                            <option value='-1'>Select Align</option>                    \
+                                            <option value='left'>Left</option>                          \
+                                            <option value='right'>Right</option>                        \
+                                            <option value='center'>Center</option>                      \
+                                        </select>                                                       \
+                                    <label>Font Color</label>                                           \
+                                        <input type='color' name='font-color' class='form-control'>     \
+                                    <label>Typography</label>                                           \
+                                         <select class='form-control' name='typography'>                \
+                                            <option value='-1'>Select Typography</option>               \
+                                            <option value='regular'>Regular</option>                    \
+                                            <option value='bold'>Bold</option>                          \
+                                            <option value='italic'>Italic</option>                      \
+                                            <option value='bold_italic'>Bold Italic</option>            \
+                                        </select>  ";
+        }
+        // if control name is table
+        if (controlName.toLowerCase() == "table") {
+            controlSettingForm += " <h4>Header Settings</h4>                                                                            \
+                                        <label>Background Color</label>                                                                 \
+                                            <input type='color' name='header-background-color' class='form-control' value='#FFFFFF'>    \
+                                        <label>Text Font</label>                                                                        \
+                                           <select class='form-control' name='header-font-family'>                                      \
+                                                " + fontFamilySelectList + "                                                            \
+                                           </select>                                                                                    \
+                                        <label>Font Size</label>                                                                        \
+                                            <input type='number' name='header-font-size' class='form-control'>                          \
+                                        <label>Font Color</label>                                                                       \
+                                            <input type='color' name='header-font-color' class='form-control' value='#FFFFFF'>          \
+                                        <h4>Body Settings</h4>                                                                          \
+                                        <label>Text Font</label>                                                                        \
+                                            <select class='form-control' name='body-font-family'>                                       \
+                                                " + fontFamilySelectList + "                                                            \
+                                            </select>                                                                                   \
+                                        <label>Font Size</label>                                                                        \
+                                            <input type='number' name='body-font-size' class='form-control'>                            \
+                                        <label>Font Color</label>                                                                       \
+                                            <input type='color' name='body-font-color' class='form-control' value='#FFFFFF'>            \
+                                        <h4>Border Settings</h4>                                                                        \
+                                        <label>Border Color</label>                                                                     \
+                                            <input type='color' name='border-color' class='form-control' value='#FFFFFF'>               \
+                                        <label>Border Thickness</label>                                                                 \
+                                            <input type='number' name='border-thickness' class='form-control' min='1' max='5'>          \
+                ";
+        }
+        // if control name is image list
+        if (controlName.toLowerCase() == "imagelist") {
+            controlSettingForm += " <label>Images Per Row</label>                                                       \
+                                            <input type='number' name='image-per-row' class='form-control'>             \
+                                        <label>Font Size</label>                                                        \
+                                            <input type='number' name='header-font-size' class='form-control'> ";
+        }
+
+        $('#advControlSetting').html(controlSettingForm);
+
+
+        // Post Form Generation Work
+        // Put values like font-family in text box for edit
+        var formDataJson = $('#' + id).val();
+        if (formDataJson != null && formDataJson != "") {
+            var formDataObject = JSON.parse(formDataJson);
+
+            if (controlName.toLowerCase() == "text" || controlName.toLowerCase() == "date") {
+
+                if (controlName.toLowerCase() == "date") {
+                    $('#advControlSetting > input[name="date-format"]').val(formDataObject[0]["date-format"]);
+                }
+
+                $('#advControlSetting > select[name="font-family"]').val(formDataObject[0]["font-family"]);
+                $('#advControlSetting > input[name="font-size"]').val(formDataObject[0]["font-size"].replace(/\D+$/g, ""));
+                $('#advControlSetting > select[name="align"]').val(formDataObject[0]["align"]);
+                $('#advControlSetting > input[name="font-color"]').val(formDataObject[0]["font-color"]);
+                $('#advControlSetting > select[name="typography"]').val(formDataObject[0]["typography"]);
+            }
+
+            if (controlName.toLowerCase() == "image") {
+                $('#advControlSetting > input[name="height"]').val(formDataObject[0]["height"].replace(/\D+$/g, ""));
+                $('#advControlSetting > input[name="width"]').val(formDataObject[0]["width"].replace(/\D+$/g, ""));
+                $('#advControlSetting > select[name="align"]').val(formDataObject[0]["align"]);
+            }
+
+            if (controlName.toLowerCase() == "table") {
+                $('#advControlSetting > select[name="header-font-family"]').val(formDataObject[0]["header-font-family"]);
+                $('#advControlSetting > input[name="header-background-color"]').val(formDataObject[0]["header-background-color"]);
+                $('#advControlSetting > input[name="header-color"]').val(formDataObject[0]["header-color"]);
+                $('#advControlSetting > input[name="header-font-size"]').val(formDataObject[0]["header-font-size"]);
+                $('#advControlSetting > input[name="header-font-color"]').val(formDataObject[0]["header-font-color"]);
+
+                $('#advControlSetting > select[name="body-font-family"]').val(formDataObject[0]["body-font-family"]);
+                $('#advControlSetting > input[name="body-font-size"]').val(formDataObject[0]["body-font-size"]);
+                $('#advControlSetting > input[name="body-font-color"]').val(formDataObject[0]["body-font-color"]);
+
+                $('#advControlSetting > input[name="border-color"]').val(formDataObject[0]["border-color"]);
+                $('#advControlSetting > input[name="border-thickness"]').val(formDataObject[0]["border-thickness"]);
+            }
+        }
+
+        $('#advControlSettingInputId').val(id);
+        $('#AdvanceControlSettingModal').modal('show');
+    }
+
+    function OpenQueryBuilder(COntrolType, Id) {
+        $('#QueryBuilderModalId').val(Id);
+        $('#QueryBuilder').modal('show');
+       // $(".btnDiv:first").find("button:eq(2)").attr('style', 'display:none');
+        //$('.btnremovegroup').attr('style', 'display:none');
+    }
+
+    $('#advControlSettingModalSave').click(function () {
+
+        isPxl = ['height', 'width', 'font-size'];
+
+        var formJson = "[{";
+
+        $("#advControlSetting").find('select').each(function (i) {
+            formJson += ' "' + $(this).attr("name") + '" : "' + $(this).val() + '",';
+        });
+
+        $("#advControlSetting").find('input').each(function (i) {
+
+            if (isPxl.includes($(this).attr("name"))) {
+                formJson += ' "' + $(this).attr("name") + '" : "' + $(this).val() + 'pt ",';
+            }
+            else {
+                formJson += ' "' + $(this).attr("name") + '" : "' + $(this).val() + '",';
+            }
+
+
+        });
+        // slice last comma before braces to make correct json
+        formJson = formJson.slice(0, formJson.length - 1);
+        formJson += "  }]"
+
+        var idToRender = $('#advControlSettingInputId').val();
+        $('#' + idToRender).val(formJson);
+        $('#AdvanceControlSettingModal').modal('hide')
+    });
+
+    $('#editAdvancedSettingsBtnOk').click(function () {
+
+        var selectedListVal = [];
+        var isValidToSubmit = false;
+        $('.DomIdSelectList').each(function (i) {
+            if ($(this).val() != '-1') {
+                if (!selectedListVal.includes($(this).val())) {
+                    selectedListVal.push($(this).val())
+                }
+                else {
+                    alert('please select distinct ids from dropdown');
+                    isValidToSubmit = true;
+                }
+            }
+        });
+
+        if (isValidToSubmit != true) {
+            $.ajax({
+                url: "/project/template/postformbuildervalues",
+                type: "post",
+                data: $("#AdvanceSettingForm").serialize(),
+                async: false,
+            }).done(function (data) {
+                if (data == "ok") {
+                    $("#nodeSettingmessage").html(`<div class="alert alert-success alert-dismissible fade in">
+                        <a href="#" class ="close" data-dismiss="alert" aria-label="close">&times; </a>
+                  <strong>Success!</strong> Setting saved succesfully.
+                </div>`);
+                } else if (data == "error") {
+                    $("#nodeSettingmessage").html(`<div class="alert alert-danger alert-dismissible fade in">
+                        <a href="#" class ="close" data-dismiss="alert" aria-label="close">&times; </a>
+                  <strong>Error!</strong> There is an error. Please try again.
+                </div>`);
+                }
+            });
+        }
+
+    });
+
+    // calling from server side code
+    function fileManagerSetting(controlType, name, controlId) {
+        $('#advControlSettingInputId').val(controlId);
+        // Pass empty for first time
+        fileManagerListDev("");
+        $('#FileManagerModal').modal('show')
+    }
+
+    function fileManagerRowClick(filePath) {
+        fileManagerListDev(filePath);
+    }
+
+    function fileManagerListDev(filePath) {
+        $('#currentFolderPath').val(filePath);
+        if (!filePath.includes('.')) {
+            $.get("/Project/Template/GetFileFolders", {
+                BaseFolderPath: filePath,
+                async: false,
+            }).done(function (data) {
+
+                var fileMgrObj = JSON.parse(data);
+                var fileManagerHtml = "<table class='table'> <thead> <tr> <th>Folder / File</th>  <th>&nbsp;&nbsp;&nbsp;Preview</th>   </tr> </thead> <tbody>"
+
+                if (fileMgrObj != null && fileMgrObj.length > 0) {
+                    var gypsyIcon = "";
+                    var imageDisplayTag = "";
+                    var prevFilePath = "";
+
+                    if (filePath != null && filePath != "" && filePath != "/Content/AirViewLogs") {
+                        prevFilePath = filePath;
+                        var lastSlash = filePath.lastIndexOf("/");
+                        prevFilePath = prevFilePath.substring(0, lastSlash);
+                    }
+
+                    fileManagerHtml += "<tr style='cursor:pointer' onclick='fileManagerRowClick(\"" + prevFilePath + "\");'> <td> <span class='glyphicon glyphicon-folder-close'></span> &nbsp; <span class='glyphicon glyphicon-option-horizontal'></span>  </td> <td>  </td> </tr>";
+
+                    $(fileMgrObj).each(function (i) {
+
+                        imageDisplayTag = "";
+                        if (fileMgrObj[i].FileName.includes('.')) {
+                            gypsyIcon = "class='glyphicon glyphicon-file'";
+                        }
+                        else {
+                            gypsyIcon = "class='glyphicon glyphicon-folder-open'";
+                        }
+
+                        if (fileMgrObj[i].FilePath.includes('.gif') || fileMgrObj[i].FilePath.includes('.jpeg') || fileMgrObj[i].FilePath.includes('.jpg') || fileMgrObj[i].FilePath.includes('.png')) {
+                            imageDisplayTag = "<img src='" + fileMgrObj[i].FilePath + "' alt='image' style='float:right;width:175px;height:60px;background-color: #DDDDDD;'> <br /> <label style='float:right;'> " + fileMgrObj[i].FileInfo + " </label>";
+                        }
+
+                        fileManagerHtml += "<tr style='cursor:pointer' onclick='fileManagerRowClick(\"" + fileMgrObj[i].FilePath + "\");'> <td> <span " + gypsyIcon + "></span> &nbsp; " + fileMgrObj[i].FileName.substr(0, 25) + " </td> <td> " + imageDisplayTag + " </td> </tr>";
+
+                    });
+                }
+                else {
+                    fileManagerHtml += "<tr> <td> <span class='glyphicon glyphicon-search'></span> &nbsp; Folder is empty </td> </tr>";
+                }
+                fileManagerHtml += "</tbody>  </table>";
+                $('#fileManager').html(fileManagerHtml);
+            });
+        }
+        else {
+            // select file path to parent input field
+
+            if (filePath.includes('.gif') || filePath.includes('.jpeg') || filePath.includes('.jpg') || filePath.includes('.png')) {
+                var controlId = $('#advControlSettingInputId').val();
+
+                $('#' + controlId).val(filePath);
+                $('#FileManagerModal').modal('hide')
+            }
+        }
+    }
+
+    $('#btnUploadFileFileManager').click(function () {
+
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#fileUploadFileMgr").get(0);
+            var files = fileUpload.files;
+            var fileUploadPath = $('#currentFolderPath').val();
+            var fileData = new FormData();
+
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            fileData.append("FileUploadPath", fileUploadPath);
+
+            $.ajax({
+                url: '/Project/Template/UploadFiles',
+                type: "POST",
+                contentType: false,
+                processData: false,
+                data: fileData,
+                success: function (result) {
+
+                    fileManagerListDev(fileUploadPath);
+                    $('#fileUploadFileMgr').val('');
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+        } else {
+            alert("Error");
+        }
+    });
+
+    function toTitleCase(str) {
+        return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+    }
+
+    function isUpperCase(str) {
+        return str === str.toUpperCase();
+    }
+
+    @*$('#render-report').click(function () {
+        var templateId = $('#routeTemplateId').val();
+        var siteId = '@Request.Params["SiteId"]';
+        var networkModeId = '@Request.Params["NetworkModeId"]';
+        var bandId = '@Request.Params["BandId"]';
+        var careerId = '@Request.Params["CarrierId"]';
+        var scopeId = '@Request.Params["ScopeId"]';
+
+        window.open('/Project/Template/Report/' + templateId + '?SiteId=' + siteId + '&NetworkModeId=' + networkModeId + '&BandId=' + bandId + '&CarrierId=' + careerId + '&ScopeId=' + scopeId, '_blank');
+    });*@
+
+</script>
+
+<script>
+    var LoadData = '';
+    var app = angular.module('Myapp', ['queryBuilder', 'ui.bootstrap']);
+    app.controller('Myctrl', ['$compile', '$scope', '$http', '$timeout', '$rootScope', function ($compile, $scope, $http, $timeout, $rootScope) {
+      
+        LoadData = function (datat1) {
+
+            $('.querybuilderwhere').html('');
+            var queryele = '<query-builder group="filter.group"></query-builder>';
+            var queryeleCom = $compile(queryele)($scope);
+            $('.querybuilderwhere').append(queryeleCom);
+          
+         
+          
+            
+
+            var data = datat1;
+
+            function htmlEntities(str) {
+                return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+
+            function addremoveqoute(str, flag) {
+                if (flag == "System.DateTime") {
+                    dt = new Date(str);
+                    str = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
+                }
+                if (flag == "System.Integer") {
+                    return String(str);
+                }
+                else {
+                    str = "'" + str + "'"
+                    return String(str);
+                }
+            }
+
+            function computed(group) {
+                if (!group) return "";
+                for (var str = "(", i = 0; i < group.rules.length; i++) {
+
+
+
+                    if (group.rules[0].group) {
+                        group.rules[0].group.removefirstcondition = false;
+                    }
+                    if (group.rules.length == 1) {
+                        group.rules[i].isoperator = false;
+
+                    }
+
+
+                    if (i > 0 && group.rules[i].group) {
+
+                        str += group.rules[i].group.operator + " ";
+
+                    }
+                    if (group.rules[i].operator) {
+                        str += " " + group.rules[i].operator;
+                    }
+
+                    str += group.rules[i].group ?
+                        computed(group.rules[i].group) :
+                        " [" + group.rules[i].field + "] " + htmlEntities(group.rules[i].condition) + " " + addremoveqoute(group.rules[i].data, group.rules[i].type) + " ";
+                }
+                $scope.Querystring = str + ")";
+                return str + ")";
+            }
+
+            $scope.json = null;
+
+            $scope.filter = JSON.parse(data);
+
+            $scope.$watch('filter', function (newValue) {
+                console.log(JSON.stringify(newValue));
+                $("#FilterClauseHidden").val(JSON.stringify(newValue));
+                $scope.json = JSON.stringify(newValue, null, 2);
+                $scope.output = computed(newValue.group);
+            }, true);
+          
+           
+            $scope.Report;
+            $scope.Column = [];
+            $scope.ColumnId = [];
+
+            $scope.CallDirective = function () {
+                $rootScope.$emit('callDirective', $scope.Column);
+            };
+
+
+
+            //$http.get("/ReportTest/GetColumn?reportId=" + "1=0").then(function (response) {
+            //    $scope.Column = response.data;
+            //    $scope.CallDirective();
+            //    $rootScope.testing = response.data;
+            //})
+
+            $http.get("/ReportTest/GetReportrecord?reportFilter=TEST_LOG_REPORT" + '&where=1=0' + '&select=*&group=null').then(function (response) {
+                //   $scope.Column = response.data;
+                console.log(SelectedTablesColumnName);
+                $scope.Column = SelectedTablesColumnName;
+           
+                $scope.CallDirective();
+                //    $rootScope.testing = response.data;
+                $rootScope.testing = SelectedTablesColumnName;
+            })
+
+            $scope.getAllReports = function () {
+                $http.get("/ReportTest/GetReport?Filter=byDefinationType").then(function (response) {
+                    $scope.Report = response.data;
+                })
+            }
+
+            $('#QueryBuilderModalBtnOk').click(function () {
+                var json = ConvertQuerBuilderTableToJSON("QueryBuilderBody");
+                $("#DataSetColumnsHidden").val(json);
+               // $("#FilterClauseHidden").val();
+                var FieldId = $('#QueryBuilderModalId').val();
+                $('#' + FieldId).val($scope.Querystring);
+                $("#CustomQueryTextArea").val(JsonToQuery(json, $scope.Querystring));
+                var groupByCols = "";
+                if (json != "" && json != null && json != "undefined") {
+                    var query = JSON.parse(json);
+                    if (query != "" && query != null && query != "undefined") {
+                        var xaxisOptions = "<option value='-1'>Select X-axis</option>";
+                        var yaxisOptions = "<option value='-1'>Select Y-axis</option>";
+                        var x = $("select[name='X-axis']").val();
+                        var y = $("select[name='Y-axis']").val();
+                        $.each(query.QuerySetting.MetaData, function (index, item) {
+                            xaxisOptions += "<option value='" + item.Alias + "'>" + item.Alias + "</option>";
+                            if (item.DataType == "int" || item.DataType == "float" || item.DataType == "rear" || item.DataType == "numeric") {
+                                yaxisOptions += "<option value='" + item.Alias + "'>" + item.Alias + "</option>";
+                            }
+                            if (item.GroupBy == false && item.Funtion != "-1") {
+                                yaxisOptions += "<option value='" + item.Alias + "'>" + item.Alias + "</option>";
+                            }
+                        });
+                        $("select[name='X-axis']").html(xaxisOptions);
+                        $("select[name='Y-axis']").html(yaxisOptions);
+                        debugger
+                        if (x != null && x != "undefined" && x != "") {
+                            $("select[name='X-axis']").val(x);
+                        }
+                        if (y != null && y != "undefined" && y != "") {
+                            $("select[name='Y-axis']").val(y);
+                        }
+                    }
+                }
+                var mapLat;
+                var mapLong;
+                debugger
+                if (json != "" && json != null && json != "undefined") {
+                    var query = JSON.parse(json);
+                    if (query != "" && query != null && query != "undefined") {
+                        var mapLong = "<option value='-1'>Select Map-Longitude</option>";
+                        var color = "<option value='-1'>Select Color</option>";
+                        var mapLat = "<option value='-1'>Select Map-Latitude</option>";
+                        var _mapLat = $("select[name='Latitude']").val();
+                        var _mapLong = $("select[name='Longitude']").val();
+                        var _color = $("select[name='Color']").val();
+                        $.each(query.QuerySetting.MetaData, function (index, item) {
+                            if (item.ColumnName == "Latitude") {
+                                mapLat += "<option value='" + item.ColumnName + "' selected>" + item.Alias + "</option>";
+                            }
+                            if (item.ColumnName == "Longitude") {
+                                mapLong += "<option value='" + item.ColumnName + "' selected>" + item.Alias + "</option>";
+                            }
+                            //if (item.ColumnName != "Longitude" && item.ColumnName != "Latitude") {
+                            //    color += "<option value='" + item.ColumnName + "'>" + item.Alias + "</option>";
+                            //}
+                        });
+                        $("select[name='Latitude']").html(mapLat);
+                        $("select[name='Longitude']").html(mapLong);
+                        //$("select[name='Color']").html(color);
+
+                        if (_mapLat != null && _mapLat != "undefined" && _mapLat != "") {
+                            $("select[name='Latitude']").val(_mapLat);
+                        }
+
+                        //if (_color != null && _color != "undefined" && _color != "") {
+                        //    $("select[name='Color']").val(color);
+                        //}
+                        if (_mapLong != null && _mapLong != "undefined" && _mapLong != "") {
+                            $("select[name='Longitude']").val(_mapLong);
+                        }
+                    }
+                }
+            });
+            $("#TablesList").on("change", function () {
+                $("#TableColumnName").html('');
+                $.ajax({
+                    url: "/Project/Template/GetDbTableColumnName",
+                    type: "POST",
+                    data: {
+                        ViewName: $(this).val()
+                    },
+                    async: false,
+                }).done(function (result) {
+                    // alert(result);;
+                    SelectedTablesColumnName = [];
+                    if (result.length != 0) {
+                        $("#TableColumnName").append('<input class="tableColumnsItem" type="checkbox" id="SelectAllColumns" value="SelectAllColumns" /><label class="tableColumnsItem" style="margin-left: 7px" for="SelectAllColumns">Select All</label><br/>');
+                        var i = 0;
+                        $.each(result, function (i, item) {
+                            $("#TableColumnName").append(`<input data-columnDataType="` + item.DataType + `" class="tableColumnsItem" type="checkbox" id="` + "checkbox_" + i + `" value="` + item.ColumnName + `" /><label class="tableColumnsItem" style="margin-left: 7px" for="` + "checkbox_" + i + `">` + item.ColumnName + `</label> <br/>`);
+                            var dataType = 'System.String';
+                            var DataType = "[" + item.ColumnName + "]";
+                            if (item.DataType == 'int' || item.DataType == 'numeric') {
+                                dataType = "System.Int32";
+                            } else if (item.DataType == 'varchar' || item.DataType == 'nvarchar') {
+                                dataType = "System.String";
+                            }
+                            else if (item.DataType == 'float') {
+                                dataType = "System.Double";
+                            }
+                            else if (item.DataType == 'datetime' || item.DataType == 'date') {
+                                dataType = "System.DateTime";
+                            }
+                            SelectedTablesColumnName.push({ name: item.ColumnName, DataType: dataType, DisplayType: item.IsSelectType, $$hashKey: "object:" + i });
+                            i++;
+                        });
+                        debugger
+                        $rootScope.testing = SelectedTablesColumnName;
+                        var data = '{"group": {"operator": "AND","rules": []}}';
+
+                        LoadData(data);
+
+                    }
+
+                });
+               
+            });
+
+        }
+    }]);
+
+    function goBack() {
+        window.history.back();
+    }
+
+    var SelectedTablesColumnName = [];
+
+    $(function () {
+
+    });
+</script>
+
+<script>
+    var IsDropDownValueEmpty = function (index, value, ColumnName) {
+        return (value != -1 && value != false) ? (index == 0) ? ColumnName : " , " + ColumnName : "";
+    }
+    var JsonToQuery = function (json, whereClause) {
+        if (json != "" && json != null && json != "undefined") {
+            var query = JSON.parse(json);
+            if (query != "" && query != null && query != "undefined") {
+                var cols = "";
+                var groupBy = "";
+                var _groupBy = "";
+                var _orderBy = "";
+                var orderBy = "";
+                var where = "";
+                if (query.QuerySetting != "undefined" && query.QuerySetting != null && query.QuerySetting != "") {
+                    if (query.QuerySetting.MetaData != "undefined" && query.QuerySetting.MetaData != null && query.QuerySetting.MetaData != "") {
+                        $.each(query.QuerySetting.MetaData, function (i, item) {
+                            var ColumnName = "";
+                            if (item.ColumnName.indexOf(' ') !== -1) {
+                                ColumnName = "[" + item.ColumnName + "]";
+                            } else {
+                                ColumnName = item.ColumnName;
+                            }
+                            if (item.Funtion != -1) {
+                                if (i == 0) {
+                                    cols += item.Funtion + " (" + ColumnName + ") ";
+                                } else {
+                                    cols += " , " + item.Funtion + " (" + ColumnName + ") ";
+                                }
+                            } else {
+                                if (i == 0) {
+                                    cols += ColumnName;
+                                } else {
+                                    cols += " , " + ColumnName;
+                                }
+                            }
+                            _groupBy += IsDropDownValueEmpty(i, item.GroupBy, ColumnName);
+                            _orderBy += IsDropDownValueEmpty(i, item.SortBy, ColumnName);
+                        });
+                        groupBy = (_groupBy != "undefined" && _groupBy != "") ? ' \nGROUP BY \n \t' + _groupBy : "";
+                        orderBy = (_orderBy != "undefined" && _orderBy != "") ? ' \nORDER BY \n \t ' + _orderBy.replace(',', "") : "";
+                        where = (whereClause == "()") ? "" : ' \nWHERE \n \t ' + whereClause;
+                        var finalQueryToExe = `SELECT \n \t ` + cols + ' \nFROM \n \t ' + query.QuerySetting.Table + where + groupBy + orderBy;
+                        return finalQueryToExe;
+                    }
+                }
+            }
+        }
+    }
+    $(function () {
+        $('#QueryBuilderBody').sortable();
+    });
+    $("#AddColumnToQueryBtn").click(function () {
+        $("#DataSetColumnsHidden").val(ConvertQuerBuilderTableToJSON("QueryBuilderBody"));
+        $('#TableColumnName :checked').each(function (i, selected) {
+            var SelectedColumnName = $(selected).val();
+            var ColumnDataType = $(selected).attr("data-columnDataType");
+            var FunctionsList = ``;
+            if (ColumnDataType == "numeric" || ColumnDataType == "float" || ColumnDataType == "real" || ColumnDataType == "int") {
+                FunctionsList = `<select name="AggFunction" class="form-control">
+                                    <option value="-1" selected>--Empty--</option>
+                                    <option value="SUM">SUM</option>
+                                    <option value="COUNT">COUNT</option>
+                                    <option value="MAX">MAX</option>
+                                    <option value="MIN">MIN</option>
+                                </select>`;
+            } else {
+                FunctionsList = `<select name="AggFunction" class="form-control">
+                                    <option value="-1" selected>--Empty--</option>
+                                    <option value="COUNT">COUNT</option>
+                                </select>`;
+            }
+            if (SelectedColumnName != "SelectAllColumns") {
+                var newRow = $(`<tr class="QueryRow NewRowAnim NewRowHighlight">
+                            <td style="width: 2%;">
+                                <input class ="text-center" name="DataType" type="hidden" value= "`+ ColumnDataType + `" />
+                                <span class ="glyphicon glyphicon-move"></span>
+                            </td>
+                            <td style="width: 3%;">
+                                <input class ="text-center RowSelection" name="RowSelection" type="checkbox" value="false" style="width: 30px; height: 14px" />
+                            </td>
+                            <td style="width:12%;">
+                                <input type="text" value= "`+ SelectedColumnName + `" readonly class ="form-control" name="ColumnName" />
+                            </td>
+                            <td style="width: 12%;">
+                                <input type="text" value= "`+ SelectedColumnName + `" class ="form-control" name="Alias" />
+                            </td>
+                            <td style="width: 8%;">
+                                `+ FunctionsList + `
+                            </td>
+                            <td style="width: 5%;" class ="text-center">
+                                <input class ="text-center" type="checkbox" value="false" name="GroupBy" style="width: 30px; height: 14px" disabled readonly/>
+                            </td>
+                            <td style="width: 7%;" class ="text-center">
+                                <select name="SortBy" class ="form-control">
+                                    <option value="-1" selected>--Empty--</option>
+                                    <option value="ASC">ASC</option>
+                                    <option value="DESC">DESC</option>
+                                </select>
+                            </td>
+                            <td style="width: 3%;">
+                                <span class="glyphicon glyphicon-remove DeleteRowBtn"></span>
+                            </td>
+                        </tr>`);
+                newRow.hide();
+                $(newRow).appendTo("#QueryBuilderBody");
+                newRow.fadeIn("slow");
+                newRow.addClass('normal');
+            }
+            $(selected).prop("checked", false);
+        });
+        GroupAndOrderByValidationQueryBuilder();
+    });
+    $(document).on('click', '.DeleteRowBtn', function () {
+        if (confirm("Are you sure? You want to Delete it?") == true) {
+            $(this).closest('tr').remove();
+            GroupAndOrderByValidationQueryBuilder();
+        }
+    });
+
+    $(document).on('click', '#DeleteAll', function () {
+        if (confirm("Are you sure? You want to Delete All Rows?") == true) {
+            $('#QueryBuilderBody').html('');
+        }
+    });
+
+    $(document).on('click', '#DeleteSelected', function () {
+        if (confirm("Are you sure? You want to Delete Selected Rows?") == true) {
+            $("#QueryBuilderBody").find("input[name='RowSelection']:checked").each(function (i, item) {
+                $(this).closest('tr').remove();
+            });
+        }
+    });
+
+    $(function () {
+        $("#SelectAllQueryBuilderRows").click(function () {
+            $("#QueryBuilderBody").find(".QueryRow").each(function (i, item) {
+                var row = $(item);
+                row.find('.RowSelection').prop("checked", $("#SelectAllQueryBuilderRows").is(':checked'));
+
+            });
+        });
+    });
+
+    $(function () {
+        $(document).on('click', '#SelectAllColumns', function () {
+            $("#TableColumnName").find("input[type='checkbox']").each(function (i, item) {
+                $(this).prop("checked", $("#SelectAllColumns").is(':checked'));
+            });
+        });
+    });
+
+    var GroupAndOrderByValidationQueryBuilder = function () {
+        var FunctionUsedInQuery = false;
+        $("#QueryBuilderBody").find("tr").each(function (i, item) {
+            var row = $(item);
+            var IsCurrentSettingWithFunction = row.find("td:eq(4) > select option:selected").val() != '-1' ? true : false;
+            var IsCurrentSettingNotWithFunction = row.find("td:eq(4) > select option:selected").val() == '-1' ? true : false;
+
+            if (IsCurrentSettingWithFunction == true) {
+                row.find("td:eq(5) > input[name='GroupBy']").prop("checked", false);
+                row.find("td:eq(6) > select[name='SortBy']").val("-1");
+                row.find("td:eq(6) > select[name='SortBy']").attr('disabled', true);
+                FunctionUsedInQuery = true;
+            } else {
+                if (IsCurrentSettingNotWithFunction == true) {
+                    if (row.find("td:eq(5) > input[name='GroupBy']").is(':checked') == false) {
+                        row.find("td:eq(5) > input[name='GroupBy']").prop("checked", true);
+                        row.find("td:eq(6) > select[name='SortBy']").attr('disabled', false);
+                    }
+                }
+            }
+        });
+        if (FunctionUsedInQuery == false) {
+            $("#QueryBuilderBody").find("tr").each(function (i, item) {
+                var row = $(item);
+                row.find("td:eq(5) > input[name='GroupBy']").prop("checked", false);
+            });
+        }
+    }
+    $(function () {
+        $(document).on("change", "select[name='AggFunction']", function () {
+            GroupAndOrderByValidationQueryBuilder();
+        });
+    });
+
+</script>
+<script>
+
+    $(document).ready(function () {
+        $(".jarviswidget-color-darken").hide();
+    });
+</script>

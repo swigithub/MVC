@@ -1,0 +1,564 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>AirViewDatabase</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{1fd3b64a-7d75-4ee8-b757-168b1bf48be9}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>AirViewDatabase</RootNamespace>
+    <AssemblyName>AirViewDatabase</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
+    <Folder Include="Security\" />
+    <Folder Include="dbo\Functions\" />
+    <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="dbo\User Defined Types\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\woref.sql" />
+    <Build Include="dbo\Tables\War_Room_Site_Log_.sql" />
+    <Build Include="dbo\Tables\UserClients.sql" />
+    <Build Include="dbo\Tables\TSS_SurveyDocuments.sql" />
+    <Build Include="dbo\Tables\TSS_SiteSurvey.sql" />
+    <Build Include="dbo\Tables\TSS_SiteSections.sql" />
+    <Build Include="dbo\Tables\TSS_SiteResponses.sql" />
+    <Build Include="dbo\Tables\TSS_SiteRespondents.sql" />
+    <Build Include="dbo\Tables\TSS_SiteQuestions.sql" />
+    <Build Include="dbo\Tables\TSS_SiteContacts.sql" />
+    <Build Include="dbo\Tables\TSS_SiteAttendees.sql" />
+    <Build Include="dbo\Tables\TSS_Sections.sql" />
+    <Build Include="dbo\Tables\TSS_SectionIterations.sql" />
+    <Build Include="dbo\Tables\TSS_Responses.sql" />
+    <Build Include="dbo\Tables\TSS_RequiredActions.sql" />
+    <Build Include="dbo\Tables\TSS_Questions.sql" />
+    <Build Include="dbo\Tables\TSS_QuestionLogics.sql" />
+    <Build Include="dbo\Tables\Tracker.sql" />
+    <Build Include="dbo\Tables\tmpPSTasks.sql" />
+    <Build Include="dbo\Tables\tmpMobility.sql" />
+    <Build Include="dbo\Tables\TMP_Templates.sql" />
+    <Build Include="dbo\Tables\TMP_NodesProperties.sql" />
+    <Build Include="dbo\Tables\TMP_NodeSettings.sql" />
+    <Build Include="dbo\Tables\TMP_Nodes.sql" />
+    <Build Include="dbo\Tables\temp.sql" />
+    <Build Include="dbo\Tables\tbl9BH1017A.sql" />
+    <Build Include="dbo\Tables\Table_1.sql" />
+    <Build Include="dbo\Tables\SiteTaskTracker.sql" />
+    <Build Include="dbo\Tables\siteRevision.sql" />
+    <Build Include="dbo\Tables\Sec_WorkGroup.sql" />
+    <Build Include="dbo\Tables\Sec_UserSettings.sql" />
+    <Build Include="dbo\Tables\Sec_UserScopes.sql" />
+    <Build Include="dbo\Tables\Sec_Users.sql" />
+    <Build Include="dbo\Tables\Sec_UserRoles.sql" />
+    <Build Include="dbo\Tables\Sec_UserProjects.sql" />
+    <Build Include="dbo\Tables\Sec_UserPermissions.sql" />
+    <Build Include="dbo\Tables\Sec_UserDevices.sql" />
+    <Build Include="dbo\Tables\Sec_UserDefinationType.sql" />
+    <Build Include="dbo\Tables\Sec_UserDateRights.sql" />
+    <Build Include="dbo\Tables\Sec_UserCities.sql" />
+    <Build Include="dbo\Tables\Sec_Roles.sql" />
+    <Build Include="dbo\Tables\Sec_RolePermissions.sql" />
+    <Build Include="dbo\Tables\Sec_Permissions.sql" />
+    <Build Include="dbo\Tables\Sec_DomainConfigurations.sql" />
+    <Build Include="dbo\Tables\ProjectTasks.sql" />
+    <Build Include="dbo\Tables\ProjectPlanImport.sql" />
+    <Build Include="dbo\Tables\PM_WorkLog.sql" />
+    <Build Include="dbo\Tables\PM_WorkGroup.sql" />
+    <Build Include="dbo\Tables\PM_TrackerGroup.sql" />
+    <Build Include="dbo\Tables\PM_ToDo.sql" />
+    <Build Include="dbo\Tables\PM_TaskTracker.sql" />
+    <Build Include="dbo\Tables\PM_TaskStages.sql" />
+    <Build Include="dbo\Tables\PM_Tasks.sql" />
+    <Build Include="dbo\Tables\PM_TaskResources.sql" />
+    <Build Include="dbo\Tables\PM_TaskEntry.sql" />
+    <Build Include="dbo\Tables\PM_Targets.sql" />
+    <Build Include="dbo\Tables\PM_SiteTaskTracker.sql" />
+    <Build Include="dbo\Tables\PM_SiteTaskStatus.sql" />
+    <Build Include="dbo\Tables\PM_SiteTasks2.sql" />
+    <Build Include="dbo\Tables\PM_SiteTasks.sql" />
+    <Build Include="dbo\Tables\PM_SiteTaskInventoryAttachments.sql" />
+    <Build Include="dbo\Tables\PM_SiteTaskInventory.sql" />
+    <Build Include="dbo\Tables\PM_SiteTaskAttachment.sql" />
+    <Build Include="dbo\Tables\PM_SiteResources.sql" />
+    <Build Include="dbo\Tables\PM_SiteLog.sql" />
+    <Build Include="dbo\Tables\PM_ResourceBudget.sql" />
+    <Build Include="dbo\Tables\PM_ProjectTrend.sql" />
+    <Build Include="dbo\Tables\PM_ProjectSites.sql" />
+    <Build Include="dbo\Tables\PM_Projects.sql" />
+    <Build Include="dbo\Tables\PM_ProjectResources.sql" />
+    <Build Include="dbo\Tables\PM_ProjectPlanHistory_Details.sql" />
+    <Build Include="dbo\Tables\PM_ProjectPlanHistory.sql" />
+    <Build Include="dbo\Tables\PM_ProjectKpi.sql" />
+    <Build Include="dbo\Tables\PM_ProjectEntity.sql" />
+    <Build Include="dbo\Tables\PM_KPI_Threshold.sql" />
+    <Build Include="dbo\Tables\PM_KPI_Data.sql" />
+    <Build Include="dbo\Tables\PM_IssuesTrend.sql" />
+    <Build Include="dbo\Tables\PM_IssuesLog.sql" />
+    <Build Include="dbo\Tables\PM_Issues.sql" />
+    <Build Include="dbo\Tables\PM_GazetteHolidays.sql" />
+    <Build Include="dbo\Tables\PM_Colors.sql" />
+    <Build Include="dbo\Tables\PM_ChartSettingsTemplate.sql" />
+    <Build Include="dbo\Tables\PM_ChartSettings.sql" />
+    <Build Include="dbo\Tables\PM_Attachments.sql" />
+    <Build Include="dbo\Tables\piechartdata.sql" />
+    <Build Include="dbo\Tables\NISites.sql" />
+    <Build Include="dbo\Tables\Log_TransferLogStatus.sql" />
+    <Build Include="dbo\Tables\INV_UEIssues.sql" />
+    <Build Include="dbo\Tables\InActiveDevices.sql" />
+    <Build Include="dbo\Tables\FSM4_WLog.sql" />
+    <Build Include="dbo\Tables\FSM4_Sites.sql" />
+    <Build Include="dbo\Tables\FSM4_Issues.sql" />
+    <Build Include="dbo\Tables\FSM4_EPL.sql" />
+    <Build Include="dbo\Tables\FM_WoVehicles.sql" />
+    <Build Include="dbo\Tables\FM_VehicleType.sql" />
+    <Build Include="dbo\Tables\FM_VehicleTrackingLog.sql" />
+    <Build Include="dbo\Tables\FM_VehicleTrackerHistory.sql" />
+    <Build Include="dbo\Tables\FM_VehicleModel.sql" />
+    <Build Include="dbo\Tables\FM_VehicleGroup.sql" />
+    <Build Include="dbo\Tables\FM_VehicleAssignment.sql" />
+    <Build Include="dbo\Tables\FM_Vehicle.sql" />
+    <Build Include="dbo\Tables\FM_TrackingVState.sql" />
+    <Build Include="dbo\Tables\FM_TrackingAlarmDetails.sql" />
+    <Build Include="dbo\Tables\FM_TrackingAlarm.sql" />
+    <Build Include="dbo\Tables\FM_TrackerAlarmConfiguration.sql" />
+    <Build Include="dbo\Tables\FM_ManufacturerType.sql" />
+    <Build Include="dbo\Tables\FM_Manufacturer.sql" />
+    <Build Include="dbo\Tables\ExternalDatabase.sql" />
+    <Build Include="dbo\Tables\dashboarddata.sql" />
+    <Build Include="dbo\Tables\AV_WoTracker.sql" />
+    <Build Include="dbo\Tables\AV_WoDevices.sql" />
+    <Build Include="dbo\Tables\AV_Widgets.sql" />
+    <Build Include="dbo\Tables\AV_UEPbx.sql" />
+    <Build Include="dbo\Tables\AV_TSSCheckList.sql" />
+    <Build Include="dbo\Tables\AV_TestScript.sql" />
+    <Build Include="dbo\Tables\AV_TestLocation.sql" />
+    <Build Include="dbo\Tables\AV_TestConfigurations.sql" />
+    <Build Include="dbo\Tables\AV_SiteTestSummary.sql" />
+    <Build Include="dbo\Tables\AV_SiteTestLog.sql" />
+    <Build Include="dbo\Tables\AV_SiteScriptFormEntry.sql" />
+    <Build Include="dbo\Tables\AV_SiteScript.sql" />
+    <Build Include="dbo\Tables\AV_Sites.sql" />
+    <Build Include="dbo\Tables\AV_SitePOR.sql" />
+    <Build Include="dbo\Tables\AV_SiteOoklaLogs_Newone.sql" />
+    <Build Include="dbo\Tables\AV_SiteOoklaLogs.sql" />
+    <Build Include="dbo\Tables\AV_SiteIssueTracker.sql" />
+    <Build Include="dbo\Tables\AV_SiteConfigurations.sql" />
+    <Build Include="dbo\Tables\AV_SiteClusters.sql" />
+    <Build Include="dbo\Tables\AV_SectorTestLog.sql" />
+    <Build Include="dbo\Tables\AV_Sectors.sql" />
+    <Build Include="dbo\Tables\AV_SectorColors.sql" />
+    <Build Include="dbo\Tables\AV_ScriptTestKPI.sql" />
+    <Build Include="dbo\Tables\AV_ScopeTests.sql" />
+    <Build Include="dbo\Tables\AV_RFPlotLegends.sql" />
+    <Build Include="dbo\Tables\AV_NetLayerStatus.sql" />
+    <Build Include="dbo\Tables\AV_NetLayerObservation.sql" />
+    <Build Include="dbo\Tables\AV_NemoSiteLogs.sql" />
+    <Build Include="dbo\Tables\AV_NeighbourLogs.sql" />
+    <Build Include="dbo\Tables\AV_MarketSites1.sql" />
+    <Build Include="dbo\Tables\AV_MarketSites.sql" />
+    <Build Include="dbo\Tables\AV_LogsInfo.sql" />
+    <Build Include="dbo\Tables\AV_FloorPlan.sql" />
+    <Build Include="dbo\Tables\AV_DriveRoutes.sql" />
+    <Build Include="dbo\Tables\AV_DeviceLockCommands.sql" />
+    <Build Include="dbo\Tables\AV_ClusterSchedule.sql" />
+    <Build Include="dbo\Tables\AV_Clusters.sql" />
+    <Build Include="dbo\Tables\AV_BeamTestLog.sql" />
+    <Build Include="dbo\Tables\ATT_Sites.sql" />
+    <Build Include="dbo\Tables\ATT_EPL.sql" />
+    <Build Include="dbo\Tables\ATSites.sql" />
+    <Build Include="dbo\Tables\AL_AlertUserSubscription.sql" />
+    <Build Include="dbo\Tables\AL_AlertSubscription.sql" />
+    <Build Include="dbo\Tables\AL_AlertRoleSubscription.sql" />
+    <Build Include="dbo\Tables\AL_AlertReciever.sql" />
+    <Build Include="dbo\Tables\AL_AlertConfig.sql" />
+    <Build Include="dbo\Tables\AL_AlertCategory.sql" />
+    <Build Include="dbo\Tables\AL_Alert.sql" />
+    <Build Include="dbo\Tables\AD_UserEquipments.sql" />
+    <Build Include="dbo\Tables\AD_UEMovement.sql" />
+    <Build Include="dbo\Tables\AD_TransactionLog.sql" />
+    <Build Include="dbo\Tables\AD_ReportFilters.sql" />
+    <Build Include="dbo\Tables\AD_ReportConfiguration.sql" />
+    <Build Include="dbo\Tables\AD_Projects.sql" />
+    <Build Include="dbo\Tables\AD_ProjectConfigurations.sql" />
+    <Build Include="dbo\Tables\AD_MonthDates.sql" />
+    <Build Include="dbo\Tables\AD_MarketCenter.sql" />
+    <Build Include="dbo\Tables\AD_Issue.sql" />
+    <Build Include="dbo\Tables\AD_Help.sql" />
+    <Build Include="dbo\Tables\AD_FilterQuery.sql" />
+    <Build Include="dbo\Tables\AD_ErrorLog.sql" />
+    <Build Include="dbo\Tables\AD_DefinationTypes.sql" />
+    <Build Include="dbo\Tables\AD_Definations1.sql" />
+    <Build Include="dbo\Tables\AD_Definations.sql" />
+    <Build Include="dbo\Tables\AD_Clients.sql" />
+    <Build Include="dbo\Tables\AD_ClientContacts.sql" />
+    <Build Include="dbo\Tables\AD_ClientAddress.sql" />
+    <Build Include="dbo\Tables\AD_Applications.sql" />
+    <Build Include="dbo\Tables\AAPLAN.sql" />
+    <Build Include="Security\rauf.sql" />
+    <Build Include="Security\junaid.sql" />
+    <Build Include="Security\dev.sql" />
+    <Build Include="Security\av.sql" />
+    <Build Include="Security\ali.sql" />
+    <Build Include="Security\RoleMemberships.sql" />
+    <Build Include="dbo\Functions\ProperCase.sql" />
+    <Build Include="dbo\Functions\PM_UpdateReports.sql" />
+    <Build Include="dbo\Functions\MultiUserIdsToName.sql" />
+    <Build Include="dbo\Functions\fnCalcDistanceMiles.sql" />
+    <Build Include="dbo\Functions\fnCalcDistanceKM.sql" />
+    <Build Include="dbo\Functions\SplitString.sql" />
+    <Build Include="dbo\Functions\fnSplitString.sql" />
+    <Build Include="dbo\Functions\ConvertCSVToTable.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_UpdateSurveyStatusForDashboard.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageTemplate.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageSurveyResponse.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageSurveyDocuments.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageSiteSurveyResponse.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageSiteContacts.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageSiteAttendees.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageSectionIteration.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageSection.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageQuestions.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageQuestionLogics.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_ManageChildSections.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetSurveySiteAttendees.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetSurveyDocumentsForAbrar.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetSurveyDocuments.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetSections.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetResponses.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetRequiredActions.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetQuestionsForAbrar.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetQuestions.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetQuestionLogics.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_GetAllSectorLocations.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_DeleteImagesFromReqActions.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_CreateSurveyClone.sql" />
+    <Build Include="dbo\Stored Procedures\TSS_CreateDemoWorkOrder.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_ModuleTypes.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_ManageTemplates.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_ManageNodesProperties.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_ManageNodeSettings.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_ManageNodes.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_GetTemplates.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_GetSiteReport.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_GetProjectScopeReport.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_GetNodesProperties.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_GetNodeSettings.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_GetNodes.sql" />
+    <Build Include="dbo\Stored Procedures\TMP_GetDashboardMap.sql" />
+    <Build Include="dbo\Stored Procedures\TestPageCount.sql" />
+    <Build Include="dbo\Stored Procedures\Test_GetPci.sql" />
+    <Build Include="dbo\Stored Procedures\Test_getBands.sql" />
+    <Build Include="dbo\Stored Procedures\spWOSubmitReport.sql" />
+    <Build Include="dbo\Stored Procedures\spWorkOrderStatus.sql" />
+    <Build Include="dbo\Stored Procedures\spWObyMarket.sql" />
+    <Build Include="dbo\Stored Procedures\spUtilizationPerMarket.sql" />
+    <Build Include="dbo\Stored Procedures\spUtilizationPerDriver.sql" />
+    <Build Include="dbo\Stored Procedures\spUtilizationPerDay.sql" />
+    <Build Include="dbo\Stored Procedures\spPendingWithIssues.sql" />
+    <Build Include="dbo\Stored Procedures\spGetWOByMarkets.sql" />
+    <Build Include="dbo\Stored Procedures\spForCsvInfo.sql" />
+    <Build Include="dbo\Stored Procedures\sp_UpdateCheckListSectionsQuestions.sql" />
+    <Build Include="dbo\Stored Procedures\sp_pending-issue.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_UserDateRights_Insert_Update.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_User_Manage.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_User_Insert_Update.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Role_Manage.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Role_Insert_Update.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_RegisterDevice.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Permission_Manage.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_ManangeWorkGroup.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_ManageUserSettings.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_ManageUserScopes.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_ManageUsers.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_ManageUserProjects.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_ManageUserDevice.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_ManageUserDefinationTypes.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_ManageRole.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_ManagePsermissions.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Insert_UserPsermissions.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Insert_UserClients.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Insert_UserCities.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Insert_Update_Psermissions.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Insert_RolePsermissions.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Insert_Psermissions.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_GetUserSettings.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_GetUserScopes.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_GetUsers.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_GetUserDevices.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_GetUserDefinationTypes.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_GetPermissions.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_GetDomainConfigurations.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Get_UserDateRights.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Get_UserClient.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Get_UserCities.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Get_Role.sql" />
+    <Build Include="dbo\Stored Procedures\Sec_Get_Permissions.sql" />
+    <Build Include="dbo\Stored Procedures\PM_WorkLogManage.sql" />
+    <Build Include="dbo\Stored Procedures\PM_TaskResource.sql" />
+    <Build Include="dbo\Stored Procedures\PM_Sandbox.sql" />
+    <Build Include="dbo\Stored Procedures\PM_Reports_Exports.sql" />
+    <Build Include="dbo\Stored Procedures\PM_Reports.sql" />
+    <Build Include="dbo\Stored Procedures\PM_Project_KPI.sql" />
+    <Build Include="dbo\Stored Procedures\PM_PlanProject.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageWorkGroups.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageTrackers.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageTrackerGroups.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageToDo.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageTaskStages.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageTasks.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageTaskEntry.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageTargets.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageSiteTaskTrackers.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageSiteTasks.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageSiteTaskInventory.sql" />
+    <Build Include="dbo\Stored Procedures\pm_ManageSiteTaskAttachment.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageProjectSites.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageProjects.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageProjectResources.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageProjectPlan.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageIssues.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ManageGazetteHolidays.sql" />
+    <Build Include="dbo\Stored Procedures\PM_ImportPlan.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetWorkLogs.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetTrackerGroups.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetToDo.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetTaskStages.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetTasks.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetTargets.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetSiteTaskInventory.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetResources.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetProjectSites.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetProjects.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetProjectResources.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetIssues.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetGazetteHolidays.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetEntities.sql" />
+    <Build Include="dbo\Stored Procedures\PM_GetApprovedHours.sql" />
+    <Build Include="dbo\Stored Procedures\PM_Get_ImportPlanHistory.sql" />
+    <Build Include="dbo\Stored Procedures\PM_DataImport1.sql" />
+    <Build Include="dbo\Stored Procedures\PM_DataImport_Old.sql" />
+    <Build Include="dbo\Stored Procedures\PM_DataImport_Act.sql" />
+    <Build Include="dbo\Stored Procedures\PM_DataImport.sql" />
+    <Build Include="dbo\Stored Procedures\PM_Dashboard_BKP.sql" />
+    <Build Include="dbo\Stored Procedures\PM_Dashboard.sql" />
+    <Build Include="dbo\Stored Procedures\p_SaveAD_Definations.sql" />
+    <Build Include="dbo\Stored Procedures\p_GetAD_Definations.sql" />
+    <Build Include="dbo\Stored Procedures\p_DeleteAD_Definations.sql" />
+    <Build Include="dbo\Stored Procedures\Inv_ManageUEIssues.sql" />
+    <Build Include="dbo\Stored Procedures\Inv_GetUEIssues.sql" />
+    <Build Include="dbo\Stored Procedures\GetDatabaseSchemaInfo.sql" />
+    <Build Include="dbo\Stored Procedures\FM_VehiclesSchedule.sql" />
+    <Build Include="dbo\Stored Procedures\FM_Vehicles_Assignment.sql" />
+    <Build Include="dbo\Stored Procedures\FM_Vehicles.sql" />
+    <Build Include="dbo\Stored Procedures\FM_Tracking.sql" />
+    <Build Include="dbo\Stored Procedures\FM_ManageVehicleTracking.sql" />
+    <Build Include="dbo\Stored Procedures\FM_ManageVehicleTracker.sql" />
+    <Build Include="dbo\Stored Procedures\FM_ManageFleetSettings.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetTempratureReport.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetSpeedReporting.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetMileageReport.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetGeoFenceReport.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetFuelReport.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetFleetSettings.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetFleetSettingd.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetFleetReporting.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetFleetReplayRecords.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetDetailAlarmReport.sql" />
+    <Build Include="dbo\Stored Procedures\FM_GetAssetStatus.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ValidateHandover.sql" />
+    <Build Include="dbo\Stored Procedures\AV_UpdateSiteTestSummary.sql" />
+    <Build Include="dbo\Stored Procedures\AV_TransferSiteLogs.sql" />
+    <Build Include="dbo\Stored Procedures\AV_SummaryView.sql" />
+    <Build Include="dbo\Stored Procedures\AV_SiteScript_GetNodesProperties.sql" />
+    <Build Include="dbo\Stored Procedures\AV_SiteManage.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ScheduleSite1.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ScheduleSite_O.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ScheduleSite.sql" />
+    <Build Include="dbo\Stored Procedures\AV_rptWOStatus.sql" />
+    <Build Include="dbo\Stored Procedures\AV_rptTesterSites.sql" />
+    <Build Include="dbo\Stored Procedures\AV_rptSubmittedOnWOStatus.sql" />
+    <Build Include="dbo\Stored Procedures\AV_rptNetLayer.sql" />
+    <Build Include="dbo\Stored Procedures\AV_rptDriveWOStatus.sql" />
+    <Build Include="dbo\Stored Procedures\AV_RFLegends.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Report.sql" />
+    <Build Include="dbo\Stored Procedures\AV_RemoveNIPcis.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ProcessNemoLogs.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Optimization.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManagSiteTestLog.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageWoDevices.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageUEPbx.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageTestSummary.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageSiteTaskAttachment.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageSiteScriptNodesProperties.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageSiteScript.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageSites.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageSiteIssueTracker.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageSectors.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageReDrive.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageNetLayerStatus.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageFloorPlans.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageDriveRoutes.sql" />
+    <Build Include="dbo\Stored Procedures\AV_ManageClusters.sql" />
+    <Build Include="dbo\Stored Procedures\AV_InsertWoTracker.sql" />
+    <Build Include="dbo\Stored Procedures\AV_InsertWorkorder.sql" />
+    <Build Include="dbo\Stored Procedures\AV_InsertScopeTests.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Insert_TestConfigurations.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Insert_SiteTestLog1.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Insert_SiteTestLog.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Insert_SiteConfigurations.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Insert_BeamTestLog.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetWoTracker.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetWorkOrder.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetWoDevices.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetWidgets.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetUEPbx.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSiteTestSummary.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSiteTestLog.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSitesToSchedule.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSiteScript.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSiteReport.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSiteIssueTracker.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSiteDashboardInfo.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSiteConfiguration.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSite.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSettingTemplate.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSectors.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetSectorColors.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetScopeTests.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetRoutePlan.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetProjectDashboardData.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetworkLayerProcessed.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetworkInfo.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetLayerSummary1.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetLayerSummary.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetLayerStatus.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetLayersBySiteCode.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetLayerReport7.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetLayerReport5.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetLayerReport4.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetLayerReport1.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetNetLayerReport.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetMarketSites.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetKmlLayer.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetFloorPlans.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetEmails.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetDriveRoutes.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetDeviceLockCommands.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetDashboardSites1.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetDashboardSites.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetDashboardData1.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetDashboardData.sql" />
+    <Build Include="dbo\Stored Procedures\AV_GetBands.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Get_ScriptTestKPI.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Get_Region.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Get_Cities_ByRegionId.sql" />
+    <Build Include="dbo\Stored Procedures\AV_Filter.sql" />
+    <Build Include="dbo\Stored Procedures\AV_EditWorkOrder.sql" />
+    <Build Include="dbo\Stored Procedures\AL_ManageAlert.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ManageUserEquipments.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ManageUEMovement.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ManageProjects.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ManageProjectConfiguration.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ManageDefinationTypes.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ManageDefinations.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ManageClients.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ManageClientContacts.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ManageClientAddress.sql" />
+    <Build Include="dbo\Stored Procedures\AD_InsertReportConfiguration.sql" />
+    <Build Include="dbo\Stored Procedures\AD_InsertDefinations.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetVendors.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetUserEquipments.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetReportFilters.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetReportConfiguration.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetQueryResult.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetProjects.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetIssue.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetHelp.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetFilterQuery.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetDefinationTypes.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetDefinations.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetClients.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetClientContacts.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GetClientAddress.sql" />
+    <Build Include="dbo\Stored Procedures\AD_GenerateDates.sql" />
+    <Build Include="dbo\Stored Procedures\AD_ChartSettings.sql" />
+    <Build Include="dbo\User Defined Types\TSS_SiteAttendeeList.sql" />
+    <Build Include="dbo\User Defined Types\TSS_ResponsesList.sql" />
+    <Build Include="dbo\User Defined Types\TSS_QuestionResponses.sql" />
+    <Build Include="dbo\User Defined Types\Test_IdList.sql" />
+    <Build Include="dbo\User Defined Types\tbl_TestConfiguration.sql" />
+    <Build Include="dbo\User Defined Types\tbl_SiteConfiguration.sql" />
+    <Build Include="dbo\User Defined Types\Tbl_Permissions.sql" />
+    <Build Include="dbo\User Defined Types\Tbl_AV_SiteTestSummary.sql" />
+    <Build Include="dbo\User Defined Types\Tbl_AD_Definations.sql" />
+    <Build Include="dbo\User Defined Types\Tb_Sectors.sql" />
+    <Build Include="dbo\User Defined Types\Tb_Data.sql" />
+    <Build Include="dbo\User Defined Types\Tb_AV_Workorder.sql" />
+    <Build Include="dbo\User Defined Types\Tb_AV_SiteTestLog.sql" />
+    <Build Include="dbo\User Defined Types\Tb_AV_Sectors.sql" />
+    <Build Include="dbo\User Defined Types\Tb_AV_ScopeTests.sql" />
+    <Build Include="dbo\User Defined Types\Tb_AV_BeamTestLog.sql" />
+    <Build Include="dbo\User Defined Types\Tb_AD_ReportConfiguration.sql" />
+    <Build Include="dbo\User Defined Types\TaskStages.sql" />
+    <Build Include="dbo\User Defined Types\TaskList.sql" />
+    <Build Include="dbo\User Defined Types\ProjectSites.sql" />
+    <Build Include="dbo\User Defined Types\PM_SiteTaskInventory.sql" />
+    <Build Include="dbo\User Defined Types\PM_ImportLists.sql" />
+    <Build Include="dbo\User Defined Types\PM_ImportList.sql" />
+    <Build Include="dbo\User Defined Types\List.sql" />
+    <Build Include="dbo\User Defined Types\AV_Handovers.sql" />
+  </ItemGroup>
+</Project>

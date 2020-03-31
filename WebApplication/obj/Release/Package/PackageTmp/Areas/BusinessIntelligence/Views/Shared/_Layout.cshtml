@@ -1,0 +1,284 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Airview Xcelerate</title> @*<title>@ViewBag.Title</title>*@
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+
+    <!-- Styles -->
+    @*<link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">*@
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/bootstrap/bootstrap.min.css" />
+
+    <!-- BI related Styles Starts -->
+    <link href="~/Areas/BusinessIntelligence/assets/css/Form.io.css" rel="stylesheet" />
+    <link href="~/Areas/BusinessIntelligence/assets/css/angular-toastr.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/enscroll/enscroll.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/full-calendar/fullcalendar.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/tag-editor/jquery.tag-editor.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/lightbox/lightbox.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/carousel/slick.min.css" />
+    <link rel="stylesheet" href="~/Areas/BusinessIntelligence/assets/plugins/tree/style.min.css" />
+    <link rel="stylesheet" href="~/Areas/BusinessIntelligence/assets/plugins/tree/heirachy/heirarchy.css" />
+    <link rel="stylesheet" href="~/Areas/BusinessIntelligence/assets/plugins/nestable/nestable.css" />
+    <link rel="stylesheet" href="~/Areas/BusinessIntelligence/assets/plugins/texteditor/froala_editor.min.css" />
+    <link rel="stylesheet" href="~/Areas/BusinessIntelligence/assets/plugins/multiple-emails/multiple-emails.css" />
+    <link rel="stylesheet" href="~/Areas/BusinessIntelligence/assets/plugins/rangeslider/ion.rangeSlider.css" />
+    <link href="~/Areas/BusinessIntelligence/assets/plugins/switch/jquery.mswitch.css" rel="stylesheet" />
+    <link href="~/Areas/BusinessIntelligence/assets/plugins/dynatree/skin/ui.dynatree.css" rel="stylesheet" />
+
+    <link href="~/Areas/BusinessIntelligence/assets/css/ivh-treeview.css" rel="stylesheet" />
+    <link href="~/Areas/BusinessIntelligence/assets/css/ivh-treeview-theme-basic.css" rel="stylesheet" />
+    <link href="~/Areas/BusinessIntelligence/Content/ui-grid.css" rel="stylesheet" />
+    <link href="~/Areas/BusinessIntelligence/Plugin/uiSelect/select.min.css" rel="stylesheet" />
+    <link href="~/Areas/BusinessIntelligence/assets/css/select2.css" rel="stylesheet" />
+    <link href="~/Areas/BusinessIntelligence/assets/css/selectize.default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="~/Areas/BusinessIntelligence/assets/plugins/tree/themes/default/style.min.css" rel="stylesheet" />
+    <link href="~/Areas/BusinessIntelligence/assets/mxgraph/src/css/common.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <!-- BI related Styles Ends -->
+
+    <!-- Plugins -->
+    <link href="~/Areas/BusinessIntelligence/assets/plugins/grid-stack/gridstack.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/Theme/AirViewX/assets/plugins/date-range-picker/daterangepicker-2.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/datedropper/datedropper.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/bootstrap-material-date-time-picker/bootstrap-material-datetimepicker.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/searchable-multiselect-dropdown/jquery.dropdown.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/bootstrap-multiselect/bootstrap-multiselect.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/validator/validator.css" />
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/plugins/datatable/datatable.css" />
+    <link rel="stylesheet" href="~/Areas/BusinessIntelligence/assets/plugins/colorpicker/colorpicker.css" />
+    <link rel="stylesheet" href="~/Areas/BusinessIntelligence/assets/plugins/select2/select2.min.css" />
+    <link href="~/Areas/BusinessIntelligence/assets/plugins/query_builder/css/query-builder.default.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/Theme/AirViewX/assets/plugins/multiple_fields_dropdown/jquery.inputpicker.css">
+    <link rel="stylesheet" href="/Theme/AirViewX/assets/plugins/confirm/jquery-confirm.min.css">
+
+    @*@Styles.Render("~/Content/DevExtremeBundle")*@
+    @RenderSection("style", false)
+
+    <link rel="stylesheet" type="text/css" href="~/Areas/BusinessIntelligence/assets/css/style.css" />
+
+    <!-- Responsive -->
+    <link rel="stylesheet" type="text/css" href="/Theme/AirViewX/assets/css/responsive.css" />
+
+
+</head>
+<body class="theme6 sec-sidemenu" ng-app="Airview.Xcelerate" ng-controller="mainController as vm">
+    <div ng-controller="header as vm" class="header">
+        <header>
+            <div class="logo"><a href="#" title=""><img src="/Theme/AirViewX/images/logo.png" alt="" /><img class="white-logo" src="/Theme/AirViewX/images/logo2.png" alt="" /></a></div><!-- Logo -->
+            <a class="menu-icon" ng-click="vm.resizeAllWidget()" href="#" title=""><i class="fa fa-bars"></i></a>
+            @*<div class="ems-top-header" ng-if="vm.showEMSTopheader==true" ng-cloak>
+                <div class="info">
+                    <a href="javascript:void(0);" title=""><strong>Entity Code</strong> {{vm.entityInformation.EntityCode}}</a>
+                    <a href="javascript:void(0);" title=""><strong>Entity Name</strong> {{vm.entityInformation['EntityName']}}</a>
+
+                    <a href="javascript:void(0);" title=""><strong>Entity Category</strong> {{ vm.entityInformation['EntityCategory']}}</a><a href="javascript:void(0);" title=""><strong>Entity Status</strong>{{vm.entityInformation['IsActive']}}</a>
+                </div>
+                <div class="industry-sector">
+                    <span>{{vm.entityInformation['Industry']}}</span> |
+                    <span>{{ vm.entityInformation['Sector']}}</span> |
+                    <span>{{ vm.entityInformation['Owner']}}</span>
+                </div>
+                </div>*@  
+                @*<div class="header-search">
+                <form> <input type="text" placeholder="Search..." /> <button> <img src="images/search.png" alt=""> </button> </form>
+            </div>*@
+
+                @*<div class="info">
+                <a href="#" title=""><strong>Project:</strong> FSM4</a>
+                <a href="#" title=""><strong>Start Date:</strong> 01 Jan, 2018</a>
+                <a href="#" title=""><strong>Expected End Date:</strong> 07 Jan, 2020</a>
+            </div>*@
+
+
+                @RenderSection("TopSection", required: false)
+
+</header>
+    </div>
+   
+    
+    <div class="layout-wrapper @*printSetting*@">
+        @*<div ng-include="'dsrpt/DashboardNReport/getPartialPage/Shared/sideheader.cshtml'"></div>*@
+        <div class="sideheader inactive">
+            @if (SWI.Security.Filters.Permission.IsLogin())
+            {
+                @Html.Action("Menu", "Permission", new { area = "", type = "AdminLte" })
+            } 
+           
+        </div>
+      
+        <div class="content-area printSetting">
+            @RenderBody()
+
+
+            <div class="footer">
+                <p>Copyright &copy; @DateTime.Today.Year All Rights Reserved by Airview.</p>
+                @*<p>Powered By <img src="~/Theme/AirViewX/images/aircod.png" /> </p>*@
+            </div>
+        </div><!-- Content Area -->
+    </div><!-- Layout Wrapper -->
+
+
+<div id="entityPopArea"></div>
+</body>
+
+
+
+</html>
+
+<script src="~/Areas/BusinessIntelligence/assets/js/jquery.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/js/jquery.cookie.js"></script>
+<script src="~/Areas/BusinessIntelligence/Scripts/angular-1.4.6/angular.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/js/ivh-treeview.js"></script>
+<script src="~/Areas/BusinessIntelligence/Scripts/angular-ui-router.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/js/ui-bootstrap-tpls-2.5.0.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/js/angular-toastr.tpls.js"></script>
+<script src="~/Areas/BusinessIntelligence/Scripts/angular-1.4.6/angular-animate.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/Scripts/angular-1.4.6/angular-sanitize.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/Scripts/ui-grid.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/Plugin/uiSelect/select.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular-messages.js"></script>
+
+
+<!--Added by sohail-->
+@*<link href="~/Areas/BusinessIntelligence/assets/css/jquery.datetimepicker.min.css" rel="stylesheet" />*@
+<link rel="stylesheet" href="https://cdn.datatables.net/colvis/1.1.2/css/dataTables.colVis.css" />
+@*<script src="~/Areas/BusinessIntelligence/assets/js/jquery.datetimepicker.full.js"></script>*@
+<link href="~/Areas/BusinessIntelligence/assets/css/querybuilder.css" rel="stylesheet" />
+
+
+@*<script src="https://cdn.datatables.net/colreorder/1.5.1/js/dataTables.colReorder.min.js"></script>*@
+@*<script src="https://cdn.datatables.net/colvis/1.1.2/js/dataTables.colVis.min.js"></script>*@
+
+<!-- Plugins Files -->
+<script src="~/Areas/BusinessIntelligence/assets/plugins/circular-loader/circularloader.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/date-range-picker/daterangepicker.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/datedropper/datedropper.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/bootstrap-material-date-time-picker/bootstrap-material-datetimepicker.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/enscroll/jquery.enscroll.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/full-calendar/fullcalendar.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/datatable/datatable.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/searchable-multiselect-dropdown/jquery.dropdown.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/tag-editor/jquery.tag-editor.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/js/jquery.validate.min.js"></script>
+@*<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>*@
+<script src="~/Areas/BusinessIntelligence/assets/plugins/stepform/jquery.bootstrap.wizard.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/mask/jquery.mask.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/validator/validator.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/lightbox/lightbox.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/carousel/slick.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/tree/jstree.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/tree/heirachy/heirarchy.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/nestable/jquery.nestable.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/texteditor/froala_editor.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/colorpicker/colorpicker.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/multiple-emails/multiple-emails.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/rangeslider/ion.rangeSlider.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/select2/select2.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/select2/selecttotree.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/switch/jquery.mswitch.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/dynatree/jquery.dynatree.min.js"></script>
+<!-- Sparkline -->
+<script src="~/Areas/BusinessIntelligence/assets/js/jquery.sparkline.min.js"></script>
+@*<script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.min.js"></script>*@
+
+<script src="~/Areas/BusinessIntelligence/assets/plugins/grid-stack/lodash.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/grid-stack/gridstack.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/grid-stack/jQueryUI.min.js"></script>
+<script>
+    /*** jQuery UI and Bootstrap Tooltip Conflict is Solved With This Code ***/
+    $.widget.bridge('uibutton', $.ui.button);
+    $.widget.bridge('uitooltip', $.ui.tooltip);
+</script>
+
+<script src="~/Areas/BusinessIntelligence/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<script>
+    $(window).scroll(function (event) {
+        var scroll = $(window).scrollTop();
+        if (scroll >= 50) {
+            $(".fixed_bar").addClass("show")
+        } else {
+            $(".fixed_bar").removeClass("show")
+        }
+    });
+
+    $(".btnPrint").click(function () {
+        $('body').addClass('when-print');
+        window.print();
+        $('body').removeClass('when-print');
+    })
+    var rootDocument = $(document);
+</script>
+
+<!-- Muuri Files -->
+<script src="~/Areas/BusinessIntelligence/assets/js/web-animations.min.js"></script>
+@*<script src="https://rawgit.com/web-animations/web-animations-js/master/web-animations.min.js"></script>*@
+<script src="~/Areas/BusinessIntelligence/assets/js/hammer.min.js"></script>
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>*@
+<script src="~/Areas/BusinessIntelligence/assets/js/muuri.min.js"></script>
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/muuri/0.5.4/muuri.min.js"></script>*@
+
+
+<!-- Canvas JS Charts Files -->
+<script src="~/Areas/BusinessIntelligence/assets/plugins/canvasjs/canvasjs.min.js"></script>
+
+
+<!--Previous key-->
+@*<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCzW3bnoPlG8CFQddb9A8YeqTQd35XtOHA&sensor=true&libraries=places"></script>*@
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBT21nN_D3c6gddHl7iPOfXB-4wvy3FtAs&sensor=true&libraries=places"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/query_builder/dependencies/doT.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/query_builder/dependencies/jQuery.extendext.min.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/plugins/query_builder/dependencies/moment.js"></script>
+
+@*<script src="~/Areas/BusinessIntelligence/assets/plugins/query_builder/query-builder.min.js"></script>*@
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/QueryBuilder/QuerybuilderDirective.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/App.Setttings.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/mxgraph/src/js/mxClient.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/App.Module.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/App.Config.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/DashboardAndReport/DashboardAndReportService.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/TopHeader/TopHeaderServices.js"></script>
+<!-- Common Scripts -->
+<script src="~/Areas/BusinessIntelligence/assets/js/script.js"></script>
+
+<!-- Angular JS Files -->
+<!-- Controllers -->
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/TopHeader/TopSectionDashboardAndReportServices.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/TopHeader/TopSectionModalInstanceServices.js"></script>
+<script src="~/Areas/BusinessIntelligence/assets/js/controllers.js"></script>
+
+<script src="~/Areas/BusinessIntelligence/assets/js/xml-js.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/Master/MasterServices.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/QueryBuilder/QueryBuilderService.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/QueryBuilder/JoinTypeServices.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/QueryBuilder/AddMultipleJoinServices.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/ETL/ETL_DashboardAndReportService.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/ETL/AddETLNameService.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/ETL/AddETLSchedular.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/QueryBuilder/AddRemoteDataSourceServices.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/TopHeader/ELTTopSectionDashboardAndReportServices.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/TopHeader/ELTTopSectionModalInstanceServices.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
+<script src="~/Areas/BusinessIntelligence/AirviewXcelerateApp/Services/QueryBuilder/AddTablesNViewsServices.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+<script src="~/Theme/AirViewX/assets/plugins/confirm/jquery-confirm.min.js"></script>
+<script src="~/Theme/AirViewX/assets/plugins/loader/loadingoverlay.min.js"></script>
+
+@*@Scripts.Render("~/Scripts/DevExtremeBundle")*@
+@RenderSection("scripts", false)
+
+<script src="~/Areas/BusinessIntelligence/assets/js/jsonQ.min.js"></script>
+@*<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>*@
+<script src="~/Areas/BusinessIntelligence/assets/js/Form.io.js"></script>
+@*<script src="~/Scripts/jquery.unobtrusive-ajax.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>*@
+<script src='~/Theme/AirViewX/assets/plugins/toaster/jquery.toaster.js'></script>

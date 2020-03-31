@@ -1,0 +1,150 @@
+﻿<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="tempstat-title">Temperature Report <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Temperature Stat Report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="temperaturestat-custom-filters">
+            <div class="filter-field">
+                    <label>Vehicle</label>
+                    <input type="text" id="tempassets" class="assets" placeholder="" />
+             </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="date-range1">
+                </div>
+            </div>
+            <div class="filter-field">
+                <label>More Than Temp</label>
+                <input type="text" id="starttemp" placeholder="" style="width:100px" />
+            </div>
+            <div class="filter-field">
+                <label>Less Than Temp</label>
+                <input type="text" id="endtemp" placeholder="" style="width:100px" />
+            </div>
+            <div class="filter-field button">
+                <button id="apply_filterstemprpt" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="temperaturestat-table">
+            <table id="tempraturestatreport" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Time</th>
+                        <th>Vehicle</th>
+                        <th>Tracker Id</th>
+                        <th>Temperature</th>
+                        
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#apply_filterstemprpt").click(function () {
+        debugger;
+        var assets = $("#tempassets").val();
+        var daterange = $("#date-range1").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var startTemp = $("#starttemp").val();
+        var endTemp = $("#endtemp").val();
+        var reportexporttitle = $("#tempstat-title").text();
+        var exportfilename = $("#tempstat-title").text();
+        var frcmodel = {
+            ReportFilter: "TempratureStatReport",
+            startDate: startdate,
+            endDate: enddate,
+            startTemprature: startTemp,
+            endTemprature: endTemp
+        }
+
+        var table = $('#tempraturestatreport').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy:true,
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            //orientation: 'landscape',
+                            //pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                                doc.content[1].table.widths =
+                                Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_TempratureReport",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'Time', "name": "Time", "autoWidth": true },
+               { data: 'AssetName', "name": "Vehicle" },
+               { data: 'TrackerId', "name": "Tracker Id" },
+               { data: 'Temperature', "name": "Temperature", "autoWidth": true }
+               
+            ],
+            initComplete: function (settings, json) {
+                $("#temperaturestat-custom-filters .top").remove();
+                $($("#temperaturestat-table .top")).appendTo("#temperaturestat-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+        //$.ajax({
+        //    url: window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+        //    type: "POST",
+        //    traditional: true,
+        //    data:JSON.stringify(frcmodel),
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    error: function (response) {
+        //        alert(response.responseText);
+        //    },
+
+        //    success: function (response) {
+        //        alert(response);
+        //    }
+        //});
+    });
+</script>
+

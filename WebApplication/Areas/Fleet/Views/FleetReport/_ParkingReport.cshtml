@@ -1,0 +1,135 @@
+﻿
+<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="parking-title">Positioning Statement <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Parking Report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="parking-custom-filters">
+            <div class="filter-field">
+                <label>Vehicle</label>
+                <input type="text" id="parkingrptasset" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="parkingrptdate-range">
+                </div>
+            </div>
+            <div class="filter-field">
+                <label>Parking time (Minute)</label>
+                <input type="text" id="parkingtime"  placeholder="" style="width:50px"/>
+            </div>
+            <div class="filter-field button">
+                <button id="parkingrptapply_filters" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="parking-table">
+            <table id="parkingreport" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Vehicle</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Parking Time</th>
+                        <th>Address</th>
+                        <th>Longitude</th>
+                        <th>Latitude</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#parkingrptapply_filters").click(function () {
+        debugger;
+
+        var assetname = $("#parkingrptasset").val();
+        var daterange = $("#parkingrptdate-range").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var parkingtime = $("#parkingtime").val();
+        var reportexporttitle = $("#parking-title").text();
+        var exportfilename = $("#parking-title").text();
+        var frcmodel = {
+            ReportFilter: "ParkingReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname,
+            parkingTime:parkingtime
+        }
+
+        var table = $('#parkingreport').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'AssetName', "name": "Vehicle"},
+               { data: 'StartTime', "name": "Start Time", "autoWidth": true },
+               { data: 'EndTime', "name": "End Time", "autoWidth": true },
+               { data: 'ParkingTime', "name": "Parking Time", "autoWidth": true },
+               { data: 'Address', "name": "Address", "autoWidth": true },
+               { data: 'Longitude', "name": "Longitude", "autoWidth": true },
+               { data: 'Latitude', "name": "Latitude", "autoWidth": true },
+            ],
+            initComplete: function (settings, json) {
+                $("#parking-custom-filters .top").remove();
+                $($("#parking-table .top")).appendTo("#parking-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+    
+    });
+</script>

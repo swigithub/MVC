@@ -1,0 +1,1701 @@
+﻿@{
+    ViewBag.Title = "SandBox Analysis";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+    var ProjectId = ViewBag.Id;
+}
+
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+<link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://angular-ui.github.io/ui-select/dist/select.css">
+<link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+<link href="~/Areas/Project/Content/Project/groupMultiSelect.css" rel="stylesheet" />
+<link href="~/Areas/Project/Content/Project/Style.css" rel="stylesheet" />
+<script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+<script src="~/Content/js/ui-bootstrap-tpls-0.13.0.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://rawgithub.com/highcharts/draggable-points/master/draggable-points.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
+<link rel="stylesheet" href="~/Areas/Project/Content/stylesR/daterangepicker.css">
+<script src="~/Areas/Project/Content/ScriptR/vendor.js"></script>
+<script src="~/Areas/Project/Content/ScriptR/multidaterangepicker.js"></script>
+<script src="https://code.jquery.com/ui/1.8.23/jquery-ui.min.js"
+        integrity="sha256-sEFM2aY87nr5kcE4F+RtMBkKxBqHEc2ueHGNptOA5XI="
+        crossorigin="anonymous"></script>
+<link href="~/Areas/Project/Content/skin/skin/ui.dynatree.css" rel="stylesheet" />
+<link href="~/Areas/Project/Content/Drop-Down-Combo-Tree/style.css" rel="stylesheet" />
+<script src="~/Areas/Project/Content/jquery.dynatree.min.js"></script>
+<style>
+
+    .sweet-alert {
+        background-color: #ffffff;
+        width: 478px;
+        padding: 17px;
+        border-radius: 5px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        margin-left: -256px;
+        margin-top: -200px;
+        overflow: hidden;
+        display: none;
+        z-index: 9999992000 !important;
+    }
+
+    .checkedrow {
+        background-color: #dbd3b8 !important;
+    }
+
+    a.chartdetail {
+        display: table-cell;
+        font-size: 14px;
+        vertical-align: middle;
+        padding-right: 5px;
+        white-space: nowrap;
+    }
+
+    .chartdetail ~ b {
+        display: table-cell;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .table.no-border tr td, .table.no-border tr th {
+        border-width: 0;
+        border-top: hidden;
+    }
+
+    .options {
+        z-index: 2 !important;
+    }
+
+    .fc-content {
+        margin-top: -12px;
+    }
+
+    span#sizing-addon2 {
+        display: table-cell;
+        height: 30px;
+        padding: 5px 10px;
+    }
+
+    .input-group-sm {
+        display: table;
+    }
+
+    .modal-body {
+        position: relative;
+        padding: 5px 20px 20px !important;
+    }
+
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x- ng-cloak {
+        display: none !important;
+    }
+
+    .daterangepicker {
+        z-index: 10000000001 !important;
+    }
+
+    /*.multiselect-selected-text {
+            font-size: 10px !important;
+        }
+
+        .multiselect {
+            width: 100px;
+        }*/
+    /*.dd-item > button {
+            margin-top: 16px !important;
+        }*/
+    .dd-item > button {
+        /*margin: 0;*/
+        margin-left: 15px;
+        font-size: 24px;
+        height: 24px;
+        margin-top: 15px !important;
+    }
+
+    #regionviewchart > .canvasjs-chart-container > .canvasjs-chart-canvas {
+        width: 100%;
+    }
+
+    .canvasjs-chart-container {
+        width: 100%;
+    }
+
+    #legend {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        padding: 10px;
+        right: 10px;
+        top: 50%;
+        position: absolute;
+        border: 3px solid #000;
+        transform: translateY(-50%);
+        max-height: 270px;
+        max-width: 170px;
+        overflow: auto;
+        z-index: 200;
+        /*2000000000000*/
+    }
+
+    .map-filters {
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: auto !important;
+        width: calc(100% - 40px);
+        z-index: 200;
+    }
+
+    #legend3 {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        padding: 10px;
+        margin: 10px;
+        border: 3px solid #000;
+    }
+
+    #legend h3 {
+        margin-top: 0;
+    }
+
+    #legend img {
+        vertical-align: middle;
+    }
+
+
+    .chart-heading h4 {
+        float: left;
+        background: #eee;
+        margin-right: 7px;
+        height: 23px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid #acacac;
+        /*text-transform: uppercase;*/
+    }
+
+        .chart-heading h4:last-child {
+            margin: 0;
+        }
+
+        .chart-heading h4 span {
+            float: left;
+            border-right: 1px solid #acacac;
+            padding: 0 4px;
+            height: 23px;
+        }
+
+            .chart-heading h4 span:last-child {
+                border: 0;
+            }
+
+    #legend img {
+        vertical-align: middle;
+    }
+
+
+    .modal {
+        z-index: 999000000000000 !important;
+    }
+
+
+
+.ui-sortable .light-widget.jarviswidget-sortable>header {
+    box-shadow: none!important;
+    border: 1px solid #c2c2c2;
+    background: #fafafa;
+}
+.light-widget a.collapse-widget {
+    color: #4c4f53;
+}
+.light-widget a.collapse-widget {
+    color: #4c4f53;
+}
+
+.light-widget .widget-toolbar {
+    border: 0!important;
+}
+.light-widget .selected-filters i{color:#333}
+
+
+    .filters-dropdown-wrapper {
+        float: left;
+        position: relative;
+    }
+.filters-dropdown-wrapper a.btn.dropdown-shown {
+color: #37a5dc;
+}
+    .filters-dropdown {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        z-index: 2;
+        background: #f9fdff;
+        padding:10px;
+        margin-top: 2px;
+        min-width: 200px;
+        visibility: hidden;
+        opacity: 0;
+        -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        -webkit-border-radius: 0 0 5px 5px;
+        -moz-border-radius: 0 0 5px 5px;
+        border-radius: 0 0 5px 5px;
+        -webkit-transform: scale(0.7);
+        -moz-transform: scale(0.7);
+        transform: scale(0.7);
+        -webkit-transition: all 0.2s linear;
+        -moz-transition: all 0.2s linear;
+        transition: all 0.2s linear;
+    }
+
+        .filters-dropdown.left {
+            right: auto;
+            left: 0;
+        }
+
+        .filters-dropdown.active {
+            visibility: visible;
+            opacity: 1;
+            -webkit-transform: scale(1);
+            -moz-transform: scale(1);
+            transform: scale(1);
+        }
+
+.filters-dropdown-wrapper a.btn {
+    float: left;
+    padding: 4px 5px;
+    background: none;
+    border: 0;
+    color: #4c4f53;
+    font-weight: 500;
+    font-size: 16px;
+    box-shadow: none;
+}
+
+    .filters-dropdown > div {
+        float: left;
+        width: 100%;
+        margin: 0 0 10px !important;
+    }
+
+    .filters-dropdown span.multiselect-native-select, .filters-dropdown span.multiselect-native-select .btn-group {
+        width: 100% !important;
+    }
+
+    .filters-dropdown button {
+        width: 100%;
+        margin: 0;
+    }
+
+    .filters-dropdown .select, .filters-dropdown .groupMultiSelect {
+        width: 100% !important;
+        text-align: center;
+    }
+
+        .filters-dropdown .groupMultiSelect .group-selection {
+            width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
+            line-height: 1;
+            margin: 0 !important;
+            text-align: center;
+        }
+
+    .filters-dropdown .example {
+        width: 100% !important;
+    }
+     .comboTreeWrapper {
+        position: relative;
+        text-align: left !important;
+        width: 150px;
+    }
+
+    div.comboTreeDropDownContainer {
+        z-index: 1;
+    }
+    .defaultCursor {cursor: default;}
+    .comboTreeArrowBtn{width:auto!important}
+</style>
+<script type="text/javascript">
+
+  
+</script>
+<section id="widget-grid" class="ng-cloak" ng-app="DashboardApp" ng-controller="DashboardCtrl">
+    <div class="alert alert-success alert-dismissable" id="SuccessMessage" style="display:none;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <b>Success!</b> <p id="SuccessText">Save successfully.</p>
+    </div>
+    <span data-UserId="@ViewBag.UserId" hidden id="UserId"></span>
+
+    <div class="container-fluid" style="margin-left:-15px;">
+        <div ng-repeat="x in BookmarkTasks">
+
+            <!-- ./col -->
+            <div class="col-sm-2" style="margin-left:-10px;">
+                <!-- small box -->
+                <div class="small-box StatusShadow" style="color: white; background-color: {{x.Color}}; font-weight: bold;">
+                    <div class="inner">
+                        <h3>{{x.ActualSites}}</h3>
+
+                        <p>{{x.Task}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2" ng-repeat="y in x.Tasks" style="margin-left:-10px;">
+                <!-- small box -->
+                <div class="small-box StatusShadow" style="color: white; background-color: {{y.Color}}; font-weight: bold;">
+                    <div class="inner">
+                        <h3>{{y.ActualSites}}</h3>
+
+                        <p>{{y.Task}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ./col -->
+        </div>
+    </div>
+
+    <!-- row -->
+    <div class="row">
+        <span hidden id="pId" data-ProjectId="@ViewBag.Id"></span>
+        <article class="col-sm-12 sortable-grid ui-sortable" style="margin-bottom:-18px;">
+            <!-- new widget -->
+            <div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" style="margin:0 0 15px !important;" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" role="widget">
+
+                <header role="heading">
+                    <span class="widget-icon"> <i class="glyphicon glyphicon-stats"></i> </span>
+                    <h2 style="font-weight:bold;">Planning View </h2>
+
+                    <div class="btn-group pull-left" style="margin-left:20px;margin-top:5px">
+                        <button data-type="Daily" class="btn btn-info btn-xs programchart" >Daily</button>
+                        <button class="btn btn-info btn-xs programchart" data-type="Weekly">Weekly</button>
+                        <button class="btn btn-info btn-xs programchart" data-type="Monthly">Monthly</button>
+                        <button class="btn btn-info btn-xs programchart" data-type="Quaterly">Quaterly</button>
+                        <button class="btn btn-info btn-xs programchart" data-type="Yearly">Yearly</button>
+                    </div>
+
+
+                    <div class="widget-toolbar filters pull-left">
+                        <div class="filters-dropdown-wrapper">
+                            <a class="btn btn-default apply-filter-btn" href="#" title=""><i class="fa fa-filter"></i></a>
+
+                            @*<button class="btn btn-default" id="SearchProject" style="background: #a8a9a7;color: #fff;margin-left:2px;height:30px;"><span class="fa fa-filter"></span></button>*@
+                            <div class="filters-dropdown">
+                                <div class="input-group" style="margin-right:2px;">
+
+                                    <button type="button" class="btn btn-default pull-right" id="reportrange1">
+                                        <span>
+                                            Date range picker
+                                        </span>
+                                        <i class="fa fa-caret-down"></i>
+                                    </button>
+
+                                </div>
+                                @*<div class="input-group" style="margin-right:2px;">
+                <button type="button" class="btn btn-default" id="reportrange1">
+                <span>
+                Date range picker
+                </span>
+                <i class="fa fa-caret-down"></i>
+                </button>
+                </div>*@
+
+                                <div class="example" id="lstProjectMarkets">
+                                </div>
+                                <div class="example" id="lstIssueStatus">
+                                </div>
+                                @*<div class="example" id="ListProjectTask">
+                </div>*@
+                                <input type="text" id="ListSandboxTasks" />
+                                @*<div id="ListProjectTaskSandbox" class="dynatree-drop">
+                                    <span class="dynatree-btn">Tasks</span>
+
+                                    <div class="dynatree123" id="dynatreeSandbox">
+
+                                    </div>
+                                    
+                                </div>*@
+                                <button class="btn btn-default apply-filter-btn" id="SearchProject" style="background: #37a5dc;color: #fff;margin-left: 0;box-shadow: none;height:30px;border: 0;"><span class="fa fa-filter"></span>  Apply Filters</button>
+                            </div>
+                            @*<div class="groupMultiSelect example" id="ListProjectTaskSandbox" style="background:#fff;border-radius:4px;height:30px;width:136px;">
+
+            </div>*@
+
+                        </div>
+                    </div>
+
+
+
+
+                </header>
+
+                <!-- widget div-->
+                <div class="no-padding" role="content" style="overflow:hidden">
+
+                    <div id="myTabContent" class="tab-content">
+
+                        <!-- end s1 tab pane -->
+                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s2">
+                            <div class="row no-space">
+
+                                @*<div id="chartContainer" style="height:320px;margin-bottom: -10px !important;margin-top: -10px !important;" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                                        <div id="updating-chart" hidden class="chart-large txt-color-blue" style="padding: 0px; position: relative;"><canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 717px; height: 235px;" width="717" height="235"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 26px; text-align: center;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 91px; text-align: center;">10</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 159px; text-align: center;">20</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 226px; text-align: center;">30</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 294px; text-align: center;">40</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 362px; text-align: center;">50</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 430px; text-align: center;">60</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 498px; text-align: center;">70</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 565px; text-align: center;">80</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 633px; text-align: center;">90</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 220px; left: 698px; text-align: center;">100</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 203px; left: 13px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 163px; left: 7px; text-align: right;">20</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 123px; left: 7px; text-align: right;">40</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 83px; left: 7px; text-align: right;">60</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 43px; left: 7px; text-align: right;">80</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 3px; left: 0px; text-align: right;">100</div></div></div><canvas class="flot-overlay" style="direction: ltr; position:absolute; left: 0px; top: 0px; width: 717px; height: 235px;" width="717" height="235"></canvas></div>
+                                    </div>*@
+                                <div id="container" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style=""></div>
+                                <div id="drag"></div>
+                                <div id="drop"></div>
+                            </div>
+
+
+                        </div>
+                        <!-- end s2 tab pane -->
+
+                    </div>
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+
+            <div class="jarviswidget light-widget jarviswidget-sortable" id="wid-id-1" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" role="widget">
+
+                <header role="heading">
+                    <span class="widget-icon"> <i class="glyphicon glyphicon-stats"></i> </span>
+                    <h2>Planning Details  </h2>
+
+
+
+
+
+                </header>
+
+                <!-- widget div-->
+                <div class="no-padding" role="content">
+
+                    <div id="myTabContent" class="tab-content">
+
+                        <!-- end s1 tab pane -->
+                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s3" style="overflow:auto">
+                            <div class="row no-space">
+
+                                <div id="SandBoxWid1" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style=""></div>
+                                <table class="table  table-responsive table-hover table-striped" style="border:none">
+                                    <thead class="TableHead">
+
+                                    </thead>
+                                    <tbody class="TableBody"></tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+                        <!-- end s3 tab pane -->
+
+                    </div>
+                </div>
+                <!-- end widget div -->
+            </div>
+        </article>
+    </div>
+    @*modal*@
+    <div class="modal fade" id="SandBoxModal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="min-width:90%;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                    <button type="button" style="color:white" class="close" onclick="CloseModalSandbox()" aria-hidden="true">
+                        ×
+                    </button>
+                    <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"> <label> Sandbox</label><label class="labelFacode"></label></h5>
+                </div>
+                <div class="modal-body" id="SandBoxModalBody">
+
+                </div>
+                <footer class="modal-footer">
+                    <button class="btn btn-primary hidden SaveSandbox" onclick="SaveSandbox()">
+                        Save
+                    </button>
+                    <button class="btn btn-primary ReviewSandbox" onclick="ReviewSandbox()">
+                        Review
+                    </button>
+                    <button class="btn btn-danger" onclick="CloseModalSandbox()">
+                        Cancel
+                    </button>
+                </footer>
+            </div>
+        </div>
+    </div>
+</section>
+<style type="text/css">
+    /*.caret {
+        float: right;
+        margin-top: 9px;
+    }*/
+    .modal-body {
+        display: inline-block;
+        width: 100%;
+    }
+
+    #regionviewchart > .canvasjs-chart-container {
+        margin-left: -6px;
+    }
+
+    .error {
+        border: 1px solid red;
+    }
+
+    .child-table tr td {
+        padding: 0px !important;
+    }
+
+    .child-table tr th {
+        padding: 0px !important;
+    }
+
+    table.dataTable {
+        margin-top: 0px !important;
+    }
+
+    .dropdown-menu li a {
+        color: #0064a9 !important;
+    }
+
+    .box-title {
+        color: #0064a9;
+    }
+
+    .box-body ul li a {
+        color: #770d0d;
+    }
+
+        .box-body ul li a:hover {
+            color: #337ab7;
+        }
+
+    .icon-margin {
+        margin-right: 10px;
+    }
+
+    .selectedDate {
+        background-color: forestgreen;
+        color: white;
+    }
+
+    .StatusShadow {
+        box-shadow: 5px 4px 5px #88887B;
+    }
+
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x- ng-cloak {
+        display: none !important;
+    }
+</style>
+<script src="~/Content/js/Project/jquery-cookie.js"></script>
+<script src="~/SmartAdmin/js/plugin/moment/moment.min.js"></script>
+<script src="~/Areas/Project/Content/Drop-Down-Combo-Tree/comboTreePlugin.js"></script>
+<script>
+    $(window).load(function () {
+        //$(".dynatree123").dynatree({
+        //    persist: true,
+        //    checkbox: true
+        //});
+        let tasksJsonData = [];
+
+        //var PId = $('#projectId').attr('data-ProjectId');
+        $.ajax({
+            method: "POST",
+            url: '/Project/Task/getAllTask',
+            async: false,
+            data: { 'filter': "Get_Project_Tasks", ProjectId: $("#pId").attr("data-ProjectId") },
+            success: function (result) {
+
+                tasksJsonData = [];
+                $.each(result, function (key, value) {
+                    let tasks = {
+                        id: value.TaskId,
+                        title: value.Task
+                    }
+                    let subs = getChilds(value.Tasks);
+                    if (subs.length > 0) {
+                        tasks.subs = subs;
+                    }
+                    tasksJsonData.push(tasks);
+                });
+            }
+
+        });
+
+        function getChilds(tasks) {
+            let subTasks = [];
+            $.each(tasks, function (key, value) {
+                let subs = {
+                    id: value.TaskId,
+                    title: value.Task
+                }
+                let sbs = getChilds(value.Tasks);
+                if (sbs.length > 0) {
+                    subs.subs = sbs;
+                    //  getChilds(value.Tasks);
+                }
+                subTasks.push(subs);
+            });
+            return subTasks;
+        }
+        window.tasksComboTree = $('#ListSandboxTasks').comboTree({
+            source: tasksJsonData,
+            isMultiple: false,
+        });
+
+
+        $(".filters-dropdown-wrapper > a").on("click", function () {
+            $(this).toggleClass('dropdown-shown').next('.filters-dropdown').toggleClass('active');
+            return false;
+        });
+        //$("body").on("click", function () {
+        //    if (!$(event.target).is('.filters-dropdown, .filters-dropdown *,.daterangepicker, .daterangepicker *')) {
+        //        $('.filters-dropdown').removeClass('active');
+        //        $(".filters-dropdown-wrapper > a").removeClass('dropdown-shown')
+        //    }
+        //});
+
+
+        $("html").on("click", function () {
+            $("div.dynatree123").removeClass("active");
+        });
+        $(".dynatree-btn").on("click", function (e) {
+            $(this).next("div.dynatree123").toggleClass("active");
+        });
+        $(".dynatree-drop").on("click", function (e) {
+            e.stopPropagation();
+        });
+
+    });
+    var TasksList = [];
+    var StartDate, EndDate;
+    var fromdate = ($.cookie("IssueFromDate") == undefined) ? null : $.cookie("IssueFromDate");
+    var todate = ($.cookie("IssueToDate") == undefined) ? null : $.cookie("IssueToDate");
+    var marketid = ($.cookie("IssueMarkets") == undefined) ? null : $.cookie("IssueMarkets");
+    var taskid = ($.cookie("IssueTasks") == undefined) ? null : $.cookie("IssueTasks");
+    var IssueViewName = null;
+    var MarketViewName = null;
+    var mfromdate = ($.cookie("MarketFromDate") == undefined) ? null : $.cookie("MarketFromDate");
+    var mtodate = ($.cookie("MarketToDate") == undefined) ? null : $.cookie("MarketToDate");
+    var mmarketid = ($.cookie("MarketMarkets") == undefined) ? null : $.cookie("MarketMarkets");
+    var mtaskid = ($.cookie("MarketTasks") == undefined) ? null : $.cookie("MarketTasks");
+    var TimeFilter = 'Daily';
+    var issuetasks = [];
+    var markettsks = [];
+    var maptsks = [];
+    var projecttasks = [];
+    var pageNum = 1;
+    var SitepageNum = 1;
+    var LogStatus = '';
+    var siteId = 0;
+    var IssueId = 0;
+    var TskID = 0;
+    var ProjectSiteId = 0;
+    var btnBackFlag = 0;
+    var workLog;
+    var TasksList = [];
+    var ResourceIssue = [];
+    var fromdate = ($.cookie("IssueFromDate") == undefined) ? null : $.cookie("IssueFromDate");
+    var todate = ($.cookie("IssueToDate") == undefined) ? null : $.cookie("IssueToDate");
+    var marketid = ($.cookie("IssueMarkets") == undefined) ? null : $.cookie("IssueMarkets");
+    var taskid = ($.cookie("IssueTasks") == undefined) ? null : $.cookie("IssueTasks");
+    var IssueViewName = null;
+    var MarketViewName = null;
+    var mfromdate = ($.cookie("MarketFromDate") == undefined) ? null : $.cookie("MarketFromDate");
+    var mtodate = ($.cookie("MarketToDate") == undefined) ? null : $.cookie("MarketToDate");
+    var mmarketid = ($.cookie("MarketMarkets") == undefined) ? null : $.cookie("MarketMarkets");
+    var mtaskid = ($.cookie("MarketTasks") == undefined) ? null : $.cookie("MarketTasks");
+    var TimeFilter = 'Daily';
+    var issuetasks = [];
+    var markettsks = [];
+    var maptsks = [];
+    var projecttasks = [];
+    var pageNum = 1;
+    var SitepageNum = 1;
+    var LogStatus = '';
+    var siteId = 0;
+    var IssueId = 0;
+    var TskID = 0;
+    var ProjectSiteId = 0;
+    var btnBackFlag = 0;
+    var workLog;
+    var TabFlag = 'Tracking';
+
+</script>
+<script src="~/Areas/Project/Content/Project/LoadFilters.js"></script>
+@section scripts{
+    <!-- Vector Maps Plugin: Vectormap engine, Vectormap language -->
+    <!-- SPARKLINES -->
+    <link href="~/Content/js/Plugins/Pagination/css/simplePagination.css" rel="stylesheet" />
+    <script src="~/AdminLTE/plugins/sparkline/js/jquery.sparkline.js"></script>
+    <script src="~/SmartAdmin/js/plugin/vectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="~/SmartAdmin/js/plugin/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- Full Calendar -->
+    <script src="~/SmartAdmin/js/plugin/jquery-nestable/jquery.nestable.min.js"></script>
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script src="~/Content/js/Project/canvasjs.min.js"></script>
+    <script src="~/Areas/Project/Content/Project/Charts.js"></script>
+    <script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+    <script src="~/SmartAdmin/js/plugin/fullcalendar/jquery.fullcalendar.min.js"></script>
+    <script src="~/Content/js/Plugins/Pagination/js/simplePagination.js"></script>
+    <script src="~/Content/js/Project/PMDashboard.js"></script>
+    <script src="~/AdminLTE/plugins/datatables/js/jquery.dataTables.js"></script>
+    <script src="~/SmartAdmin/js/plugin/datatables/dataTables.colVis.min.js"></script>
+    <script src="~/SmartAdmin/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+    <script src="~/SmartAdmin/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="~/SmartAdmin/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+    <script src="~/Content/js/Plugins/QueryBuilder/js/moment.min.js"></script>
+   
+    <script src="~/AdminLTE/plugins/knob/js/jquery.knob.js"></script>
+    <script src="~/Content/js/Plugins/angularmultislect/multiselect.js"></script>
+    <script src="~/Areas/Project/Content/Project/groupMultiSelect.js"></script>
+    @*<script src="~/Areas/Project/Content/Project/DashboardScript.js"></script>*@
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-sanitize.js"></script>
+    <script src="https://angular-ui.github.io/ui-select/dist/select.js"></script>
+    <script src="~/Content/js/Project/Dashboard/DashboardController.js"></script>
+    <script src="~/SmartAdmin/js/plugin/flot/jquery.flot.cust.min.js"></script>
+    <script src="~/SmartAdmin/js/plugin/flot/jquery.flot.resize.min.js"></script>
+    <script src="~/SmartAdmin/js/plugin/flot/jquery.flot.time.min.js"></script>
+    <script src="~/SmartAdmin/js/plugin/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="~/Areas/Project/Content/Project/DashboardSearch.js"></script>
+
+    <script>
+        var Labels, abc = [];
+        var ChartType = "Daily";
+      
+        function toDate(selector) {
+            if (selector != null) {
+                var from = selector.split("/");
+                return new Date(from[2], from[1] - 1, from[0]);
+            }
+        }
+        //$("#searchbox").click(function () {
+        //    $(this).closest('form').find("input[type=text], textarea").val("");
+        //});
+
+        $(function () {
+
+
+
+            var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+            var firstDay = new Date(y, m, 1);
+            var lastDay = new Date(y, m + 1, 0);
+            firstDay = moment(firstDay).format('MM/DD/YY');
+            lastDay = moment(lastDay).format('MM/DD/YY');
+
+
+            var pstart, pend, mstart, mend, istart, iend, mapstart, mapend
+            if ($.cookie('FromDate') == undefined) {
+                pstart = firstDay;//moment().subtract(29, 'days');
+                pend = lastDay;//moment();
+                $.cookie("FromDate", pstart, {
+                    expires: 2000
+                });
+                $.cookie("ToDate", pend, {
+                    expires: 2000
+                });
+            }
+            else {
+                pstart = $.cookie('FromDate')
+                pend = $.cookie('ToDate')
+            }
+
+            if ($.cookie('IssueFromDate') == undefined) {
+
+                istart = firstDay;//moment().subtract(29, 'days');
+                iend = lastDay;// moment();
+            }
+            else {
+
+                istart = $.cookie('IssueFromDate')
+                iend = $.cookie('IssueToDate')
+            }
+            fromdate = istart;
+            todate = iend;
+            if ($.cookie('MarketFromDate') == undefined) {
+                mstart = firstDay;//moment().subtract(29, 'days');
+                mend = lastDay;//moment();
+            }
+            else {
+
+                mstart = $.cookie('MarketFromDate')
+                mend = $.cookie('MarketToDate')
+            }
+            mromdate = mstart;
+            mtodate = mend;
+
+            if ($.cookie('MapFromDate') == undefined) {
+                mapstart = firstDay;//moment().subtract(29, 'days');
+                StartDate = mapstart;
+                mapend = lastDay;//moment();
+                EndDate = mapend;
+            }
+            else {
+
+                mapstart = $.cookie('MapFromDate');
+                StartDate = mapstart;
+                mapend = $.cookie('MapToDate');
+                EndDate = mapend;
+            }
+
+         
+            //EndDate = mapend;
+            //$('#frmTaskEntry').submit(function () {
+
+            //    var TaskEntry = [];
+            //    $(".frm-dynamic").each(function () {
+            //        TaskEntry.push({ FormId: $(this).attr('data-formid'), ProjectSiteId: $('#siteId').attr('data-siteId'), TaskId: TskID, FormValue: $(this).val(), ProjectId: $("#pId").attr("data-ProjectId") });
+            //        log($(this).val());
+            //        log($(this).attr('data-formid'));
+            //    });
+
+            //    log(TaskEntry);
+            //    $.ajax({
+            //        url: '/Project/Task/TaskEntry',
+            //        type: 'post',
+            //        dataType: 'json',
+            //        contentType: 'application/json',
+            //        data: JSON.stringify(TaskEntry),
+
+            //        success: function (res) {
+            //            log(res);
+            //            $('#FormModal').modal('hide');
+            //        }
+            //    });
+            //    return false;
+            //});
+
+
+
+
+
+
+
+            function cb1(start, end) {
+                PFromDate = moment(start).format('MM/DD/YY');
+                PToDate = moment(end).format('MM/DD/YY');
+                FromDate = moment(start).format('MM/DD/YY');
+                ToDate = moment(end).format('MM/DD/YY');
+                $('#reportrange1 span').html(PFromDate + ' - ' + PToDate);
+            }
+
+            $('#reportrange1').daterangepicker({
+                startDate: pstart,
+                endDate: pend,
+                opens: 'right',
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Custom Range': "custom"
+                }
+            }, cb1);
+            cb1(pstart, pend);
+
+        });
+
+        $(function () {
+
+            $(document).on("click", ".expandable", function () {
+                $(this).children('ul').toggle();
+                return false;
+            });
+
+        });
+
+        var FromDate, ToDate, PFromDate, PToDate, MFromDate, MToDate, IFromDate, IToDate;
+
+        $("#wid-id-1").hide();
+        $("#wid-id-0").hide();
+        window.onload = function () {
+
+
+            var actularcolor, forecastcolor, plancolor, targetcolor, runratecolor, cumactualcolor, cumforecastcolor, cumtargetcolor;
+            function GetTaskIds(value) {
+                var str_task = []
+                var arr_task = value;
+                for (var i = 0; i < TasksList.length; i++) {
+                    if (arr_task.length > 1) {
+                        if (arr_task[0] == TasksList[i].Task) {
+                            str_task.push(TasksList[i].TaskId);
+                        }
+                        if (arr_task[1] == TasksList[i].Task) {
+                            str_task.push(TasksList[i].TaskId);
+                        }
+                    }
+                    else if (arr_task.length > 0) {
+                        if (arr_task[0] == TasksList[i].Task) {
+                            str_task.push(TasksList[i].TaskId);
+                        }
+
+                    }
+                }
+                return str_task.join(',');
+
+            }
+            var protsks = [];
+            function LoadProgramChart(type,tas) {
+                var ActualChartData = [];
+                $.ajax({
+                    //url: '/Project/Dashboard/GetMilstonesBarchart?ProjectId=' + $("#pId").attr("data-ProjectId") + '&filter=Get_Project_Timeline_Variance',
+                    url: '/Project/Dashboard/GetDashboardCharts?filter=Get_Project_Timeline_Variance&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '&TaskIds=' + tas
+                    + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=' + type,
+
+                    type: 'Get',
+                    async: false,
+                    success: function (data) {
+        
+                        array = data;
+                        var sd = {};
+                        Forecast = [];
+                        Planned = [];
+                        Actual = [];
+                        Target = [];
+                        RunRate = [];
+                        CumActual = [];
+                        CumForecast = [];
+                        CumTarget = [];
+                        Labels = [];
+
+                        ///
+                        Forecast2 = [];
+                        Actual2 = [];
+                        Target2 = [];
+                        RunRate2 = [];
+                        CumActual2 = [];
+                        CumForecast2 = [];
+                        CumTarget2 = [];
+                        ////
+                        for (var i = 0; i < data.length ; i++) {
+                            if (data[i].WoDate != null) {
+                                if (type == "Daily") {
+                                    var date = new Date(parseInt(data[i].WoDate.substr(6)));
+                                    sd = { label: ((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear("YY").toString().substring(2)), y: data[i].WoCount, initial: data[i].WoCount, colorIndex: data[i].WoCount };
+                                }
+                                else {
+                                    sd = { label: data[i].WoDate, y: data[i].WoCount, legendMarkerColor: data[i].ColorCode, initial: data[i].WoCount, colorIndex: data[i].WoCount };
+                                }
+                                Labels.push(sd.label);
+
+                                if (data[i].WoType == 'Forecast') {
+                                    forecastcolor = data[i].ColorCode;
+                                    Forecast.push(sd);
+                                  //  console.log(Forecast);
+                                    Forecast2.push(sd);
+                                }
+                                else if (data[i].WoType == 'CumForecast') {
+                                    cumforecastcolor = data[i].ColorCode;
+                                    CumForecast.push(sd);
+                                    CumForecast2.push(sd);
+                                }
+                                else if (data[i].WoType == 'Actual') {
+                                    actularcolor = data[i].ColorCode;
+                                    Actual.push(sd);
+                                    Actual2.push(sd);
+                                }
+                                else if (data[i].WoType == 'CumActual') {
+
+                                    cumactualcolor = data[i].ColorCode;
+                                    CumActual.push(sd);
+                                    CumActual2.push(sd);
+                                }
+                                else if (data[i].WoType == 'Target') {
+                                    targetcolor = data[i].ColorCode;
+                                    Target.push(sd);
+                                    Target2.push(sd);
+                                }
+                                else if (data[i].WoType == 'CumTarget') {
+                                    cumtargetcolor = data[i].ColorCode;
+                                    CumTarget.push(sd);
+                                    CumTarget2.push(sd);
+                                }
+
+                                else if (data[i].WoType == 'RunRate') {
+                                    runratecolor = data[i].ColorCode;
+                                    RunRate.push(sd);
+                                    RunRate2.push(sd);
+                                }
+
+                            }
+
+                        }
+                        console.log(Forecast);
+                    }
+        , error: function () {
+            var sd = {};
+            Forecast = [];
+            Planned = [];
+            Actual = [];
+            Target = [];
+            RunRate = [];
+            CumActual = [];
+            CumForecast = [];
+            CumTarget = [];
+            Labels = [];
+
+            ///
+            Forecast2 = [];
+            Actual2 = [];
+            Target2 = [];
+            RunRate2 = [];
+            CumActual2 = [];
+            CumForecast2 = [];
+            CumTarget2 = [];
+}
+                });
+                function onlyUnique(value, index, self) {
+                    return self.indexOf(value) === index;
+                }
+
+                // usage example:
+                var Labels = Labels.filter(onlyUnique);
+                // console.log(Actual, Labels);
+
+                //    return false
+                var chart = new Highcharts.Chart({
+
+                    chart: {
+                        renderTo: 'container',
+                        animation: false
+                    },
+
+                    title: {
+                        text: ''
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        backgroundColor: '#FFFFFF',
+                        floating: true,
+                        align: 'left',
+                        verticalAlign: 'top',
+                        x: 90,
+                        y: 45,
+                        labelFormatter: function () {
+                            return this.name + ' (click to hide)';
+                        }
+                    },
+                    xAxis: {
+                        categories: Labels,
+                        crosshair: true
+                    },
+                    plotOptions: {
+                        series: {
+                            connectNulls: true,
+                            turboThreshold:15000,
+                            pointWidth: 15,
+                            point: {
+                                events: {
+
+                                    drag: function (e) {
+                                        // Returning false stops the drag and drops. Example:
+                                        /*
+                                        if (e.newY > 300) {
+                                            this.y = 300;
+                                            return false;
+                                        }
+                                        */
+
+                                        //$('#drag').html(
+                                        //    'Dragging <b  style=color:' + this.series.color + '>' + this.series.name + '</b>, <b>' + this.category + '</b> to <b style=color:' + this.series.color + ' >' + parseInt(e.y) + '</b>');
+                                    },
+                                    drop: function () {
+                                        $(".TableBody").html("");
+                                        $.each(chart.series, function (key, value) {
+                                            var MyBase = abc[key];
+                                            //   console.log("after", MyBase);
+                                            var tr = "<tr style=border:none;color:" + value.color + " ><td style='border:none;' ><b style=border:none;color:" + value.color + ">" + value.name + "</b>&nbsp;</td>";
+                                            $.each(value.data, function (key2, value2) {
+                                                var MyChild = MyBase.data[key2];
+                                                var AFCombination = "";
+                                                //debugger
+                                                if (key == 0) {
+                                                    var ActualForecast = Math.floor(chart.series[0].data[key2].y - chart.series[2].data[key2].y);
+                                                    if (ActualForecast > 0) { AFCombination = "<br><b> <i style='color:green' class='fa fa-caret-up' >" + ActualForecast + "</i></b>"; }
+                                                    else { AFCombination = "<br><b> <i style='color:red' class='fa fa-caret-down' >" + ActualForecast + "</i></b>"; }
+                                                }
+                                                // console.log("after", MyChild.y + "----" + value2.y);
+                                                if (value2.y != null) {
+                                                    //  var Percentage = Math.floor((value2.y / MyChild.initial) * 100);
+                                                    if (MyChild.initial != value2.y && MyChild.initial != undefined) {
+                                                        var Clr, Type;
+                                                        //  var Percentage = Math.floor(100 * (value2.y - MyChild.initial) / MyChild.initial)
+                                                        var Percentage = Math.floor(value2.y - MyChild.initial)
+                                                        if (Percentage < 0) { Clr = "red"; Type = "fa fa-caret-down" }
+                                                        else {
+                                                            Clr = "green";
+                                                            Type = "fa fa-caret-up";
+                                                        }
+
+                                                        if (value.name == "Actual" || value.name == "CumActual" || value.name == "CumForecast" || value.name == "CumTarget" || ChartType !="Daily" ) {
+                                                            tr += "<td style='border: none;min-width:80px;' ><a title='No Detail' class='defaultCursor' C-Value=" + value2.y + " C-Category=" + value2.category + "  C-Name=" + value.name + " style=color:" + value.color + " href='#' ><b>" + Math.floor(value2.y) + "</b></a><b style=font-size:10px;color:" + Clr + " ><i class='" + Type + "' ></i>" + Percentage + AFCombination + "</b></td>";
+                                                        }
+                                                    else{
+                                                        tr += "<td style='border: none;min-width:80px;' ><a class='chartdetail' C-Value=" + value2.y + " C-Category=" + value2.category + "  C-Name=" + value.name + " style=color:" + value.color + " href='#' ><b>" + Math.floor(value2.y) + "</b></a><b style=font-size:10px;color:" + Clr + " ><i class='" + Type + "' ></i>" + Percentage + AFCombination + "</b></td>";
+                                                    }
+
+                                                    }
+                                                    else {
+                                                        tr += "<td style='border: none;min-width:80px;' ><a class='' C-Value=" + value2.y + " C-Category=" + value2.category + "  C-Name=" + value.name + " style=color:" + value.color + " href='#' ><b>" + Math.floor(value2.y) + "</b></a></td>"
+                                                    }
+
+                                                }
+                                                else {
+                                                    tr += "<td style='border: none;min-width:80px;' ><a class='' C-Value=" + value2.y + " C-Category=" + value2.category + "  C-Name=" + value.name + " style=color:" + value.color + " href='#' ><b>" + Math.floor(value2.y) + "</b></a></td>"
+                                                }
+                                            });
+                                            //  console.log(tr + "</tr>");
+                                            $(".TableBody").append(tr + "</tr>");
+                                        });
+                                        //$('#drop').html(
+                                        //    'In <b style=color:' + this.series.color + ' >' + this.series.name + '</b>, <b>' + this.category + '</b style=color:' + this.series.color + ' > was set to <b style=color:' + this.series.color + ' >' + parseInt(this.y) + '</b>');
+                                    }
+                                }
+                            },
+                        },
+                        //                 column: {
+                        //    stacking: 'normal',
+                        //    dataLabels: {
+                        //        enabled: true,
+                        //        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                        //    }
+                        //}
+                    },
+                    options: {
+                        yAxis: [{ // Primary yAxis
+                            labels: {
+                                format: '{value}',
+                                style: {
+                                    color: Highcharts.getOptions().colors[1]
+                                }
+                            },
+                            title: {
+                                text: 'Temperature',
+                                style: {
+                                    color: Highcharts.getOptions().colors[1]
+                                }
+                            }
+                        }, { // Secondary yAxis
+                            title: {
+                                text: 'Rainfall',
+                                style: {
+                                    color: Highcharts.getOptions().colors[0]
+                                }
+                            },
+                            labels: {
+                                format: '{value} ',
+                                style: {
+                                    color: Highcharts.getOptions().colors[0]
+                                }
+                            },
+                            opposite: true
+                        }],
+                    },
+                    yAxis: [
+             {
+                 lineWidth: 1,
+                 title: {
+                     text: ""
+                 },
+                 opposite: true
+             },
+             {
+                 lineWidth: 1,
+                 title: {
+                     text: ""
+                 },
+
+             }
+                    ],
+                    stackLabels: {
+                        enabled: true,
+                        style: {
+                            fontWeight: 'bold',
+                            color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                        }
+                    }
+,
+                    tooltip: {
+                        yDecimals: 0,
+                        formatter: function () {
+                            return 'The value for <b>' + this.x + '</b> is <b style=color:' + this.series.color + ' >' + parseInt(this.y) + '</b>, in series <b style=color:' + this.series.color + ' >' + this.series.name + '</b>';
+                        }
+                    },
+
+                    series: [{
+                        data: Actual, //[0, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4].reverse(),
+                        //draggableX: true,
+                        connectNulls: true,
+                        draggableY: true,
+                        name: "Actual",
+                        yAxis: 1,
+                        dragMinY: 0,
+                        color: cumactualcolor,
+                        tooltip: {
+                            valueSuffix: ' '
+                        },
+                        type: 'column',
+                        minPointLength: 2,
+                        tooltip: {
+                            valueSuffix: ' '
+                        }
+                    }, {
+                        connectNulls: true,
+                        data: CumActual, //[0, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4].reverse(),
+                        draggableY: true,
+                        dragMinY: 0,
+                        name: "CumActual",
+                        //  yAxis: 2,
+                        color: cumactualcolor,
+                        tooltip: {
+                            valueSuffix: ' '
+                        },
+                        type: 'line',
+                        minPointLength: 2,
+                        tooltip: {
+                            valueSuffix: ' '
+                        }
+                    }, {
+                        connectNulls: true,
+                        data: Forecast, //[0, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4].reverse(),
+                        draggableY: true,
+                        dragMinY: 0,
+                        color: forecastcolor,
+                        name: "Forecast",
+                        tooltip: {
+                            valueSuffix: ' '
+                        },
+                        yAxis: 1,
+                        type: 'column',
+                        minPointLength: 2,
+                        tooltip: {
+                            valueSuffix: ' '
+                        }
+                    }, {
+                        connectNulls: true,
+                        data: CumForecast, //[0, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4].reverse(),
+                        draggableY: true,
+                        dragMinY: 0,
+                        name: "CumForecast",
+                        //      yAxis: 2,
+                        color: cumforecastcolor,
+                        tooltip: {
+                            valueSuffix: ' '
+                        },
+                        type: 'line',
+                        minPointLength: 2,
+                        tooltip: {
+                            valueSuffix: ' '
+                        }
+                    }, {
+                        connectNulls: true,
+                        data: Target, //[0, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4].reverse(),
+                        draggableY: true,
+                        dragMinY: 0,
+                        type: 'column',
+                        yAxis: 1,
+                        name: "Target",
+                        color: targetcolor,
+                        tooltip: {
+                            valueSuffix: ' '
+                        },
+                        minPointLength: 2,
+                        tooltip: {
+                            valueSuffix: ' '
+                        }
+                    },
+                    {
+                        connectNulls: true,
+                        data: CumTarget, //[0, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4].reverse(),
+                        draggableY: true,
+                        name: "CumTarget",
+                        //    yAxis: 2,
+                        dragMinY: 0,
+                        type: 'line',
+                        color: cumtargetcolor,
+                        tooltip: {
+                            valueSuffix: ' '
+                        },
+                        minPointLength: 2,
+                        tooltip: {
+                            valueSuffix: ' '
+                        }
+                    },
+                    {
+                        connectNulls: true,
+                        data: RunRate, //[0, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4].reverse(),
+                        draggableY: true,
+                        dragMinY: 0,
+                        name: "RunRate",
+                        yAxis: 1,
+                        color: runratecolor,
+                        tooltip: {
+                            valueSuffix: ' '
+                        },
+                        type: 'line',
+                        minPointLength: 2,
+                        tooltip: {
+                            valueSuffix: ' '
+                        }
+                    }]
+
+                });
+                $(".highcharts-credits").remove();
+                $(".TableHead").html("");
+                var trb = "<tr style='border:none;'><th></th>";
+                $.each(Labels, function (key, value) {
+                    trb += "<th style='min-width:80px' ><b>" + value + "</b></th>"
+                });
+                $(".TableHead").append(trb + "</tr>");
+                $(".TableBody").html("");
+                // ActualChartData = chart.series;
+                abc = chart.series;
+                //  console.log(ActualChartData);
+                $.each(chart.series, function (key, value) {
+                    //  console.log("after", value.data);
+                    var tr = "<tr style=border:none;" + value.color + " ><td style='border:none;' ><b style=border:none;color:" + value.color + ">" + value.name + "</b>&nbsp;</td>";
+                    $.each(value.data, function (key2, value2) {
+                        //  console.log("after", value2);
+                        //console.log("after", value2.y);
+                        if (value2.y != null) {
+                            if (value.name == "Actual" || value.name == "CumActual" || value.name == "CumForecast" || value.name == "CumTarget" || ChartType != "Daily") {
+                                tr += "<td style='border: none;min-width:80px' ><a title='No Detail' class='defaultCursor' C-Value=" + value2.y + " C-Category=" + value2.category + "  C-Name=" + value.name + " style=color:" + value.color + " href='#' ><b>" + parseInt(value2.y) + "</b></a></td>"
+                            }
+                            else {
+                                tr += "<td style='border: none;min-width:80px' ><a class='chartdetail' C-Value=" + value2.y + " C-Category=" + value2.category + "  C-Name=" + value.name + " style=color:" + value.color + " href='#' ><b>" + parseInt(value2.y) + "</b></a></td>"
+                            }
+                        }
+                        else {
+                            tr += "<td style='border: none;min-width:80px' ><a class='' C-Value=" + value2.y + " C-Category=" + value2.category + "  C-Name=" + value.name + " style=color:" + value.color + " href='#' ><b>" + parseInt(Highcharts.numberFormat(value2.y, 2)) + "</b></a></td>"
+                        }
+                    });
+                    //  console.log(tr + "</tr>");
+                    $(".TableBody").append(tr + "</tr>");
+                });
+            }
+            
+            LoadProgramChart("Daily", $.cookie("SandboxTasks"));
+             ChartType = "Daily";
+            $("#lstIssueStatus").remove();
+            $("#wid-id-1").show();
+            $("#wid-id-0").show();
+            //weekly daily monthly
+            $('.programchart').click(function () {
+                protsks = GetTaskIds(projecttasks);
+                 ChartType = $(this).attr('data-type');
+                 LoadProgramChart($(this).attr('data-type'), $.cookie("SandboxTasks"));
+            });
+            //search Filter
+            $('#ListSandboxTasks').val($.cookie("SandboxTasksTitle"));
+            $('#SearchProject').click(function () {
+                var sandboxtaskid = tasksComboTree.getSelectedItemsId();
+                var sandboxtasktitle = tasksComboTree.getSelectedItemsTitle();
+                SelectedTasks = $.map($("#dynatreeSandbox").dynatree("getSelectedNodes"), function (node) {
+
+
+                    return node.data.key;
+                });
+                var MyTasks = '';
+                if (SelectedTasks.length > 0) {
+                    MyTasks = SelectedTasks.join(",");
+                }
+
+                $.removeCookie("SandboxTasksTitle");
+                $.removeCookie("SandboxTasks");
+                $.removeCookie("ProjectMarkets");
+                $.removeCookie("FromDate");
+                $.removeCookie("ToDate");
+                var issuemarkets = $("#example-xss-html_Project").val();
+                //  var issuetasks = projecttasks;// $("#example-multiple-optgroups_Project").val();
+
+                $.cookie("SandboxTasksTitle", sandboxtasktitle, {
+                    expires: 2000
+                });
+               // var protsks = GetTaskIds(projecttasks);
+                $.cookie("SandboxTasks", sandboxtaskid, {
+                    expires: 2000
+                });
+                // ProjectMarkets Cookie
+                var cookie = $.cookie("ProjectMarkets");
+                var items = cookie ? cookie.split(/,/) : new Array();
+                items.push(issuemarkets);
+                var uniqueNames = [];
+                $.each(items, function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                items = uniqueNames
+                $.cookie("ProjectMarkets", items.join(','), {
+                    expires: 2000
+                });
+
+                // ProjectTasks Cookie
+                var Taskscookie = $.cookie("SandboxTasks");
+                var Tasksitems = Taskscookie ? Taskscookie.split(/,/) : new Array();
+
+                $.cookie("FromDate", PFromDate, {
+                    expires: 2000
+                });
+                $.cookie("ToDate", PToDate, {
+                    expires: 2000
+                });
+               // var IssuesStatus = $("#example-getting-started").val();
+              //  IssuesStatus = IssuesStatus.join(',');
+                Tasksitems.push(protsks);
+                uniqueNames = [];
+                $.each(Tasksitems, function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                Tasksitems = uniqueNames
+
+                LoadProgramChart(ChartType, $.cookie("SandboxTasks"));  //"Daily"
+
+
+            })
+            //Chart click on value
+            function ChartClick(Value, Category, Name) {
+
+                $.ajax({
+                    url: '/Project/Dashboard/GetSandbox?filter=Get_Sites&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value=' + Value + '&Category=' + Category + '&Name=' + Name + '&TaskIds=' + $.cookie("SandboxTasks")
+                    + '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=A',
+
+                    type: 'Get',
+                    async: false,
+                    success: function (data) {
+                        $("#SandBoxModal").modal("show");
+                        $("#SandBoxModalBody").html(data)
+                        $("#SelectedValue").val(Value)
+                        $("#SCategory").val(Category)
+                        $("#SName").val(Name)
+                        $(".check1234").parent().parent().addClass("checkedrow");
+                    }
+                });
+            }
+
+            $('.chartdetail').click(function () {
+
+                var Value = $(this).attr("c-value");
+                var Category = $(this).attr("c-category");
+                var Name = $(this).attr("c-name");
+                ChartClick(Value, Category, Name);
+            })
+
+            $(document).on("click", ".chartdetail", function () {
+                var Value = $(this).attr("c-value");
+                var Category = $(this).attr("c-category");
+                var Name = $(this).attr("c-name");
+                ChartClick(Value, Category, Name);
+            });
+        }
+    </script>
+
+}
+<script>
+
+    var MySandbox = (function () {
+        var Save = function () {
+           // alert("fgdfg");
+        }
+        return {
+            S: Save,
+        }
+
+    })();
+    var Selected = [];
+    var counter = 0;
+    var Unselected = [];
+    $(document).on("click", ".check123", function () {
+   
+        $(".SaveSandbox").addClass("hidden");
+        $(".ReviewSandbox").removeClass("hidden");
+        //counter
+        counter = 0;
+        var SelectedValue = parseInt($("#SelectedValue").val());
+        $('input[class=check123]:checkbox').each(function () {
+            if ($(this).prop("checked")) {
+                counter++;
+            } else {
+
+            }
+        });
+        //$('input[class=check1234]:checkbox').each(function () {
+        //    if ($(this).prop("checked")) {
+        //        counter++;
+        //    } else {
+
+        //    }
+        //});
+        //counter end
+        if (SelectedValue + 1 <= parseInt(counter)) {
+
+            $(this).prop("checked", false);
+            swal("", "Can't Select More Sites ! :)", "error");
+            // alert("Can't Select More !");
+        }
+        else {
+            const index = Selected.indexOf($(this).attr("psid").toString());
+            // const index = Selected.indexOf($(this).attr("psid").toString());
+            if (index !== -1) {
+                Selected.splice(index, 1);
+                $(this).parent().parent().removeClass("checkedrow");
+            }
+            else {
+                if ($(this).prop("checked")) {
+                    $(this).parent().parent().addClass("checkedrow");
+                    Selected.push($(this).attr("psid"));
+                  //  Selected.push($(this).attr("psid"));
+
+                }
+            }
+        }
+        function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+        }
+        Selected = Selected.filter(onlyUnique)
+    });
+    $(document).on("click", ".check1234", function () {
+        $(".SaveSandbox").addClass("hidden");
+        $(".ReviewSandbox").removeClass("hidden");
+
+
+        //counter
+        counter = 0;
+        var SelectedValue = parseInt($("#SelectedValue").val());
+        $('input[class=check123]:checkbox').each(function () {
+            if ($(this).prop("checked")) {
+                counter++;
+            } else {
+
+            }
+        });
+        //$('input[class=check1234]:checkbox').each(function () {
+        //    if ($(this).prop("checked")) {
+        //        counter++;
+        //    } else {
+
+        //    }
+        //});
+        const index = Unselected.indexOf($(this).attr("psid").toString());
+        // const index = Unselected.indexOf($(this).attr("psid").toString());
+        if (index !== -1) {
+            if (SelectedValue + 1 <= parseInt(counter)) {
+
+                $(this).prop("checked", false);
+                swal("", "Can't Select More Sites ! :)", "error");
+                //  alert("Can't Select More !");
+            }
+            else {
+                Unselected.splice(index, 1);
+            }
+            //counter--;
+        }
+        else {
+            if ($(this).prop("checked")) { }
+            else {
+                //  counter++;
+
+                Unselected.push($(this).attr("psid"));
+           //     Unselected.push($(this).attr("psid"));
+
+
+            }
+        }
+        function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+        }
+        Unselected = Unselected.filter(onlyUnique)
+    });
+    //Save
+    var SaveSandbox = function () {
+        if (Unselected.length > 0 || Selected.length > 0) {
+            swal({
+                title: "Are you sure?",
+                text: "You want to Save Sites !",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes !",
+                closeOnConfirm: false
+            },
+function () {
+    function GetTaskIds(value) {
+        var str_task = []
+        var arr_task = value;
+        for (var i = 0; i < TasksList.length; i++) {
+            if (arr_task.length > 1) {
+                if (arr_task[0] == TasksList[i].Task) {
+                    str_task.push(TasksList[i].TaskId);
+                }
+                if (arr_task[1] == TasksList[i].Task) {
+                    str_task.push(TasksList[i].TaskId);
+                }
+            }
+            else if (arr_task.length > 0) {
+                if (arr_task[0] == TasksList[i].Task) {
+                    str_task.push(TasksList[i].TaskId);
+                }
+
+            }
+        }
+        return str_task.join(',');
+
+    }
+    protsks = GetTaskIds(projecttasks);
+    var us = Unselected.toString().split(",").join(",");
+    var ss = Selected.toString().split(",").join(",");
+    var Value = $("#SelectedValue").val();
+    var Category = $("#SCategory").val();
+    var Name = $("#SName").val();
+    $.ajax({
+        url: '/Project/Dashboard/SaveSandbox?filter=Save_Sites&ProjectId=' + $("#pId").attr("data-ProjectId") + '&TaskIds=' + $.cookie("SandboxTasks") + '&Value=' + Value + '&Category=' + Category + '&Name=' + Name + '&Selected=' + ss + '&Unselected=' + us,
+        type: 'Get',
+        async: false,
+        success: function (data) {
+
+            if (data == true) {
+                $("#SandBoxModal").modal("hide");
+                $("#SandBoxModalBody").html("")
+                Selected = [];
+                Unselected = [];
+                swal("Saved !", "Sites have been Saved !", "success");
+            }
+            else {
+                swal("Error !", "Error occured !", "error");
+            }
+        }
+    });
+});
+        }
+        else {
+            swal("No Site Change !.", "error");
+        }
+    }
+    var ReviewSandbox = function () {
+        $(".SaveSandbox").removeClass("hidden");
+        $(".ReviewSandbox").addClass("hidden");
+        $(".mycheck").trigger("click").trigger("click");
+    }
+    var CloseModalSandbox = function () {
+        $("#SandBoxModal").modal("hide");
+        $("#SandBoxModalBody").html("")
+        Selected = [];
+        Unselected = [];
+    }
+
+    $(".apply-filter-btn").on("click", function () {
+        $(this).parents('.filters-dropdown').removeClass('active');
+    });
+
+
+</script>

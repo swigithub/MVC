@@ -1,0 +1,367 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_SiteTestSummary>
+@functions{
+
+        public string SectorCode(int key)
+        {
+            try
+            {
+                switch (key)
+                {
+                    case 1:
+                        return "A";
+                    case 2:
+                        return "B";
+                    case 3:
+                        return "C";
+                    case 4:
+                        return "D";
+                    case 5:
+                        return "E";
+                    case 6:
+                        return "F";
+                    case 7:
+                        return "G";
+                    default:
+                        {
+                            return null;
+                        }
+                }
+            }
+            catch
+            {
+
+                return null;
+            }
+
+        }
+
+        public string getSectorName(string SiteCode, string BandCode, string SectorCode)
+        {
+            string sector = "";
+            string band = "";
+
+            if (SectorCode == "Alpha")
+            {
+                sector = "11";
+            }
+            else if (SectorCode == "Beta")
+            {
+                sector = "21";
+            }
+            else if (SectorCode == "Gamma")
+            {
+                sector = "31";
+            }
+            else if (SectorCode == "Delta")
+            {
+                sector = "41";
+            }
+            else if (SectorCode == "Epsilon")
+            {
+                sector = "51";
+            }
+            else if (SectorCode == "DiGamma")
+            {
+                sector = "61";
+            }
+            else if (SectorCode == "Iota")
+            {
+                sector = "71";
+            }
+
+
+            if (BandCode == "Band-12" || BandCode == "Band-12 Add")
+            {
+                band = "D";
+            }
+            else if (BandCode == "Band-2" || BandCode == "Band-2 Add")
+            {
+                band = "B";
+            }
+            else if (BandCode == "Band-4" || BandCode == "Band-4 Add")
+            {
+                band = "L";
+            }
+            else
+            {
+                band = "";
+            }
+
+
+
+            return band + SiteCode + sector;
+        }
+
+}
+
+@if (Model.Count() > 0)
+{
+    Layout = null;
+    int RowSpan = Model.Count() + 1;
+    var First = Model.FirstOrDefault();
+    string NetworkMode = string.Empty;
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+
+
+    <style>
+        .StationaryTable {
+            text-align: center;
+        }
+
+        .StationaryTableTh {
+            background-color: #0070C0;
+            color: white;
+        }
+
+        .StationaryTableTh2 {
+            background-color: #375623;
+            color: white;
+        }
+
+        .StationaryTableTd {
+            background-color: #FFD966;
+            color: black;
+        }
+
+        .StationaryTableTd2 {
+            background-color: #D9D9D9;
+            color: black;
+        }
+    </style>
+
+    <div id="pan-FIELD_TEST" style="height:860px;">
+        @if (ViewBag.mail == "yes")
+        {
+            <div class="ForMail">
+                <br /><br /><br /><b>Dear Client,</b>
+                <br /><br /> Please find below quick summary of site @First.Site for @First.Band carrier @First.Carrier .<br /><br />
+            </div>
+        }
+        <h1 id="FIELD_TEST" data-type="BOOLEAN,STRING" class="heading" data-preValue="@First.Site"></h1>
+
+        <table class="StationaryTable">
+            <tr>
+                <th class="StationaryTableTh">Project</th>
+                <th class="StationaryTableTh">Market</th>
+                <th class="StationaryTableTh">Drive Date</th>
+                @*<th class="StationaryTableTh">Task ID</th>*@
+                <th class="StationaryTableTh">Site Name</th>
+                <th class="StationaryTableTh">Sector Name</th>
+                <th class="StationaryTableTh">Band</th>
+                <th class="StationaryTableTh">EARFCN</th>
+                <th class="StationaryTableTh">BW</th>
+                <th class="StationaryTableTh">Azimuth</th>
+                <th class="StationaryTableTh" style="width:40px;">PCI<br />(Swap Sector Check)</th>
+				@if (First.NetworkMode=="LTE")
+				{
+					<th class="StationaryTableTh2">RSRP</th>
+					<th class="StationaryTableTh2">CINR</th>
+					<th class="StationaryTableTh2">RSRQ</th>
+				}
+				else if (First.NetworkMode=="WCDMA")
+				{
+					<th class="StationaryTableTh2">RSCP</th>					
+					<th class="StationaryTableTh2">Ec/Io</th>
+				}
+				else if (First.NetworkMode=="GSM")
+				{
+					<th class="StationaryTableTh2">RSSI</th>					
+					<th class="StationaryTableTh2">RxQual/</th>
+				}
+                <th class="StationaryTableTh2">Average<br />THPUT DL</th>
+                <th class="StationaryTableTh2">Average<br />THPUT UL</th>
+                <th class="StationaryTableTh2">CSFB<br />Call Test</th>
+				@if (First.NetworkMode=="LTE")
+				{
+					<th class="StationaryTableTh2">VoLTE<br />Call Test</th>
+				}
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                    String[] secOrder = { "alpha", "beta", "gamma", "delta", "epsilon", "digamma", "iota" };
+                    List<string> Sectors = new List<string>();
+                    Sectors.AddRange(Model.OrderBy(m => m.Azimuth).Select(m => m.Sector).ToList());
+                    String fromSector = Sectors[i];
+                    String toSector = "";
+
+                    if (i + 1 == Model.Count())
+                    {
+                        toSector = Sectors[0];
+                    }
+                    else
+                    {
+                        toSector = Sectors[i + 1];
+                    }
+
+                    int fromSecIndex = Array.IndexOf(secOrder, fromSector.ToLower()) + 1;
+                    int toSecIndex = Array.IndexOf(secOrder, toSector.ToLower()) + 1;
+
+                    <th class="StationaryTableTh2">LTE-LTE<br />Intra Site HO<br />@SectorCode(fromSecIndex)<->@SectorCode(toSecIndex)</th>
+                }
+
+
+                <th class="StationaryTableTh2">LTE-LTE<br />Inter Site HO</th>
+            </tr>
+            @{var lst = Model.ToList();}
+            @foreach (var item in Model)
+            {
+                NetworkMode = item.NetworkMode;
+                <tr>
+                    <td class="StationaryTableTd">@item.Band</td>
+                    <td class="StationaryTableTd">@item.City</td>
+                    <td class="StationaryTableTd">@item.SiteScheduleDate.Value.ToString("MM/dd/yyyy")</td>
+                    @*<td class="StationaryTableTd">n/a</td>*@
+                    <td class="StationaryTableTd">@item.Site</td>
+                    <td class="StationaryTableTd">@getSectorName(@item.Site, @item.BandNo, @item.Sector)</td>
+                    <td class="StationaryTableTd">@item.BandNo</td>
+                    <td class="StationaryTableTd">@item.Carrier</td>
+                    <td class="StationaryTableTd">
+                        @if (item.BandWidth > 0)
+                        {
+                            <span>@item.BandWidth MHz</span>
+                        }
+                    </td>
+                    <td class="StationaryTableTd">@item.Azimuth</td>
+                    <td class="StationaryTableTd2">@item.PciId</td>
+                    <td class="StationaryTableTd2">
+                        @{
+                            if (NetworkMode == "LTE")
+                            {
+                                <span>@item.LteRsrp</span>
+                            }
+                            if (NetworkMode == "GSM")
+                            {
+                                <span>@item.GsmRssi</span>
+                            }
+                            if (NetworkMode == "WCDMA")
+                            {
+                                <span>@item.WcdmaRscp</span>
+                            }
+
+                        }
+                    </td>
+                    <td class="StationaryTableTd2">
+                        @{
+                            if (NetworkMode == "LTE")
+                            {
+                                <span>@item.LteRsnr.ToString("0.00")</span>
+                            }
+                            if (NetworkMode == "GSM")
+                            {
+                                <span>@item.GsmRxQual.ToString("0.00")</span>
+                            }
+                            if (NetworkMode == "WCDMA")
+                            {
+                                <span>@item.WcdmaEcio.ToString("0.00")</span>
+                            }
+                        }
+                    </td>
+					@if (First.NetworkMode=="LTE")
+					{
+						<td class="StationaryTableTd2">@item.LteRsrq</td>
+					}
+                    <td class="StationaryTableTd2">@item.DownlinkMaxResult.ToString("0.00")</td>
+                    <td class="StationaryTableTd2">@item.UplinkMaxResult.ToString("0.00")</td>
+                    <td class="StationaryTableTd2">
+                        @if (item.MoStatus == true)
+                        {<span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE"></span> }
+                        else if (item.MoStatus == false)
+                        { <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE"></span> }
+                        else
+                        {<span class="bold MO_MT_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_NULL"></span>}
+                    </td>
+					@if (First.NetworkMode=="LTE")
+				{
+				
+                    <td class="StationaryTableTd2">
+                        @if (item.VMoStatus == true)
+                        {<span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE"></span> }
+                        else if (item.VMoStatus == false)
+                        { <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE"></span> }
+                        else
+                        {<span class="bold MO_MT_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_NULL"></span>}
+                    </td>
+}
+                    @for (int i = 0; i < Model.Count(); i++)
+                    {
+                        <td class="StationaryTableTd2">
+                            @if (lst[i].MobHandoverStatus == true)
+                            {<span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span>}
+                            else if (lst[i].MobHandoverStatus == false)
+                            {<span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span> }
+                            else
+                            {<span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span>}
+                        </td>
+                    }
+                    <td class="StationaryTableTd2">
+                        @if (item.ICwHandoverStatus == true)
+                        {<span class="bold INTER_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTER_HO_STATUS_TRUE"></span> }
+                        else if (item.ICwHandoverStatus == false)
+                        {<span class="bold INTER_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTER_HO_STATUS_FALSE"></span>}
+                        else
+                        {<span class="bold INTER_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTER_HO_STATUS_NULL"></span>}
+
+                    </td>
+                </tr>
+                            }
+
+        </table>
+
+
+
+        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+        @if (ViewBag.mail == "yes")
+        {
+            <div class="ForMail">
+                For Detail Reoprt: <a target="_blank" href="@ViewBag.Domain/site/netlayerreport?SiteId=@First.SiteId&BandId=@First.BandId&Carrier=@First.CarrierId&NetworkMode=@First.NetworkModeId&CircleRadios=17&AzmuthRadius=200&Auto=0">Click Here</a>
+                <br /><br /><br /> Regards, <br /><br /><br />
+                <img src="http://airview.swius.com/Content/Images/Application/swi_logo.png" style="width: 131px;height: 58px;" /><br />
+                <b>Sublime Wireless Inc.</b>
+                <br /><br />
+                <span style="color:#1F497D;font-size: 11.0pt;font-family:Calibri,sans-serif;text-align:justify;"> This electronic transmission and any documents which may accompany it, contain information from SWI, SWI's Entity and SWIs's Clients which is intended only for the use of the individual (s) or entity to which it is addressed, and which may contain information that is privileged, confidential, and/or otherwise exempt from disclosure under applicable law. If the reader of this message is not the intended recipient or the employee or agent responsible for delivering the message to the intended recipient, any disclosure, dissemination, distribution, copying or other use of this communication or its substance is prohibited. If you have received this communication in error, please immediately notify us by telephone to arrange for the destruction of the communication or its return to us at our expense. Thank you.</span>
+            </div>
+        }
+
+        <P CLASS="breakhere" />
+    </div>
+
+    <script>
+        var ReportConfiguration = JSON.parse('@Html.Raw(ReportConfiguration)');
+        function Configurations(keyCode, dataType, value, IsActive) {
+           // console.log(keyCode + '-' + dataType + '-' + value + '-' + IsActive);
+            if (dataType == 'BOOLEAN') {
+                if (IsActive == true) {
+                    $('#' + keyCode).show();
+                    $('.' + keyCode).show();
+                    $('#pan-' + keyCode).show();
+                } else {
+                    $('#' + keyCode).hide();
+                    $('.' + keyCode).hide();
+                    $('#pan-' + keyCode).hide();
+                }
+            }
+
+            //if (dataType == 'BGCOLOR') {
+            //    $('.' + c.KeyCode).css({
+            //        'background': c.value
+            //    });
+            //}
+
+            if (dataType == 'STRING') {
+                if (value != null || value != '') {
+                    var preValue = $('#' + keyCode).attr('data-preValue');
+                    if (preValue != undefined) {
+                        $('#' + keyCode).text(preValue + ' ' + value);
+                    } else {
+                        $('#' + keyCode).text(value);
+                    }
+
+                    $('.' + keyCode).text(value);
+                }
+            }
+        }
+       
+    </script>
+  }

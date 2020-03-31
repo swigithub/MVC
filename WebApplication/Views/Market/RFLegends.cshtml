@@ -1,0 +1,74 @@
+﻿<div class="row">
+    <div class="col-sm-12">
+
+        <div class="box box-solid">
+            <div class="box-header with-border boxHeader">
+                <h3 class="box-title">RF Plot Legend</h3>
+            </div>
+            <div class="box-body boxBody">
+                <div class="row">
+                    <div class="col-md-offset-5 col-md-7">
+                        <div class="form-group">
+                            <button type="button" id="AddNewRow" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Add More
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <input type="hidden" value="1" name="count" id="collectionCount" />
+                    <div class="col-md-6" id="RFLegendArea">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="RangeFrom">Range From</label>
+                                <input type="number" name="RangeFrom" id="RangeFrom" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label for="RangeTo">Range To</label>
+                                <input type="number" name="RangeTo" id="RangeTo" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label for="ColorCode">Color</label>
+                                <input type="color" name="Color" id="ColorCode" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#AddNewRow").click(function () {
+            var row = ` <div class="row">
+                                <div class="col-md-3">
+                                    <label for="RangeFrom">Range From</label>
+                                    <input type="number" name="RangeFrom" id="RangeFrom" class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="RangeTo">Range To</label>
+                                    <input type="number" name="RangeTo" id="RangeTo" class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="ColorCode">Color</label>
+                                    <input type="color" name="Color" id="ColorCode" class="form-control" />
+                                </div>
+                        `;
+            if ($("#RFLegendArea").children().length > 0) {
+                row += `<div class="col-md-3">
+                                    <button type="button" id="removeRow" class ="btn btn-sm btn-danger" style="margin-top: 27px;"><i class ="fa fa-minus" title="remove"></i></button>
+                                </div>`;
+            }
+            row += "</div>";
+            $("#RFLegendArea").append(row);
+            $("#collectionCount").val(parseInt($("#collectionCount").val()) + 1);
+        })
+    })
+    $("body").on("click", "#removeRow", function () {
+        $(this).parent().parent().remove();
+        $("#collectionCount").val(parseInt($("#collectionCount").val()) - 1);
+
+    });
+</script>

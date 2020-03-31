@@ -1,0 +1,42 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_SiteIssueTracker>
+
+
+@if (Model.Count() > 0)
+{
+
+    foreach (var item in Model.OrderBy(m => m.ReportDate))
+    {
+        int DesLength = item.Description.Length;
+        if (DesLength > 40)
+        {
+            DesLength = 40;
+        }
+
+        <li class="noti-item">
+            <!-- start message -->
+            <a href="#" class="SiteIssues" data-TesterId="@item.TesterId" data-SiteId="@item.SiteId">
+                <div class="pull-left">
+                    <img src="@item.Picture" class="img-circle" alt="User Image">
+                </div>
+                <h4>
+                    @item.Tester
+                    <small>
+                        <i class="fa fa-clock-o"></i>
+                        @if (!string.IsNullOrEmpty(item.ReportDate.ToString()))
+                    {
+                            @item.ReportDate.ToString("dd-MM-yyyy hh : mm")
+
+                        }
+                    </small>
+                </h4>
+                <p>
+
+                    @item.Description.Substring(0, DesLength)
+                </p>
+            </a>
+        </li>
+    }
+
+}
+

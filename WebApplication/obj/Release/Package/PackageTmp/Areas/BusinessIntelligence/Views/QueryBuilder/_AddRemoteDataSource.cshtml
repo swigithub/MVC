@@ -1,0 +1,102 @@
+﻿
+<div class="overlay rmt" style="display:none;">
+    <div class="overlay__inner">
+        <div class="overlay__content">
+            <span class="spinner"></span>
+        </div>
+    </div>
+</div>
+<div id="addnew-panel" class="popup-box">
+    <form name=vm.remoteDatasourceForm ng-submit="vm.remoteDatasourceForm.$valid && vm.getConnection()" novalidate>
+        <div class="widget-title">
+            <div class="title-text">Add Datasource</div>
+            <a class="close-popup" ng-click="vm.cancel()" href="#" title=""><i class="fa fa-times"></i></a>
+        </div><!-- Popup Title -->
+
+        <div class="popup-content">
+
+            <div class="row align-items-start">
+
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <label>Datasource<span class="spanForMandatory">*</span></label>
+                    <div class="form-group" ng-class="{ 'has-error': vm.remoteDatasourceForm.dataSourceName.$touched && vm.remoteDatasourceForm.dataSourceName.$invalid}">
+                        <input placeholder="Data source" ng-model="vm.remoteDataSourceinfo.dataSourceName" type="text" name="dataSourceName" ng-minlength="5"
+                               ng-maxlength="50" required>
+                        <div class="help-block with-errors" ng-messages="vm.remoteDatasourceForm.dataSourceName.$error" ng-if="vm.remoteDatasourceForm.dataSourceName.$touched">
+                            <div ng-message-exp="['minlength', 'maxlength']">
+                                Minimum 5 characters required
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="help-block with-errors" ng-show="vm.remoteDatasourceForm.$submitted ||vm.remoteDatasourceForm.dataSourceName.$touched">
+                        <div ng-show="vm.remoteDatasourceForm.dataSourceName.$error.required">Mandatory fields<span>*</span></div>
+                    </div>
+                    @*<div class="help-block with-errors"></div>*@
+                </div>
+
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <label>Username<span class="spanForMandatory">*</span></label>
+                    <div class="form-group" ng-class="{ 'has-error': vm.remoteDatasourceForm.remoteUserName.$touched && vm.remoteDatasourceForm.remoteUserName.$invalid}">
+                        <input placeholder="Username" ng-model="vm.remoteDataSourceinfo.remoteUserName" type="text" name="remoteUserName" ng-minlength="2"
+                               ng-maxlength="50" required>
+                        <div class="help-block with-errors" ng-messages="vm.remoteDatasourceForm.remoteUserName.$error" ng-if="vm.remoteDatasourceForm.remoteUserName.$touched">
+                            <div ng-message-exp="['minlength', 'maxlength']">
+                                Minimum 5 characters required
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="help-block with-errors" ng-show="vm.remoteDatasourceForm.$submitted ||vm.remoteDatasourceForm.remoteUserName.$touched">
+                        <div ng-show="vm.remoteDatasourceForm.remoteUserName.$error.required">Mandatory fields<span>*</span></div>
+                    </div>
+                    @*<div class="help-block with-errors"></div>*@
+                </div>
+
+                <div class="col-lg-12 col-md-12 form-group  has-feedback">
+                    <label>Password<span class="spanForMandatory">*</span></label>
+                    <div class="form-group" ng-class="{ 'has-error': vm.remoteDatasourceForm.remotePassword.$touched && vm.remoteDatasourceForm.remotePassword.$invalid}">
+                        <input placeholder="Password" ng-model="vm.remoteDataSourceinfo.remotePassword" type="password" name="remotePassword" ng-minlength=""
+                               ng-maxlength="50" required>
+                        <div class="help-block with-errors" ng-messages="vm.remoteDatasourceForm.remotePassword.$error" ng-if="vm.remoteDatasourceForm.remotePassword.$touched">
+                            <div ng-message-exp="['minlength', 'maxlength']">
+                                Minimum 5 characters required
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="help-block with-errors" ng-show="vm.remoteDatasourceForm.$submitted ||vm.remoteDatasourceForm.remotePassword.$touched">
+                        <div ng-show="vm.remoteDatasourceForm.remotePassword.$error.required">Mandatory fields<span>*</span></div>
+                    </div>
+                    @*<div class="help-block with-errors"></div>*@
+                </div>
+
+                <div class="col-lg-12 col-md-12 form-group  has-feedback" ng-if="vm.remoteDatabaseDdl.length>0">
+                    <label>Database<span class="spanForMandatory">*</span></label>
+                    <ui-select style="width: 200px !important;" class="" ng-model="vm.remoteDataSourceinfo.remoteDatabase" theme="select2" title="Choose a template">
+                        <ui-select-match placeholder="Please select database...">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="remotedb.name as remotedb in vm.remoteDatabaseDdl | propsFilter: {name: $select.search}">
+                            <div ng-bind-html="remotedb.name | highlight: $select.search"></div>
+
+                        </ui-select-choices>
+                    </ui-select>
+                    <div class="help-block with-errors" ng-show="vm.remoteDatasourceForm.$submitted ||vm.remoteDatasourceForm.remoteDatabase.$touched">
+                        <div ng-show="vm.remoteDatasourceForm.remoteDatabase.$error.required">Mandatory fields<span>*</span></div>
+                    </div>
+                    @*<div class="help-block with-errors"></div>*@
+                </div>
+
+            </div>
+
+        </div>
+        <div class="popup-footer align-right">
+            <button type="submit" class="custom-btn medium color1">Connect</button>
+            <button type="button" ng-if="vm.remoteDataSourceinfo.remoteDatabase.length>0" ng-click="vm.addTablesNViews()" class="custom-btn medium color1">Save</button>
+            @*<button type="button" ng-if="vm.remoteDataSourceinfo.remoteDatabase.length>0" ng-click="vm.addRemoteDatasource()" class="custom-btn medium color1">Save</button>*@
+            <button type="button" class="custom-btn medium color11" ng-click="vm.cancel()">Cancel</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,105 @@
+﻿
+<div id="addnew-panel" class="popup-box">
+    <form name=vm.dashboardAndReportInitialInfo ng-submit=vm.saveMultipleJoin()>
+        <div class="widget-title">
+            <div class="title-text">Link properties</div>
+            <a class="close-popup" ng-click="vm.cancel()" href="#" title=""><i class="fa fa-times"></i></a>
+        </div><!-- Popup Title -->
+
+        <div class="popup-content">
+
+
+
+            <div class="row">
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <label>Source</label>
+                    <ui-select class="cls" ng-change="vm.changeSourceEvent()" ng-model="vm.multipleJoinSourceTargetList.source" theme="select2" title="Choose a source">
+                        <ui-select-match placeholder="Select source...">{{$select.selected.value}}</ui-select-match>
+                        <ui-select-choices repeat="sourceTagetTable.key as sourceTagetTable in  vm.sourceAndTargetTablesName | propsFilter: {value: $select.search}">
+                            <div ng-bind-html="sourceTagetTable.value | highlight: $select.search"></div>
+
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <label>Target</label>
+                    <ui-select class="cls" ng-change=" vm.changeTargetEvent()" ng-model="vm.multipleJoinSourceTargetList.target" theme="select2" title="Choose a target">
+                        <ui-select-match placeholder="Select target...">{{$select.selected.value}}</ui-select-match>
+                        <ui-select-choices repeat="sourceTagetTable.key as sourceTagetTable in  vm.sourceAndTargetTablesName | propsFilter: {value: $select.search}">
+                            <div ng-bind-html="sourceTagetTable.value | highlight: $select.search"></div>
+
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <label>Join Type</label>
+                    <ui-select class="cls" ng-model="vm.multipleJoinSourceTargetList.joinType" theme="select2" title="Choose a Join Type">
+                        <ui-select-match placeholder="Select Join Type...">{{$select.selected.value}}</ui-select-match>
+                        <ui-select-choices repeat="getJoinType.key as getJoinType in  vm.joinTypeJson | propsFilter: {value: $select.search}">
+                            <div ng-bind-html="getJoinType.value | highlight: $select.search"></div>
+
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+
+
+            </div>
+            <button class="custom-btn medium color1" type="button" style="float: right;
+    /* margin-top: 0%; */
+    margin-bottom: 2%" ng-click="vm.addSourceAndTargetEvent()">
+                Add
+            </button>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Operator</th>
+                            <th>Source</th>
+                            <th>Target</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in vm.multipleJoinSourceTargetList.listOfOperatorSourceAndTargetColumnsName">
+                            <td>
+                                <ui-select class="cls" ng-model="item.operatorType" theme="select2" title="Choose a Join Type">
+                                    <ui-select-match placeholder="Select Join Type...">{{$select.selected.value}}</ui-select-match>
+                                    <ui-select-choices repeat="getOperator.key as getOperator in  vm.operators | propsFilter: {value: $select.search}">
+                                        <div ng-bind-html="getOperator.value | highlight: $select.search"></div>
+
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                            <td>
+                                <ui-select class="cls" ng-model="item.source" theme="select2" title="Choose a source column">
+                                    <ui-select-match placeholder="Select source column...">{{$select.selected.value.label}}</ui-select-match>
+                                    <ui-select-choices repeat="getSourceColumn.value.label as getSourceColumn in  vm.sourceColumns | propsFilter: {value: $select.search}">
+                                        <div ng-bind-html="getSourceColumn.value.label | highlight: $select.search"></div>
+
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                            <td>
+                                <ui-select class="cls" ng-model="item.target" theme="select2" title="Choose a target column">
+                                    <ui-select-match placeholder="Select target column...">{{$select.selected.value.label}}</ui-select-match>
+                                    <ui-select-choices repeat="getTargetColumn.value.label as getTargetColumn in vm.targetColumns | propsFilter: {value: $select.search}">
+                                        <div ng-bind-html="getTargetColumn.value.label | highlight: $select.search"></div>
+
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                            <td><button ng-if="$index !=0" class="custom-btn medium color11" type="button" ng-click="vm.removeSourceAndTargetEvent($index)">Remove</button></td>
+                        </tr>
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+
+        </div>
+        <div class="popup-footer align-right">
+            <button ng-disabled="!vm.dashboardAndReportInitialInfo.$valid" type="submit" class="custom-btn medium color1">Save</button>
+            <button type="button" class="custom-btn medium color11" ng-click="vm.cancel()">Cancel</button>
+        </div>
+    </form>
+</div>
+

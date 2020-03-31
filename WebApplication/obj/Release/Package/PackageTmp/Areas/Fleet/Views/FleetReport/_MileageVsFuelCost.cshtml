@@ -1,0 +1,163 @@
+﻿
+<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="mileagevsfuelcost-title">Mileage Report <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Mileage Vs Fuel Cost </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="mileagevsfuelcost-custom-filters">
+            <div class="filter-field">
+                <label>Vehicle</label>
+                <input type="text" id="mileagevsfuelcost-asset" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="date-range8">
+                </div>
+            </div>
+            <div class="filter-field">
+                <label>Fuel Consumption (L/hkm)</label>
+                <input type="text" id="fuelconsumption" placeholder="" style="width:50px" />
+            </div>
+            <div class="filter-field">
+                <label>Fuel Price</label>
+                <input type="text" id="fuelprice" placeholder="" style="width:50px" />
+            </div>
+            <div class="filter-field button">
+                <button id="apply_filters7" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="mileagevsfuelcost-table">
+            <table id="mileagevsfuelcostreport" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Vehicle</th>
+                        <th>Tracker Id</th>
+                        <th>Mileage (km)</th>
+                        <th>Fuel Consumption</th>
+                        <th>Fuel price</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                       
+
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#apply_filters7").click(function () {
+        debugger;
+
+        var assetname = $("#mileagevsfuelcost-asset").val();
+        var daterange = $("#date-range8").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var fuelconsumption = $("#fuelconsumption").val();
+        var fuelprice = $("#fuelprice").val();
+        var reportexporttitle = $("#mileagevsfuelcost-title").text();
+        var exportfilename = $("#mileagevsfuelcost-title").text();
+        if (fuelconsumption == 0 || fuelconsumption =='') {
+            fuelconsumption = 1;
+        }
+        var frcmodel = {
+            ReportFilter: "MileageVsFuelCost",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname,
+            FuelConsumption: fuelconsumption,
+            FuelPrice:fuelprice
+        }
+
+        var table = $('#mileagevsfuelcostreport').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A5',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_MileageReport",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'AssetName', "name": "Vehicle" },
+               { data: 'TrackerId', "name": "Tracker Id" },
+               { data: 'CurrentTripMileage', "name": "Mileage (km)", "autoWidth": true },
+               { data: 'FuelConsumption', "name": "Fuel Consumption", "autoWidth": true },
+               { data: 'FuelPrice', "name": "Fuel price", "autoWidth": true },
+               { data: 'StartTime', "name": "Start Time", "autoWidth": true },
+               { data: 'EndTime', "name": "End Time", "autoWidth": true },
+               
+
+            ],
+            initComplete: function (settings, json) {
+                $("#mileagevsfuelcost-custom-filters .top").remove();
+                $($("#mileagevsfuelcost-table .top")).appendTo("#mileagevsfuelcost-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+        //$.ajax({
+        //    url: window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+        //    type: "POST",
+        //    traditional: true,
+        //    data:JSON.stringify(frcmodel),
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    error: function (response) {
+        //        alert(response.responseText);
+        //    },
+
+        //    success: function (response) {
+        //        alert(response);
+        //    }
+        //});
+    });
+</script>
+

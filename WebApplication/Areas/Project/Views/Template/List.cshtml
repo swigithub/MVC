@@ -1,0 +1,605 @@
+﻿@model IEnumerable<Library.SWI.Template.Model.TMP_Templates>
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+    int ProjectId = ViewBag._ProjectID;
+}
+
+<script src="https://code.jquery.com/jquery-2.1.4.js" integrity="sha256-siFczlgw4jULnUICcdm9gjQPZkw/YPDqhQ9+nAOScE4=" crossorigin="anonymous"></script>
+<link href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+@*<style>
+    .ul.pagination {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+    }
+
+    ul.pagination li {
+        display: inline;
+    }
+
+        ul.pagination li a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+        }
+
+            ul.pagination li a.active {
+                background-color: #4CAF50;
+                color: white;
+            }
+
+            ul.pagination li a:hover:not(.active) {
+                background-color: #ddd;
+            }
+</style>*@
+<style>
+    .widget-body.no-padding{
+        margin: -25px -13px 0;
+    }
+    .dataTables_info{
+        margin-left: 10px;
+    }
+</style>
+<style>
+    td::first-letter {
+    text-transform: uppercase;
+}
+</style>
+    
+<div ng-app="ProjectManagment" ng-controller="DefinationList">
+    <div class="jarviswidget jarviswidget-color-darken jarviswidget-sortable" id="wid-id-0" data-widget-editbutton="false" role="widget">
+        <header role="heading">
+            <div class="jarviswidget-ctrls" role="menu">
+
+            </div>
+            <span class="widget-icon"> <i class="fa fa-dedent"></i> </span>
+            <h2>Templates </h2>
+
+
+            <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+            <div class="pull-right" style="margin-right: 1%;">
+                <a href="/Project/Template/FormBuilder/163351" style="margin-bottom: 10%;" class="btn btn-info btn-xs">Form Builder</a>
+            </div>
+            <div class="pull-right" style="margin-right: 1%;">
+                <a href="/Project/Dashboard/Index/@Request.QueryString["projectId"]" style="margin-bottom: 8%;" class="btn btn-info btn-xs">Project Dashboard</a>
+            </div>
+            <div class="pull-right" style="margin-right: 1%;">
+                <a style="margin-bottom: 10%;" onclick="addNewTemplate()" id="addNewTemplate" class="btn btn-info btn-xs">New Template</a>
+            </div>
+        </header>
+
+        <!-- widget div-->
+        <div>
+            <div class="widget-body no-padding">
+
+                <div id="dt_basic_wrapper" class="">
+                    <table class="table table-striped table-responsive templateGrid">
+                        <thead>
+                            <tr>
+                                <th>Template Name</th>
+                                <th>Background Color</th>
+                                
+                                <th>Template Type</th>
+                                <th>Module Type</th>
+                                <th>Page Type</th>
+                                <th>Default</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ 
+                            foreach (var item in Model)
+                            {
+                                    <tr>
+                                        <td>@item.TemplateTitle</td>
+                                        <td class="text-center"><div style="float: left; height:20px;margin:0px auto;width:20px;background-color:@item.BackgroundColor"></div></td>
+                                        <td>@item.TemplateType</td>
+                                        <td>@item.ModuleType</td>
+                                        <td>@item.PageType</td>
+                                        
+                                        <td>
+                                            @if (item.IsDefault == true)
+                                            {
+                                                
+                                                <a title="Default" style="color: green" href="/Project/Template/MakeTemplateUndefault?ModuleId=@item.ModuleId&TemplateId=@item.TemplateId&ScopeId=@item.ScopeId&ProjectId=@item.ProjectId">
+                                                    <span class="glyphicon glyphicon-ok"></span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a title="Make Default" style="color: red" href="/Project/Template/ChangeDefaultTemplate?IsDefault=true&ModuleId=@item.ModuleId&TemplateId=@item.TemplateId&ScopeId=@item.ScopeId&ProjectId=@item.ProjectId" >
+                                                    <span class="glyphicon glyphicon-ok"></span>
+                                                </a>
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @if (item.TemplateType == "dashboard")
+                                            {
+                                                <a title="Preview" href="/Project/Template/Dashboard?id=@item.TemplateId&ProjectId=@item.ProjectId" target="_blank" style="margin-right: 10px;cursor: pointer;">
+                                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                                </a>
+                                            }
+                                            <a title="Edit Template" onclick="editTemplate(@item.TemplateId)" style="margin-right: 10px;cursor: pointer;">
+                                                <span class="glyphicon glyphicon-edit"></span>
+                                            </a>
+                                            @if (@item.IsActive == true)
+                                            {
+                                                <a title="Active Template" onclick="deleteTemplate(@item.TemplateId)" style="color: green; margin-right: 10px;cursor: pointer;">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a title="Deactive Template" onclick="ActiveTemplate(@item.TemplateId)" style="color: red; margin-right: 10px;cursor: pointer;">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </a>
+                                            }
+                                            <a title="Design Template" onclick="manageTemplate(@item.TemplateId, '')" style="margin-right: 10px; cursor: pointer;">
+                                                <span class="glyphicon glyphicon-cog"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+
+                    </table>
+                    <h2 class="text-center"></h2>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+
+
+    <div class="clearfix"></div>
+    @*<div class="form-group">
+        <input type='button' class="btn btn-primary pull-left" value='Go Back' onclick="goBack();" />
+    </div>*@
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="addNewTemplateModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Template</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="templateId" />
+                <label>Template Title</label>
+                <input type="text" id="templateTitle" class="form-control" placeholder="Template Title" required/>
+                <label class="text-danger" id="_templateName"></label>
+                <br />
+                <label>Background Color</label>
+                <input type="color" id="backgroundColor" class="form-control" value="#FFFFFF" />
+                <br />
+                <label>Page Type</label>
+                <select class="form-control" id="pageType" required>
+                    <option value="-1">Select Page Type</option>
+                    <option value="fullpaged">Full Paged</option>
+                    <option value="contained">Contained</option>
+                </select>
+                <label class="text-danger" id="_pageType"></label>
+                <br />
+
+                <label>Template Type</label>
+                <select class="form-control" id="templateType" onchange="addParameterListDynamic()" required>
+                    <option value="-1">Select Template Type</option>
+                    <option value="report">Report</option>
+                    <option value="dashboard">Dashboard</option>
+                </select>
+                <label class="text-danger" id="_templateType"></label>
+                <br />
+
+                <label>Module Type</label>
+                <select class="form-control" id="ModuleType" required>
+                    <option value="-1">Select Module Type</option>
+                </select>
+                <label class="text-danger" id="_moduleType"></label>
+                <br />
+                @*<label>Project Id</label>
+                <input type="text" id="projectId" class="form-control" value="" />
+                <br />
+                <label>Scope Id</label>
+                <input type="text" id="scopeId" class="form-control" value="" />
+                <br />*@
+
+                @* <a class="addMoreParameter btn" style='cursor: pointer; '><span class="glyphicon glyphicon-plus"></span></a>*@
+
+                <table id='parameterListTable' class="table" style="display: none">
+                    <thead>
+                        <tr>
+                            <th>Parameter Name</th>
+                            <th>Data Type</th>
+                            <th>...</th>
+                        </tr>
+                    </thead>
+                    <tbody id="templateParametersList">
+
+                    </tbody>
+                </table>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="return addNewTemplateFormSubmit();" class="btn btn-success">Save</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="deleteTemplateModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Template</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="templateIdForDelete" />
+                Are you sure you want to disable it ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="deleteTemplateOkBtn()" id="deleteTemplateOkBtn">Ok</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="ActiveTemplateModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Template</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="templateIdForDelete" />
+                Are you sure you want to Active it ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="ActiveTemplateOkBtn()" id="ActiveTemplateOkBtn">Active</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+@section style{
+    <style>
+        .table > tbody > tr > td {
+            padding: 1px 10px;
+        }
+    </style>
+    <style>
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            vertical-align: middle;
+        }
+    </style>
+}
+
+<script type="text/javascript">
+    function ucwords(str) {
+        return (str + '').replace(/^([a-z])|\s+([a-z])/g, function ($1) {
+            return $1.toUpperCase();
+        });
+    }
+    function goBack() {
+        window.history.back();
+    }
+    $(document).ready(function () {
+        $('#templateListTable').DataTable();
+    });
+
+    function addNewTemplate() {
+
+        $('#templateId').val("");
+        $('#templateParametersList').html('');
+        $('#addNewTemplateModal').find("input[type=text]").val("");
+        $('#addNewTemplateModal').find("input[type=select]").val("-1");
+
+        $("#projectId").val(@Request.QueryString["projectId"]);
+        $("#scopeId").val(@Request.QueryString["scopeId"]);
+
+        $('#addNewTemplateModal').modal('show');
+    }
+
+    function addNewTemplateFormSubmit() {
+        $("#_templateName").html("");
+        $("#_pageType").html("");
+        $("#_templateType").html("");
+        $("#_moduleType").html("");
+        if($("#templateTitle").val() == null || $("#templateTitle").val() == "undefined" || $("#templateTitle").val() == ""){
+            $("#_templateName").html("Template name is required.");
+            return false;
+        } if($("#pageType").val() == "-1"){
+            $("#_pageType").html("Select Page Type first.");return false;
+        }
+         if($("#templateType").val() == "-1"){
+            $("#_templateType").html("Select a template type first.");return false;
+        }
+         if($("#ModuleType").val() == "-1"){
+            $("#_moduleType").html("Select a module first.");return false;
+        }
+        var TMP_templateTitle = $('#templateTitle').val();
+        var TMP_templateId = $('#templateId').val();
+        var TMP_backgroundColor = $('#backgroundColor').val();
+        var TMP_pageType = $('#pageType').val();
+        var TMP_templateType = $('#templateType').val();
+        // var TMP_projectId = $('#projectId').val();
+        var TMP_projectId = @ProjectId;
+        var TMP_scopeId = $('#scopeId').val();
+        var TMP_ModuleType = $('#ModuleType').val();
+
+        console.log($('#templateParametersList tr').length)
+
+        var TMP_paramList = "[";
+        $('#templateParametersList tr').each(function (i) {
+            TMP_paramList += ' { "ParameterName" : "' + $(this).find('input[type=text]').val() + '", "DataType" : "' + $(this).find('select option:selected').text() + '" },';
+        });
+
+        TMP_paramList = TMP_paramList.slice(0, TMP_paramList.length - 1);
+        TMP_paramList += ']';
+
+
+        if (templateTitle != null) {
+            $.ajax({
+                url: "/Project/Template/AddTemplate/",
+                type: "post",
+                data: {
+                    TemplateTitle: TMP_templateTitle,
+                    TemplateId: TMP_templateId,
+                    BackgroundColor: TMP_backgroundColor,
+                    PageType: TMP_pageType,
+                    ParameterJSON: TMP_paramList,
+                    ProjectId: TMP_projectId,
+                    ScopeId: TMP_scopeId,
+                    TemplateType: TMP_templateType,
+                    ModuleType: TMP_ModuleType
+                },
+                async: false,
+            }).done(function (data) {
+                location.reload();
+            });
+        }
+        return true;
+    }
+
+    function editTemplate(id) {
+        $.ajax({
+            url: "/Project/Template/ManageTemplate/",
+            type: "post",
+            data: {
+                TemplateId: id,
+                Filter: "GetById"
+            },
+            async: false,
+        }).done(function (data) {
+            $('#templateTitle').val(data.TemplateTitle);
+            $('#templateId').val(data.TemplateId);
+            $('#backgroundColor').val(data.BackgroundColor);
+            $('#pageType').val(data.PageType);
+            $("#templateType").val(data.TemplateType)
+            $("#projectId").val(data.ProjectId);
+            $("#scopeId").val(data.ScopeId);
+            var moduleId = data.ModuleId;
+            var optionsList = `<option value='-1'>Select Module Type</option>`;
+            $.get("/Project/Template/GetModuleTypes?templateType=" + data.TemplateType, function (result) {
+                if (result != null) {
+                    for (var i = 0; i < result.length; i++) {
+                        if(moduleId == result[i].Id){
+                            optionsList += `<option value='` + result[i].Id + `' selected>` + result[i].ModuleName + `</option>`;
+                        }else{
+                            optionsList += `<option value='` + result[i].Id + `'>` + result[i].ModuleName + `</option>`;
+                        }
+                    }
+                    $("#ModuleType").html('');
+                    $("#ModuleType").append(optionsList);
+                }
+            }).fail(function () {
+                alert("There is an error to get Module Types.");
+            })
+
+            if (data.Parameters != null && data.Parameters != "" && data.Parameters != undefined) {
+                var parameterObj = JSON.parse(data.Parameters)
+                var data = "";
+                console.log(id)
+                console.log(parameterObj.length + "  " + parameterObj.count)
+                $('#templateParametersList').html('');
+
+                for (i = 0; i < parameterObj.length; i++) {
+
+                    data = "<tr>                                                                                                                \
+                                <td>                                                                                                            \
+                                    <input class='form-control' type='text' id='parameterName" + i + "' name='parameterName'/>                  \
+                                </td>                                                                                                           \
+                                <td>                                                                                                            \
+                                    <select class='form-control' id='dataType" + i + "' name='dataType'>                                        \
+                                        <option value='-1'>Select Data Type</option>                                                            \
+                                        <option value='string'>String</option>                                                                  \
+                                        <option value='numeric'>Numeric</option>                                                                \
+                                    </select>                                                                                                   \
+                                </td>                                                                                                           \
+                                <td>                                                                                                            \
+                                    <a onclick='deleteParameterRow(\"parameterName" + i + "\")' class='btn' style='cursor: pointer;'>           \
+                                        <span class='glyphicon glyphicon-minus'></span>                                                         \
+                                    </a>                                                                                                        \
+                                </td>                                                                                                           \
+                            </tr>";
+
+                    $('#parameterListTable').append(data);
+
+                    $('#parameterName' + i).val(parameterObj[i]['ParameterName']);
+                    $('#dataType' + i).val(parameterObj[i]['DataType']);
+                }
+
+
+            }
+
+            $('#addNewTemplateModal').modal('show');
+        });
+    }
+
+
+    function deleteTemplate(id) {
+        $('#templateIdForDelete').val(id);
+        $('#deleteTemplateModal').modal('show');
+    }
+
+    function ActiveTemplate(id) {
+        $('#templateIdForDelete').val(id);
+        $('#ActiveTemplateModal').modal('show');
+    }
+
+
+    function deleteTemplateOkBtn() {
+        var templateId = $('#templateIdForDelete').val();
+
+        if (templateId != null) {
+            $.ajax({
+                url: "/Project/Template/ManageTemplate/",
+                type: "post",
+                data: { templateId: templateId, filter: "Delete" },
+                async: false,
+            }).done(function (data) {
+                location.reload();
+            });
+        }
+    }
+
+    function ActiveTemplateOkBtn() {
+        var templateId = $('#templateIdForDelete').val();
+
+        if (templateId != null) {
+            $.ajax({
+                url: "/Project/Template/ManageTemplate/",
+                type: "post",
+                data: { templateId: templateId, filter: "Active" },
+                async: false,
+            }).done(function (data) {
+                location.reload();
+            });
+        }
+    }
+
+    function manageTemplate(locId, parameter) {
+        window.location.href = "/Project/Template/Index/" + locId + parameter;
+    }
+
+
+    $(".addMoreParameter").on('click', function () {
+        count = $('#templateParametersList tr').length;
+
+        console.log(count)
+        var data = "<tr>                                                                                                                                                                        \
+                        <td><input class='form-control' type='text' id='parameterName" + count + "' name='parameterName'/></td>                                                                 \
+                        <td>                                                                                                                                                                    \
+                            <select class='form-control' id='dataType" + count + "' name='dataType'>                                                                                            \
+                                <option value='-1'>Select Data Type</option>                                                                                                                    \
+                                <option value='string'>String</option>                                                                                                                          \
+                                <option value='numeric'>Numeric</option>                                                                                                                        \
+                            </select>                                                                                                                                                           \
+                        </td>                                                                                                                                                                   \
+                        <td><a onclick='deleteParameterRow(\"parameterName" + count + "\")' class='btn' style='cursor: pointer;'><span class='glyphicon glyphicon-minus'></span></a></td>       \
+                    </tr>";
+        $('#parameterListTable').append(data);
+
+    });
+
+    function deleteParameterRow(inputId) {
+        console.log('deleteParameterRow ' + inputId)
+        $('#' + inputId).parents("tr").remove();
+    }
+
+
+
+
+    function addParameterListDynamic() {
+        var templateType = $('#templateType').val();
+        var parameterList = "";
+
+        if (templateType == 'report') {
+            parameterList = "<tr>                                                                                                                                       \
+                                <td> <input class='form-control' type='text' id='parameterName1' name='parameterName' value='SiteId' readonly/> </td>                   \
+                                <td> <input class='form-control' type='text' id='parameterDT1' name='parameterDT' value='int' readonly/> </td>                          \
+                            </tr>                                                                                                                                       \
+                            <tr>                                                                                                                                        \
+                                <td> <input class='form-control' type='text' id='parameterName2' name='parameterName' value='NetworkModeId' readonly/> </td>            \
+                                <td> <input class='form-control' type='text' id='parameterDT2' name='parameterDT' value='int' readonly/> </td>                          \
+                            </tr>                                                                                                                                       \
+                            <tr>                                                                                                                                        \
+                                <td> <input class='form-control' type='text' id='parameterName3' name='parameterName' value='BandId' readonly/> </td>                   \
+                                <td> <input class='form-control' type='text' id='parameterDT3' name='parameterDT' value='int' readonly/> </td>                          \
+                            </tr>                                                                                                                                       \
+                            <tr>                                                                                                                                        \
+                                <td> <input class='form-control' type='text' id='parameterName4' name='parameterName' value='CarrierId' readonly/> </td>                \
+                                <td> <input class='form-control' type='text' id='parameterDT4' name='parameterDT' value='int' readonly/> </td>                          \
+                            </tr>                                                                                                                                       \
+                            <tr>                                                                                                                                        \
+                                <td> <input class='form-control' type='text' id='parameterName4' name='parameterName' value='ScopeId' readonly/> </td>                  \
+                                <td> <input class='form-control' type='text' id='parameterDT4' name='parameterDT' value='int' readonly/> </td>                          \
+                            </tr>";
+        }
+        if (templateType == 'dashboard') {
+            parameterList = "<tr>                                                                                                                                       \
+                                <td> <input class='form-control' type='text' id='parameterName1' name='parameterName' value='ProjectId' readonly/> </td>                \
+                                <td> <input class='form-control' type='text' id='parameterDT1' name='parameterDT' value='int' readonly/> </td>                          \
+                            </tr>                                                                                                                                       \
+                            <tr>                                                                                                                                        \
+                                <td> <input class='form-control' type='text' id='parameterName2' name='parameterName' value='ScopeId' readonly/> </td>                  \
+                                <td> <input class='form-control' type='text' id='parameterDT2' name='parameterDT' value='int' readonly/> </td>                          \
+                            </tr>";
+        }
+
+        $('#templateParametersList').html(parameterList);
+        var optionsList = `<option value='-1'>Select Module Type</option>`;
+        console.log(templateType);
+        $.get("/Project/Template/GetModuleTypes?templateType=" + templateType, function (result) {
+            console.log(result);
+            if (result != null) {
+                for (var i = 0; i < result.length; i++) {
+                    optionsList += `<option value='` + result[i].Id + `'>` + result[i].ModuleName + `</option>`;
+                }
+                $("#ModuleType").html('');
+                $("#ModuleType").append(optionsList);
+            }
+        }).fail(function () {
+              alert("There is an error to get Module Types.");
+        })
+    }
+
+    $(document).ready(function () {
+        $('.templateGrid').DataTable({
+            "filter": false,
+            "orderMulti": false,
+            "ordering": false,
+            "lengthChange": false,
+        });
+    });
+
+</script>

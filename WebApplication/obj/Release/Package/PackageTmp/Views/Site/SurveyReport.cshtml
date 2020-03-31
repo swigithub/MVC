@@ -1,0 +1,551 @@
+﻿@model Library.SWI.Survey.Model.TSS_SurveyDocument
+@{
+    ViewBag.Title = "SurveyReport";
+    Layout = null;
+    int x = 0;
+    int y = 0;
+    int rcount = 0;
+    bool RA = false;
+
+}
+@*<style>
+            /*.googlemap{
+             z-index: +1;
+        }
+         .myContainer{
+          zoom: 0.6;
+         -moz-transform: scale(0.6);
+    }*/
+            .FTtableHeading {
+                background-color: #FFD966;
+            }
+
+            .colorBox {
+                height: 22px;
+                width: 22px;
+                color: white;
+                border: solid 1px;
+                border-color: black;
+                margin-bottom: -7px;
+            }
+
+            table {
+                page-break-inside: auto;
+            }
+
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+
+            #pan-settingsNI {
+                position: fixed;
+                left: 10px;
+                top: 50px;
+                background-color: #333;
+                color: white;
+                width: 190px;
+                display: none;
+                box-shadow: 3px 4px 9px 8px rgba(135, 135, 135, 0.95);
+                -moz-box-shadow: 3px 4px 9px 8px rgba(135, 135, 135, 0.95);
+                -webkit-box-shadow: 3px 4px 9px 8px rgba(135, 135, 135, 0.95);
+            }
+
+
+            .settingHeading {
+                background-color: #000;
+                margin-bottom: 5px;
+                font-size: 20px;
+                padding: 10px 0 10px;
+                height: auto;
+            }
+
+            .settingFooter {
+                padding-top: 5px;
+                height: auto;
+            }
+
+            .btn-group {
+                background-color: #004B99;
+            }
+
+            .multiselect-container > li > a > label {
+                margin: 0;
+                height: 100%;
+                cursor: pointer;
+                font-weight: 400;
+                padding: 8px 20px 8px 10px !important;
+                float: left;
+                box-sizing: border-box;
+            }
+
+            .multiselect-container > li {
+                padding: 0 0 0 20px;
+            }
+
+                .multiselect-container > li.multiselect-group.active, .multiselect-container > li.multiselect-all {
+                    padding: 0;
+                }
+
+            .multiselect-container {
+                width: 230px;
+                display: none;
+                position: relative;
+            }
+
+                .multiselect-container > li.multiselect-group label {
+                    color: #fff;
+                }
+
+
+            .divTimeStamp {
+                width: 100%;
+                display: block;
+                background-color: #004B99;
+                padding-bottom: 10px;
+            }
+
+            .divNetLayersName {
+                width: 100%;
+                position: relative;
+                display: block;
+                background-color: #004B99;
+                padding-bottom: 10px;
+            }
+
+            .divNetLayers {
+                width: 100%;
+                display: block;
+                /*position: relative;*/
+                background-color: #004B99;
+                padding-bottom: 10px;
+            }
+
+            .divAngleDistance {
+                width: 100%;
+                /*position: relative;*/
+                display: block;
+                margin: 5px 0px 5px;
+            }
+
+            .multiselect-container > li.multiselect-group {
+                padding: 0 !important;
+            }
+
+            button.multiselect.dropdown-toggle.btn.btn-default {
+                width: 97%;
+                padding: 6px;
+                font-size: 15px;
+                text-align: left;
+                font-weight: 600;
+                margin-left: 1%;
+            }
+</style>*@
+
+<html>
+<head>
+    <link href="~/AdminLTE/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/NetLayreReport.css" rel="stylesheet" />
+    <style>
+            .mapdetail {
+                position: absolute;
+                bottom: 185px;
+                background-color: white;
+                border: solid 2px;
+                width: 153px;
+                left: 1168px;
+                right: 158px;
+            }
+
+            .pan-map {
+                margin-left: 10px;
+                margin-right: 0px;
+                width: 1370px;
+                height: 750px;
+                position: relative;
+            }
+
+            .PciLegend {
+                position: absolute;
+                bottom: 185px;
+                background-color: white;
+                border: solid 2px;
+                left: 1168px;
+                width: 170px;
+                right: 158px;
+            }
+
+            .rptFooter {
+                position: relative !important;
+                bottom: 0 !important;
+                width: 100% !important;
+                margin-top: 112px !important;
+                /*min-top:300px !important;*/
+            }
+
+            .table {
+                margin: auto;
+            }
+
+            .border {
+                border: 1px solid #333;
+            }
+
+            .rw {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .row {
+                margin-top: 20px !important;
+            }
+            /*td{
+             width: 504px !important;
+             border-bottom:1px solid #333 !important;
+
+        }*/
+            .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+                border: 1px solid #333 !important;
+                padding-top: 3px !important;
+                padding-right: 0px !important;
+                padding-bottom: 0px !important;
+            }
+
+            .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+                border-bottom: 1px solid !important;
+                padding-bottom: 2px !important;
+                padding-right: 0px !important;
+            }
+
+            td > table > td {
+                width: 504px !important;
+                border-bottom: 2px solid;
+            }
+
+            th {
+                border-top: 1px !important;
+            }
+
+            .Color {
+                background-color: gold;
+            }
+
+
+            table td {
+                table-layout: fixed !important;
+                overflow: hidden !important;
+                word-wrap: break-word !important;
+                width: 322.800px !important;
+            }
+
+            table th {
+                width: 322.800px !important;
+                background-color: aqua !important;
+            }
+    </style>
+
+</head>
+<body>
+    <div class="container" id="pdf" style="width:1400px;margin: auto;padding:2px;">
+        <a href="#" style="float:right; position: fixed; right: 100px" class="print clear">
+            <img src="/Content/Images/Common/print.png" />
+        </a>
+        <!-- End Report Settings-->
+
+        <div id="print" class="clear">
+            <div class="bgcolor WELCOME_PAGE_COLOR" data-type="BGCOLOR" style="color: white;padding-top: 200px;height: 1000px !important;margin-left: -20px;margin-right: -20px;">
+                <img src="/Content/Images/ClientLogo/nokia_logo.png" class="" style="top: -239px;position: relative;   width: 600px;" />
+
+                <div style="font-size:xx-large;font-family:Arial, Verdana;margin-top:-202px;text-align:center;">
+                    <h1 class="" data-type="BOOLEAN,STRING" style="font-size:3em;margin-top:-35px;">Call Test Report</h1>
+                    <h1 style="font-size:2.5em;margin-top:-35px;">S8</h1>
+                    <h1 style="font-size:1.5em;margin-top:4px;">Jun 30, 2018</h1>
+
+                </div>
+
+                <div class="" style="margin-left:4%; font-family: Arial,Verdana;">
+                    <div>
+                        <div class="left" style="font-size: 23px;">
+
+                        </div>
+                        <div class="left"></div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <img src="/Content/Images/Common/tmobile.png" style="position: relative;left: 59%;bottom: -200px;width: 480px;height: 80px;" />
+            </div>
+            <!--Site Data-->
+
+            <div class="page">
+                <div class="" style="color:#3b39e2;padding-top:50px;height:870px">
+                    <h1 id="SITE_DATA" data-type="BOOLEAN,STRING" data-preValue="S8" class="heading">S8 Site Data</h1>
+
+
+                    <table class="table table-bordered fixed">
+
+                        <tbody>
+                            <tr>
+                                <td class="Color">Wo Ref#</td>
+                                <td>@Model.WoRefId</td>
+                                <td class="Color">Site Code</td>
+                                <td>@Model.SiteCode</td>
+                            </tr>
+                            <tr>
+                                <td class="Color">Client</td>
+                                <td colspan="3">@Model.ClientName</td>
+                            </tr>
+                            <tr>
+                                <td class="Color">Region</td>
+                                <td>@Model.Region</td>
+                                <td class="Color">Market</td>
+                                <td>@Model.CityName</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+
+
+
+
+
+                </div>
+                <div class="footer">
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                </div>
+            </div>
+            <!--Field Test-->
+
+            <div class="">
+                <div id="pan-FIELD_TEST">
+                    <h1 id="FIELD_TEST" data-type="BOOLEAN,STRING" class="heading" data-preValue="S8"> S8 Field Test</h1>
+
+                    @*<style>
+                        .tbl-heading {
+                            background-color: #004B99;
+                            color: white;
+                        }
+
+                        .tbl-data {
+                            background-color: #dbdbdd;
+                            color: #2332de;
+                        }
+                    </style>
+                    
+                    <style>
+                        .tbl-heading {
+                            background-color: #004B99;
+                            color: white;
+                        }
+
+                        .tbl-data {
+                            background-color: #dbdbdd;
+                            color: #2332de;
+                        }
+                    </style>*@
+                    @foreach (var item in Model.Sections)
+                    {     <table class="table table-bordered fixed">
+                              <thead>
+                                  <tr>
+                                      <th class="tdborderleft"><center>Questions</center></th>
+                                      <th><center>Answers</center></th>
+                                      <th><center>Notes</center></th>
+                                  </tr>
+<tbody>
+
+                            <tr>
+                                <td colspan="3" class="Color"><strong><b>@item.SectionTitle</b></strong> </td>
+
+                            </tr>
+                            @{y = 0;
+                            }
+                            @foreach (var qus in item.Questions)
+                {
+                    if (item.Questions.Count > 0)
+                    {
+                                    <tr>
+
+                                        <td>@qus.Question</td>
+
+                                        <td style="padding-left:0px !important;">
+                                            <table class="table table-responsive" style="margin-bottom: 0px; border-bottom:0px; border-top:0px;">
+                                                <tbody>
+                                                    @{rcount = 0;
+                                                    }
+                                                    @foreach (var res in qus.Responses)
+                                                    {
+                                                        var resCount = Model.Sections[x].Questions[y].Responses.Count;
+
+                                                        if (rcount + 1 != resCount)
+                                                        {
+                                                            <tr>
+                                                                <td style="border-top:0px !important; padding-bottom:0px !important;">
+
+                                                                    @res.ResponseText
+                                                                </td>
+
+
+                                                            </tr>
+                                                            rcount++;
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td style="border-top:0px !important;border-bottom-width:0px !important; padding-bottom:0px !important;">
+                                                                    @res.ResponseText
+
+                                                                </td>
+
+
+                                                            </tr>
+                                                        }
+                                                    }
+
+
+                                                    @*<tr>
+                                            <td style="border-bottom:0px !important"> &nbsp;  sdafsdfasdfasdfsdf</td>
+                                        </tr>*@
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            @foreach (var ra in qus.ReqActions)
+                        {
+                            if (ra.ActionTypeId == 1)
+                            {
+                                                    @ra.RequiredAction
+
+
+                                                }
+                                                else
+                                                {
+                                                    RA = true;
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                                        var raCount = Model.Sections[x].Questions[y].ReqActions.Count;
+                                                        if (raCount != 0)
+                                                        {
+                                                            if (RA == true)
+                                                            {
+                                                                <tr>
+
+                                                                    <td colspan="3" class="tdborderleft">
+
+                                                                        @foreach (var ra in qus.ReqActions)
+                                                                        {
+                                                                            if (ra.ActionTypeId == 2)
+                                                                            {
+                                                                                <img src="@ra.RequiredAction" />
+
+                                                                                <br />
+                                                                                <label>@ra.Remarks</label>
+                                                                            }
+                                                                            RA = false;
+                                                                        }
+                                                                    </td>
+
+                                                                </tr>
+                                                                    }
+                                                                }
+                                                                y++;
+
+                                                            }
+                                                        }
+                            @{x++;
+                            }
+                        </tbody>
+                    </table>}
+
+
+                    <style>
+                        .tbl-heading {
+                            background-color: #004B99;
+                            color: white;
+                        }
+
+                        .tbl-data {
+                            background-color: #dbdbdd;
+                            color: #2332de;
+                        }
+                    </style>
+                 
+                    <div class="footer">
+                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!--Stationary Test-->
+
+
+            <center>
+
+            </center>
+            <!--Stationary Test-->
+
+
+
+
+
+
+            <center>
+
+            </center>
+
+
+
+            <div class="page">
+                <div class="WELCOME_PAGE_COLOR" id="thank-you" style="background:#004B99;padding-top:150px;height:800px;margin-left: -50px;margin-right: -20px;margin-top: 10px;padding-bottom: 50px;">
+                    <img src="/Content/Images/Report/Nokia-bg.png" style="margin-top: 215px;margin-left: 381px;" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+                <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+    var btn_print = $('.print');
+
+
+    btn_print.click(function () {
+
+        btn_print.hide();
+
+        setTimeout(function () {
+            window.print();
+
+            btn_print.show();
+       
+        }, 2000);
+
+
+
+
+        return false;
+    });
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+

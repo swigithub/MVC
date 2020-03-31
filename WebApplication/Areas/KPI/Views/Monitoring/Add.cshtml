@@ -1,0 +1,647 @@
+﻿
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+<script src="~/Content/js/Plugins/QueryBuilder/js/moment.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<script src="~/Areas/Project/Content/Tokeninput.js"></script>
+<link href="~/Areas/Project/Content/Tokeninput.css" rel="stylesheet" />
+<link href="~/Areas/Project/Content/Tokenstyle.css" rel="stylesheet" />
+<style>
+    .Formulas {
+        cursor: no-drop;
+        background-color: #e8eaed;
+        pointer-events: none;
+    }
+
+    .table input {
+        padding: 0 10px;
+        font-size: 12px;
+    }
+
+    input {
+        width: 130px;
+        height: 25px;
+    }
+
+    td > em {
+        color: red;
+        font-size: 12px;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > td,
+    .table > tbody > tr > td, .table > tfoot > tr > td {
+        border: 0;
+    }
+
+    .table > tbody {
+        overflow: auto;
+        width: 600PX;
+    }
+</style>
+<div class="row">
+    <article class="col-sm-12 col-md-12 col-lg-12" style="margin-bottom:-18px;margin-top:-17px;padding-right:0;">
+        <!-- new widget -->
+        <form>
+            <div class="jarviswidget jarviswidget-color-blueDark " id="wid-id-5" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-collapsed="false" data-widget-sortable="false">
+
+                <header style="height:40px">
+                    <span class="widget-icon" style="line-height: 1; height:auto;margin-top: 11px; "> <i class="fa fa-random"></i> </span>
+                    <h2 style="font-weight:bold;height: auto;line-height: 1;margin-top: 14px;">KPI</h2>
+                    <div class="input-group" style="padding-left:30px;padding-top:7px;padding-bottom:7px;float:left;">
+                        <button type="button" class="btn btn-default pull-right" style="margin-left:20px;" id="ParentDate">
+                            <span>
+                                <i class="fa fa-calendar"></i> Date range picker
+                            </span>
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+
+                    </div>
+                    <a onclick="Search()" style="/* margin-left: 5px; */display: block;margin-top:2px;margin-left:10px;padding:8px;float:left" class="btn btn-success " href="#"><i class="fa fa-search"></i></a>
+                    <button type="submit" id="Save" @*ng-click="Save()"*@ style="/* margin-left: 5px; */display: block;margin-top: 7px;margin-right: 40px;" class="btn btn-success pull-right">
+                        Save
+                    </button>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <div class="widget-body no-padding" style="overflow:auto">
+
+                        <table class="table no-border table-striped">
+                            <thead id="tablehead">
+                                <tr></tr>
+                            </thead>
+                            <tbody style="font-size:medium" id="tablebody" class="no-border"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td style="column-span:all"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="widget-body-toolbar bg-color-white" style="padding:0">
+
+                        </div>
+                    </div>
+                    <!-- end widget div -->
+                </div>
+                <!-- end widget -->
+            </div>
+        </form>
+    </article>
+
+</div>
+<script>
+    var SDate,EDate;
+    var KPILIST = [];
+    var KPIs = "";
+    var Data=true;
+    var Defaulttr="";
+    /////Function on datatype
+    var Counter = 0
+    function DataTypeMapper(Type, Kpi_Name,KPI,Date,value,KPIDATA_Id) {
+        Counter++;
+        var Nom =Counter-1
+        if (Type == "radio") {
+            return "<tr><td>" + Kpi_Name + "<input value='" + KPIDATA_Id + "' type='hidden'  name='[" + Nom + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.TaskId + "' type='hidden'  name='[" + Nom + "].TaskId' class='hidden required form-control TaskId' /><input value='" + KPI + "' type='text'  name='[" + Nom + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + Date + "' type='hidden'  name='[" + Nom + "].Date' class='hidden required form-control Date' /><input value='" + KPI + "' type='hidden'  name='[" + Nom + "].KPI_Id' class='hidden required form-control KPI' /></td><td> <input checked  value='" + value + "' type='" + Type + "'  name='[" + Nom + "].KPI_Value' class='required  KPI_Value' /></td><td></td></tr>";
+        }
+        else {
+            return "<tr><td>" + Kpi_Name + "<input value='" + KPIDATA_Id + "' type='hidden'  name='[" + Nom + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.TaskId + "' type='hidden'  name='[" + Nom + "].TaskId' class='hidden required form-control TaskId' /><input value='" + Date + "' type='hidden'  name='[" + Nom + "].Date' class='hidden required form-control Date' /><input value='" + KPI + "' type='hidden'  name='[" + Nom + "].KPI_Id' class='hidden required form-control KPI' /><input value='" + KPI + "' type='text'  name='[" + Nom + "].KPI_Id' class='hidden required form-control KPI_Id' /></td><td> <input value='" + value + "' type='" + Type + "'  name='[" + Nom + "].KPI_Value' class='required form-control KPI_Value' /></td><td></td></tr>";
+        }
+    }
+    function DataTypeMapper2(Type, Kpi_Name,KPI,Date,value,KPIDATA_Id) {
+        Counter++;
+        var Nom = Counter - 1
+        if(Type=="radio"){
+            return "<input value='" + KPIDATA_Id + "' type='hidden'  name='[" + Nom + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.TaskId + "' type='hidden'  name='[" + Nom + "].TaskId' class='hidden required form-control TaskId' /><input value='" + KPI + "' type='hidden'  name='[" + Nom + "].KPI_Id' class='hidden required form-control KPI' /><input value='" + Date + "' type='hidden'  name='[" + Nom + "].Date' class='hidden required form-control Date' /><input type='text' value='" + KPI + "'  name='[" + Nom + "].KPI_Id' class='hidden required form-control KPI_Id' /><input type='" + Type + "'  name='[" + Nom + "].KPI_Value' checked value='" + value + "' class='required KPI_Value' />";
+        }
+        else{
+            return "<input value='" + KPIDATA_Id + "' type='hidden'  name='[" + Nom + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.TaskId + "' type='hidden'  name='[" + Nom + "].TaskId' class='hidden required form-control TaskId' /><input value='" + KPI + "' type='hidden'  name='[" + Nom + "].KPI_Id' class='hidden required form-control KPI' /><input value='" + Date + "' type='hidden'  name='[" + Nom + "].Date' class='hidden required form-control Date' /><input type='text' value='" + KPI + "'  name='[" + Nom + "].KPI_Id' class='hidden required form-control KPI_Id' /><input type='" + Type + "'  name='[" + Nom + "].KPI_Value' value='" + value + "' class='required form-control KPI_Value' />";
+        }
+    }
+    //Datepicker initialize
+    var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+    var firstDay = new Date(y, m, 1);
+    var lastDay = new Date(y, m + 1, 0);
+    firstDay = moment(firstDay).format('MM/DD/YY');
+    lastDay = moment(lastDay).format('MM/DD/YY');
+    SDate=moment(firstDay).format('MM/DD/YYYY');
+    EDate=moment(lastDay).format('MM/DD/YYYY');
+    function cb7(start, end) {
+        var PFromDate = moment(start).format('MM/DD/YY');
+        var PToDate = moment(end).format('MM/DD/YY');
+        $('#ParentDate span').html(PFromDate + ' - ' + PToDate);
+    }
+    $('#ParentDate').daterangepicker({
+        //startDate: firstDay,
+        //endDate: lastDay,
+        opens: 'right',
+        minDate: moment().add(-5, 'years'),
+        maxDate: moment().add(5, 'years'),
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'Custom Range': "custom"
+        }
+    }, cb7);
+    cb7(firstDay, lastDay);
+    ///KPI DATA
+    function GETKPIDATA(FromDate,ToDate) {
+        $.ajax({
+            url: "/KPI/Monitoring/GetKPIDATA?Id=" +@ViewBag.Site +"&SDate=" + FromDate + "&EDate=" + ToDate + "&Site="+@ViewBag.Site+"&Carrier="+@ViewBag.Carrier +"&Sector="+@ViewBag.Sector,
+            type: "get",
+        async: false,
+        }).done(function (result) {
+
+            if (result.Status == true) {
+                KPIs = "";
+             //   debugger
+
+                if(result.data.length >0){
+                 //   debugger
+                    var kj = result.data[0].Date.split()[0] +" -----"+ result.data[1].Date.split()[0];
+                    // return false
+                    var Nodes=       document.getElementsByClassName("Date");
+                    result.data.map((obj) => {
+                        obj.Date= moment( obj.Date).format('MM/DD/YYYY').toString();
+                    })
+                    for (var i = 0; i <Nodes.length; i++){
+                        var CKPI=Nodes[i].previousElementSibling.value;
+                        var CDate =Nodes[i].value;
+
+
+                        var obj = result.data.filter(x =>  x.Date === CDate && x.KPI_Id===parseInt(CKPI));
+                        if (obj.length >0){
+                            if(obj[0].KpiType=="Input"){
+                                Nodes[i].nextSibling.nextSibling.nextSibling.value=obj[0].KPI_Value;
+                                Nodes[i].nextSibling.nextSibling.nextSibling.ad
+                                Nodes[i].previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.value = obj[0].KPIData_Id;
+                                //  Nodes[i].nextSibling.nextSibling.nextSibling.classList.value+="  Inputs";
+                            }
+                            else{
+                                Nodes[i].nextSibling.nextSibling.nextSibling.style.cursor= "no-drop";
+                                Nodes[i].nextSibling.nextSibling.nextSibling.style.backgroundColor="#e8eaed";
+                                Nodes[i].nextSibling.nextSibling.nextSibling.style.pointerEvents= "none";
+                                Nodes[i].nextSibling.nextSibling.nextSibling.value=obj[0].KPI_Value;
+                                Nodes[i].previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.value = obj[0].KPIData_Id;
+                                //Nodes[i].nextSibling.nextSibling.nextSibling.classList.value+="  Formulas";
+                            }
+                        }
+
+                    };
+
+                }
+                else{
+                    Data=false;
+                }
+                //   }
+                //  $("#tablebody").html();
+                // $("#tablebody").append(KPIs);
+            }
+            else {
+                swal("Error !", "Error occured :(", "error");
+                console.log(result.error)
+
+            }
+        });
+    }
+    // GETKPIDATA();
+    //KPI
+    function GETKPI() {
+        var str="@ViewBag.Type";
+        var Type=str.replace("&#39;","").replace("&#39;","").trim();
+        $.ajax({
+            url: "/KPI/Monitoring/GetKPIJson?Type="+Type,
+            type: "get",
+            async: false,
+        }).done(function (result) {
+            if (result.Status == true) {
+                KPIs = "";
+                for (i = 0; i < result.data.length; i++) {
+                  //  debugger
+                    //var Mobject = { id: result.data[i].KPI, name: result.data[i].Kpi_Name, cvalue: result.data[i].ComputedValue };
+                    //availableTags.push(Mobject);
+                    KPIs += "<tr KPIName="+result.data[i].Kpi_Name+" DataName="+result.data[i].DataTypeName+" KPI="+result.data[i].KPI+" Formula="+result.data[i].Formula+"  ><td style='width:150px' >" + result.data[i].Kpi_Name + "</td></tr>";
+                    KPILIST.push(result.data[i]);
+                }
+                //    if(Data==false){
+                $("#tablebody").html();
+                $("#tablebody").append(KPIs);
+                Defaulttr=KPIs;
+                //     }
+            }
+            else {
+                swal("Error !", "Error occured :(", "error");
+                console.log(result.error)
+            }
+        });
+    }
+    //  if(Data==false){
+    GETKPI();
+    //}
+
+
+    ///Change in Datepicker
+    ///Ondate change
+    $("#Save").hide();
+    $('#ParentDate').on('apply.daterangepicker', function (ev, picker) {
+
+        SDate = picker.startDate.format('MM/DD/YYYY');     //format('YYYY-MM-DD');
+        EDate = picker.endDate.format('MM/DD/YYYY');       //format('YYYY-MM-DD');
+
+
+    });
+    ///////Search
+    function parseDate(str) {
+        var mdy = str.split('/');
+        return new Date(mdy[2],mdy[0]-1 , mdy[1]);
+    }
+
+    function datediff(first, second) {
+        // Take the difference between the dates and divide by milliseconds per day.
+        // Round to nearest whole number to deal with DST.
+        return Math.round((second-first)/(1000*60*60*24));
+    }
+
+
+    ///datesarray
+    // Function:
+    var getDatesRangeArray = function (startDate, endDate, interval, total) {
+        var config = {
+            interval: interval || 'days',
+            total: total || 1
+        },
+            dateArray = [],
+            currentDate = startDate.clone();
+
+        while (currentDate < endDate) {
+            dateArray.push(currentDate);
+            currentDate = currentDate.clone().add(config.total, config.interval);
+        }
+
+        return dateArray;
+    };
+    function Search(){
+        $("#Save").show();
+        var TotalDays=datediff(parseDate(SDate), parseDate(EDate))+1;
+        // alert(datediff(parseDate(SDate), parseDate(EDate))+"      "+SDate +"---"+ EDate);
+        //debugger
+
+        var startDate = new moment(parseDate(SDate)),
+    endDate = new  moment(parseDate(EDate)) //.add(1, 'days');
+        var Counter=0;
+        var Dates=   getDatesRangeArray(startDate, endDate, 'days');
+
+        if(Dates.length >0){
+            $("#tablebody").html(Defaulttr);
+            $("#tablehead tr").html("");
+            $("#tablehead tr").each(function(){
+                $(this).append("<th>KPI</th>")
+                for (i = 0; i < Dates.length; i++) {
+
+                    $(this).append("<th>"+ Dates[i].format("MM/DD/YYYY")+"</th>")
+
+                }
+            });
+            $("#tablehead tr").append("<th>"+endDate.format("MM/DD/YYYY")+"</th>");
+            $("#tablebody tr").each(function(){
+                for (i = 0; i < Dates.length; i++) {
+                  //  debugger
+                    var IsInput;
+                    var Formula=$(this).attr("Formula");
+                    if(Formula=="")
+                        IsInput="Inputs";
+                    else{
+                        IsInput="Formulas";
+                    }
+                    if($(this).attr("dataname") == "Decimal")
+                    {
+
+                        var str = "<td><input  type='hidden'  name='[" + Counter + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.Site + "' type='hidden'  name='[" + Counter + "].Site' class='hidden required form-control Site' /><input value='" + @ViewBag.Carrier + "' type='hidden'  name='[" + Counter + "].Carrier' class='hidden required form-control Carrier' /><input value='" + @ViewBag.Sector + "' type='hidden'  name='[" + Counter + "].Sector' class='hidden required form-control Sector' /><input value='" + $(this).attr("KPI") + "' type='text'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + Dates[i].format("MM/DD/YYYY") + "' type='hidden' kpi='" + $(this).attr("KPI") + "'  name='[" + Counter + "].Date' class='hidden required form-control Date' /><input value='" + $(this).attr("KPI") + "' type='hidden'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI' /> <input    type='number' step='any'   name='[" + Counter + "].KPI_Value' class='required  KPI_Value   " + IsInput + " ' /></td>";
+                        $(this).append(str);
+                    }
+                    if($(this).attr("dataname") == "Number")
+                    {
+                        var str="<td><input  type='hidden'  name='[" + Counter + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.Site + "' type='hidden'  name='[" + Counter + "].Site' class='hidden required form-control Site' /><input value='" + @ViewBag.Carrier + "' type='hidden'  name='[" + Counter + "].Carrier' class='hidden required form-control Carrier' /><input value='" + @ViewBag.Sector + "' type='hidden'  name='[" + Counter + "].Sector' class='hidden required form-control Sector' /><input value='" + $(this).attr("KPI") + "' type='text'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + Dates[i].format("MM/DD/YYYY") + "' type='hidden' kpi='" + $(this).attr("KPI") + "'  name='[" + Counter + "].Date' class='hidden required form-control Date' /><input value='" + $(this).attr("KPI") + "' type='hidden'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI' /> <input   type='number' pattern='[0-9]'  name='[" + Counter + "].KPI_Value' class='required   " + IsInput + "  KPI_Value' /></td>"
+                        $(this).append(str);
+                    }
+                    if($(this).attr("dataname") == "Date")
+                    {
+                        var str="<td><input  type='hidden'  name='[" + Counter + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.Site + "' type='hidden'  name='[" + Counter + "].Site' class='hidden required form-control Site' /><input value='" + @ViewBag.Carrier + "' type='hidden'  name='[" + Counter + "].Carrier' class='hidden required form-control Carrier' /><input value='" + @ViewBag.Sector + "' type='hidden'  name='[" + Counter + "].Sector' class='hidden required form-control Sector' /><input value='" + $(this).attr("KPI") + "' type='text'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + Dates[i].format("MM/DD/YYYY") + "' type='hidden' kpi='" + $(this).attr("KPI") + "'  name='[" + Counter + "].Date' class='hidden required form-control Date' /><input value='" + $(this).attr("KPI") + "' type='hidden'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI' /> <input    type='Date'   name='[" + Counter + "].KPI_Value' class='required  KPI_Value  " + IsInput + " ' /></td>"
+                        $(this).append(str);
+                    }
+                    Counter++;
+                }
+
+            });
+            $("#tablebody tr").each(function(){
+                var IsInput;
+                var Formula=$(this).attr("Formula");
+                if(Formula=="")
+                    IsInput="Inputs";
+                else{
+                    IsInput="Formulas";
+                }
+                if($(this).attr("dataname") == "Decimal")
+                {
+                    var str="<td><input  type='hidden'  name='[" + Counter + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.Site + "' type='hidden'  name='[" + Counter + "].Site' class='hidden required form-control Site' /><input value='" + @ViewBag.Carrier + "' type='hidden'  name='[" + Counter + "].Carrier' class='hidden required form-control Carrier' /><input value='" + @ViewBag.Sector + "' type='hidden'  name='[" + Counter + "].Sector' class='hidden required form-control Sector' /><input value='" + $(this).attr("KPI") + "' type='text'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + endDate.format("MM/DD/YYYY") + "' type='hidden'  name='[" + Counter + "].Date' kpi='" + $(this).attr("KPI") + "' class='hidden required form-control Date' /><input value='" + $(this).attr("KPI") + "' type='hidden'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI' /> <input    type='number' step='any'  name='[" + Counter + "].KPI_Value'  class='required  " + IsInput + "  KPI_Value' /></td>"
+                    $(this).append(str);
+                }
+                if($(this).attr("dataname") == "Number")
+                {
+                    var str="<td><input  type='hidden'  name='[" + Counter + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.Site + "' type='hidden'  name='[" + Counter + "].Site' class='hidden required form-control Site' /><input value='" + @ViewBag.Carrier + "' type='hidden'  name='[" + Counter + "].Carrier' class='hidden required form-control Carrier' /><input value='" + @ViewBag.Sector + "' type='hidden'  name='[" + Counter + "].Sector' class='hidden required form-control Sector' /><input value='" + $(this).attr("KPI") + "' type='text'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + endDate.format("MM/DD/YYYY") + "' type='hidden'  name='[" + Counter + "].Date' kpi='" + $(this).attr("KPI") + "' class='hidden required form-control Date' /><input value='" + $(this).attr("KPI") + "' type='hidden'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI' /> <input  pattern='[0-9]'   type='number'  name='[" + Counter + "].KPI_Value' class='required  " + IsInput + "  KPI_Value' /></td>"
+                    $(this).append(str);
+                }
+                if($(this).attr("dataname") == "Date")
+                {
+                    var str="<td><input  type='hidden'  name='[" + Counter + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.Site + "' type='hidden'  name='[" + Counter + "].Site' class='hidden required form-control Site' /><input value='" + @ViewBag.Carrier + "' type='hidden'  name='[" + Counter + "].Carrier' class='hidden required form-control Carrier' /><input value='" + @ViewBag.Sector + "' type='hidden'  name='[" + Counter + "].Sector' class='hidden required form-control Sector' /><input value='" + $(this).attr("KPI") + "' type='text'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + endDate.format("MM/DD/YYYY") + "' type='hidden'  name='[" + Counter + "].Date' kpi='" + $(this).attr("KPI") + "' class='hidden required form-control Date' /><input value='" + $(this).attr("KPI") + "' type='hidden'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI' /> <input    type='Date'   name='[" + Counter + "].KPI_Value' class='required  " + IsInput + "  KPI_Value' /></td>"
+                    $(this).append(str);
+                }
+                Counter++;
+            });
+
+        }
+
+        else {
+            $("#tablebody").html(Defaulttr);
+            $("#tablehead tr").html("");
+            $("#tablehead tr").html("<th>KPI</th><th>"+startDate.format("MM/DD/YYYY")+"</th>");
+            $("#tablebody tr").each(function(){
+                var IsInput;
+                var Formula=$(this).attr("Formula");
+                if(Formula=="")
+                    IsInput="Inputs";
+                else{
+                    IsInput="Formulas";
+                }
+                if($(this).attr("dataname") == "Decimal")
+                {
+                    var str="<td><input  type='hidden'  name='[" + Counter + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.Site + "' type='hidden'  name='[" + Counter + "].Site' class='hidden required form-control Site' /><input value='" + @ViewBag.Carrier + "' type='hidden'  name='[" + Counter + "].Carrier' class='hidden required form-control Carrier' /><input value='" + @ViewBag.Sector + "' type='hidden'  name='[" + Counter + "].Sector' class='hidden required form-control Sector' /><input value='" + $(this).attr("KPI") + "' type='text'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + startDate.format("MM/DD/YYYY") + "' type='hidden'  name='[" + Counter + "].Date' class='hidden required form-control Date' kpi='" + $(this).attr("KPI") + "' /><input value='" + $(this).attr("KPI") + "' type='hidden'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI' /> <input    type='number' step='any'  name='[" + Counter + "].KPI_Value'  class='required KPI_Value  " + IsInput + " ' /></td>"
+                    $(this).append(str);
+                }
+                if($(this).attr("dataname") == "Number")
+                {
+                    var str="<td><input  type='hidden'  name='[" + Counter + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.Site + "' type='hidden'  name='[" + Counter + "].Site' class='hidden required form-control Site' /><input value='" + @ViewBag.Carrier + "' type='hidden'  name='[" + Counter + "].Carrier' class='hidden required form-control Carrier' /><input value='" + @ViewBag.Sector + "' type='hidden'  name='[" + Counter + "].Sector' class='hidden required form-control Sector' /><input value='" + $(this).attr("KPI") + "' type='text'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + startDate.format("MM/DD/YYYY") + "' type='hidden' kpi='" + $(this).attr("KPI") + "'  name='[" + Counter + "].Date' class='hidden required form-control Date' /><input value='" + $(this).attr("KPI") + "' type='hidden'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI' /> <input   type='number' pattern='[0-9]'   name='[" + Counter + "].KPI_Value' class='required  " + IsInput + "  KPI_Value' /></td>"
+                    $(this).append(str);
+                }
+                if($(this).attr("dataname") == "Date")
+                {
+                    var str="<td><input  type='hidden'  name='[" + Counter + "].KPIDATA_Id' class='hidden required form-control KPIDATA_Id' /><input value='" + @ViewBag.Site + "' type='hidden'  name='[" + Counter + "].Site' class='hidden required form-control Site' /><input value='" + @ViewBag.Carrier + "' type='hidden'  name='[" + Counter + "].Carrier' class='hidden required form-control Carrier' /><input value='" + @ViewBag.Sector + "' type='hidden'  name='[" + Counter + "].Sector' class='hidden required form-control Sector' /><input value='" + $(this).attr("KPI") + "' type='text'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI_Id' /><input value='" + startDate.format("MM/DD/YYYY") + "' type='hidden' kpi='" + $(this).attr("KPI") + "'  name='[" + Counter + "].Date' class='hidden required form-control Date' /><input value='" + $(this).attr("KPI") + "' type='hidden'  name='[" + Counter + "].KPI_Id' class='hidden required form-control KPI' /> <input    type='Date'   name='[" + Counter + "].KPI_Value' class='required  " + IsInput + "  KPI_Value' /></td>"
+                    $(this).append(str);
+                }
+                Counter++;
+            });
+        }
+
+        GETKPIDATA(SDate,EDate);
+    }
+    //Get Defiantion
+    function GetDefinations() {
+
+        $.ajax({
+            url: "/Project/KPI/GetDefinations/",
+            type: "get",
+            async: false,
+        }).done(function (result) {
+
+            if (result.Status == true) {
+                for (i = 0; i < result.data.length; i++) {
+                    if (result.data[i].DefinationTypeId == 70043) {
+                        $(".Datatype").append("<option value='" + result.data[i].DefinationId + "' >" + result.data[i].DefinationName + "</option>");
+                    }
+                }
+
+
+            }
+            else {
+                swal("Error !", "Error occured :(", "error");
+                console.log(result.error)
+
+            }
+        });
+    }
+    GetDefinations();
+
+    ////save
+    ///save
+    $("#Save").click(function (e) {
+
+        if (e.which != 13) {
+
+            var isValid = $(this).closest("form").valid()
+            // return false;
+            if (isValid) {
+                e.preventDefault();  //prevent default form submit behaviour
+
+                $.post("@Url.Action("Save","Monitoring")",
+                            $(this).closest("form").serialize(), function (response) {
+                                if (response.Status == true) {
+
+                                    swal("Saved !", "Success !", "success");
+                                    // location.reload();
+                                }
+                                else {
+                                    swal("Error !", "Error occured :(", "error");
+                                    console.log(result.error)
+                                }
+                            });
+
+            }
+            else {
+                swal("All fields are necessary !", "error");
+            }
+        }
+
+    });
+
+    ////Formula Validator
+    var availableTags = [];
+    function GetTagsAndSelected() {
+     //   debugger
+       var str="@ViewBag.Type";
+        var Type=str.replace("&#39;","").replace("&#39;","").trim();
+        $.ajax({
+            url: "/KPI/Monitoring/GetKPIJson?Type="+Type,
+            type: "get",
+            async: false,
+        }).done(function (result) {
+       //     debugger
+            if (result.Status == true) {
+            //    debugger
+                availableTags = [];
+                for (i = 0; i < result.data.length; i++) {
+                    var Mobject = { id: result.data[i].KPI, name: result.data[i].Kpi_Name, cvalue:result.data[i].ComputedValue };
+                    //   availableTags.push(Mobject);
+
+                }
+                // console.log(availableTags);
+                $.ajax({
+                    url: "/Project/KPI/GetDefinations/",
+                    type: "get",
+                    async: false,
+                }).done(function (result2) {
+
+                    if (result2.Status == true) {
+                        for (i = 0; i < result2.data.length; i++) {
+                            if (result2.data[i].DefinationTypeId == 100065) {
+                                var Mobject = { id: result2.data[i].DefinationId, name: result2.data[i].DefinationName, cvalue:-0};
+                                availableTags.push(Mobject);
+
+                            }
+
+                        }
+
+
+                    }
+                    else {
+                        swal("Error !", "Error occured :(", "error");
+                        console.log(result.error)
+
+                    }
+                });
+            }
+            else {
+                swal("Error !", "Error occured :(", "error");
+                console.log(result.error)
+            }
+        });
+    }
+    GetTagsAndSelected();
+
+    ///on kpi inputs value change
+    $(document).on("keyup", ".Inputs", function (e) {
+        var Tags=[];
+        for (i = 0; i < availableTags.length; i++) {
+            Tags.push(availableTags[i]);
+        }
+        //  console.log(Tags);
+    //    debugger
+        var Value =$(this).val();
+        var KPI =$(this).parent().parent().find("td")[0].childNodes[0];
+        var TdIndex=$(this).parents().index();
+        $("#tablebody tr").each(function(){
+            var Mobject = { id: parseInt($(this).attr("kpi")), name: $(this).attr("KPIName"), cvalue: parseInt($(this)[0].childNodes[TdIndex].childNodes[8].value)};
+            Tags.push(Mobject)
+
+
+        });
+        console.log(Tags);
+        $("#tablebody tr").each(function(){
+            // var CTd=   $(this).find("td")[TdIndex];
+         //   debugger
+            var Formula=$(this).attr("Formula");
+            var kpi=$(this).attr("kpi");
+            var KPIName=$(this).attr("KPIName");
+
+
+            var fm=$(this).find(".Formulas");
+            if(fm.length >0) //$(this).parents().index())
+            {
+
+                var Value = Formula.split(",");
+                if (Value[0] != "") {
+                    var CString = "";
+                    function Exist(val) {
+                      //  debugger
+                        var obj = Tags.filter(x => x.id === parseInt(val));
+                        if (obj.length > 0) {
+                            if (obj[0].cvalue == -0) {
+                                return " " + obj[0].name + " ";
+
+                            }
+                            else {
+                                return " " + obj[0].cvalue.toString() + " ";
+                            }
+                        }
+                        else {
+                            return " "+ val+ " ";
+
+                        }
+                    }
+                    function myFunction(item, index) {
+                        CString += Exist(item);
+                    }
+                    Value.forEach(myFunction)
+                   // debugger
+                    console.log(CString+"------", eval(CString));
+                }
+
+                fm[TdIndex-1].value=eval(CString);
+                console.log(fm[TdIndex-1].value);
+            }
+        });
+
+
+
+    });
+</script>
+
+
+
+
+
+@*if (result.data[0].Date.split()[0] == result.data[1].Date.split()[0]) {
+
+        KPIs = "";
+        for (i = 0; i < result.data.length; i++) {
+
+            var d = new Date(result.data[i].Date);
+            var df = moment(d).format('MM/DD/YY');
+
+            if (result.data[i].DataTypeName == "Text") {
+                KPIs += DataTypeMapper(result.data[i].DataTypeName, result.data[i].KpiName, result.data[i].KPI_Id,  result.data[i].Date,result.data[i].KPI_Value,result.data[i].KPIData_Id);
+            }
+            else if (result.data[i].DataTypeName == "Date") {
+                KPIs += DataTypeMapper(result.data[i].DataTypeName, result.data[i].KpiName, result.data[i].KPI_Id,  result.data[i].Date, result.data[i].KPI_Value,result.data[i].KPIData_Id);
+            }
+            else if (result.data[i].DataTypeName == "Number") {
+                KPIs += DataTypeMapper("number", result.data[i].KpiName, result.data[i].KPI_Id,  result.data[i].Date, result.data[i].KPI_Value,result.data[i].KPIData_Id);
+            }
+            else if (result.data[i].DataTypeName == "RadioButton") {
+                KPIs += DataTypeMapper("radio", result.data[i].KpiName, result.data[i].KPI_Id,  result.data[i].Date, result.data[i].KPI_Value,result.data[i].KPIData_Id);
+            }
+
+        }
+        $("#tablebody").html("");
+        $("#tablebody").append(KPIs);
+
+    }
+    else{
+        //  return false
+        KPIs = "";
+        var Loop=result.data.length/2;
+        for (i = 0; i <result.data.length ; i++) {
+                                          var ad=result.data[i].KPI_Value.split("-");
+                                          var d=new Date(ad[0],ad[1] + 1, ad[2]);
+                                          var df=moment(d).format('MM/DD/YY');
+                                          if (result.data[i].DataTypeName= ="Text" ) {
+                                          KPIs +="<tr><td>" + result.data[i].KpiName + "</td><td>" + DataTypeMapper2(result.data[i].DataTypeName, result.data[i].KpiName, result.data[i].KPI_Id, result.data[i].Date, result.data[i].KPI_Value,result.data[i].KPIData_Id) + "</td><td>" + DataTypeMapper2(result.data[i+1].DataTypeName, result.data[i+1].KpiName, result.data[i+1].KPI_Id, result.data[i+1].Date,result.data[i+1].KPI_Value,result.data[i+1].KPIData_Id) + "</td></tr>" ;
+                //   KPIs += DataTypeMapper(KPILIST[i].DataTypeName, KPILIST[i].Kpi_Name, KPILIST[i].KPI_Id);
+            }
+            else if (result.data[i].DataTypeName == "Date") {
+                KPIs += "<tr><td>" + result.data[i].KpiName + "</td><td>" + DataTypeMapper2(result.data[i].DataTypeName, result.data[i].KpiName, result.data[i].KPI_Id,  result.data[i].Date, result.data[i].KPI_Value,result.data[i].KPIData_Id) + "</td><td>" + DataTypeMapper2(result.data[i+1].DataTypeName, result.data[i+1].KpiName, result.data[i+1].KPI_Id,  result.data[i+1].Date,result.data[i+1].KPI_Value,result.data[i+1].KPIData_Id) + "</td></tr>";
+            }
+            else if (result.data[i].DataTypeName == "Number") {
+                KPIs += "<tr><td>" + result.data[i].KpiName + "</td><td>" + DataTypeMapper2("number", result.data[i].KpiName, result.data[i].KPI_Id,  result.data[i].Date, result.data[i].KPI_Value,result.data[i].KPIData_Id) + "</td><td>" + DataTypeMapper2("number", result.data[i+1].KpiName, result.data[i+1].KPI_Id,  result.data[i+1].Date,result.data[i+1].KPI_Value,result.data[i+1].KPIData_Id) + "</td></tr>";
+            }
+            else if (result.data[i].DataTypeName == "RadioButton") {
+                KPIs += "<tr><td>" + result.data[i].KpiName + "</td><td>" + DataTypeMapper2("radio", result.data[i].KpiName, result.data[i].KPI_Id,  result.data[i].Date, result.data[i].KPI_Value,result.data[i].KPIData_Id) + "</td><td>" + DataTypeMapper2("radio", result.data[i+1].KpiName, result.data[i+1].KPI_Id,  result.data[i+1].Date,result.data[i+1].KPI_Value,result.data[i+1].KPIData_Id) + "</td></tr>";
+            }
+            else {
+                //KPIs += "<tr><td>" + KPILIST[i].Kpi_Name + "</td><td>" + KPILIST[i].Kpi_Name + "</td><td>" + KPILIST[i].Kpi_Name + "</td></tr>";
+            }
+            i++;
+        }
+        $("#tablebody").html("");
+        $("#tablebody").append(KPIs);
+    }*@

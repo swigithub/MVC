@@ -1,0 +1,1679 @@
+﻿@using System.Web.Mvc.Html
+@using SWI.Libraries.Common
+@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.AD.Entities
+@using Jmelosegui.Mvc.GoogleMap;
+@using System.Drawing;
+@using SWI.AirView.Models;
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    Layout = null;
+    int count = 0;
+    int RowSpan = Model.Count() + 1;
+    DirectoryHandler dh = new DirectoryHandler();
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var NetLayerReport = jss.Serialize(ViewBag.NetLayerReport);
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+    var ReportConfigurationList = ViewBag.ReportConfiguration as List<AD_ReportConfiguration>;
+    string Contant = "";
+    string a = "";
+    string dbText = string.Empty;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Layer Report</title>
+
+    <link href="~/Content/js/Plugins/DateTimePicker/dtpicker.css" rel="stylesheet" />
+    <link href="~/Content/NetLayreReport.css" rel="stylesheet" />
+    @Scripts.Render("~/AdminLTE/plugins/jquery/js")
+
+    <style>
+
+        .mapdetail {
+            position: absolute;
+            bottom: 185px;
+            background-color: white;
+            border: solid 2px;
+            width: 153px;
+            left: 1168px;
+            right: 158px;
+        }
+        .pan-map {
+            
+    margin-left: 10px;
+    margin-right: 0px;
+    width: 1370px;
+    height: 750px;
+
+    
+    position: relative;
+}
+        .PciLegend {
+            position: absolute;
+            bottom: 185px;
+            background-color: white;
+            border: solid 2px;
+            left: 1168px;
+            width: 170px;
+            right: 158px;
+        }
+  .rptFooter {
+    position: relative !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    margin-top: 112px !important;
+    /*min-top:300px !important;*/
+}
+  
+    </style>
+
+</head>
+
+<body>
+    @if (Model != null && Model.Count() > 0)
+    {
+
+        var Pcis = (ViewBag.PciDisLagend as List<AV_NetLayerReportPlot>);
+        var CwPcis = Pcis.Where(m => m.TestType == "CW").ToList();
+        var CcwPcis = Pcis.Where(m => m.TestType == "CCW").ToList();
+
+        @functions{
+
+            public string SectorColor(string key)
+            {
+                try
+                {
+                    var LagentPCI = ViewBag.Sectors as ICollection<AD_Defination>;
+                    return LagentPCI.Where(m => m.DefinationName == key).FirstOrDefault().ColorCode;
+                }
+                catch
+                {
+
+                    return null; 
+                }
+
+            }
+
+        }
+
+
+        var First = Model.FirstOrDefault();
+        int TotalRecord = Model.Count();
+        string NetworkMode = First.NetworkMode;
+
+        // var rptConfig = ViewBag.ReportConfiguration as ICollection<AD_ReportConfiguration>;
+        ViewBag.ClientLogo = First.ClientLogo;
+        ViewBag.VendorLogo = First.VendorLogo;
+
+        <div class="container" id="pdf" style="width:1400px;margin: auto;padding:2px;">
+            <a href="#" style="float:right; position: fixed; right: 100px" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+            @if (ViewBag.RoleName != "Client POC")
+            {
+                <a href="#" style="float:right; position: fixed; left: 100px" id="btn-setting" class=" clear">
+                    <img src="~/Content/Images/Common/kpi_x24.png" />
+                </a>
+            }
+            <div id="pan-settings" style="position: fixed;left: 10px;top: 50px;background-color:#333;color:white; width: 230px;display:none;height:760px;overflow-x:hidden;overflow-y:auto /*visibility:hidden*/">
+                <div class="settingHeading">Report Settings</div>
+                <div>
+                    <div id="pan-checkbox" style="margin-left: 10px;">
+                        @foreach (var conf in (ViewBag.ReportConfiguration as ICollection<AD_ReportConfiguration>).Where(m => m.IsPanelItem == true).OrderBy(m => m.InputType))
+                        {
+                            string[] InputTypes = conf.InputType.Split(',');
+
+                            foreach (var type in InputTypes)
+                            {
+                                if (type == "BOOLEAN")
+                                {
+
+                                    string check = "";
+                                    if (conf.isActive == true)
+                                    {
+                                        check = "checked";
+                                    }
+                                    else
+                                    {
+                                        check = "";
+                                    }
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" data-keycode="@conf.KeyCode" @check class="checkboxcontroll" id="@conf.KeyId">
+                                            @conf.DisplayText
+                                        </label>
+                                    </div>
+                                }
+
+                                @*   if (type == "STRING")
+                                            {
+                                    <label>@conf.KeyCode</label>
+                                    <input type="text" class="panelItem" data-keycode="@conf.KeyCode" id="txt-@conf.KeyCode" />
+                                            }*@
+                            }
+
+
+                        }
+                        <label>Fonts</label>
+                        <div>
+                            @Html.DropDownList("ddlFonts", ViewBag.Fonts as List<SelectListItem>, new { style = "width:150px" })
+                        </div>
+                    </div>
+
+                    <div class="settingFooter"><input style="font-weight:bold" type="button" id="btn-cofSave" value="Apply Settings" /></div>
+                </div>
+                @if (ViewBag.RoleName != "Client POC")
+                {
+                    <div>
+                        <hr />
+                        <div class="settingHeading">Disable Map Route</div>
+                        <div style="margin-left: 10px;">
+                            <label>From Time</label>
+                            <input type="text" class="datetime" id="txtFromDate" /><br />
+                            <label>To Time</label> 
+                            <input type="text" class="datetime" id="txtToDate" /><br />
+                        </div>
+                        <div class="settingFooter">
+
+                            <a class="btn-mapRoot" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                            <a class="btn-mapRoot" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                        </div>
+
+                    </div>
+                }
+                @if (ViewBag.RoleName != "Client POC")
+                {
+                    <div>
+                        <hr />
+                        <div class="settingHeading">Remove Drive</div>
+                        <form action="#" method="post" id="frm-removeDrive">
+                            <div style="margin-left: 10px;">
+                                @foreach (var ts in ViewBag.ServerTimestamp)
+                                {
+                                    <label>
+                                        <input type="checkbox" data-value="@ts.value1" class="ch-Timestamp">
+                                        @ts.value1
+                                    </label>
+                                    <br />
+
+                                }
+                            </div>
+                            <div class="settingFooter">
+                                <a class="btn-RemoveDrive" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                                <a class="btn-RemoveDrive" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                            </div>
+                        </form>
+
+                    </div>
+                }
+
+
+                <div>
+                    <hr />
+                    <form action="#" method="post" id="frm-pcis">
+                        <div class="settingHeading">Disable CW Plots</div>
+                        <div style="margin-left: 10px;">
+                            @{int PciCount = 0; }
+                            @foreach (var pci in CwPcis)
+                            {
+                                if (PciCount == 3)
+                                {
+                                    <br />
+                                    PciCount = 0;
+                                }
+                                <label>
+                                    <input type="checkbox" data-value="@pci.PCI"  class="ch-pci" id="pci-@pci.PCI">
+                                    @pci.PCI
+                                </label>
+
+                                PciCount++;
+                            }
+                            <hr />
+                            <div class="settingHeading">Disable CCW Plots</div>
+                            @{ PciCount = 0; }
+                            @foreach (var pci in CcwPcis)
+                            {
+                                if (PciCount == 3)
+                                {
+                                    <br />
+                                    PciCount = 0;
+                                }
+                                <label>
+                                    <input type="checkbox" data-value="@pci.PCI"  class="ch-pci" id="pci-@pci.PCI">
+                                    @pci.PCI
+                                </label>
+
+                                PciCount++;
+                            }
+                        </div>
+                        <div class="settingFooter">
+                               <a class="btn-Pcis" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                                <a class="btn-Pcis" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                            
+                            <!--<a class="btn-mapRoot" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                                <input type="image" src="~/Content/Images/Common/error.png">-->
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+
+            <div id="print" class="clear">
+                <div class="bgcolor WELCOME_PAGE_COLOR" data-type="BGCOLOR" style="color: white;padding-top: 201px;height: 801px;margin-left: -20px;margin-right: -20px;margin-bottom: -26px;">
+                    <img src="~/Content/Images/ClientLogo/nokia_logo.png" class="" style="top: -100px;position: relative;" />
+
+                    <div style="margin-left:50px;font-size:xx-large;font-family: Arial, Verdana;margin-top:-100px;">
+
+                        <h1 id="PROJECT_TITLE" class="" data-type="BOOLEAN,STRING" data-preValue="@First.Region"></h1>
+                        <h1 id="REPORT_TITLE" class="" data-type="BOOLEAN,STRING" style="margin-top:-30px;"></h1>
+                    </div>
+                    <div class="" style="margin-top:100px;margin-left:50px; font-size:large;font-family: Arial, Verdana;">
+                        <div>
+                            <div class="left">
+                                <h2>Site : @First.Site _ @First.Band</h2>
+                                <h2>@First.SiteScheduleDate.Value.ToString("MMM dd, yyyy")</h2>
+                            </div>
+                            <div class="left"></div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    @if (First.ClientPrefix == "TMO")
+                    {
+                        <img src="~/Content/Images/Common/tmobile.png" style="position: relative;right: -800px;bottom: -100px;width: 547px;height: 92px;" />
+                    }
+                    else if (First.ClientPrefix == "ATT")
+                    {
+                        <img src="~/Content/Images/ClientLogo/att_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 366px;height: 176px;" />
+                    }
+                    else if (First.ClientPrefix == "CSP")
+                    {
+                        <img src="~/Content/Images/ClientLogo/cspire_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 190px;" />
+                    }
+                    else if (First.ClientPrefix == "VRZ")
+                    {
+                        <img src="~/Content/Images/ClientLogo/verizon_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 107px;" />
+                    }
+                    else if (First.ClientPrefix == "SPR")
+                    {
+                        <img src="~/Content/Images/ClientLogo/sprint_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 190px;" />
+                    }
+                    else if (First.ClientPrefix == "BEL")
+                    {
+                        <img src="~/Content/Images/ClientLogo/BEL_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 190px;" />
+                    }
+                    else if (First.ClientPrefix == "USCC")
+                    {
+                        <img src="~/Content/Images/ClientLogo/USCC_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 190px;" />
+                    }
+                </div>
+
+
+
+                <!--Site Data-->
+
+                <div class="" style="color:#3b39e2;margin-top:50px;">
+                    <h1 id="SITE_DATA" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading" style="padding-top: 25px;"></h1>
+
+                    <div class="" style="width:100%;border-bottom:solid 2px;border-top:solid 2px;">
+
+                        @if (ReportConfigurationList.Any(m => m.KeyCode == "SITE_DATA_TYPE" && m.KeyValue == "2" && m.isActive == true))
+                        {
+                            @Html.Partial("~/views/site/_ntlSiteData2.cshtml", Model)
+                        }
+                        else
+                        {
+                            @Html.Partial("~/views/site/_ntlSiteData.cshtml", Model)
+
+                        }
+
+                    </div>
+                    <br /><br />
+
+                    @if (TotalRecord < 7)
+                    {
+                        <div class="" id="site_data_map" style="width:auto;height:560px;"></div>
+                    }
+                    <div class="clear"></div>
+                </div>
+                <h1></h1>
+
+
+                @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                <hr />
+                <P CLASS="breakhere" />
+                @if (TotalRecord > 7)
+                {
+                    <div class="" style="color:#3b39e2;margin-top:50px;height:870px;">
+                        <h1 id="SITE_DATA" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading"></h1>
+                        <br /><br />
+                        <div class="" id="site_data_map" style="width:auto;height:560px;"></div>
+                        <div class="clear"></div>
+                    </div>
+
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                }
+
+                <!--Field Test-->
+                @*@Html.Partial("~/views/site/_ntlFieldTest.cshtml", Model)*@
+                @if (ReportConfigurationList.Any(m => m.KeyCode == "FIELD_TEST_TYPE" && m.isActive == true))
+                {
+                    <style>
+                        .StationaryTable {
+                            margin-left: 0;
+                        }
+
+                        .StationaryTableTd {
+                            min-width: 62px;
+                        }
+
+                        .StationaryTableTh {
+                            padding: 0 !important;
+                        }
+
+                        .StationaryTableTh2 {
+                            padding: 0 !important;
+                        }
+
+                        .StationaryTableTd {
+                            padding: 0 !important;
+                        }
+
+                        .StationaryTableTd2 {
+                            padding: 0 !important;
+                        }
+                    </style>
+                    @Html.Partial("~/views/site/_ntlFieldTest.cshtml", Model)
+                }
+                else
+                {
+                    @Html.Partial("~/views/site/_ntlFieldTest.cshtml", Model)
+
+                }
+
+                <!--CH Plot-->
+                <div id="pan-CH_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 class="heading" data-type="BOOLEAN" data-preValue="@First.Site">
+                        <span>@First.Site Carrier Plot </span>
+                    </h1>
+                    <div id="frm-chPlot">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="chPlot-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="chPlot-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-chPlot" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="CH_PLOT" data-type="BOOLEAN"></div>
+
+                    <div class="l">
+
+                        <div class="lagendHeader">
+                            <span> Carrier Plot </span>
+                        </div>
+                        <table style="border-spacing: 1px;width:100%">
+                            @if (ViewBag.chLagend != null)
+                            {
+                                foreach (var item in ViewBag.chLagend)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:@item.Color;"></div>
+                                        </td>
+                                        <td><span>@item.PCI</span></td>
+                                    </tr>
+
+                                }
+                            }
+
+                        </table>
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+                <!--End CH Plot-->
+                <!-- PCI Plot-->
+                <div id="pan-PCI_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 id="PCI_PLOT" data-type="BOOLEAN" data-preValue="@First.Site" class="heading">
+                        @First.Site
+                        @if (NetworkMode == "LTE")
+                        {
+                            <span> PCI Plot </span>
+                        }
+                        else if (NetworkMode == "GSM")
+                        {
+                            <span>BCCH Plot</span>
+                        }
+                        else if (NetworkMode == "WCDMA")
+                        {
+                            <span>PSC Plot</span>
+                        }
+
+                    </h1>
+
+                    <div id="frm-pci">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="pci-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="pci-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-pci" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="PCI_Plot"></div>
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            @if (NetworkMode == "LTE")
+                            {
+                                <span> PCI Plot </span>
+                            }
+                            else if (NetworkMode == "GSM")
+                            {
+                                <span>BCCH Plot</span>
+                            }
+                            else if (NetworkMode == "WCDMA")
+                            {
+                                <span>PSC Plot</span>
+                            }
+
+                        </div>
+                        <table style="">
+                            @{
+
+                                int PcisCount = Pcis.Count;
+                                if (ViewBag.AfterDate == false || First.City != "Chicago")
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+
+                                            <td>
+
+                                                <div class="colorBox" style="background-color:@item.SectorColor;"></div>
+                                            </td>
+                                            <td><span class="pci-count">@item.PciId</span></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < PcisCount; i += 2)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="background-color:@Pcis[i].Color;"></div>
+                                            </td>
+                                            <td><span>@Pcis[i].PCI</span></td>
+
+                                            @if (i + 1 < PcisCount)
+                                            {
+                                                <td>
+                                                    <div class="colorBox" style="background-color:@Pcis[i + 1].Color;"></div>
+                                                </td>
+                                                <td><span>@Pcis[i + 1].PCI</span></td>
+                                            }
+                                        </tr>
+                                    }
+
+                                }
+
+                            }
+                        </table>
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+                <!--CW HO Plot-->
+                <div id="pan-CW_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 id="CW_PLOT" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading">@First.Site CW Handover Plot</h1>
+
+                    <div id="frm-cw">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="cw-Radius" /> </td>
+                                <td> Azmuth Radius</td>
+                                <td><input type="number" value="200" id="cw-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-cw" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="HO_Plot"></div>
+
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            <span>  CW HO Plot</span>
+                        </div>
+                        <table>
+
+                            @{
+
+                                PcisCount = CwPcis.Count;
+                                if (ViewBag.AfterDate == false || First.City != "Chicago")
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+
+                                            <td>
+                                                <div class="colorBox" style="background-color:@item.SectorColor;"></div>
+                                            </td>
+                                            <td><span class="pci-count">@item.PciId</span></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < PcisCount; i += 2)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="background-color:@CwPcis[i].Color;"></div>
+                                            </td>
+                                            <td><span>@CwPcis[i].PCI</span></td>
+
+                                            @if (i + 1 < PcisCount)
+                                            {
+                                                <td>
+                                                    <div class="colorBox" style="background-color:@CwPcis[i + 1].Color;"></div>
+                                                </td>
+                                                <td><span>@CwPcis[i + 1].PCI</span></td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            }
+
+                        </table>
+
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+
+                <!--CCW HO Plot-->
+                <div id="pan-CCW_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 id="CCW_PLOT" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading">@First.Site CCW Handover Plot</h1>
+                    <div id="frm-ccw">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="ccw-Radius" /> </td>
+                                <td> Azmuth Radius</td>
+                                <td><input type="number" value="200" id="ccw-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-ccw" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="pan-map googlemap" id="HO_Plot_CCW"></div>
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            <span>CCW HO Plot</span>
+                        </div>
+                        <table>
+                            @{
+
+                                PcisCount = CcwPcis.Count;
+                                if (ViewBag.AfterDate == false || First.City != "Chicago")
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+
+                                                <div class="colorBox" style="background-color:@item.SectorColor;"></div>
+                                            </td>
+                                            <td><span class="pci-count">@item.PciId</span></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < PcisCount; i += 2)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="background-color:@CcwPcis[i].Color;"></div>
+                                            </td>
+                                            <td><span>@CcwPcis[i].PCI</span></td>
+
+                                            @if (i + 1 < PcisCount)
+                                            {
+                                                <td>
+                                                    <div class="colorBox" style="background-color:@CcwPcis[i + 1].Color;"></div>
+                                                </td>
+                                                <td><span>@CcwPcis[i + 1].PCI</span></td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </table>
+
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+
+
+                <!--HANDOVER_PLOT Plot-->
+                <div id="pan-HANDOVER_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 class="heading" id="HANDOVER_PLOT" data-type="BOOLEAN,STRING" data-preValue="@First.Site">@First.Site Handover Plot</h1>
+                    <div id="frm-cwccw">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="cwccw-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="cwccw-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-cwccw" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="pan-map googlemap" id="HO_Plot_CwCcw"></div>
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            <span>HO Plot</span>
+                        </div>
+                        <table style="">
+                            @{
+
+                                if (ViewBag.AfterDate == false || First.City != "Chicago")
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="background-color:@item.SectorColor;"></div>
+                                            </td>
+                                            <td><span class="pci-count">@item.PciId</span></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < PcisCount; i += 2)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="background-color:@Pcis[i].Color;"></div>
+                                            </td>
+                                            <td><span>@Pcis[i].PCI</span></td>
+
+                                            @if (i + 1 < PcisCount)
+                                            {
+                                                <td>
+                                                    <div class="colorBox" style="background-color:@Pcis[i + 1].Color;"></div>
+                                                </td>
+                                                <td><span>@Pcis[i + 1].PCI</span></td>
+                                            }
+                                        </tr>
+                                    }
+
+                                }
+
+                            }
+                        </table>
+
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+                @if (First.City == "Birmingham" || First.City == "Memphis" || First.City == "Mobile")
+                {
+                    dbText = "dB";
+                }
+                else
+                {
+                    dbText = "dBm";
+                }
+                <!--  RSRP Plot-->
+                <div id="pan-RSRP_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 class="heading" id="RSRP_PLOT" data-type="BOOLEAN" data-preValue="@First.Site">
+                        @First.Site @if (NetworkMode == "LTE")
+                        {
+                            <span> RSRP Plot </span>
+                        }
+                        else if (NetworkMode == "GSM")
+                        {
+                            <span>RSSI Plot</span>
+                        }
+                        else if (NetworkMode == "WCDMA")
+                        {
+                            <span>RSCP Plot</span>
+                        }
+                    </h1>
+
+                    <div id="frm-rsrp">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="rsrp-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="rsrp-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-rsrp" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="RSRP_Plot"></div>
+                    <div class="mapdetail">
+
+                        <div class="lagendHeader">
+                            @if (NetworkMode == "LTE")
+                            {
+                                <span> RSRP(@dbText) </span>
+                            }
+                            else if (NetworkMode == "GSM")
+                            {
+                                <span>RSSI(@dbText)</span>
+                            }
+                            else if (NetworkMode == "WCDMA")
+                            {
+                                <span>RSCP(@dbText)</span>
+                            }
+                        </div>
+                        <table style="border-spacing: 1px;width:100%">
+                            @{int PlotCount = 0;}
+                            @foreach (var item in ViewBag.RSRP_PLOTLegends)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="colorBox" style="background-color:@item.rangeColor;"></div>
+                                    </td>
+                                    <td>
+                                        @if (PlotCount == 0 && (First.City == "Kansas" || First.City == "Indianapolis" || First.City == "Cincinnati"))
+                                        {
+                                            <span> &lt; @item.rangeTo </span>
+                                        }
+                                        else if (PlotCount + 1 == ViewBag.RSRP_PLOTLegends.Count && (First.City == "Kansas" || First.City == "Indianapolis" || First.City == "Cincinnati"))
+                                        {
+                                            <span> &gt;= @item.rangeFrom</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@item.rangeFrom to @item.rangeTo</span>
+}
+                                    </td>
+
+                                </tr>
+                                PlotCount++;
+                            }
+                        </table>
+
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+                <!--  RSRQ Plot-->
+                <div id="pan-RSRQ_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 class="heading" id="RSRQ_PLOT" data-type="BOOLEAN" data-preValue="@First.Site">
+                        @First.Site @if (NetworkMode == "LTE")
+                        {
+                            <span> RSRQ Plot </span>
+                        }
+                        else if (NetworkMode == "GSM")
+                        {
+                            <span>RxQual Plot</span>
+                        }
+                        else if (NetworkMode == "WCDMA")
+                        {
+                            <span>EcIo Plot</span>
+                        }
+                    </h1>
+                    <div id="frm-rsrq">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="rsrq-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="rsrq-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-rsrq" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="RSRQ_Plot"></div>
+
+                    <div class="mapdetail">
+
+                        <div class="lagendHeader">
+                            @if (NetworkMode == "LTE")
+                            {
+                                <span> RSRQ(@dbText) </span>
+                            }
+                            else if (NetworkMode == "GSM")
+                            {
+                                <span>RxQual(@dbText)</span>
+                            }
+                            else if (NetworkMode == "WCDMA")
+                            {
+                                <span>EcIo(@dbText)</span>
+                            }
+
+                        </div>
+                        <table style="border-spacing: 1px;width:100%">
+                            @{PlotCount = 0;}
+                            @foreach (var item in ViewBag.RSRQ_PLOTLegends)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="colorBox" style="background-color:@item.rangeColor;"></div>
+                                    </td>
+                                    <td>
+                                        @if (PlotCount == 0 && (First.City == "Kansas" || First.City == "Indianapolis" || First.City == "Cincinnati"))
+                                        {
+                                            <span> &lt; @item.rangeTo </span>
+                                        }
+                                        else if (PlotCount + 1 == ViewBag.RSRQ_PLOTLegends.Count && (First.City == "Kansas" || First.City == "Indianapolis" || First.City == "Cincinnati"))
+                                        {
+                                            <span> &gt;= @item.rangeFrom</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@item.rangeFrom to @item.rangeTo</span>
+}
+                                    </td>
+
+
+                                </tr>
+                                PlotCount++;
+                            }
+
+                        </table>
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+
+
+                @if (First.NetworkMode == "LTE")
+                {
+
+                     <!--  CINR Plot-->
+                    <div id="pan-CINR_PLOT" data-type="BOOLEAN" style="position:relative">
+                        <h1 class="heading">@First.Site CINR Plot</h1>
+                        <div id="frm-cinr">
+                            <table>
+                                <tr>
+                                    <td> Circle Radius</td>
+                                    <td><input type="number" value="17" id="cinr-Radius" /> </td>
+                                    <td>Azmuth Radius</td>
+                                    <td><input type="number" value="200" id="cinr-Azmuth" /> </td>
+                                    <td><input type="button" value="Load" id="btn-cinr" /> </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="pan-map googlemap" id="CINR_Plot"></div>
+                        <div class="mapdetail">
+
+                            <div class="lagendHeader">
+                                <span>CINR(dB)</span>
+                            </div>
+                            <table style="border-spacing: 1px;width:100%">
+                                @{PlotCount = 0;}
+                                @foreach (var item in ViewBag.CINR_PLOTLegends)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:@item.rangeColor;"></div>
+                                        </td>
+                                        <td>
+
+                                            @if (PlotCount == 0 && (First.City == "Kansas" || First.City == "Indianapolis" || First.City == "Cincinnati"))
+                                            {
+                                                <span> &lt; @item.rangeTo </span>
+                                            }
+                                            else if (PlotCount + 1 == ViewBag.CINR_PLOTLegends.Count && (First.City == "Kansas" || First.City == "Indianapolis" || First.City == "Cincinnati"))
+                                            {
+                                                <span> &gt;= @item.rangeFrom</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@item.rangeFrom to @item.rangeTo</span>
+}
+                                        </td>
+
+
+                                    </tr>
+                                    PlotCount++;
+                                }
+
+
+                            </table>
+
+                        </div>
+                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                        <hr />
+                        <P CLASS="breakhere" />
+                    </div>
+
+                                    }
+                <!--Ookla Speed Test-->
+                @{ var ImageStatus = false;
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.OoklaTestFilePath)) || dh.FileExist(Server.MapPath(item.SpeedTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                        else if (dh.FileExist(Server.MapPath(item.SpeedTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                }
+
+                @if (ImageStatus)
+                    {
+                        count = 0;
+                        Contant = "";
+                        Contant = "<div class=\"imgesss\">";
+                        Contant = Contant + "<h1 class=\"heading\">" + First.Site + " Speed Test</h1>";
+
+                        foreach (var item in Model)
+                    {
+                    if (dh.FileExist(Server.MapPath(item.OoklaTestFilePath)) || dh.FileExist(Server.MapPath(item.SpeedTestFilePath)))
+                    {
+                        if (string.IsNullOrEmpty(item.OoklaTestFilePath))
+                        {
+                            item.OoklaTestFilePath = "/images/NullImages.PNG";
+                        }
+                        else if (string.IsNullOrEmpty(item.SpeedTestFilePath))
+                        {
+                            item.SpeedTestFilePath = "/images/NullImages.PNG";
+                        }
+                        if (count % 8 == 0 && count != 0)
+                        {
+                            Contant = Contant + a;
+                            Contant = Contant + "</div>";
+
+                            a = "";
+
+                                <center>
+                                    @Html.Raw(Contant)
+
+                                </center>
+                                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                    <hr /> <P CLASS="breakhere" />
+
+                            }
+                            if (count % 8 != 0 || count == 0)
+                            {
+                                if (count % 4 == 0 && count != 0)
+                                {
+                                    a = a + "<br />";
+                                }
+                                a = a + " <img src=\"" + item.OoklaTestFilePath + "\" class=\"ooklaImages\" style=\"margin-right:20px;\" />";
+
+                                count++;
+                                if (item.SpeedTestFilePath != "/images/NullImages.PNG")
+                                {
+                                    a = a + " <img src=\"" + item.SpeedTestFilePath + "\" class=\"ooklaImages\" style=\"margin-right:20px;\" />";
+
+
+                                    count++;
+                                }
+                            }
+                            else
+                            {
+
+                                <center>
+                                    <div class="imgesss">
+                                        <h1 class="heading">@First.Site Speed Test</h1>
+
+                                        @if (count % 4 == 0 && count != 0)
+                                        {
+                                            <br />
+
+                                        }
+                                        <img src="@item.OoklaTestFilePath" class="ooklaImages" style="margin-right:20px;" />
+
+
+                                        @{ count++; }
+@if (@item.SpeedTestFilePath != "/images/NullImages.PNG")
+{
+                                        <img src="@item.SpeedTestFilePath" class="ooklaImages" style="margin-right:20px;" />
+}
+                                        @{count++; }
+
+
+                                                        @{ count++;
+                                                        }
+
+
+
+
+
+
+                                    </div>
+                                </center>
+                                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                            <hr />
+                                                    <P CLASS="breakhere" />
+
+                                                                        }
+                                                                    }
+                                                                
+
+                                                            }
+                                                            if (count <= 8)
+                                                            {
+                                                                Contant = Contant + a;
+                                                                Contant = Contant + "</div>";
+
+                                                                a = "";
+
+                                                <center>
+                                                    @Html.Raw(Contant)
+
+                                                </center>
+                                                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                                        <hr /> <P CLASS="breakhere" />
+
+                                                }
+
+
+                                            }
+
+                <!--MIMO  Test-->
+
+
+                @{  ImageStatus = false;
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.MimoTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                }
+
+                @if (ImageStatus)
+                {
+                    count = 0;
+                    Contant = "";
+                    Contant = "<div class=\"imgesss\">";
+                    Contant = Contant + "<h1 class=\"heading\">" + First.Site + " MIMO Test</h1>";
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.MimoTestFilePath)))
+                        {
+                            if (count % 8 == 0 && count != 0)
+                            {
+                                Contant = Contant + a;
+                                Contant = Contant + "</div>";
+
+                                a = "";
+
+                                <center>
+                                    @Html.Raw(Contant)
+
+                                </center>
+                                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                <hr /> <P CLASS="breakhere" />
+
+                            }
+                            if (count % 8 != 0 || count == 0)
+                            {
+                                if (count % 4 == 0 && count != 0)
+                                {
+                                    a = a + "<br />";
+                                }
+                                a=a+"<img src=\""+item.MimoTestFilePath+"\" class=\"ooklaImages\" />";
+
+                                count++;
+                            }
+                            else
+                            {
+
+                            <center>
+                                <div class="">
+                                    <h1 class="heading">@First.Site MIMO Test</h1>
+                                    if (count % 4 == 0 && count != 0)
+                                    {
+                                    <br />
+                                    }
+                                    <img src="@item.MimoTestFilePath" class="ooklaImages" />
+
+                                    @{ count++;
+                                    }
+                                    }
+
+
+
+
+                                </div>
+                            </center>
+                            @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                        <hr />
+                                        <P CLASS="breakhere" />
+                                                }
+
+                                            }
+
+                                        }
+                                        if (count <= 8)
+                                        {
+                                            Contant = Contant + a;
+                                            Contant = Contant + "</div>";
+
+                                            a = "";
+
+                                            <center>
+                                                @Html.Raw(Contant)
+
+                                            </center>
+                                            @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                            <hr /> <P CLASS="breakhere" />
+
+                                            }
+                                        }
+
+                <!--Ookla Speed Test-->
+                @*@{ ImageStatus = false;
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.SpeedTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                }
+
+                @if (ImageStatus)
+                {
+                    count = 0;
+                    Contant = "";
+                    Contant = "<div class=\"imgesss\">";
+                    Contant = Contant + "<h1 class=\"heading\">" + First.Site + "  Speed Test SM</h1>";
+                            foreach (var item in Model)
+                            {
+                                if (dh.FileExist(Server.MapPath(item.SpeedTestFilePath)))
+                                {
+                                    if (count % 8 == 0 && count != 0)
+                                    {
+                                        Contant = Contant + a;
+                                        Contant = Contant + "</div>";
+
+                                        a = "";
+
+                                        <center>
+                                            @Html.Raw(Contant)
+
+                                        </center>
+                                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml");
+                                        <hr /> <P CLASS="breakhere" />
+
+                            }
+                            if (count % 8 != 0 || count == 0)
+                            {
+                                if (count % 4 == 0 && count != 0)
+                                {
+                                    a = a + "<br />";
+                                }
+                                a=a+"   <img src=\""+item.SpeedTestFilePath+"\" class=\"ooklaImages\" />";
+
+                                count++;
+                            }
+                            else
+                            {
+                                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                        <hr />
+                                        <P CLASS="breakhere" />
+                                        <center>
+                                            <div class="">
+                                                <h1 class="heading">@First.Site Speed Test SM</h1>
+                                                @if (count % 4 == 0 && count != 0)
+                                                {
+                                                    <br />
+                                                }
+                                                <img src="@item.SpeedTestFilePath" class="ooklaImages" />
+
+                                                @{ count++;
+                                                }
+
+
+                                            </div>
+                                        </center>
+                                                            }
+                                                        }
+
+
+
+                                                    }
+                            if (count <= 8)
+                            {
+                            Contant = Contant + a;
+                            Contant = Contant + "</div>";
+
+                        a = "";
+
+                        <center>
+                            @Html.Raw(Contant)
+
+                        </center>
+                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                        <hr /> <P CLASS="breakhere" />
+
+                        }
+
+        }*@
+
+
+
+
+
+                <!--Speed Test-->
+       
+                <!--Speed Test-->
+                                                    @{  ImageStatus = false;
+
+                                                        foreach (var item in Model)
+                                                        {
+                                                            if (dh.FileExist(Server.MapPath(item.CaActiveTestFilePath)))
+                                                            {
+                                                                ImageStatus = true;
+                                                                break;
+                                                            }
+                                                            else if (dh.FileExist(Server.MapPath(item.CaDeavticeTestFilePath)))
+                                                            {
+                                                                ImageStatus = true;
+                                                                break;
+                                                            }
+                                                            else if (dh.FileExist(Server.MapPath(item.CaSpeedTestFilePath)))
+                                                            {
+                                                                ImageStatus = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+
+                                                        @if (ImageStatus)
+                                                        { 
+                                                            count = 0;
+                                                            Contant = "";
+                                                            Contant = "<div class=\"imgesss\">";
+
+                                                            Contant = Contant + "<h1 class=\"heading\">"+First.Site+" CA Test</h1>";
+                                                            Contant = Contant + "<div class=\"row\">";
+                                                            Contant = Contant + "<table style=\"width: 1100px;margin-left: 40px;\"><tbody> <tr>";
+                                                            Contant = Contant + "<th style = \"width: 100px;padding-right: 0px;padding-bottom: 2px;padding-top: 0px;padding-left: 30px;\" >           <label ><h3>Active</h3> </label> </th>";
+                                                            Contant = Contant + "<th style=\"width: 100px; padding-bottom: 2px; padding-top: 0px; padding-left: 0px; padding-right: 0px; \"><label><h3>Deactive</h3> </label> </th>";
+                                                            Contant = Contant + "<th style=\"width: 20px!Important; padding-left: 0px; padding-right: 150px; padding-top: 0px; padding-bottom: 2px; \"><label style=\"border-right-width: 5px; margin-right: 5‒; padding-top: 0px; padding-right: 5px; \"><h3> Speed Test</h3></label></th></tr></tbody></table></div>";
+                                                            foreach (var item in Model)
+                                                            {
+                                                                if (dh.FileExist(Server.MapPath(item.CaActiveTestFilePath)) || dh.FileExist(Server.MapPath(item.CaDeavticeTestFilePath)) || dh.FileExist(Server.MapPath(item.CaSpeedTestFilePath)))
+                                                                {
+                                                                    if (item.CaActiveTestFilePath == "")
+                                                                    {
+                                                                        item.CaActiveTestFilePath = "/images/NullImages.PNG";
+                                                                    }
+                                                                    else if (item.CaDeavticeTestFilePath == "")
+                                                                    {
+                                                                        item.CaDeavticeTestFilePath = "/images/NullImages.PNG";
+                                                                    }
+                                                                    else if (item.CaSpeedTestFilePath == "")
+                                                                    {
+                                                                        item.CaSpeedTestFilePath = "/images/NullImages.PNG";
+                                                                    }
+                                                                    if (count % 6 == 0 && count != 0)
+                                                                    {
+                                                                        Contant = Contant + a;
+                                                                        Contant = Contant + "</div>";
+
+                                                                        a = "";
+
+                                                                        <center>
+                                                                            @Html.Raw(Contant)
+                                                                           
+                                                                        </center>
+                                                                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                                                        <hr /> <P CLASS="breakhere" />
+
+                                                                    }
+                                                                    if (count % 6 != 0 || count == 0)
+                                                                    {
+                                                                        if (count % 3 == 0 && count != 0)
+                                                                        {
+                                                                            a = a + "<br />";
+
+
+
+                                                                        }
+
+
+                                                                        a = a + " <img src=\"" + @item.CaActiveTestFilePath + "\" class=\"ooklaImages\" />";
+
+                                                                        count++;
+
+                                                                        a = a + " <img src=\"" + @item.CaDeavticeTestFilePath + "\" class=\"ooklaImages\" />";
+                                                                        //  <img src="@item.CaDeavticeTestFilePath" class="ooklaImages" />
+
+                                                                        count++;
+                                                                        a = a + " <img src=\"" + @item.CaSpeedTestFilePath + "\" class=\"ooklaImages\" />";
+                                                                        // <img src="@item.CaSpeedTestFilePath" class="ooklaImages" />
+
+                                                                        count++;
+                                                                    }
+
+                                                                    else
+                                                                    {
+
+
+                                                                                <center>
+                                                                                    <div class="imgesss">
+                                                                                        <h1 class="heading">@First.Site CA Test</h1>
+                                                                                        <div class="row">
+                                                                                            <table style="width: 1100px;margin-left: 40px;">
+                                                                                                <tbody>
+                                                                                                    <tr>
+                                                                                                        <th style="width: 100px;
+                                                padding-right: 0px;
+                                                  padding-bottom: 2px;
+                                                     padding-top: 0px;
+                                                padding-left: 30px;">
+                                                                                                            <label><h3>Active</h3> </label>
+                                                                                                        </th>
+
+                                                                                                        <th style="width: 100px;
+                                              padding-bottom: 2px;
+                                                padding-top: 0px;
+
+                                                padding-left: 0px;
+                                                padding-right: 0px;">
+                                                                                                            <label><h3>Deactive</h3> </label>
+                                                                                                        </th>
+
+                                                                                                        <th style="
+                                                width: 20px!Important;
+                                                padding-left: 0px;
+                                                padding-right: 150px;
+                                                padding-top: 0px;
+                                                padding-bottom: 2px;
+                                                
+                                                ">
+                                                                                                            <label style="border-right-width: 5px;
+                                                       margin-right: 5‒;
+                                                padding-top: 0px;
+
+                                                       padding-right: 5px;">
+                                                                                                                <h3> Speed Test</h3>
+                                                                                                            </label>
+                                                                                                        </th>
+                                                                                                    </tr>
+                                                                                                </tbody>
+                                                                                            </table>
+                                                                                        </div>
+                                                                                      
+
+
+                                                                                        <img src="@item.CaActiveTestFilePath" class="ooklaImages" />
+
+                                                                                        @{count++; }
+
+
+                                                                                        <img src="@item.CaDeavticeTestFilePath" class="ooklaImages" />
+
+                                                                                        @{ count++; }
+
+                                                                                        <img src="@item.CaSpeedTestFilePath" class="ooklaImages" />
+
+                                                                                        @{count++;
+
+                                                                                        }
+                                                                                        @if (count % 3 == 0 && count != 0)
+                                                        {
+                                                                                            <br />
+
+                                                                                        }
+
+
+                                                                                    </div>
+                                                                                </center>
+                                                                                @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                                                                            <hr />
+                                                                                            <P CLASS="breakhere" />
+                                                                                                    }
+                                                                                                }
+
+
+                                                                                            }
+                                                                                            if (count <= 6)
+                                                                                            {
+                                                                                                Contant = Contant + a;
+                                                                                                Contant = Contant + "</div>";
+
+                                                                                                a = "";
+
+                                                                                                <center>
+                                                                                                    @Html.Raw(Contant)
+
+                                                                                                </center>
+                                                                                                @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                                                                                <hr /> <P CLASS="breakhere" />
+
+                                                                                            }
+                                                                @*</div>
+                                                            </center>
+                                                            @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                                                                            <hr />
+                                                                                            <P CLASS="breakhere" />*@
+                                                                                            }
+                @{  ImageStatus = false;
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.LaaSmTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                        else if (dh.FileExist(Server.MapPath(item.LaaSpeedTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                }
+
+                @if (ImageStatus)
+                {
+                    count = 0;
+                    Contant = "";
+                    Contant = "<div class=\"imgesss\">";
+                    Contant = Contant + "<h1 class=\"heading\">" + First.Site + " LAA Test</h1>";
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.LaaSmTestFilePath)) || dh.FileExist(Server.MapPath(item.LaaSpeedTestFilePath)))
+                        {
+                            if (item.LaaSmTestFilePath == "")
+                            {
+                                item.LaaSmTestFilePath = "/images/NullImages.PNG";
+                            }
+                            else if (item.LaaSpeedTestFilePath == "")
+                            {
+                                item.LaaSpeedTestFilePath = "/images/NullImages.PNG";
+                            }
+                            if (count % 8 == 0 && count != 0)
+                            {
+                                Contant = Contant + a;
+                                Contant = Contant + "</div>";
+
+                                a = "";
+
+                                <center>
+                                    @Html.Raw(Contant)
+
+                                </center>
+                                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                    <hr /> <P CLASS="breakhere" />
+
+                            }
+                            if (count % 8 != 0 || count == 0)
+                            {
+                                if (count % 4 == 0 && count != 0)
+                                {
+                                    a = a + "<br />";
+                                }
+                                a = a + " <img src=\"" + item.LaaSpeedTestFilePath + "\" class=\"ooklaImages\" style=\"margin-right:20px;\" />";
+
+                                count++;
+                                a = a + " <img src=\"" + item.LaaSmTestFilePath + "\" class=\"ooklaImages\" style=\"margin-right:20px;\" />";
+
+
+                                count++;
+                            }
+                            else
+                            {
+
+                                <center>
+                                    <div class="imgesss">
+                                        <h1 class="heading">@First.Site LAA Test</h1>
+
+                                        @if (count % 4 == 0 && count != 0)
+                                        {
+                                            <br />
+
+                                        }
+                                        <img src="@item.LaaSpeedTestFilePath" class="ooklaImages" style="margin-right:20px;" />
+
+
+                                        @{ count++; }
+                                        <img src="@item.LaaSmTestFilePath" class="ooklaImages" style="margin-right:20px;" />
+
+                                        @{count++; }
+
+
+
+
+
+
+
+
+                                    </div>
+                                </center>
+                                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                            <hr />
+                                                    <P CLASS="breakhere" />
+
+                                                    }
+                                                }
+
+
+                                            }
+                                            if (count <= 8)
+                                            {
+                                                Contant = Contant + a;
+                                                Contant = Contant + "</div>";
+
+                                                a = "";
+
+                                                <center>
+                                                    @Html.Raw(Contant)
+
+                                                </center>
+                                                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                                                        <hr /> <P CLASS="breakhere" />
+
+                                                }
+
+
+                                            }
+
+
+
+
+
+
+                                                                                            <div class="WELCOME_PAGE_COLOR" id="thank-you" style="background:#004B99;padding-top:150px;height:800px;margin-left: -50px;margin-right: -20px;margin-top: 10px;padding-bottom: 50px;">
+                                                                                                <img src="~/Content/Images/Report/Nokia-bg.png" style="margin-top: 215px;margin-left: 381px;" />
+
+                                                                                            </div>
+                                                                                        </div>
+
+            <a href="" style="float:right;" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+
+        </div>
+      <div style="display:none" id="Azimuth_Circle">0</div>
+
+        <script src="~/Content/js/Plugins/DateTimePicker/dtpicker.js" ></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.ApiMapKey)&sensor=false&libraries=geometry&bogusParam=.js"></script>
+        <script src="~/Content/js/MapLabel.js"></script>
+        @*<script src = "/Content/js/Plugins/kml/js/geoxml3.js" ></script>
+        <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>*@
+
+                    <script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+                    <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+
+        <script src="~/Content/js/GoogleMapsNTL.js"></script>
+        <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script><!--loading-->
+        <script>
+            var NetLayerReport = JSON.parse('@Html.Raw(NetLayerReport)');
+            var SiteId = '@First.SiteId';
+            var SiteCodes = '@First.Site _ @First.Band';
+            var NetworkModeId = '@First.NetworkModeId';
+            var BandId = '@First.BandId';
+            var CarrierId = '@First.CarrierId';
+            var ScopeId = '@First.ScopeId';
+            @{
+                 string NetLayer = First.ActualSiteCode+ "/"+First.NetworkMode + "_" +First.Band + "_" +First.Carrier;
+             }
+
+            var SiteLatitude = '@First.Latitude';
+            var SiteLongitude = '@First.Longitude';
+            var SiteCode = '@First.Site _ @First.Band';
+            var NetLayer = '@NetLayer';
+            var AfterDate = '@ViewBag.AfterDate';
+            var domain = '@ViewBag.domain';
+            var AzmuthRadius = '@ViewBag.AzmuthRadius';
+            var ClientPrefix = '@First.ClientPrefix';
+           // console.log(NetLayerReport);
+        </script>
+        <script src="/Content/js/NetLayerReport.js"></script>
+    }
+</body>
+
+</html>

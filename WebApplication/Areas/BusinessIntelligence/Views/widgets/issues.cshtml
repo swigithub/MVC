@@ -1,0 +1,90 @@
+<div class="widget">
+
+        <div class="title-bar" style="background:{{titlebg}};">
+                <h3>
+                        <img src="images/title-icon3.png" alt="" />
+                        <span class="update-name">{{widgetname_06}}</span>
+			<span class="cache-value"></span>
+                        <input ng-model="widgetname_06" ng-init="widgetname_06='Issues:'" type="text" />
+                         <a href="#" title="" class="opt-btn">Project View</a>
+                        <ul class="opt-dropdown">
+                                <li><a href="#" title=""> Project View</a></li>
+                                <li><a href="#" title=""> Regional View</a></li>
+                                <li><a href="#" title=""> National Program</a></li>
+                        </ul>
+                </h3>
+                <div class="buttons-sets">
+                        <a class="custom-btn color3 icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+                        <a class="custom-btn color13 icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+                        <a class="custom-btn color2 icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+                        <ul class="opt-dropdown" >
+                                <li class="has-children"><a href="#" title="">Panel Size</a>
+                                        <ul class="column-size">
+                                                <li><a class="onesixth" href="#" title="">One Sixth <img src="images/onesixth.png" alt=""> </a></li>
+                                                <li><a class="onethird" href="#" title="">One Third <img src="images/onethird.png" alt=""> </a></li>
+                                                <li><a class="half" href="#" title="">Half <img src="images/half.png" alt=""></a></li>
+                                                <li><a class="twothird" href="#" title="">Two Thrid <img src="images/twothird.png" alt=""></a></li>
+                                                <li><a class="fivesixth" href="#" title="">Five Sixth <img src="images/fivesixth.png" alt=""> </a></li>
+                                                <li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+                                        </ul>
+
+                                </li>
+                                <li class="has-children"><a href="#" title="">Panel Color</a>
+                                        <ul class="panel-color">
+                                                <li>
+                                                        <a href="#" title=""><input class="bgcolor"  type="text"  value="#fff" ng-model="titlebg"  ng-init="titlebg = '#fff'"  />
+                                                        <div class="colorpickerwrapper style2"><div colorpicker></div></div></a>
+                                                </li>
+                                        </ul>
+                                </li>
+                        </ul>
+
+                        <a class="opt-btn custom-btn  icon-only" href="#" title=""><i class="fas fa-filter"></i></a>
+                        <ul class="opt-dropdown style2 wider">
+                                <li><a href="javascript:void(0)" title=""><div class="date-range" datepicker> <span class="getValue"></span> </div></a></li>
+                                <li>
+                                        <select class="multiselect" multiple="multiple"  multiselect>
+                                                <optgroup label="North East" class="group-1">
+                                                        <option>NY/NNJ</option>
+                                                        <option>Michigan/Indiana</option>
+                                                        <option>E.Pa/S.Nj/De</option>
+                                                        <option>Ohio/Western Pennsylvania</option>
+                                                        <option>Washington DC-Baltimore</option>
+                                                </optgroup>
+                                                <optgroup label="West" class="group-2">
+                                                        <option>Desert Southwest</option>
+                                                        <option>Pacific Northwest</option>
+                                                        <option>San Diego/Las Vegas</option>
+                                                        <option>Rocky Mountain Region</option>
+                                                </optgroup>
+                                                <optgroup label="Central" class="group-3">
+                                                        <option> Illinois/Wisconsin</option>
+                                                        <option>Northern Plains</option>
+                                                        <option>Greater Midwest</option>
+                                                </optgroup>
+                                        </select>
+                                </li>
+                                <li><a class="filter-btn" href="#" title="">Apply</a></li>
+                        </ul>
+                </div>
+
+                <div class="selected-filters">
+                        <span>01/01/18 - 01/01/18</span>
+                        <span>North East</span>
+                </div><!-- Selected Filters -->
+        </div>
+
+        <div class="content-wrapper">
+                <div class="issues-view">
+                        <div id="donutchart" style="min-height:358px" ></div>
+                        <a class="label-drop" href="#" title=""><i class="fa fa-bars"></i></a>
+                        <ul class="labeling">
+                                <li><span style="background:#1c6a90"></span> Un-Avoidable (78)</li>
+                                <li><span style="background:#03a99d"></span> ATT (14)</li>
+                                <li><span style="background:#f47d62"></span> ATT Un-Avoidable (53)</li>
+                                <li><span style="background:#ef5551"></span> Nokia (55)</li>
+                                <li><span style="background:#b57db6"></span> Nokia Un-Avoidable (78)</li>
+                        </ul>
+                </div><!-- Issues View -->
+        </div>
+</div>

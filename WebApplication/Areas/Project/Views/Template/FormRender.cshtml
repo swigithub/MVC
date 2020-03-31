@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Form Render";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+@using (Html.BeginForm("FormRender", "Template"))
+{
+    @Html.Raw(ViewBag.formHTML)
+    <br />
+    <input type="submit" value="Ok" class="btn btn-default" />
+}

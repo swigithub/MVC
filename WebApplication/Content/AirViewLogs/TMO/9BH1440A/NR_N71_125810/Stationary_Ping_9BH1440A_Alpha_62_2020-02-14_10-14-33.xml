@@ -1,0 +1,12 @@
+<Drive>
+<TestType>Stationary</TestType>
+<ChildTestType>Ping</ChildTestType>
+<Site>9BH1440A</Site>
+<Sector>Alpha</Sector>
+<Pci>62</Pci>
+<Date>2020-02-14</Date>
+<Time>10-14-33</Time>
+
+<message-body><rat>LTE</rat><RadioBearerID>1</RadioBearerID><Freq>66786</Freq><PCI>67</PCI><time>16:14:35.529</time><channel>EUTRA-UL-DCCH-Message</channel><event>measurementReport</event><EUTRA-UL-DCCH-Message>    <message>        <c1>            <measurementReport>                <criticalExtensions>                    <c1>                        <measurementReport-r8>                            <measResults>                                <measId>9</measId>                                <measResultPCell>                                    <rsrpResult>50</rsrpResult>                                    <rsrqResult>22</rsrqResult>                                </measResultPCell>                                <measResultNeighCells>                                    <measResultListEUTRA>                                        <EUTRA-MeasResultEUTRA>                                            <physCellId>426</physCellId>                                            <measResult>                                                <rsrpResult>42</rsrpResult>                                                <rsrqResult>17</rsrqResult>                                            </measResult>                                        </EUTRA-MeasResultEUTRA>                                    </measResultListEUTRA>                                </measResultNeighCells>                            </measResults>                        </measurementReport-r8>                    </c1>                </criticalExtensions>            </measurementReport>        </c1>    </message></EUTRA-UL-DCCH-Message></message-body>
+
+</Drive>

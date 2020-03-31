@@ -1,0 +1,61 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Error | AirView</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+
+    <link href="~/AdminLTE/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link href="~/AdminLTE/dist/css/admin-lte.min.css" rel="stylesheet" />
+    <!-- iCheck -->
+    <link href="~/AdminLTE/plugins/icheck/css/all.css" rel="stylesheet" />
+
+
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <img src="~/Content/Images/Application/swi_logo.png" height="80" width="200" />
+
+        </div>
+
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            @TempData["msg_error"]
+
+
+        </div>
+
+        <a href="javascript:void(0);" class="btn btn-sm btn-info btn-flat" id="backLink">Back</a>
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery 2.2.3 -->
+    <script src="~/AdminLTE/plugins/jquery/js/jQuery-2.1.4.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="~/AdminLTE/bootstrap/js/bootstrap.min.js"></script>
+    <!-- iCheck -->
+    <script src="~/AdminLTE/plugins/icheck/js/icheck.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).on('click', '#backLink', function () {
+            history.go(-1);
+        });
+    </script>
+
+</body>
+</html>

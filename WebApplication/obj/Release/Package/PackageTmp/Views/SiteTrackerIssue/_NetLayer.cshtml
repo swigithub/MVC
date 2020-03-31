@@ -1,0 +1,186 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_SiteIssueTracker>
+
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab-comments" data-toggle="tab">Activity Tracker</a></li>
+        <li><a href="#tab-TestTracker" data-SiteId="@ViewBag.SiteId" data-NetworkModeId="@ViewBag.NetworkModeId" data-BandId="@ViewBag.BandId" data-CarrierId="@ViewBag.CarrierId" id="tabTitle-TestTracker" data-toggle="tab">Test Tracker</a></li>
+        @if (ViewBag.RoleName != "POC")
+        {
+            <li><a href="#tab-StatusTracker" data-SiteId="@ViewBag.SiteId" data-NetworkModeId="@ViewBag.NetworkModeId" data-BandId="@ViewBag.BandId" data-CarrierId="@ViewBag.CarrierId" id="tabTitle-StatusTracker" data-toggle="tab">Status Tracker</a></li>
+
+        }
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab-comments">
+            @if (Model.Count() > 0)
+            {
+                string PrevDate = null;
+                string Color = null;
+                string status = null;
+                <div style="">
+
+                    <div style="height:350px;overflow:auto;">
+
+
+
+                        <ul class="timeline timeline-inverse">
+                            @{
+                                var rec = Model.OrderBy(m => m.ReportDate).ToList();
+                                if (ViewBag.RoleName == "POC")
+                                {
+                                    rec = Model.Where(m => m.Status == "RESOLVED").OrderBy(m => m.ReportDate).ToList();
+                                }
+                            }
+                            @foreach (var item in rec)
+                            {
+                                if (item.Status == "UN_RESOLVED")
+                                {
+                                    Color = "btn-danger";
+                                    status = "Un_Acknowledged";
+                                }
+                                else
+                                {
+                                    Color = "btn-success";
+                                    status = "Acknowledged";
+                                }
+        <!-- timeline time label -->
+                                if (PrevDate != item.ReportDate.ToString("dd-MM-yyy"))
+                                {
+
+                                    <li class="time-label">
+                                        <span class="bg-red">
+                                            @if (!string.IsNullOrEmpty(item.ReportDate.ToString()))
+                                            {
+                                                @item.ReportDate.ToString("dd MMM yyyy")
+
+                                            }
+                                        </span>
+                                    </li>
+                                }
+
+                                <li>
+                                    <img src="@item.Picture" class="img-circle" style="margin-left: 18px;" height="32" width="32" />
+                                    @*<i class="fa fa-envelope bg-blue"></i>*@
+
+                                    <div class="timeline-item">
+                                        <span class="time">
+                                            <i class="fa fa-clock-o"></i> @if (!string.IsNullOrEmpty(item.ReportDate.ToString()))
+                                            {
+                                                @item.ReportDate.ToString("hh : mm")
+
+                                            }
+                                        </span>
+
+                                        <h3 class="timeline-header">
+                                            @*<img src="@item.Picture" class="img-circle" height="32" width="32" />*@
+                                            <a class="IssueTester" style="" href="#">@item.Tester</a> Reported @item.IssueTypeName <a class="btn @Color btn-xs btn-resolve" id="btn-resolve-@item.TrackingId" data-TrakerId="@item.TrackingId">@status</a>
+                                        </h3>
+
+                                        <div class="timeline-body">
+                                            @item.Description
+
+                                            @if (!string.IsNullOrEmpty(item.ImagePath))
+                                            {
+                                                <a href="~/Content/AirViewLogs/@item.ImagePath" class="" target="_blank"><i class="fa fa-file-image-o"></i> Issue Report Image</a>
+                                            }
+                                        </div>
+
+                                    </div>
+                                </li>
+                                PrevDate = item.ReportDate.ToString("dd-MM-yyy");
+                            }
+                            <li>
+                                <i class="fa fa-clock-o bg-gray"></i>
+                            </li>
+                        </ul>
+
+                    </div>
+
+
+                </div>
+                                }
+
+            <div class="row">
+                <div style="width:100%;height: auto;background-color:white;padding:20px;border-top:solid  1px transparent; ">
+
+                    <form method="post" action="#" id="frm-IssueTracker">
+                        <input type="hidden" value="@ViewBag.SiteId" name="SiteId" />
+                        <input type="hidden" value="@ViewBag.TesterId" name="TesterId" />
+                        <input type="hidden" value="@ViewBag.NetworkModeId" name="NetworkModeId" />
+                        <input type="hidden" value="@ViewBag.BandId" name="BandId" />
+                        <input type="hidden" value="@ViewBag.CarrierId" name="CarrierId" />
+                        <input type="hidden" value="@ViewBag.ScopeId" name="ScopeId" />
+                        <input type="hidden" value="UN_RESOLVED" name="Status" />
+                        <div class="form-group">
+                            @Html.DropDownList("IssueType", ViewBag.IssueTypes as List<SelectListItem>, new { @class = "form-controll", required = "required" })
+                        </div>
+                        <div class="form-group">
+
+                            @Html.TextArea("Description", null, new { @class = "form-control", rows = "3", required = "required", placeholder = "Comment" })
+                        </div>
+                        <div class="form-group">
+                            <button type="button" style="margin-left:10px" data-dismiss="modal" class="btn btn-info pull-right">Close</button>
+                            <button type="submit" class="btn btn-success pull-right">Save</button>
+
+
+                        </div>
+
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Test Tracker-->
+        <div class="tab-pane" id="tab-TestTracker">
+            Test Tracker
+        </div>
+        <div class="tab-pane" id="tab-StatusTracker">
+            Status Tracker
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    var TestTracker = 0;
+    var StatusTracker = 0;
+    var tab_TestTracker = $('#tab-TestTracker');
+    var tab_StatusTracker = $('#tab-StatusTracker');
+    $(document).on('click', '#tabTitle-TestTracker', function () {
+        if (TestTracker == 0) {
+            var SiteId = $(this).attr('data-SiteId');
+            var NetworkModeId = $(this).attr('data-NetworkModeId');
+            var BandId = $(this).attr('data-BandId');
+            var CarrierId = $(this).attr('data-CarrierId');
+            var data = { 'SiteId': SiteId, 'NetworkModeId': NetworkModeId, 'BandId': BandId, 'CarrierId': CarrierId }
+            ajax('/SiteTrackerIssue/TesterTracker', data, '', function (res) {
+                tab_TestTracker.empty();
+                tab_TestTracker.html(res);
+                TestTracker = 1;
+            });
+        }
+
+    });
+
+    $(document).on('click', '#tabTitle-StatusTracker', function () {
+        if (StatusTracker == 0) {
+            var SiteId = $(this).attr('data-SiteId');
+            var NetworkModeId = $(this).attr('data-NetworkModeId');
+            var BandId = $(this).attr('data-BandId');
+            var CarrierId = $(this).attr('data-CarrierId');
+            var data = { 'SiteId': SiteId, 'NetworkModeId': NetworkModeId, 'BandId': BandId, 'CarrierId': CarrierId }
+            ajax('/SiteTrackerIssue/StatusTracker', data, '', function (res) {
+                tab_StatusTracker.empty();
+                tab_StatusTracker.html(res);
+                StatusTracker = 1;
+
+            });
+        }
+    });
+
+
+</script>

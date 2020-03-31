@@ -1,0 +1,1184 @@
+﻿
+@{
+    ViewBag.Title = "Market Configuration";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="box box-solid">
+    <div class="box-header with-border boxHeader">
+        <h3 class="box-title">@ViewBag.Title</h3>
+        <button class="btn btn-sm btn-info pull-right" id="backLink"><i class="fa fa-step-backward"></i> Back </button>
+
+    </div>
+    <div class="box-body boxBody">
+        <div class="row">
+            <div class="col-sm-2" style="padding-left:30px;">
+                <label for="ddlClientId">Client</label>
+                @Html.DropDownList("ddlClientId", new SelectList(ViewBag.UserClients, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+            </div>
+            <div class="col-sm-2">
+                <label for="ddlProjectId">Projects</label>
+                @Html.DropDownList("ddlProjectId", new SelectList(ViewBag.Projects, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+            </div>
+            <div class="col-sm-2">
+                <label for="CityId">Markets</label><br />
+                @Html.DropDownList("ddlCityId", new SelectList(ViewBag.Cities, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+            </div>
+            <div class="col-md-2 ReportTemplateArea hidden">
+                <label for="CityId">Report Templates</label><br />
+                <select class="form-control" id="ReportTemplates" onchange="LoadDataTemplateNames()" style="height:unset !important;width:200px">
+                    <option value="0">Select Template Name</option>
+                </select>
+            </div>
+            <div class="col-md-2 ReportTemplateArea hidden">
+                <button type="button" class="btn btn-primary" id="btnNewReportTemplate" data-toggle="modal" data-target="#NewReportTemplate" style="margin-top:25px;">New Report Template</button>
+            </div>
+            <div class="col-md-2 ReportTemplateArea hidden">
+                <button type="button" class="btn btn-primary" onclick="GotoBI()" style="margin-top:25px;">Design Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs li a {
+        color: white !important;
+    }
+
+    .nav-tabs li.active a {
+        color: black !important;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <!-- Custom Tabs -->
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs boxHeader">
+                <li class="active"><a href="#Users" data-toggle="tab">Users</a></li>
+                <li><a href="#TestSetting" data-toggle="tab">Test Settings & Configuration</a></li>
+                <li><a href="#ReportSetting" data-toggle="tab">Report Settings & Configuration</a></li>
+                <li><a href="#DataTemplate" data-toggle="tab">Data Template</a></li>
+                <li><a href="#RFPlotLegend" data-toggle="tab">RF Plot Legend</a></li>
+            </ul>
+            <div class="tab-content boxBody">
+                <div class="tab-pane active" id="Users">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-2" style="max-height:500px;overflow:auto">
+                                    <div id="UsersTree">
+                                        <ul>
+                                            @if (ViewBag.Users != null)
+                                            {
+                                                foreach (var item in ViewBag.Users)
+                                                {
+                                            <li Id="@item.Value" class="control">@item.Text</li>
+                                                }
+
+                                            }
+                                        </ul>
+                                        <input type="text" style="visibility:hidden" id="txt-selected" />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <button style="margin-left:20px" type="button" id="btn-CityUsers" class="btn btn-success pull-right">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="tab-pane" id="TestSetting">
+                    @using (Html.BeginForm("TestSetting", "TemplateSetting", FormMethod.Post, new { id = "frm-TestConfiguration" }))
+                    {
+                    <div class="row">
+                        <input type="hidden" id="CityId" name="CityId" value="@ViewBag.CityId" />
+                        <input type="hidden" id="ClientId" name="ClientId" />
+                        <input type="hidden" id="ProjectId" name="ProjectId" />
+
+
+                        <div class="col-sm-2" style="padding-left:30px;">
+                            <label for="NetworkModeId">Network Mode</label>
+                            @Html.DropDownList("NetworkModeId", new SelectList(ViewBag.NetworkModes, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label for="BandId">Band</label>
+                            <select style="width:200px" id="BandId" name="BandId" class="form-control">
+                                <option value="0">-Band-</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label for="BandWidthId">Bandwidth</label>
+                            <select style="width:200px" id="BandWidthId" name="BandWidthId" class="form-control">
+                                <option value="0">-BandWidth-</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @Html.Action("TestTemplate", "TemplateSetting")
+
+                            <div class="form-group">
+
+                                <button style="margin-left:20px" type="submit" class="btn btn-success pull-right">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
+                                <!--   <button type="reset" class="btn btn-danger pull-right"><i class="fa fa-undo"></i> Refresh</button>-->
+                            </div>
+
+                        </div>
+                    </div>
+
+                    }
+
+                </div>
+                <div class="tab-pane" id="ReportSetting">
+                    @using (Html.BeginForm("New", "ReportConfigurations", FormMethod.Post, new { id = "frm-ReportConfigurations" }))
+                    {
+                    <div class="row">
+                        <input type="hidden" name="CityId" value="@ViewBag.CityId" />
+                        <input type="hidden" id="ClientId" name="ClientId" />
+                        <input type="hidden" id="ProjectId" name="ProjectId" />
+
+                        <div class="col-sm-2" style="padding-left:30px;">
+                            <label for="ReportId">Report Type</label>
+                            @Html.DropDownList("ReportId", new SelectList(ViewBag.ReportTypes, "Value", "Text"), new { @class = "form-control select", style = "width:200px" })
+                        </div>
+                        <div class="col-sm-2">
+                            <label for="ScopeId">Scope</label>
+                            @Html.DropDownList("ScopeId", new SelectList(ViewBag.Scopes, "Value", "Text"), new { @class = "form-control select", style = "width:200px" })
+                        </div>
+
+                    </div>
+                    <br />
+                    <div id="panReportConfiguration">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @Html.Action("NewTemplate", "ReportConfigurations", new { id = "444" })
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-success pull-right">
+                                        <i class="fa fa-save"></i> Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    }
+                </div>
+                <div class="tab-pane" id="DataTemplate">
+
+
+                    <div>
+                        <ul class="nav nav-tabs" id="tabs">
+                            <li class="active"><a data-toggle="tab" href="#home">Select</a></li>
+                            <li><a data-toggle="tab" href="#menu1">Result</a></li>
+                            <li style="float:right !important">
+                                <div style="float:left;padding-right:10px"> <input type="button" value="Filter" onclick="LoadFilteredFields()" class="btn btn-primary" /></div>
+                                <div style="float:right;padding-right:10px"> <input type="button" class="btn btn-success" value="Excel" onclick="window.location = '/parser/ExportToExcel'" /></div>
+                                <div style="float:right;padding-right:10px"> <input type="button" class="btn btn-success" value="CSV" onclick="window.location = '/parser/ExportToCsv'" /></div>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    @using (Html.BeginForm("New", "DataTemplate", FormMethod.Post, new { id = "frm-DataTemplate" }))
+                    {
+                        <div class="row">
+                            <input type="hidden" name="CityId" value="@ViewBag.CityId" />
+                            <input type="hidden" id="ClientId" name="ClientId" />
+                            <input type="hidden" id="ProjectId" name="ProjectId" />
+                            <div class="col-sm-1" style="padding-left:30px;">
+                                <label for="ReportId">Report Type</label>
+                                @Html.DropDownList("ReportId", new SelectList(ViewBag.ReportTypes, "Value", "Text"), new { @class = "form-control select", style = "width:200px" })
+                            </div>
+                            <div class="col-sm-1" style="padding-left:30px;">
+                                <label for="ScopeId">Scope</label>
+                                @Html.DropDownList("ScopeId", new SelectList(ViewBag.Scopes, "Value", "Text"), new { @class = "form-control select", style = "width:200px" })
+                            </div>
+                            <div class="col-sm-1" style="padding-left:30px;">
+                                <label for="ddlDataTemplates">Data Templates</label><br />
+                                <select class="form-control select" id="ddlDataTemplates" style="width:200px"></select>
+                            </div>
+                            
+                            <div class="col-md-1"  style="width:unset !important">
+                            <button type="button" id="btn-UpdateTemplate" class="btn btn-success hidden" style="margin-top: 25px;">
+                                <i class="fa fa-save"></i> Update
+                            </button>
+                                @*<button type="button" id="btn-DeleteTemplate" class="btn btn-danger hidden" style="margin-top: 25px;">
+                                    <i class="fa fa-trash"></i> Delete
+                                </button>*@
+                              </div>
+                            
+                            <div class="col-sm-1 NdataTemplate hidden" style="padding-left:30px;">
+                                <label for="workorders">Workorders</label><br />
+                                <select class="form-control select" id="workorders" style="width:200px"></select>
+                            </div>
+                            <div class="col-sm-1 NdataTemplate hidden" style="padding-left:30px;">
+                                <label for="files">Files</label><br />
+                                <select class="form-control select" id="files" style="width:200px"></select>
+                            </div>
+                            <div class="col-sm-1 NdataTemplate hidden" style="padding-left:30px;">
+                                <label for="TemplateName">Data Template Name</label>
+                                <input type="text" id="TemplateName" class="form-control" placeholder="Name" style="width:200px" />
+                            </div>
+                            <div class="col-md-1" id="btnNDataTemplate" style="margin-right: 10px;">
+                                <button type="button" class="btn btn-primary" onclick="ShowNewTemplateFields()" style="margin-top:25px;">New Data Template</button>
+                            </div>
+                            <div class="col-sm-1 NdataTemplate hidden" style="width:unset !important;padding-left:30px;">
+                                <button type="button" id="btn-SaveTemplate" class="btn btn-success" style="margin-top: 25px;">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
+                            </div>
+                            <div class="col-sm-1" style="width:unset !important;padding-left:30px;">
+                                <button type="button" id="btnResetFields" class="btn btn-warning" style="margin-top: 25px;"> <i class="fa fa-undo"></i> Reset</button>
+                                <button type="button" id="btnBackToSelection" class="btn btn-warning hidden" style="margin-top: 25px;"> <i class="fa fa-backward"></i> Back</button>
+                            </div>
+                            
+                        </div>
+                        <br />
+                        <div id="panReportConfiguration">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @{Html.RenderPartial("/Views/Parser/ParserView.cshtml");}
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                                        }
+                </div>
+
+                <div class="tab-pane" id="RFPlotLegend">
+                    @using (Html.BeginForm("RFLegends", "Market", FormMethod.Post, new { id = "frm-RFLegend" }))
+                    {
+                    <div class="row">
+                        <input type="hidden" Id="CityId" name="CityId" value="@ViewBag.CityId" />
+                        <input type="hidden" id="ClientId" name="ClientId" />
+
+                        <div class="col-sm-2" style="padding-left:30px;">
+                            <label for="NetworkModeId">Network Mode</label>
+                            @Html.DropDownList("NetworkModeId", new SelectList(ViewBag.NetworkModes, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label for="PlotTypeId">Plot Type</label>
+                            @Html.DropDownList("PlotTypeId", new SelectList(ViewBag.PlotTypes, "Value", "Text"), new { @class = "form-control select", style = "width:200px", required = "required" })
+                        </div>
+                    </div>
+                    <br />
+                    <div id="panRFPlotLegend">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @{Html.RenderPartial("RFLegends");}
+                                <div class="form-group">
+                                    <button type="button" id="btnSaveLegends" class="btn btn-success pull-right">
+                                        <i class="fa fa-save"></i> Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                                        }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal" id="NewReportTemplate" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">New Report Template</h4>
+            </div>
+            <div class="modal-body">
+                <label for="ReportTemplateName">Report Template Name</label><br />
+                <input type="text" placeholder="Report Template Name" id="ReportTemplateName" class="form-control" />
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-success" onclick="SaveNewReportTemplate()">Save</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section scripts{
+
+    <script src="~/Content/js/Plugins/treeView/ui.custom.js"></script>
+    <script src="~/Content/js/Plugins/treeView/dynatree.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var Users;
+            var ddlCityId = $('#ddlCityId');
+            if ('@ViewBag.CityId' != 0 && '@ViewBag.CityId' != null) {
+                ddlCityId.val('@ViewBag.CityId');
+                $("#ddlCityId").attr("disabled", true);
+            }
+
+            var BandId = $('#BandId');
+            var BandwidthId = $('#BandWidthId');
+            var NetworkModeId = $('#NetworkModeId');
+            var ClientId = $('#ClientId');
+            var ReportId = $('#ReportId');
+            var panReportConfiguration = $('#panReportConfiguration');
+
+            ReportId.val('444');
+            $("#UsersTree").dynatree({
+                checkbox: true,
+                onClick: function (node, event) {
+
+                },
+                onActivate: function (node) {
+                    //console.log(node.data.key);
+                },
+                onSelect: function (flag, node) {
+                    var selectedNodes = node.tree.getSelectedNodes();
+                    var selectedKeys = $.map(selectedNodes, function (node) {
+                        return node.data.key;
+                    });
+                    Users = selectedKeys;
+                }
+            });
+
+
+            @if (ViewBag.MarketUsers != null)
+            {
+                foreach (var item in ViewBag.MarketUsers)
+                {
+                    @: $("#UsersTree").dynatree("getTree").selectKey('@item.Value');
+                                                     }
+
+            }
+
+
+            $('#backLink').click(function () {
+                history.go(-1);
+            });
+
+            ddlCityId.change(function () {
+                LoadReportTemplateName();
+                //var value = $(this).val();
+                //window.location.replace("/Market/Configuration/" + value);
+            });
+
+            $("body").on("change", "#ddlClientId,#ddlProjectId", function () {
+                LoadReportTemplateName();
+            })
+
+            NetworkModeId.change(function () {
+                var value = $(this).val();
+                $.ajax({
+                    url: '/Defnation/ToList?filter=PDefinationId&value=' + value,
+                    type: 'post',
+                    success: function (res) {
+                        BandId.empty();
+                        BandId.append(' <option value="0">-Select Band-</option>');
+                        $.each(res, function (i, v) {
+                            BandId.append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                        });
+                    }
+                });
+
+            });
+
+            BandId.change(function () {
+                LoadValues(ClientId.val(), ddlCityId.val(), NetworkModeId.val(), BandId.val());
+                var value = $(this).val();
+                LoadBandWidth(value);
+            });
+
+
+            ReportId.change(function () {
+                $.ajax({
+                    url: '/ReportConfigurations/NewTemplate',
+                    data: { id: $(this).val() },
+                    success: function (res) {
+                        panReportConfiguration.empty();
+                        panReportConfiguration.html(res);
+                    }
+
+                });
+            });
+
+            ClientId.change(function () {
+                LoadValues(ClientId.val(), ddlCityId.val(), NetworkModeId.val(), BandId.val());
+            });
+
+            function LoadBandWidth(value) {
+                $.ajax({
+                    url: '/Defnation/ToList?filter=getBandwidthByBandId&value=' + value,
+                    type: 'post',
+                    success: function (res) {
+                        BandwidthId.empty();
+                        BandwidthId.append(' <option value="0">-Select BandWidth-</option>');
+                        $.each(res, function (i, v) {
+                            BandwidthId.append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                        });
+                    }
+                });
+            }
+
+            $('#btn-CityUsers').click(function () {
+                var cities = $("#ddlCityId").val().join(',');
+                console.log(cities);
+                $.ajax({
+                    url: '/Market/CityUsers',
+                    data: { CityId: cities, Users: Users },
+                    type: 'post',
+                    success: function (res) {
+                        if (res != 'session expired') {
+                            if (res.Status == 'success') {
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                            } else {
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+                        } else {
+                            $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                        //  console.log(res);
+
+                        // alert(res);
+                    },
+                    error: function (err) {
+                        $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+
+                    },
+                });
+            });
+
+
+            $(document).on('submit', '#frm-ReportConfigurations', function () {
+                $(this).find("input[name='CityId']").val($("#ddlCityId").val());
+                $(this).find("input[name='ClientId']").val($("#ddlClientId").val());
+                $(this).find("input[name='ProjectId']").val($("#ddlProjectId").val());
+                debugger
+                $.ajax({
+                    url: '/ReportConfigurations/New',
+                    type: 'post',
+                    data: $(this).serialize(),
+                    success: function (res) {
+                        if (res != 'session expired') {
+                            if (res.Status == 'success') {
+                                //  $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                            } else {
+                                //  $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+                        } else {
+                            $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                        //  console.log(res);
+
+                        // alert(res);
+                    },
+                    error: function (err) {
+                        $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+
+                    },
+
+                });
+                return false;
+            });
+
+            $(document).on('submit', '#frm-TestConfiguration', function () {
+
+                var hit = 0;
+                $('.TextBox').each(function () {
+                    var textBox = $.trim($(this).val())
+                    var required = $(this).attr('data-required');
+                    if (required != 'no') {
+                        if (textBox == "") {
+                            $(this).addClass('required');
+                            hit = 1;
+                            return false;
+                        } else {
+                            $(this).removeClass('required');
+                        }
+                    }
+
+
+                });
+                if (hit == 0) {
+                    $(this).find("input[name='CityId']").val($("#ddlCityId").val());
+                    $(this).find("input[name='ClientId']").val($("#ddlClientId").val());
+                    $(this).find("input[name='ProjectId']").val($("#ddlProjectId").val());
+                    $.ajax({
+                        url: '/TemplateSetting/TestSetting',
+                        type: 'post',
+                        data: $(this).serialize(),
+                        success: function (res) {
+                            if (res != 'session expired') {
+                                if (res.Status == 'success') {
+                                    $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                                } else {
+                                    $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                                }
+                            } else {
+                                $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+                            //  console.log(res);
+
+                            // alert(res);
+                        },
+                        error: function (err) {
+                            $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+
+                        },
+
+                    });
+                }
+
+                return false;
+            });
+
+            $(document).on("click", "#btnSaveLegends", function () {
+                $("#frm-RFLegend").find("input[name='CityId']").val($("#ddlCityId").val())
+                $.ajax({
+                    url: '/Market/RFLegends',
+                    type: 'POST',
+                    data: $("#frm-RFLegend").serialize(),
+                    success: function (res) {
+                        console.log(res);
+                        if (res != 'session expired') {
+                            if (res == 'success') {
+                                $.notify(res, { type: res, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                                // Clear Tab Data
+
+                                $("#RFLegendArea").empty();
+                                $("#collectionCount").val('1');
+                                $("#AddNewRow").click();
+
+                            } else {
+                                $.notify(res, { type: res, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+                        } else {
+                            $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                        }
+                    },
+                    error: function (err) {
+                        $.notify(err.statusText, { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6 });
+                    },
+                });
+            })
+
+            // Load Workorders
+            LoadWorkOrders();
+        });
+        function LoadWorkOrders() {
+            $("#workorders").select2({
+                ajax: {
+                    url: '/Market/GetWorkOrders/',
+                    dataType: 'json',
+                    type: "POST",
+                    data: function (params) {
+                        return {
+                            q: params.term// search term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.items
+                        };
+                    },
+                }
+            });
+        }
+        $("body").on("change", "#workorders", function () {
+            LoadAVXFiles();
+        })
+        function LoadAVXFiles() {
+            $("#files").empty();
+            $("#files").val('');
+            $("#files").attr("multiple", "multiple");
+            var SiteCode = $("#select2-workorders-container").text().trim();
+            $.ajax({
+                data: { SiteCode: SiteCode },
+                url: '/Market/LoadFiles/',
+                dataType: 'json',
+                type: "POST",
+                success: function (data) {
+                    var files = $("#files");
+                    files.empty();
+                    $.each(data.items, function (i, e) {
+                        files.append('<option data-path='+e.path+' value=' + e.id + '>' + e.text + '</option>');
+                    });
+                    files.multiselect({
+                        //selectAllText: 'All Files',
+                        nonSelectedText: 'Select Files',
+                        enableCaseInsensitiveFiltering: true,
+                        enableFiltering: true,
+                        //includeSelectAllOption: true,
+                        numberDisplayed: 2,
+                    });
+                    files.multiselect('rebuild');
+                },
+            })
+
+
+
+        }
+
+        function LoadFilteredFields() {
+            $("#griddata").html("");
+            var Model = GetSelectedFields();
+            var fileList = [];
+            $.each($("#files").children(), function (i, e) {
+                if (e.selected) {
+                    fileList.push($(e).attr("data-path"));
+            }
+            });
+            var files = fileList.join(',');
+            $.ajax({
+                url: "/Parser/GetFilteredFieldsData",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                data: JSON.stringify({ 'Model': Model, 'FileList': files }),
+                success: function (res) {
+                    $("#griddata").html("");
+                    $("#griddata").html(res);
+                    sendrequest = true;
+                    pageindex = 1;
+                    $('a[href="#menu1"]').click();
+                    $("#btnBackToSelection").removeClass("hidden");
+                    $("#btnResetFields").addClass("hidden");
+                },
+                error: function (e) {
+                    console.log("Error:" + e);
+                },
+                complete: function (msg) {
+
+                }
+            }
+                            );
+        }
+
+        function GetSelectedFields() {
+            var Model = new Object();
+            CustomNameList = [];
+            t.rows().every(function (rowIdx, tableLoop, rowLoop) {
+
+                var rowNode = this.node();
+                var fieldname = $(rowNode).find("td").eq(0).html();
+                var customname = $(rowNode).find("td > input").val();
+                var parentname = $(rowNode).find("td > input").attr("parent");
+                var getcurrentobj = checkObjectExistence(parentname);
+
+                RemoveNodeFromTree(getcurrentobj, fieldname);
+                if (searchedobj != null && customname != null && customname != "") {
+                    updatecustomname(searchedobj, fieldname, customname);
+
+                }
+                searchedobj = null;
+                var rowid = rowNode.id;
+
+            });
+            Model.CustomNameList = CustomNameList;
+            Model.FieldsModelList = FieldsModelList;
+            return Model;
+        }
+
+        $("body").on("click", "#btnBackToSelection", function () {
+            $('a[href="#home"]').click();
+        });
+        $("body").on("click","a[href='#home']",function () {
+            $("#btnBackToSelection").addClass("hidden");
+            $("#btnResetFields").removeClass("hidden");
+        });
+
+        $("body").on("click", "#btn-SaveTemplate", function () {
+            var ReportTemplateId = $("#ReportTemplates option:selected").val();
+            if (ReportTemplateId != 0 && ReportTemplateId != null) {
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you want to save?',
+                    buttons: {
+                        yes: function () {
+                            SaveDataTemplate();
+                        },
+                        no: function () {
+                            // Cancel Saving
+                        }
+                    }
+                });
+            }
+            else {
+                $.alert({
+                    title: 'Info!',
+                    content: 'Please Select Report Template.'
+                });
+
+            }
+            
+        });
+
+        
+        function SaveDataTemplate() {
+            var Model = GetSelectedFields();
+            var TemplateName = $("#TemplateName").val();
+            var ReportTypeId = $("#ReportId").val();
+            var ScopeId = $("#ScopeId").val();
+            var files = $("#files").val() != null ? $("#files").val().join(',') : "";
+            var ReportTemplateId = $("#ReportTemplates option:selected").val();
+            var keys = Selectedkeys;
+            if (keys.length > 0) {
+                if (TemplateName != null && TemplateName != "") {
+                    $.ajax({
+                        url: "/Market/SaveTemplate",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "html",
+                        data: JSON.stringify({
+                            ReportTypeId: ReportTypeId,
+                            ScopeId: ScopeId,
+                            TemplateName: TemplateName,
+                            Files: files,
+                            Model: Model,
+                            Keys: keys,
+                            ReportTemplateId, ReportTemplateId
+                        }),
+                        success: function (res) {
+                            res = res.replace(/"/g, '');
+                            $.alert({
+                                title: 'Info!',
+                                content: res
+                            });
+                            LoadDataTemplateNames();
+                            $("#TemplateName").val('');
+                        },
+                        error: function (e) {
+                            console.log("Error:" + e);
+                        },
+                        complete: function (msg) {
+
+                        }
+                    });
+                }
+                else {
+                    $.alert({
+                        title: 'Info!',
+                        content: 'Please Enter Data Template Name.'
+                    });
+                }
+            }
+            else {
+                $.alert({
+                    title: 'Info!',
+                    content: 'Please Select Packets First.'
+                });
+            }
+            }
+
+        $("body").on("click", ".boxHeader", function (e) {
+            if (e.target.hash == "#DataTemplate") {
+                $("#DataTemplate").children().find("#ReportId").val(444);
+                $(".ReportTemplateArea").removeClass("hidden");
+            }
+            else if(e.target.hash!=undefined) {
+                $(".ReportTemplateArea").addClass("hidden");
+            }
+
+        });
+
+        $("body").on("click", "#btnResetFields", function () {
+            $.confirm({
+                title: 'Confirm!',
+                content: 'Are you sure you want to reset selected data?',
+                buttons: {
+                    yes: function () {
+                        selectedKeys = [];
+                        $("#treeview-container").dynatree("getRoot").visit(function (node) {
+                            node.select(false);
+                            node.expand(false);
+                        });
+                        $("#ddlDataTemplates").val("0");
+                        $("#btn-UpdateTemplate").addClass("hidden");
+                        $("#btn-DeleteTemplate").addClass("hidden");
+                        //$("#treeview-container").dynatree("getRoot").visit(function (node) {
+                        //    node.expand(false);
+                        //});
+                    },
+                    no: function () {
+
+                    }
+                }
+            });
+           
+        })
+        $(document).ready(function () {
+            $("#ddlCityId").attr("multiple", "multiple");
+            $('#ddlCityId').multiselect({
+                //selectAllText: 'All Markets',
+                nonSelectedText: 'Select Market',
+                enableCaseInsensitiveFiltering: true,
+                enableFiltering: true,
+                //includeSelectAllOption: true,
+                numberDisplayed: 2,
+            });
+            LoadReportTemplateName();
+
+            // Change Defult Scroll Behaiviour
+            setTimeout(function () {
+                window.onscroll = function () { }
+            }, 1500);
+
+            $("#menu1")[0].onscroll= function () {
+                if (sendrequest && $(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+                   
+               if (flag) {
+                   flag = false;
+                   inProgress = true;
+                   $.post("@Url.Action("GetNextRecords", "Parser")", { "pageindex": pageindex }, function (data)
+                   {
+                       pageindex = pageindex + 1;
+                       $("#griddata").append(data);
+                       flag = true;
+                   });
+               }
+           }
+           }
+
+        })
+
+        function LoadReportTemplateName(Name) {
+            var MarketId = $("#ddlCityId").val().join(',');
+            var ClientId = $("#ddlClientId option:selected").val();
+            var ProjectId = $("#ddlProjectId option:selected").val();
+            $.ajax({
+                url: "/Market/GetReportTemplates",
+                type: "GET",
+                data:{MarketId:MarketId,ClientId:ClientId,ProjectId:ProjectId},
+                success: function (res) {
+                    var rt = $("#ReportTemplates");
+                    rt.empty();
+                    var selected = false;
+                    rt.append("<option value='0'>Select Report Template</option>");
+                    $.each(res, function (i, e) {
+                        if (Name != undefined && e.Text == Name) {
+                            rt.append("<option selected value=" + e.Value + ">" + e.Text + "</option>");
+                            selected = true;
+                        }
+                        else {
+                            rt.append("<option value=" + e.Value + ">" + e.Text + "</option>");
+                        }
+                    });
+                    if(selected)
+                    {
+                        LoadDataTemplateNames();
+                    }
+                    if (res.length > 0) {
+                        // Hide Button New Report Template
+                        $("#btnNewReportTemplate").addClass("hidden");
+                    }
+                    else {
+                        // Show Button New Report Template
+                        $("#btnNewReportTemplate").removeClass("hidden");
+                    }
+                },
+                error: function (e) {
+                    console.log("Error:" + e);
+                },
+                complete: function (msg) {
+
+                }
+            });
+        }
+        function LoadDataTemplateNames() {
+            var rt = $("#ReportTemplates option:selected").val();
+            if (rt != 0) {
+                $.ajax({
+                    url: "/Market/GetDataTemplates?id=" + rt,
+                    type: "GET",
+                    success: function (res) {
+                        //
+                        var dt = $("#ddlDataTemplates");
+                        dt.empty();
+                        dt.append("<option value='0'>Select Data Template</option>");
+                        $.each(res, function (i, e) {
+                            dt.append("<option value=" + e.Value + ">" + e.Text + "</option>");
+                        });
+                    },
+                    error: function (e) {
+                        console.log("Error:" + e);
+                    },
+                    complete: function (msg) {
+
+                    }
+                });
+            }
+        }
+
+        function LoadTemplateById(id) {
+            $("#btn-UpdateTemplate").removeClass("hidden");
+            $("#btn-DeleteTemplate").removeClass("hidden");
+            $("#btnNDataTemplate").removeClass("hidden");
+            $(".NdataTemplate").addClass("hidden");
+            $.ajax({
+                url: "/Market/GetTemplateById?id=" + id,
+                type: "GET",
+                success: function (keys) {
+                    if (keys != "") {
+                        var tree = $("#treeview-container").dynatree("getTree");
+                        $("#treeview-container").dynatree("getRoot").visit(function (node) {
+                            node.select(false);
+                        });
+                        $.each(keys, function (i, key) {
+                            tree.activateKey(key).select(true);
+                        });
+                        $("#treeview-container").dynatree("getRoot").visit(function (node) {
+                            if (node.isSelected()) {
+                                node.data.unselectable = true;
+                            }
+                        });
+                    }
+                },
+                error: function (e) {
+                    console.log("Error:" + e);
+                },
+                complete: function (msg) {
+
+                }
+            });
+        }
+        // Update Template
+        $("body").on("click", "#btn-UpdateTemplate", function () {
+            $.confirm({
+                title: 'Confirm!',
+                content: 'Are you sure you want to update?',
+                buttons: {
+                    yes: function () {
+                        var Model = GetSelectedFields();
+                        var keys = Selectedkeys;
+                        var tId = $("#ddlDataTemplates option:selected").val();
+                        var tName = $("#ddlDataTemplates option:selected").text();
+                        $.ajax({
+                            url: "/Market/UpdateTemplate",
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "html",
+                            data: JSON.stringify({
+                                Model: Model,
+                                Keys: keys,
+                                Value: tId,
+                                TemplateName: tName
+                            }),
+                            success: function (res) {
+                                res = res.replace(/"/g, '');
+                                $.alert({
+                                    title: 'Info!',
+                                    content: res
+                                });
+                            },
+                            error: function (e) {
+                                console.log("Error:" + e);
+                            },
+                            complete: function (msg) {
+
+                            }
+                        });
+                    },
+                    no: function () {
+                       
+                    }
+                }
+            });
+
+           
+            
+        })
+        $("body").on("change", "#ddlDataTemplates", function () {
+            var selected = $("#ddlDataTemplates option:selected").val();
+            $("#UpdateTemplateId").val(selected);
+            LoadTemplateById(selected);
+        });
+
+        function SaveNewReportTemplate(){
+            var TempName = $("#ReportTemplateName").val();
+            var ClientId = $("#ddlClientId").val();
+            var ProjectId = $("#ddlProjectId").val();
+            var MarketId = $("#ddlCityId").val().join(',');
+            $.ajax({
+                url: "/Market/SaveReportTemplate",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                data: JSON.stringify({
+                    ReportTemplateName: TempName,
+                    MarketId:MarketId,
+                    ProjectId:ProjectId,
+                    ClientId:ClientId
+                }),
+                success: function (res) {
+                    LoadReportTemplateName(TempName);
+                    res = res.replace(/"/g, '');
+                    $.alert({
+                        title: 'Info!',
+                        content: res
+                    });
+                    
+                },
+                error: function (e) {
+                    console.log("Error:" + e);
+                },
+                complete: function (msg) {
+
+                }
+            });
+        }
+        $("body").on("click", "#btn-DeleteTemplate", function () {
+            var id = $("#ddlDataTemplates option:selected").val();
+            if (id != 0 || id != null) {
+                $.ajax({
+                    url: "/Market/DeleteTemplateById?DataTemplateId=" + id,
+                    type: "GET",
+                    success: function (res) {
+                        // Load Tempaltes
+                        res = res.replace(/"/g, '');
+                        $.alert({
+                            title: 'Info!',
+                            content: res
+                        });
+
+                    },
+                    error: function (e) {
+                        console.log("Error:" + e);
+                    },
+                    complete: function (msg) {
+
+                    }
+                });
+            }
+        });
+        function ShowNewTemplateFields() {
+            $("#TemplateName").val('');
+            $("#btn-UpdateTemplate").addClass("hidden");
+            $(".NdataTemplate").removeClass("hidden");
+            $("#btnNDataTemplate").addClass("hidden");
+            
+        }
+
+        function GotoBI()
+        {
+            var Id = $("#ReportTemplates option:selected").val();
+            if (Id != 0) {
+                window.location.href = '/BusinessIntelligence/DashboardsnReports/LandingPage?ModuleType=RPT&moduleId='+Id+'&viewMode=EDIT';
+            }
+            else {
+                $.notify('Please Select Report Template', { type: 'success', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+            }
+        }
+       
+        
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>
+}
+
+@section style{
+    <link href="~/Content/js/Plugins/treeView/skin/ui.dynatree.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/box.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" type="text/css">
+
+
+
+
+    <style>
+        .required {
+            border-color: red;
+        }
+
+        .select2-container--default .select2-selection--single {
+            height: 34px !important;
+            position: relative !important;
+            border-radius: 0px !important;
+            border: 1px solid #ccc !important;
+        }
+
+        .select2-selection__choice {
+            color: black !important;
+        }
+
+        .ui-tooltip-content {
+            display: none;
+        }
+
+
+        button.multiselect.dropdown-toggle.btn.btn-default {
+            width: 200px;
+            text-align: initial;
+        }
+
+        b.caret {
+            float: right;
+            margin-top: 5%;
+        }
+
+        ul.multiselect-container.dropdown-menu {
+            width: 200px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        span.input-group-addon {
+            display: none;
+        }
+
+        .multiselect-clear-filter {
+            display: none;
+        }
+        .col-sm-1{
+            width:260px !important;
+        }
+        .alreadySelectedNodes{
+            color:white;
+            background-color:red;
+        }
+        span.custom1 a
+{
+    background-color: maroon;
+    color: yellow;
+}
+span.custom1 span.ui-dynatree-icon
+{
+    background-image: url("doc_with_children.gif");
+}
+    #menu1{
+            padding: 0px;
+    background: white;
+    margin: 10px;
+    overflow-x: scroll;
+    height: 700px;
+    }
+    </style>
+}

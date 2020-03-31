@@ -1,0 +1,741 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_SiteTestSummary>
+<style>
+    .heading {
+        color: #3b39e2;
+        text-align: center;
+    }
+
+    .wrap {
+        position: absolute;
+    }
+
+    .header {
+        position: absolute;
+        height: auto;
+        width: 100%;
+        top: 0;
+    }
+
+    .footer {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        bottom: 0;
+    }
+
+    .content {
+        height: 100%; /* What should this be?? */
+        position: relative;
+        padding: 20px 0; /* padding height of header/footer */
+    }
+
+    .bgcolor {
+        background: #004B99;
+    }
+
+    .breakhere {
+        page-break-after: always;
+    }
+
+    table td {
+        padding: 8px;
+    }
+
+    table th {
+        padding: 8px;
+    }
+
+
+    .tbl-heading {
+        background-color: #004B99;
+        color: white;
+    }
+
+    .tbl-data {
+        background-color: #dbdbdd;
+        color: #2332de;
+    }
+
+    .left {
+        float: left;
+    }
+
+    .right {
+        float: right;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .PageBorder {
+        border: dotted 1px;
+    }
+</style>
+@if (Model.Count() > 0)
+{
+    Layout = null;
+    int count = 0;
+    int RowSpan = Model.Count() + Model.Count() + 1;
+    int TotalRecord = Model.Count();
+    var First = Model.FirstOrDefault();
+    string NetwordMode = string.Empty;
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+
+
+    <div id="pan-FIELD_TEST1" style="height:860px;">
+        @if (ViewBag.mail == "yes")
+        {
+            <div class="ForMail">
+                <br /><br /><br /><b>Dear Client,</b>
+                <br /><br /> Please find below quick summary of site @First.Site for @First.Band carrier @First.Carrier .<br /><br />
+            </div>
+        }
+        <h1 id="FIELD_TEST1" data-type="BOOLEAN,STRING" class="heading" data-preValue="@First.Site"></h1>
+
+        <table class="tbl-fieldTest font" id="tbl-fieldTest" style="text-align:center;font-family:Arial;height:45%;width:100%;">
+            <tr class="tbl-heading">
+                <!--<th rowspan="4" style="width:140px; -ms-transform: rotate(-90deg); -webkit-transform: rotate(-90deg); transform: rotate(-90deg);">Peak Throughput / Latency</th>-->
+                <th rowspan="@RowSpan" class="tbl-heading" style="font-weight:bold;width:138px">Peak Throughput / Latency</th>
+                <th>Sector ID</th>
+                <!--<th>Count /<br /> Duration<br />(mins)</th>-->
+                <th>Count</th>
+                <th>Max DL <br /> (Mbps)</th>
+                <th>Avg DL <br /> (Mbps)</th>
+                <th>Max UL <br /> (Mbps)</th>
+                <th>Avg UL <br /> (Mbps)</th>
+                <!--<th>Max RTT (ms)</th>-->
+                <th>Avg RTT <br /> (ms)</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>
+                    @{
+                        NetwordMode = Model.First().NetworkMode;
+                        if (NetwordMode == "LTE")
+                        {
+                            <span> RSRP</span>
+                        }
+                        if (NetwordMode == "GSM")
+                        {
+                            <span> RSSI</span>
+                        }
+                        if (NetwordMode == "WCDMA")
+                        {
+                            <span> RSCP</span>
+                        }
+                        if (NetwordMode == "NR")
+                        {
+                            <span>RSRP</span>
+                        }
+
+                    }
+
+                </th>
+                <th>
+                    @{
+                        NetwordMode = Model.First().NetworkMode;
+                        if (NetwordMode == "LTE")
+                        {
+                            <span> RSRQ</span>
+                        }
+                        if (NetwordMode == "GSM")
+                        {
+                            <span> </span>
+                        }
+                        if (NetwordMode == "WCDMA")
+                        {
+                            <span> </span>
+                        }
+                        if (NetwordMode == "NR")
+                        {
+                            <span>RSRQ</span>
+                        }
+
+                    }
+
+                </th>
+                <th>
+                    @{
+                        if (NetwordMode == "LTE")
+                        {
+                            <span> SNR</span>
+                        }
+                        if (NetwordMode == "GSM")
+                        {
+                            <span> RxQual</span>
+                        }
+                        if (NetwordMode == "WCDMA")
+                        {
+                            <span> Ec/Io</span>
+                        }
+                        if (NetwordMode == "NR")
+                        {
+                            <span>SNR</span>
+                        }
+                    }
+
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+                {
+                <tr class="tbl-data">
+                    <td><b data-type="STRING" class="SECTOR_@item.Sector.ToUpper()">@item.Sector  </b>(5G)</td>
+                    <td>
+                        @*@if(item.Testcount<=0 && item.OoklaDownlinkResult<=0){item.Testcount=0;}
+                            else if (item.Testcount<=0 && item.OoklaDownlinkResult>0){item.Testcount=1;}*@
+                        @item.Testcount
+                    </td>
+                    <td>@item.DownlinkMaxResult.ToString("0.00")</td>
+                    <td>
+                        @item.DownlinkAvgResult.ToString("0.00")
+                    </td>
+                    <td>@item.UplinkMaxResult.ToString("0.00")</td>
+                    <td>
+                        @item.UplinkAvgResult.ToString("0.00")
+                    </td>
+                    <!--<td>@item.PingAverageResult.ToString("0.00")</td>-->
+                    <td>
+                        @item.PingAverageResult.ToString("0.00")
+                    </td>
+                    <td>@item.TestLatitude.ToString("0.00000")</td>
+                    <td>@item.TestLongitude.ToString("0.00000")</td>
+
+                    <td style="font-weight:normal">
+                        @{
+                            if (NetwordMode == "LTE")
+                            {
+                                <span>@item.LteRsrp</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span>@item.GsmRssi</span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span>@item.WcdmaRscp</span>
+                            }
+                            if (NetwordMode == "NR")
+                            {
+                                <span>@item.LteRsrp</span>
+                            }
+
+                        }
+
+
+
+                    </td>
+                    <td style="font-weight:normal">
+                        @{
+                            if (NetwordMode == "LTE")
+                            {
+                                <span>@item.LteRsrq</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span></span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span></span>
+                            }
+                            if (NetwordMode == "NR")
+                            {
+                                <span>@item.LteRsrq</span>
+                            }
+
+                        }
+
+
+
+                    </td>
+                    <td style="font-weight:normal">
+                        @{
+                            if (NetwordMode == "LTE")
+                            {
+                                <span>@item.LteRsnr.ToString("0.00")</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span>@item.GsmRxQual.ToString("0.00")</span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span>@item.WcdmaEcio.ToString("0.00")</span>
+                            }
+                            if (NetwordMode == "NR")
+                            {
+                                <span>@item.LteRsnr.ToString("0.00")</span>
+                            }
+                        }
+                    </td>
+                </tr>
+                <tr class="tbl-data">
+                    <td><b data-type="STRING" class="SECTOR_@item.Sector.ToUpper()">@item.Sector </b>(4G) </td>
+                    <td>
+                        @*@if(item.Testcount<=0 && item.OoklaDownlinkResult<=0){item.Testcount=0;}
+                            else if (item.Testcount<=0 && item.OoklaDownlinkResult>0){item.Testcount=1;}*@
+                        @item.MinConSetupTime
+                    </td>
+                    <td>@item.DownlinkMinResult.ToString("0.00")</td>
+                    <td>
+                        @item.CADLSpeed.ToString("0.00")
+                    </td>
+                    <td>@item.UplinkMinResult.ToString("0.00")</td>
+                    <td>
+                        @item.CAULSpeed.ToString("0.00")
+                    </td>
+                    <!--<td>@item.PingAverageResult.ToString("0.00")</td>-->
+                    <td>
+                        @item.PingMinResult.ToString("0.00")
+                    </td>
+                    <td>@item.WcdmaEcio.ToString("0.00000")</td>
+                    <td>@item.LteCqi.ToString("0.00000")</td>
+
+                    <td style="font-weight:normal">
+                        @{
+                            if (NetwordMode == "LTE")
+                            {
+                                <span>@item.LteRsrp</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span>@item.GsmRssi</span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span>@item.WcdmaRscp</span>
+                            }
+                            if (NetwordMode == "NR")
+                            {
+                                <span>@item.LteRssi</span>
+                            }
+
+                        }
+
+
+
+                    </td>
+                    <td style="font-weight:normal">
+                        @{
+                            if (NetwordMode == "LTE")
+                            {
+                                <span>@item.LteRsrq</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span></span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span></span>
+                            }
+                            if (NetwordMode == "NR")
+                            {
+                                <span>@item.WcdmaRssi</span>
+                            }
+
+                        }
+
+
+
+                    </td>
+                    <td style="font-weight:normal">
+                        @{
+                            if (NetwordMode == "LTE")
+                            {
+                                <span>@item.LteRsnr.ToString("0.00")</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span>@item.GsmRxQual.ToString("0.00")</span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span>@item.WcdmaEcio.ToString("0.00")</span>
+                            }
+                            if (NetwordMode == "NR")
+                            {
+                                <span>@item.PhyDLSpeedMin.ToString("0.00")</span>
+                            }
+                        }
+                    </td>
+                </tr>
+                            }
+        </table>
+
+
+
+        <table class="tbl-fieldTest font" id="tbl-fieldTest" style="text-align:center;font-family:Arial;height:45%;">
+
+            <tr class="tbl-data" style="">
+                @{
+                    RowSpan = Model.Count() + 1;
+                    RowSpan = RowSpan + 1;
+                }
+                <th rowspan="@RowSpan" class="tbl-heading" style="font-weight:bold;width:138px">Mobility</th>
+                @*<th class="tbl-heading"> Sector ID</th>
+
+                    <th class="tbl-heading">
+                        @{
+                            if (NetwordMode == "LTE")
+                            {
+                                <span>Call Setup</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span>CS MO</span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span>CS MO</span>
+                            }
+                        }
+
+                    </th>*@
+                @*<th class="tbl-heading">
+                        @{
+                            if (NetwordMode == "LTE")
+                            {
+                                <span>Data Call</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span>CS MT</span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span>CS MT</span>
+                            }
+                        }
+                    </th>
+                    <th class="tbl-heading">
+                        @{if (NetwordMode == "LTE" && First.ClientPrefix=="TMO")
+                            {
+                                <span>VoLTE MO</span>
+                            }
+                            if (NetwordMode == "GSM" && First.ClientPrefix == "TMO")
+                            {
+                                <span></span>
+                            }
+                            if (NetwordMode == "WCDMA" && First.ClientPrefix == "TMO")
+                            {
+                                <span></span>
+                            }
+                        }
+                    </th>
+                    <th class="tbl-heading">
+                        @{if (NetwordMode == "LTE" && First.ClientPrefix == "TMO")
+                            {
+                                <span>VoLTE MT</span>
+                            }
+                            if (NetwordMode == "GSM" && First.ClientPrefix == "TMO")
+                            {
+                                <span></span>
+                            }
+                            if (NetwordMode == "WCDMA" && First.ClientPrefix == "TMO")
+                            {
+                                <span></span>
+                            }
+                        }
+                    </th>*@
+                <th style="width: 100px;" class="tbl-heading">HO Type</th>
+                <th style="width: 313px;" class="tbl-heading">HO Relation</th>
+                <th class="tbl-heading" style="width: 181px;">Status</th>
+                @{
+                    RowSpan = RowSpan - 1;
+                }
+                <th rowspan="@RowSpan" style="width: 177px;" class="tbl-heading"> Inter-Site HO</th>
+                <th class="tbl-heading" style="width:201px">Sector ID</th>
+                <th style="width: 162px;" class="tbl-heading">Status</th>
+
+            </tr>
+
+            @{ int FieldTest = 0; }
+            @foreach (var item in Model)
+                {
+                <tr class="tbl-data">
+                    @if (FieldTest == 0)
+                    {
+                        var lst = Model.ToList();
+                        <td rowspan="@Model.Count()">
+                            <div>
+                                <div style="text-align:center;"> <b> CW </b></div>
+                                <div class="clear"></div>
+                            </div>
+                            <hr style="height: 1px;border: 0;border-top: 3px solid white;" />
+                            <div>
+                                <div style="text-align:center;"> <b>CCW</b> </div>
+                                <div class="clear"></div>
+                            </div>
+                        </td>
+
+                    }
+                    @if (FieldTest == 0)
+                    {
+                        var lst = Model.ToList();
+                        <td rowspan="@Model.Count()">
+                            <div>
+                                <div style="text-align:center;">
+                                    @{
+                                        String[] secOrder = { "alpha", "beta", "gamma", "delta", "epsilon", "digamma", "iota" };
+                                        List<string> Sectors = new List<string>();
+                                        Sectors.AddRange(Model.OrderBy(m => m.Azimuth).Select(m => m.Sector).ToList());
+                                    }
+
+                                    @for (int i = 0; i < Model.Count(); i++)
+                                    {
+                                        String fromSector = Sectors[i];
+                                        String toSector = "";
+
+                                        if (i + 1 == Model.Count())
+                                        {
+                                            toSector = Sectors[0];
+                                        }
+                                        else
+                                        {
+                                            toSector = Sectors[i + 1];
+                                        }
+
+                                        int fromSecIndex = Array.IndexOf(secOrder, fromSector.ToLower()) + 1;
+                                        int toSecIndex = Array.IndexOf(secOrder, toSector.ToLower()) + 1;
+
+
+
+                                        <div style="text-align:center;padding-left:10px;">
+                                            Sec @fromSecIndex to Sec @toSecIndex
+                                        </div>
+                                    }
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <hr style="height: 1px;border: 0;border-top: 3px solid white;" />
+                            <div>
+                                <div style="text-align:center;">
+                                    @for (int i = Model.Count() - 1; i >= 0; i--)
+                                    {
+
+                                        String fromSector = Sectors[i];
+                                        String toSector = "";
+
+                                        if (i == 0)
+                                        {
+                                            toSector = Sectors[Model.Count() - 1];
+                                        }
+                                        else
+                                        {
+                                            toSector = Sectors[i - 1];
+                                        }
+
+                                        int fromSecIndex = Array.IndexOf(secOrder, fromSector.ToLower()) + 1;
+                                        int toSecIndex = Array.IndexOf(secOrder, toSector.ToLower()) + 1;
+
+                                        <div style="text-align:center;padding-left:10px;">
+                                            Sec @fromSecIndex to Sec @toSecIndex
+                                        </div>
+                                    }
+
+
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </td>
+
+                                        }
+                    @if (FieldTest == 0)
+                    {
+                        var lst = Model.ToList();
+                        <td rowspan="@Model.Count()">
+                            <div>
+                                <div style="text-align:center;">
+                                    @{
+                                        String[] secOrder = { "alpha", "beta", "gamma", "delta", "epsilon", "digamma", "iota" };
+                                        List<string> Sectors = new List<string>();
+                                        Sectors.AddRange(Model.OrderBy(m => m.Azimuth).Select(m => m.Sector).ToList());
+                                    }
+
+                                    @for (int i = 0; i < Model.Count(); i++)
+                                    {
+                                        String fromSector = Sectors[i];
+                                        String toSector = "";
+
+                                        if (i + 1 == Model.Count())
+                                        {
+                                            toSector = Sectors[0];
+                                        }
+                                        else
+                                        {
+                                            toSector = Sectors[i + 1];
+                                        }
+
+                                        int fromSecIndex = Array.IndexOf(secOrder, fromSector.ToLower()) + 1;
+                                        int toSecIndex = Array.IndexOf(secOrder, toSector.ToLower()) + 1;
+
+
+
+                                        <div style="text-align:center;padding-left:10px;">
+                                            @if ((fromSecIndex - 1) <= lst.Count - 1)
+                                            {
+                                                if (lst[fromSecIndex - 1].CwHandoverStatus == true)
+                                                {<span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span>}
+                                                else if (lst[fromSecIndex - 1].CwHandoverStatus == false)
+                                                {<span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span> }
+                                                else
+                                                {<span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span>}
+                                            }
+                                            else
+                                            {
+                                                if (lst[lst.Count - 1].CwHandoverStatus == true)
+                                                {<span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span>}
+                                                else if (lst[lst.Count - 1].CwHandoverStatus == false)
+                                                {<span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span> }
+                                                else
+                                                {<span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span>}
+                                            }
+
+                                        </div>
+                                    }
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <hr style="height: 1px;border: 0;border-top: 3px solid white;" />
+                            <div>
+                                <div style="text-align:center;">
+                                    @for (int i = Model.Count() - 1; i >= 0; i--)
+                                    {
+
+                                        String fromSector = Sectors[i];
+                                        String toSector = "";
+
+                                        if (i == 0)
+                                        {
+                                            toSector = Sectors[Model.Count() - 1];
+                                        }
+                                        else
+                                        {
+                                            toSector = Sectors[i - 1];
+                                        }
+
+                                        int fromSecIndex = Array.IndexOf(secOrder, fromSector.ToLower()) + 1;
+                                        int toSecIndex = Array.IndexOf(secOrder, toSector.ToLower()) + 1;
+
+                                        <div style="text-align:center;padding-left:10px;">
+
+                                            @if ((fromSecIndex - 1) <= lst.Count - 1)
+                                            {
+                                                if (lst[fromSecIndex - 1].Ccwhandoverstatus == true)
+                                                {<span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span>}
+                                                else if (lst[fromSecIndex - 1].Ccwhandoverstatus == false)
+                                                {
+                                                    {<span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span> }
+                                                }
+                                                else
+                                                {<span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span>}
+                                            }
+                                            else
+                                            {
+                                                if (lst[lst.Count - 1].Ccwhandoverstatus == true)
+                                                {<span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span>}
+                                                else if (lst[lst.Count - 1].Ccwhandoverstatus == false)
+                                                {
+                                                    {<span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span> }
+                                                }
+                                                else
+                                                {<span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span>}
+                                            }
+                                        </div>
+                                    }
+
+
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </td>
+
+                                        }
+                    <td><b data-type="STRING" class="SECTOR_@item.Sector.ToUpper()">@item.Sector</b> </td>
+                    <td>
+                        @if (item.ICwHandoverStatus == true)
+                        {<span class="bold INTER_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTER_HO_STATUS_TRUE"></span> }
+                        else if (item.ICwHandoverStatus == false)
+                        {<span class="bold INTER_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTER_HO_STATUS_FALSE"></span>}
+                        @*else
+                            {<span class="bold INTER_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTER_HO_STATUS_NULL"></span>}*@
+                    </td>
+                </tr>
+                                            count++;
+                                            FieldTest++;
+                                        }
+
+
+            @if (TotalRecord <= 9)
+            {
+                <tr class="tbl-data" style="vertical-align: text-top !important;">
+                    <td colspan="12" style="text-align:left;padding-top: 0px" ;>
+                        <span style="font-size:large;font-weight:bold"> Comments:</span>  <span style="font-size:medium">@ViewBag.Observation</span>
+                    </td>
+                </tr>
+            }
+
+        </table>
+        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+        @if (ViewBag.mail == "yes")
+        {
+            <div class="ForMail">
+                For Detail Reoprt: <a target="_blank" href="@ViewBag.Domain/site/netlayerreport?SiteId=@First.SiteId&BandId=@First.BandId&Carrier=@First.CarrierId&NetworkMode=@First.NetworkModeId&CircleRadios=17&AzmuthRadius=200&Auto=0">Click Here</a>
+                <br /><br /><br /> Regards, <br /><br /><br />
+                <img src="http://airview.swius.com/Content/Images/Application/swi_logo.png" style="width: 131px;height: 58px;" /><br />
+                <b>Sublime Wireless Inc.</b>
+                <br /><br />
+                <span style="color:#1F497D;font-size: 11.0pt;font-family:Calibri,sans-serif;text-align:justify;"> This electronic transmission and any documents which may accompany it, contain information from SWI, SWI's Entity and SWIs's Clients which is intended only for the use of the individual (s) or entity to which it is addressed, and which may contain information that is privileged, confidential, and/or otherwise exempt from disclosure under applicable law. If the reader of this message is not the intended recipient or the employee or agent responsible for delivering the message to the intended recipient, any disclosure, dissemination, distribution, copying or other use of this communication or its substance is prohibited. If you have received this communication in error, please immediately notify us by telephone to arrange for the destruction of the communication or its return to us at our expense. Thank you.</span>
+            </div>
+        }
+        <hr />
+        <P CLASS="breakhere" />
+    </div>
+
+    <script>
+        var ReportConfiguration = JSON.parse('@Html.Raw(ReportConfiguration)');
+        function Configurations(keyCode, dataType, value, IsActive) {
+           // console.log(keyCode + '-' + dataType + '-' + value + '-' + IsActive);
+            if (dataType == 'BOOLEAN') {
+                if (IsActive == true) {
+                    $('#' + keyCode).show();
+                    $('.' + keyCode).show();
+                    $('#pan-' + keyCode).show();
+                } else {
+                    $('#' + keyCode).hide();
+                    $('.' + keyCode).hide();
+                    $('#pan-' + keyCode).hide();
+                }
+            }
+
+            //if (dataType == 'BGCOLOR') {
+            //    $('.' + c.KeyCode).css({
+            //        'background': c.value
+            //    });
+            //}
+
+            if (dataType == 'STRING') {
+                if (value != null || value != '') {
+                    var preValue = $('#' + keyCode).attr('data-preValue');
+                    if (preValue != undefined) {
+                        $('#' + keyCode).text(preValue + ' ' + value);
+                    } else {
+                        $('#' + keyCode).text(value);
+                    }
+
+                    $('.' + keyCode).text(value);
+                }
+            }
+        }
+
+    </script>
+                                        }

@@ -1,0 +1,142 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model TestConfiguration
+@{
+    ViewBag.Title = "Test Settings & Configuration";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                @*<a href="@Url.Action("All","User")" class="btn btn-sm btn-info btn-flat pull-right">Back</a>*@
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        @using (Html.BeginForm("TemplateTest", "TemplateSetting", FormMethod.Post, new { id = "frm-tstStng" }))
+                        {
+
+                            <div class="row ">
+                                    <div class="col-sm-2" style="padding-left:30px;">
+                                        <label for="ClientId">Client</label>
+                                        @Html.DropDownListFor(m => m.ClientId, ViewBag.UserClients as List<SelectListItem>, new { @class = "form-control select", style = "width:200px", required = "required" })
+
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label for="CityId">Cities</label>
+                                        @Html.DropDownListFor(m => m.CityId, ViewBag.Cities as List<SelectListItem>, new { @class = "form-control select", style = "width:200px", required = "required" })
+
+                                    </div>
+                              </div>
+                            <hr />
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                 
+                                    <div class="panel-group" id="accordion">
+
+                                        @foreach (var cat in ViewBag.TestCategory)
+                                        {
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <b> <a data-toggle="collapse" data-parent="#accordion" href="#@cat.TestCateoryID">@cat.TestCategory.ToUpper()</a></b> 
+                                                    </h4>
+                                                </div>
+                                                <div id="@cat.TestCateoryID" class="panel-collapse collapse in">
+                                                    <div class="panel-body">
+                                                        <input type="hidden" name="TestCatogoryId" value="@cat.TestCateoryID" />
+
+                                                        @foreach (var Type in ViewBag.GetTestTypes(cat.TestCateoryID))
+                                                        {
+                                                            <table  class="table-hover" >
+                                                                <tr>
+                                                                    <th style="width:150px;background-color:#f7f5f5;text-align:center;border-bottom:solid 1px;border-color:#bab4b4">
+                                                                    @Type.TestType
+                                                                        <input type="hidden" name="TestTypeId" value="@cat.TestCateoryID-@Type.TestTypeID" />
+                                                                    </th>
+                                                                    @foreach (var kpi in ViewBag.GetKpi(Type.TestTypeID))
+                                                                    {
+                                                                        <th style="width:200px;padding-left:20PX;padding-right:12px">
+                                                                                <div class="form-group">
+                                                                                    <label>@kpi.Kpi</label>
+                                                                                    <input type="hidden" name="KpiId" value="@Type.TestTypeID-@kpi.KpiID" />
+                                                                                    <input type="text" data-kpi="@kpi.KpiID" data-type="@kpi.Kpi"  class="form-control kpiValue" />
+                                                                                    <input type="hidden" id="k-@kpi.KpiID"  name="KpiValue"  />
+                                                                                </div>
+                                                                        </th>
+                                                                    }
+                                                                   
+                                                                </tr>
+                                                            </table>
+
+
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        
+                                    </div>
+
+                                    </div>
+                                </div>
+
+                            <div class="form-group">
+                                
+                                <button style="margin-left:20px" type="submit" class="btn btn-success pull-right">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
+
+                                <button type="reset" class="btn btn-danger pull-right">
+                                    <i class="fa fa-undo"></i> Refresh
+                                </button>
+                             
+                                
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+<script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script>
+        $(function () {
+            $('#frm-tstStng').parsley();
+            $(document).on('keyup', '.kpiValue', function () {
+                var kpi = $(this).attr('data-kpi');
+                var value = kpi + '-' + $(this).val();
+                $('#k-' + kpi).val(value);
+
+            });
+
+
+            $(".kpiValue").each(function () {
+                var type = $(this).attr('data-type');
+                if (type == 'Password') {
+                    $(this).prop('type', 'password');
+                }
+            });
+
+           
+
+        });
+    </script>
+    
+    }
+@section style{
+<link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+
+}

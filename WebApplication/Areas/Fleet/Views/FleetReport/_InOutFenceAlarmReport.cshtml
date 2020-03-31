@@ -1,0 +1,143 @@
+﻿<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="inoutfencealarm-title">Geo-Fence Reports <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> In/Out Fence Alarm Report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="inoutfencealarm-custom-filters">
+            <div class="filter-field">
+                <label>Vehicle</label>
+                <input type="text" id="inoutfencealarm-asset" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="inoutfencealarm-date-range">
+                </div>
+            </div>
+            <div class="filter-field button">
+                <button id="inoutfencealarm-apply_filters" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="inoutfencealarm-table">
+            <table id="inoutfencealarm-report" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Time</th>
+                        <th>Vehicle</th>
+                        <th>Tracker Id</th>
+                        <th>Fence name</th>
+                        <th>Fence alarm</th>
+
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#inoutfencealarm-apply_filters").click(function () {
+        debugger;
+
+        var assetname = $("#inoutfencealarm-asset").val();
+        var daterange = $("#inoutfencealarm-date-range").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var reportexporttitle = $("#inoutfencealarm-title").text();
+        var exportfilename = $("#inoutfencealarm-title").text();
+        var frcmodel = {
+            ReportFilter: "InOutFenceAlarmReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname
+        }
+
+        var table = $('#inoutfencealarm-report').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_GeoFenceReport",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            //"deferRender": true,
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0,
+                "className": "dt-center", "targets": "_all"
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'Time', "name": "Time", "autoWidth": true },
+               { data: 'AssetName', "name": "Vehicle" },
+               { data: 'TrackerId', "name": "Tracker Id" },
+               { data: 'FenceName', "name": "Fence name", "autoWidth": true },
+               { data: 'FenceAlarm', "name": "Fence alarm", "autoWidth": true },
+
+            ],
+            initComplete: function (settings, json) {
+                $("#inoutfencealarm-custom-filters .top").remove();
+                $($("#inoutfencealarm-table .top")).appendTo("#inoutfencealarm-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+        //$.ajax({
+        //    url: window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+        //    type: "POST",
+        //    traditional: true,
+        //    data:JSON.stringify(frcmodel),
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    error: function (response) {
+        //        alert(response.responseText);
+        //    },
+
+        //    success: function (response) {
+        //        alert(response);
+        //    }
+        //});
+    });
+</script>
+

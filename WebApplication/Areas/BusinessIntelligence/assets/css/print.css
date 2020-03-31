@@ -1,0 +1,11 @@
+
+  /*div.new-template>div>div:nth-of-type(even) {
+    page-break-inside: auto;
+}*/
+  
+}
+/*@media print and (width: 8.5in) and (height: 11in) {
+                                    @page {
+                                        margin: 1in;
+                                    }
+                                }*/

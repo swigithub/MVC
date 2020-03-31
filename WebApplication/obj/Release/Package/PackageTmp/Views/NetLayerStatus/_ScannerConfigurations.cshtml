@@ -1,0 +1,206 @@
+﻿@using SWI.Libraries.AirView.Entities
+@{
+    Layout = null;
+    var list = TempData["Templates"] as List<AV_GetScannerSettingTemplate>;
+    bool isCommon = false;
+    bool isMeasurement = false;
+    if (list.Count() > 0)
+    {
+        if (list.Where(a => a.TestCategory == "Common Configurations").Count() > 0)
+        {
+            isCommon = true;
+        }
+        if (list.Where(a => a.TestCategory == "Measurement Configurations").Count() > 0)
+        {
+            isMeasurement = true;
+        }
+    }
+}
+
+<style>
+    .multiselect-container {
+        max-height: 200px;
+        overflow: auto;
+    }
+</style>
+
+<div id='container'>
+    <div id="dt_basic_wrapper" class="">
+        <input type="hidden" id="KeyId" name="KeyId" value="@ViewBag.KeyId" />
+        <input type="hidden" id="MeasurementId" name="MeasurementId" value="@ViewBag.MeasurementId" />
+        @if (list.Count() > 0)
+        {
+            <table id='fb-table' class="table table-responsive table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th width="250">Title </th>
+                        <th width="250">Value </th>
+                    </tr>
+                </thead>
+                <tbody id="FormBuilderFields">
+                    <tr>
+                        <th>Selected Channels/Frequency</th>
+                        <td>@ViewBag.SelectedChannels</td>
+                    </tr>
+                    @if (isCommon)
+                    {
+                        <tr>
+                            <th colspan="2"><h4>Common Configurations</h4></th>
+                        </tr>
+                    }
+
+                    @foreach (var kpi in list.Where(a => a.TestCategory == "Common Configurations"))
+                    {
+                        <tr>
+                            <td>
+                                <label><input type="hidden" name="kpiId" id="kpiId" value="@kpi.KpiID" /> @kpi.Kpi</label>
+                            </td>
+                            <td>
+                                @if (kpi.DisplayType == "Text" || kpi.DisplayType == null)
+                                {
+                                    <input type="text" name="kpiValue" data-displayVal="@kpi.DisplayType" id="kpiValue" value="@kpi.KpiValue" class="form-control" />
+                                }
+                                else if (kpi.DisplayType == "select" && kpi.InputType != null)
+                                {
+                                    string[] arrSelectList = new string[] { };
+                                    if (!string.IsNullOrEmpty(kpi.SelectList))
+                                    {
+                                        arrSelectList = kpi.SelectList.Split(',');
+                                    }
+                                    <select name="kpiValue" data-displayVal="@kpi.DisplayType" id="kpiValue" class="form-control">
+                                        @for (int i = 0; i < arrSelectList.Length; i++)
+                                        {
+                                            string selected = string.Empty;
+                                            if (kpi.KpiValue == arrSelectList[i])
+                                            {
+                                                selected = "selected";
+                                            }
+                                            <option @selected value="@arrSelectList[i]">@arrSelectList[i]</option>
+                                        }
+                                    </select>
+                                }
+                                else if (kpi.DisplayType == "mselect" && kpi.InputType != null)
+                                {
+                                    string KpiValueVal = string.Empty;
+                                    if (!string.IsNullOrEmpty(kpi.KpiValue))
+                                    {
+                                        KpiValueVal = kpi.KpiValue.Replace(':', ',');
+                                    }
+                                    string[] arrSelectList = new string[] { };
+                                    if (!string.IsNullOrEmpty(kpi.SelectList))
+                                    {
+                                        arrSelectList = kpi.SelectList.Split(',');
+                                    }
+
+                                    <select data-kpiVal="@KpiValueVal" name="kpiValue" id="kpiValue" data-displayVal="@kpi.DisplayType" class="form-control selectMultis" multiple="multiple">
+                                        @for (int i = 0; i < arrSelectList.Length; i++)
+                                        {
+                                            <option value="@arrSelectList[i]">@arrSelectList[i]</option>
+                                        }
+                                    </select>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    @if (isMeasurement)
+                    {
+                        <tr>
+                            <th colspan="2"><h4>Measurement Configurations</h4></th>
+                        </tr>
+                    }
+
+                    @foreach (var kpi in list.Where(a => a.TestCategory == "Measurement Configurations"))
+                    {
+                        <tr>
+                            <td>
+                                <label><input type="hidden" name="kpiId" id="kpiId" value="@kpi.KpiID" /> @kpi.Kpi</label>
+                            </td>
+                            <td>
+                                @if (kpi.DisplayType == "Text" || kpi.DisplayType == null)
+                                {
+                                    <input type="text" name="kpiValue" data-displayVal="@kpi.DisplayType" id="kpiValue" value="@kpi.KpiValue" class="form-control" />
+                                }
+                                else if (kpi.DisplayType == "select" && kpi.InputType != null)
+                                {
+                                    string[] arrSelectList = new string[] { };
+                                    if (!string.IsNullOrEmpty(kpi.SelectList))
+                                    {
+                                        arrSelectList = kpi.SelectList.Split(',');
+                                    }
+                                    <select name="kpiValue" data-displayVal="@kpi.DisplayType" id="kpiValue" class="form-control">
+                                        @for (int i = 0; i < arrSelectList.Length; i++)
+                                        {
+                                            string selected = string.Empty;
+                                            if (kpi.KpiValue == arrSelectList[i])
+                                            {
+                                                selected = "selected";
+                                            }
+                                            <option @selected value="@arrSelectList[i]">@arrSelectList[i]</option>
+                                        }
+                                    </select>
+                                }
+                                else if (kpi.DisplayType == "mselect" && kpi.InputType != null)
+                                {
+                                    string KpiValueVal = string.Empty;
+                                    if (!string.IsNullOrEmpty(kpi.KpiValue))
+                                    {
+                                        KpiValueVal = kpi.KpiValue.Replace(':', ',');
+                                    }
+                                    string[] arrSelectList = new string[] { };
+                                    if (!string.IsNullOrEmpty(kpi.SelectList))
+                                    {
+                                        arrSelectList = kpi.SelectList.Split(',');
+                                    }
+
+                                    <select data-kpiVal="@KpiValueVal" name="kpiValue" id="kpiValue" data-displayVal="@kpi.DisplayType" class="form-control selectMultis" multiple="multiple">
+                                        @for (int i = 0; i < arrSelectList.Length; i++)
+                                        {
+                                            <option value="@arrSelectList[i]">@arrSelectList[i]</option>
+                                        }
+                                    </select>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No record found.</p>
+        }
+
+
+
+    </div>
+</div>
+
+@section style{
+    <style>
+        .table > tbody > tr > td {
+            padding: 1px 10px;
+        }
+    </style>
+    <style>
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            vertical-align: middle;
+        }
+    </style>
+}
+
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="~/Content/js/Plugins/MultiselectBootstrap/js/scanner/bootstrap-multiselect.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.selectMultis').multiselect();
+        $('.selectMultis').each(function () {
+            try {
+                var skv = $(this).attr("data-kpiVal").split(",");
+                $(this).val(skv);
+                $(this).multiselect("refresh");
+            } catch (e) {
+
+            }
+        });
+    })
+</script>

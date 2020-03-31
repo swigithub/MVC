@@ -1,0 +1,137 @@
+﻿
+<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="limitpark-title">Positioning Statement <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Limit Park Report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="limitpark-custom-filters">
+            <div class="filter-field">
+                <label>Vehicle</label>
+                <input type="text" id="lmtparkrptasset" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="lmtparkrptdate-range">
+                </div>
+            </div>
+            <div class="filter-field button">
+                <button id="lmtparkrptapply_filters" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="limitpark-table">
+            <table id="lmtparkrptreport" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Vehicle</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Parking Time</th>
+                        <th>Address</th>
+                        <th>Fence name</th>
+                        <th>Fence type</th>
+                        <th>Direction</th>
+                        <th>Longitude</th>
+                        <th>Latitude</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#lmtparkrptapply_filters").click(function () {
+        debugger;
+
+        var assetname = $("#lmtparkrptasset").val();
+        var daterange = $("#lmtparkrptdate-range").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var reportexporttitle = $("#limitpark-title").text();
+        var exportfilename = $("#limitpark-title").text();
+        var parkingtime = $("#parkingtime").val();
+        var frcmodel = {
+            ReportFilter: "LimitParkReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname,
+            parkingTime: parkingtime
+        }
+
+        var table = $('#lmtparkrptreport').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'AssetName', "name": "Vehicle" },
+               { data: 'StartTime', "name": "Start Time", "autoWidth": true },
+               { data: 'EndTime', "name": "End Time", "autoWidth": true },
+               { data: 'ParkingTime', "name": "Parking Time", "autoWidth": true },
+               { data: 'Address', "name": "Address", "autoWidth": true },
+               { data: 'FenceName', "name": "Fence name", "autoWidth": true },
+               { data: 'FenceType', "name": "Fence type", "autoWidth": true },
+               { data: 'Direction', "name": "Direction", "autoWidth": true },
+               { data: 'Latitude', "name": "Latitude", "autoWidth": true },
+               { data: 'Longitude', "name": "Longitude", "autoWidth": true }
+            ],
+            initComplete: function (settings, json) {
+                $("#limitpark-custom-filters .top").remove();
+                $($("#limitpark-table .top")).appendTo("#limitpark-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+     
+    });
+</script>

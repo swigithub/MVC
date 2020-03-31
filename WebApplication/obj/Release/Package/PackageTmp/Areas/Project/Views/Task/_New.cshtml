@@ -1,0 +1,387 @@
+﻿<style>
+.newtask-box {
+    float: left;
+    width: calc(100% - 6px);
+    padding: 8px 0px 5px;
+    /*border: 1px solid #e4e4e4;
+    margin: 0 2.5px 5px;
+    background: #f3f3f3;*/
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.col-md-6 .newtask-box {
+    min-height: 92px;
+}
+.newtask-box sup {
+    font-size: 100%;
+}
+    strong.simple-title {
+        float: left;
+        width: 100%;
+        margin: 0px 0 10px;
+        padding-left: 10px;
+    }
+    .newtask-box > div.col-md-6 {
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .newtask-box > div {
+        min-height: 0;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .newtask-box select, .newtask-box .input input, .newtask-box textarea {
+        margin: 0 0 10px;
+        color:#383838!important;
+        border: 1px solid #ededed!important;
+    }
+    .newtask-box label.checkbox {
+        margin:2px 0 0!important;
+    }
+</style>
+<form type="TASK_EDITOR" class="smart-form" name="TaskForm" id="TaskEditForm"  >
+    <fieldset>
+        <div class="row">
+            <section class="col-sm-12">
+                <div class="newtask-box">
+                    <div class="col-md-6 col-sm-12">
+                        <label class="label">Title<sup style="color:darkred">*</sup></label>
+                        <label class="input">
+                            <input id="_Title" required type="text" ng-model="p.Title" maxlength="15" placeholder="Title" />
+                        </label>
+
+                        @*<label  class="label">Parent</label>
+                        <label  style="width:95%" class="select">
+                        <input type="hidden" id="_Parent" />
+                        <div class="dynatree-drop">
+                        <span class="dynatree-btn">-- Select --</span>
+                        <div class="dynatree-dropdown">
+                        <input class="searchinput" type="text" placeholder="Enter Your Search" />
+                        <div class="dynatree">
+
+                        </div>
+                        </div>
+                        </div>
+                        <i></i>
+                        <br />
+                        </label>*@
+
+
+                        @*<label class="checkbox">
+                            <input id="TaskType" type="checkbox" ng-click="setTaskTypeId()" ng-model="p.TaskType" name="checkbox">
+                            <i></i>Is Milestone
+                        </label>*@
+                    </div>
+
+                    <div class="col-md-6 col-sm-12">
+                        <label class="input" ng-if="s.IsWoLinked==true" style="visibility:{{ForecastedSites}}">
+                            <label class="label">Scope</label>
+                            <label class="select">
+                                <select ng-model="p.ScopeId" ng-options="x.DefinationId as x.DefinationName for x in Scopes">
+                                    <option value="0">Scope </option>
+                                </select> <i></i>
+                            </label>
+                        </label>
+                    </div>
+                       <br />
+                    <div class="col-md-2 col-sm-12">
+                        <label class="checkbox column-check">
+                            <input id="_IsActive" type="checkbox" @*ng-model="p.IsActive"*@ name="checkbox">
+                            <i></i>Active
+                        </label>
+                    </div>
+                    <div class="col-md-2 col-sm-12">
+
+                        <table>
+                            <tr>
+                                <td>
+                                    @*<label class="input">
+                        <input style="width:160px;" type="number" min="0" max="20" id="_SortOrder" ng-model="p.SortOrder" placeholder="Sort Order" readonly />
+                        </label>*@
+                                </td>
+                                <td>
+                                    <label class="input">
+                                        &nbsp;&nbsp; <input type="text" id="Color" color-picker ng-model="p.Color" placeholder="Color" />
+                                    </label>
+                                </td>
+                                <td><label>Color</label></td>
+                                <td><label id="_taskStatus" style="margin-left:10px" ></label></td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+                    <div class="col-md-4 col-sm-12 hidden">
+                        <label class="label">Status</label>
+                        <label class="select">
+                            <select id="_StatusId" required ng-model="p.StatusId" ng-options="x.DefinationId as x.DisplayText for x in ProjectStatus">
+                                <option value="0">Status </option>
+                            </select>  <i></i>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            @*<div class="col-md-3 hidden" style="margin-left: 15px;">
+            <label class="label">Predecessor</label>
+            <label class="select">
+            <select id="_PredecessorId" ng-change="PredecessorChange()" ng-model="p.PredecessorId" ng-options="x.SortOrder as x.name for x in Predecessors">
+            <option value="0"> Predecessor</option>
+            </select> <i></i>
+            <br />
+            </label>
+            </div>*@
+
+            <section class="col-md-12">
+                <div class="newtask-box">
+                    @*<strong class="simple-title">Planned Dates</strong>*@
+                    <div class="col-md-6">
+                        <label class="label">Planned <sup style="color:darkred">*</sup></label>
+                        <label class="input">
+                            <input type="text" class="" id="PlannedDate" date-picker ng-model="p.PlannedDate" placeholder="Planned Date" />
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="label">Target</label>
+                        <label class="input">
+                            <input type="text" class="datepicker" id="TargetDate" date-picker ng-model="p.TargetDate" placeholder="Target Date" />
+                        </label>
+
+                    </div>
+                </div>
+            </section>
+
+            <section class="col-md-6">
+                <div class="newtask-box">
+                    @*<strong class="simple-title">Estimated Dates <sup style="color:darkred">*</sup></strong>*@
+                    <div class="col-md-6">
+                        @*<label class="checkbox">
+                            <input type="checkbox" ng-model="p.IsStartMilestone" id="_IsStartMilestone" name="checkbox">
+                            <i></i>Start Date
+                        </label>*@
+                        <label class="label">Forecast Start <sup style="color:darkred">*</sup></label>
+                        <label class="input">
+                            <input type="text" class="datepicker"  date-picker ng-model="p.EstimatedStartDate" id="EstimatedStartDate" placeholder="Start Date" />
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        @*<label class="checkbox">
+                            <input type="checkbox" ng-model="p.IsEndMilestone" id="_IsEndMilestone" name="checkbox">
+                            <i></i>End Date
+                        </label>*@
+                        <label class="label">Forecast End <sup style="color:darkred">*</sup></label>
+                        <label class="input">
+                            <input type="text" @*ng-click="EndDateChange()"*@ class="datepicker" id="EstimatedEndDate" date-picker ng-model="p.EstimatedEndDate" placeholder="End Date" />
+                        </label>
+                    </div>
+                </div>
+            </section>
+            <section class="col-md-6">
+                <div class="newtask-box">
+                    @*<div class="col-md-6">
+                        <strong class="simple-title">Actual Dates</strong>
+                    </div>*@
+                    <div class="col-md-6">
+                        <label class="label">Actual Start </label>
+                        <label class="input">
+                            <input @*ng-disabled="IsParent"*@ type="text" class="datepicker" date-picker ng-model="p.ActualStartDate" id="ActualStartDate" disabled placeholder="Start Date" />
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="label">Actual End</label>
+                        <label class="input">
+                            <input @*ng-disabled="IsParent"*@ class="datepicker" type="text" @*ng-click="EndDateChange()"*@ id="ActualEndDate" disabled date-picker ng-model="p.ActualEndDate" placeholder="End Date" />
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="checkbox" style="margin: 0 0 5px !important">
+                            <input type="checkbox" ng-model="p.IsEstimate" id="IsEstimate" checked="checked" name="checkbox">
+                            <i></i>Same as Forecast dates
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="col-md-12">
+                <div class="newtask-box">
+                    <div class="col-md-4 col-sm-12">
+                        <label class="label">Completion Percent</label>
+                        <label class="input">
+                            <input type="number" min="0" max="100" ng-model="p.CompletionPercent" id="_CompletionPercent" placeholder="Completion Percent" />
+                        </label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label class="label">Map Column</label>
+                        <label class="input">
+                            <input id="_MapColumn" type="text" ng-model="p.MapColumn" placeholder="Map Column" />
+                        </label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label class="label">Budget Cost</label>
+                        <label class="input">
+                            <input type="number" min="0" max="99999999" ng-model="p.BudgetCost" id="_BudgetCost" placeholder="Budget Cost" />
+                        </label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label class="input">
+                            <label class="label">Map Code</label>
+                            <input id="_MapCode" type="text" ng-model="p.MapCode" placeholder="Map Code" />
+                        </label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label class="input" style="visibility:{{ForecastedSites}}">
+                            <label class="label">Forecasted Sites</label>
+                            <input id="_ForecastedSites" type="number" ng-model="p.ForecastedSites" min="0" max="999999999" ng-show="ForecastedSites" placeholder="Forecasted Sites" />
+                        </label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label class="label">Priority <sup style="color:darkred">*</sup></label>
+                        <label class="select">
+                            <select id="_PriorityId" required ng-model="p.PriorityId" ng-options="x.DefinationId as x.DefinationName for x in Priorities">
+                                <option ng-value="0">Priority</option>
+                            </select> <i></i>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="col-md-12">
+                <div class="newtask-box">
+                    @*<div class="col-md-12 col-sm-12">
+    <label class="label">Resources</label>
+    <label class="select">
+        <ui-select multiple ng-change="fnProjectResource()" ng-model="multiple.AssignToId" theme="bootstrap" close-on-select="false" style="width: 100%;">
+            <ui-select-match placeholder="Select Resource">{{$item.FirstName +' '+$item.LastName}}</ui-select-match>
+            <ui-select-choices repeat="u in Users| filter:$select.search">
+                {{u.FirstName +' '+ u.LastName}}
+            </ui-select-choices>
+        </ui-select>
+    </label>
+                    </div>*@
+                    <div class="col-md-12 col-sm-12">
+                        <label class="textarea">
+                            <label class="label">Description</label>
+                            <textarea id="_Description" rows="6" ng-model="p.Description" placeholder="Description"></textarea>
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </div>
+               
+    </fieldset>
+
+    @*<button type="button" ng-click="Save(p)" style="margin-top:20px" class="btn btn-primary pull-right">
+            Save
+        </button>*@
+    <div class="__template__" type="ASSIGNMENT_ROW">
+        <!--
+        <tr taskId="(#=obj.task.id#)" assId="(#=obj.assig.id#)" class="assigEditRow" >
+          <td ><select name="resourceId"  class="formElements" (#=obj.assig.id.indexOf("tmp_")==0?"":"disabled"#) ></select></td>
+          <td ><select type="select" name="roleId"  class="formElements"></select></td>
+          <td ><input type="text" name="effort" value="(#=getMillisInHoursMinutes(obj.assig.effort)#)" size="5" class="formElements"></td>
+          <td align="center"><span class="teamworkIcon delAssig del" style="cursor: pointer">d</span></td>
+        </tr>
+        -->
+    </div>
+</form>
+
+@*<script>
+  //  $(document).on("ready", function () {
+    /*===  Dyna Tree Initialize ===*/
+    
+  
+        $(".dynatree").dynatree({
+            checkbox: true,
+            selectMode: 1,
+            classNames: { checkbox: "dynatree-radio" },
+            onSelect: function (select, node) {
+                $(".dynatree-btn").text(node.data.title);
+                var a = node.data.userid;
+                console.log(a);
+            },
+            children: Parents
+        });
+
+
+        /*===  Dyna Tree Dropdown Button ===*/
+        $("html").on("click", function () {
+            $(".dynatree-dropdown").removeClass("active");
+        });
+        $(".dynatree-btn").on("click", function (e) {
+            $(this).next(".dynatree-dropdown").toggleClass("active");
+        });
+        $(".dynatree-drop").on("click", function (e) {
+            e.stopPropagation();
+        });
+
+
+        /*===  Searchable List ===*/
+        $('.searchinput').next('.dynatree').find('ul').addClass("searchable-list");
+        function searchFromTree() {
+            var li = $(".searchable-list li");
+            var input = $('.searchinput');
+            var filter = input.val().toUpperCase();
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                    $(li[i]).parents("li").removeProp('dsplay');
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+        $('.searchinput').on("keyup", function () {
+            searchFromTree();
+        });
+
+
+
+  //  });
+</script>*@
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#EstimatedStartDate").change(function () {
+            if ($('#IsEstimate').is(':checked')) {
+                var a = $("#EstimatedStartDate").val();
+
+                $("#ActualStartDate").val(a);
+            }
+        });
+
+        $("#EstimatedEndDate").change(function () {
+            if ($('#IsEstimate').is(':checked')) {
+                var a = $("#EstimatedEndDate").val();
+
+                $("#ActualEndDate").val(a);
+            }
+        })
+    $('#IsEstimate').change(function()
+    {
+        if ($(this).is(':unchecked')) {
+            $("#ActualStartDate").val('');
+            $("#ActualEndDate").val('');
+            $("#ActualStartDate").attr('disabled', false);
+            $("#ActualEndDate").attr('disabled', false);
+        } else {
+            var a = $("#EstimatedStartDate").val();
+
+            $("#ActualStartDate").val(a);
+            var b = $("#EstimatedEndDate").val();
+
+            $("#ActualEndDate").val(b);
+            $("#ActualStartDate").attr('disabled', true);
+            $("#ActualEndDate").attr('disabled', true);
+        }
+    });
+    $('#EstimatedStartDate').change(function () {
+        $(".datepicker").datepicker("option", "minDate", moment($(this).val()).add(1, "d").format("MM/DD/YYYY"));
+    });
+    $('#EstimatedEndDate').change(function () {
+       
+    });
+ 
+    });
+</script>

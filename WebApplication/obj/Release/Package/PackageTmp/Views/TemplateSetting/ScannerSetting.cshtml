@@ -1,0 +1,313 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model ScannerConfiguration
+@{
+    ViewBag.Title = "Scanner Settings & Configuration";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var ScannerModel = jss.Serialize(ViewBag.ScannerModel);
+    var BandModel = jss.Serialize(ViewBag.ScannerBand); 
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border boxHeader">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="box-body boxBody">
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        @using (Html.BeginForm("ScannerSetting", "TemplateSetting", FormMethod.Post, new { id = "frm-tstStng" }))
+                        {
+
+                            <div class="row ">
+                                
+                                <div class="col-sm-2" style="padding-left:30px;">
+                                    <div class="form-group">
+                                       <label for="ClientId" class="col-sm-2">Client</label>
+                                        <div class="col-sm-12">
+                                            @Html.DropDownListFor(m => m.ClientId, new SelectList(ViewBag.UserClients, "Value", "Text"), new { @class = "form-control select1", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="CityId" class="col-sm-2">Market</label>
+                                        <div class="col-sm-12">
+                                            @Html.DropDownListFor(m => m.CityId, new SelectList(ViewBag.Cities, "Value", "Text"), new { @class = "form-control select1", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="ManufacturerId" class="col-sm-5">Manufacturer</label>
+                                        <div class="col-sm-12">
+                                            @Html.DropDownListFor(m => m.ManufacturerId, new SelectList(ViewBag.Manufacturer, "Value", "Text"), new { @class = "form-control select1", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+                                 
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="ScannerModelId" class="col-sm-8">Scanner Model</label>
+                                        <div class="col-sm-12">
+                                           @Html.DropDownListFor(m => m.ScannerModelId, Enumerable.Empty<SelectListItem>(), new { @class = "form-control select1", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+                                  
+                                </div>     
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="ManufacturerId" class="col-sm-5">Protocol</label>
+                                        <div class="col-sm-12">
+                                            @Html.DropDownListFor(m => m.ProtocolId, new SelectList(ViewBag.ScannerProtocol, "Value", "Text"), new { @class = "form-control select1", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="ScannerModelId" class="col-sm-8">Band</label>
+                                        <div class="col-sm-12">
+                                            @Html.DropDownListFor(m => m.ScannerBandId, Enumerable.Empty<SelectListItem>(), new { @class = "form-control select1", style = "width:200px", required = "required" })
+                                        </div>
+                                    </div>
+
+                                </div>     
+                            </div>
+                            <hr />
+                            <div id="SiteScannerTemplateData">
+
+                            </div>
+                            //@Html.Action("ScannerTemplate", "TemplateSetting")
+
+                                <div class="form-group">
+                                    <button style="margin-left:20px" type="submit" class="btn btn-success pull-right">
+                                        <i class="fa fa-save"></i> Save
+                                    </button>
+                                    <button type="reset" class="btn btn-danger pull-right">
+                                        <i class="fa fa-undo"></i> Refresh
+                                    </button>
+                                </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+<script src="~/AdminLTE/plugins/select2/js/select2.js"></script>
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<script src="~/Content/js/Plugins/MultiselectBootstrap/js/scanner/bootstrap-multiselect.js"></script>
+
+<script>
+    $(".kpiValue").each(function () {
+        var type = $(this).attr('data-type');
+        if (type == 'Password') {
+            $(this).prop('type', 'password');
+        }
+    });
+
+    function LoadValues(ClientId, CityId, ManufacturerId, ScannerModelId, SelectedProtocolId, SelectedBandId) {
+        $.ajax({
+            url: '/TemplateSetting/ScannerTemplate',
+            type: 'post',
+            data: { ClientId: ClientId, CityId: CityId, Manufacturer: ManufacturerId, ScannerModel: ScannerModelId, SelectedProtocolId: SelectedProtocolId, SelectedBandId: SelectedBandId },
+            dataType: 'json',
+            success: function (res) {
+                if (res.length == 0) {
+                    $(".kpiValue").each(function (j) {
+                        $(this).val('');
+                    });
+
+                } else {
+                    $(".kpiValue").each(function (j) {
+                        var Id = $(this).attr('data-kpi');
+                        $.each(res, function (i, v) {
+                            if (v.KpiID == Id) {
+                                if (v.DisplayType == "mselect") {
+                                    $('#kpi-' + Id).val(v.KpiValue.split(':'));
+                                    $('#k-' + v.KpiID).val(v.KpiID + '-' + v.KpiValue);
+                                    $('#kpi-' + Id).multiselect("refresh");
+                                } else {
+                                    $('#kpi-' + Id).val(v.KpiValue);
+                                    $('#k-' + v.KpiID).val(v.KpiID + '-' + v.KpiValue);
+                                }
+
+                                return false;
+                            }
+                        });
+                    });
+                }
+            }
+        });
+
+    }
+</script>
+
+    <script>
+        $(function () {
+            var loading = $.loading();
+            $(".select1").select2();
+            $('.selectMulti').multiselect();
+            var SelectedClientId = $('select[name="ClientId"]').val();
+            var SelectedCityId = $('select[name="CityId"]').val();
+            var SelectedManufacturerId = 0;
+            var SelectedScannerModelId = 0;
+            var SelectedProtocolId = 0;
+            var SelectedBandId = 0;
+            //var SelectedCarrierId =0;
+         
+            var ScannerModel = JSON.parse('@Html.Raw(ScannerModel)');
+            var BandModel = JSON.parse('@Html.Raw(BandModel)');
+
+            $(document).on('change', '#ManufacturerId', function () {
+                var value = $(this).val();
+                $('#ScannerModelId').empty();
+                $('#ScannerModelId').append(' <option value="0" >-Scanner Model-</option></select>');
+                $.each(ScannerModel, function (i, v) {
+                    if (v.PDefinationId == value) {
+                        $('#ScannerModelId').append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                    }
+                });
+                SelectedManufacturerId = value;
+                LoadValues(SelectedClientId, SelectedCityId, SelectedManufacturerId, SelectedScannerModelId, SelectedProtocolId, SelectedBandId);
+
+            });
+
+            $(document).on('change', '#ProtocolId', function () {
+                var value = $(this).val();
+                $('#ScannerBandId').empty();
+                $('#ScannerBandId').append(' <option value="0" >-Band-</option></select>');
+                $.each(BandModel, function (i, v) {
+                    if (v.PDefinationId == value) {
+                        $('#ScannerBandId').append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                    }
+                });
+                SelectedProtocolId = value;
+                LoadValues(SelectedClientId, SelectedCityId, SelectedManufacturerId, SelectedScannerModelId, SelectedProtocolId, SelectedBandId);
+            });
+
+            $(document).on('change', '#ScannerModelId', function () {
+                SelectedScannerModelId = $(this).val();
+                BindSiteScannerTemplateData(SelectedScannerModelId);
+            });
+            
+
+            $(document).on('change', '#ClientId', function () {
+                SelectedClientId = $(this).val();
+                LoadValues(SelectedClientId, SelectedCityId, SelectedManufacturerId, SelectedScannerModelId, SelectedProtocolId, SelectedBandId);
+            });
+
+
+            $(document).on('change', '#CityId', function () {
+               
+                SelectedCityId = $(this).val();
+                LoadValues(SelectedClientId, SelectedCityId, SelectedManufacturerId, SelectedScannerModelId, SelectedProtocolId, SelectedBandId);
+            });
+
+            $(document).on('change', '#ScannerBandId', function () {
+                SelectedBandId = $(this).val();
+                LoadValues(SelectedClientId, SelectedCityId, SelectedManufacturerId, SelectedScannerModelId, SelectedProtocolId, SelectedBandId);
+            });
+
+            function BindSiteScannerTemplateData(SelectedScannerModelId) {
+                $.get("../../TemplateSetting/ScannerTemplate", { SelectedScannerModelId: SelectedScannerModelId }, function (data) {
+                    $("#SiteScannerTemplateData").html(data);
+                    LoadValues(SelectedClientId, SelectedCityId, SelectedManufacturerId, SelectedScannerModelId, SelectedProtocolId, SelectedBandId);
+                })
+            }
+
+           
+            $(document).on('keyup change', '.kpiValue', function () {
+                var kpi = $(this).attr('data-kpi');
+                var display = $(this).attr('data-display');
+                var value = '';
+                if (display == "select") {
+                    value = kpi + '-' + $(this).find('option:selected').val();
+                } else if (display == "mselect") {
+                    var splitVal = $(this).val().join(':');
+                    value = kpi + '-' + splitVal;
+                }
+                else {
+                    value = kpi + '-' + $(this).val();
+                }
+                
+                $('#k-' + kpi).val(value);
+
+            });
+
+
+           
+
+            $(document).on('submit', '#frm-tstStng', function () {
+
+                var hit = 0;
+                $('.TextBox').each(function () {
+                    var valss = $(this).attr("data-type");
+                    var textBox = $.trim($(this).val())
+                    var required = $(this).attr('data-required');
+                    if (required != 'no') {
+                        if (textBox == "") {
+                            $(this).addClass('required');
+                            hit = 1;
+                            return false;
+                        } else {
+                            $(this).removeClass('required');
+                        }
+                    }
+
+
+                });
+                if (hit==0) {
+                    $.ajax({
+                        url: '/TemplateSetting/ScannerSetting',
+                        type: 'post',
+                        async: false,
+                        data: $(this).serialize(),
+                        success: function (res) {
+                            if (res.Status == 'success') {
+                                // window.reload();
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                            } else {
+                                $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+
+                        },
+                        error: function (err) {
+                            $.notify(err.statusText, { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6 });
+
+                        },
+
+                    });
+                }
+               
+                return false;
+            });
+
+        });
+    </script>
+
+}
+@section style{
+<link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<link href="~/Content/box.css" rel="stylesheet" />
+<style>
+    .required {
+        border-color: red;
+    }
+</style>
+}

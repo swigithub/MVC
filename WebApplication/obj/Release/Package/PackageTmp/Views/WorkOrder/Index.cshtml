@@ -1,0 +1,821 @@
+﻿
+@{
+    ViewBag.Title = "Work Order";
+    //Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+<!-- Query BuilderJs  -->
+
+
+<script src="~/Areas/Project/Angular/ui-bootstrap-tpls-0.13.4.min.js"></script>
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/QueryBuilderDirective.js"></script>
+
+
+<!--js and css files for query SmartAdmin Data Table -->
+<script src="~/Content/ShowColumnsPlugin/ng-table.min.js"></script>
+<script src="~/Content/ShowColumnsPlugin/ng-table.js"></script>
+
+<link href="~/Content/ShowColumnsPlugin/ng-table.css" rel="stylesheet" />
+<link href="~/Content/ShowColumnsPlugin/ng-table.min.css" rel="stylesheet" />
+
+<meta charset="utf-8">
+<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+<title> SmartAdmin </title>
+<meta name="description" content="">
+<meta name="author" content="">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- Basic Styles -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/bootstrap.min.css">
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/font-awesome.min.css">
+<!-- SmartAdmin Styles : Caution! DO NOT change the order -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/smartadmin-production-plugins.min.css">
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/smartadmin-production.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/smartadmin-skins.min.css">
+<!-- SmartAdmin RTL Support -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/smartadmin-rtl.min.css">
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/SmartAdmin/css/demo.min.css">
+<!-- FAVICONS -->
+<link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
+<link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
+
+
+
+<!--<link rel="apple-touch-icon" href="img/splash/sptouch-icon-iphone.png">
+   <link rel="apple-touch-icon" sizes="76x76" href="img/splash/touch-icon-ipad.png">
+   <link rel="apple-touch-icon" sizes="120x120" href="img/splash/touch-icon-iphone-retina.png">
+   <link rel="apple-touch-icon" sizes="152x152" href="img/splash/touch-icon-ipad-retina.png">-->
+
+<link href="~/Content/js/Plugins/AngularQueryBuilder/css/StyleQueryBuilder.css" rel="stylesheet" />
+
+<!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<!-- Startup image for web apps -->
+<!--<link rel="apple-touch-startup-image" href="img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+<link rel="apple-touch-startup-image" href="img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+-->
+
+<style>
+    .alertMsg {
+        z-index: 1000;
+        text-align: center;
+        font-weight: normal;
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        background-color: #cc4944;
+    }
+
+    #collapseOne {
+        padding-top: 0px;
+    }
+
+    #notification {
+        right: 4px;
+        width: 100%;
+        z-index: 105;
+        text-align: center;
+        font-weight: normal;
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        background-color: #cc4944;
+        padding: 10px;
+    }
+
+    .outerdiv {
+        margin-right: 0px;
+        padding-top: 13px;
+        padding-bottom: 15px;
+        /*min-height: 37px;*/
+        /*overflow: hidden;*/
+    }
+
+    #notification span.dismiss {
+        /*border:2px solid #FFF;*/
+        padding: 0 5px;
+        cursor: pointer;
+        float: right;
+        margin-right: 10px;
+    }
+
+    #notification a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+
+    .table1 {
+        margin-top: -7px !important;
+    }
+
+    .groupOperator {
+        margin-top: 12px !important;
+        margin-left: -38px;
+    }
+
+    .conditionOperator {
+        margin-bottom: 22px !important;
+        margin-top: 4px;
+        /*margin-left: -20px;*/
+    }
+
+    .mainButtonDiv {
+        margin-right: 10px;
+        padding: 0px;
+    }
+
+    .group-conditions {
+        padding-bottom: 10px;
+        margin-left: 30px;
+    }
+
+    .btnDiv {
+        padding-top: 16px;
+        padding-right: 10px;
+        margin-top: -30px;
+    }
+
+    select.input-sm {
+        height: 30px !important;
+    }
+
+    .jarviswidget > div {
+        padding-right: 0px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <div class="alert alertMsg" style="display:none;" id="errorAlert">
+            <a class="close">X</a>
+            Plese fill All fields before adding New Row.
+        </div>
+
+        <div class="box-body">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false" style="margin-bottom:10px;">
+
+                <header style="background-color:transparent; background:#f0f0f0; border:none;margin-bottom:5px;">
+
+                    @if (ViewBag.AllowUri("/WorkOrder/New"))
+                    {
+                        <a href="@Url.Action("New", "workorder")" class="btn btn-success pull-right">Create New Workorder</a>
+                        <br />
+                    }
+
+                </header>
+
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-search"></i> </span>
+                    <h2>Search</h2>
+                    <a style="float:right;font-size:20px;color:#fff;margin-top:-3px; margin-right:10px"
+                       class="justfy" data-toggle="collapse" data-target="#collapseOne" href="#collapseOne" ng-click="managCss()"><span class="fa fa-align-justify"></span></a>
+                </header>
+
+                <div id="collapseOne" class="panel-collapse collapse in" style="overflow:auto;min-height:110px;">
+                    <div ng-app="myApp" id="QueryBuilderCtrl" ng-controller="QueryBuilderCtrl">
+                        <query-builder group="filter.group"></query-builder>
+                        <div class="pull-right" style="padding:8px;">
+                            <br>
+                            <a href="#" ng-click="ViewResult()" id="viewResult" class="btn btn-success ">View Result</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- end widget -->
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2>Work Order</h2>
+                </header>
+                <div>
+
+                    <div class="widget-body no-padding">
+
+                        <table id="datatable_col_reorder" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Wo RefNo</th>
+                                    @*<th>Client</th>*@
+                                    <th>Region</th>
+                                    <th>Market</th>
+
+                                    <th>SiteCode</th>
+                                    <th>Tester</th>
+                                    <th>Received</th>
+                                    <th>Submitted</th>
+
+                                    <th>Scheduled</th>
+
+                                    <th>Drive Completed</th>
+                                    <th>Report Submitted</th>
+                                    <th>Approved</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    if (!window.jQuery) {
+        document.write('<script src="~/SmartAdmin/js/libs/jquery-2.1.1.min.js"><\/script>');
+    }
+</script>
+
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/jquery-ui.min.js"></script>
+<script>
+    if (!window.jQuery.ui) {
+        document.write('<script src="js/libs/jquery-ui-1.10.3.min.js"><\/script>');
+    }
+</script>
+
+<script src="~/SmartAdmin/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
+<!-- BOOTSTRAP JS -->
+<script src="~/SmartAdmin/js/bootstrap/bootstrap.min.js"></script>
+<!-- CUSTOM NOTIFICATION -->
+<script src="~/SmartAdmin/js/notification/SmartNotification.min.js"></script>
+<!-- JARVIS WIDGETS -->
+<script src="~/SmartAdmin/js/smartwidgets/jarvis.widget.min.js"></script>
+<!-- EASY PIE CHARTS -->
+<script src="~/SmartAdmin/js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+<!-- SPARKLINES -->
+<script src="~/SmartAdmin/js/plugin/sparkline/jquery.sparkline.min.js"></script>
+<!-- JQUERY VALIDATE -->
+<script src="~/SmartAdmin/js/plugin/jquery-validate/jquery.validate.min.js"></script>
+<!-- JQUERY MASKED INPUT -->
+<script src="~/SmartAdmin/js/plugin/masked-input/jquery.maskedinput.min.js"></script>
+<!-- JQUERY SELECT2 INPUT -->
+<script src="~/SmartAdmin/js/plugin/select2/select2.min.js"></script>
+<!-- JQUERY UI + Bootstrap Slider -->
+<script src="~/SmartAdmin/js/plugin/bootstrap-slider/bootstrap-slider.min.js"></script>
+<!-- browser msie issue fix -->
+<script src="~/SmartAdmin/js/plugin/msie-fix/jquery.mb.browser.min.js"></script>
+<!-- FastClick: For mobile devices -->
+<script src="~/SmartAdmin/js/plugin/fastclick/fastclick.min.js"></script>
+<!--[if IE 8]>
+
+
+
+<![endif]-->
+<!-- Demo purpose only -->
+<script src="~/SmartAdmin/js/demo.min.js"></script>
+<!-- MAIN APP JS FILE -->
+<script src="~/SmartAdmin/js/app.min.js"></script>
+<!-- ENHANCEMENT PLUGINS : NOT A REQUIREMENT -->
+<!-- Voice command : plugin -->
+<script src="~/SmartAdmin/js/speech/voicecommand.min.js"></script>
+<!-- SmartChat UI : plugin -->
+<script src="~/SmartAdmin/js/smart-chat-ui/smart.chat.ui.min.js"></script>
+<script src="~/SmartAdmin/js/smart-chat-ui/smart.chat.manager.min.js"></script>
+<!-- PAGE RELATED PLUGIN(S) -->
+<script src="~/SmartAdmin/js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script src="~/SmartAdmin/js/plugin/datatables/dataTables.colVis.min.js"></script>
+<script src="~/SmartAdmin/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+<script src="~/SmartAdmin/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script src="~/SmartAdmin/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+
+<script src="~/SmartAdmin/js/moment.min.js"></script>
+<script src="~/SmartAdmin/js/datetime-moment.js"></script>
+<script>
+
+    var app = angular.module('myApp', ['queryBuilder']);
+
+    app.controller('QueryBuilderCtrl', function ($scope, $http, $timeout, $rootScope) {
+
+        function CSS() {
+            $('div').removeClass("wrapper");
+            $('.content-wrapper').css("min-height", "0");
+            $('footer').remove();
+            $('.removeborber').each(function (i) {
+
+                if (i % 2 == 0) {
+                    $(this).css({ 'background': "white" });
+                }
+                else {
+                    $(this).css({ 'background': "#d2d2d2" });
+                }
+            });
+            $('.MainGroup').css({ "background": "#eee" });
+        }
+
+        var data = '{"group": {"operator": "AND","rules": []}}';
+
+        function htmlEntities(str) {
+            return String(str)//.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function addremoveqoute(str, flag) {
+            if (flag == "System.DateTime") {
+                dt = new Date(str);
+                str = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
+            }
+            if (flag == "System.Integer") {
+                return String(str);
+            }
+            else {
+                str = "'" + str + "'"
+                return String(str);
+            }
+        }
+
+        $scope.isShow = 0;
+        var haskey = null;
+
+        function computed(group) {
+            $timeout(function () {
+                CSS();
+            }, 100);
+            $timeout(function () {
+                if (group.rules.length == 0 && $scope.isShow == 0) {
+                    $('.first').last().hide();
+                    $('.first1').last().hide();
+                    $('.first2').last().hide();
+                    $('.first3').last().hide();
+                    $('.removeborber').first().css("border", "0");
+                    $scope.isShow = 1;
+                }
+            }, 500);
+            //yyyy-mm-dd
+            //$('.table1').first().css("margin-top", "-20px");
+            $('.removeborber').first().css("border", "0");
+            for (i = 0; i < group.rules.length; i++) {
+                //This code is for the buttons on the last row of condition
+                try {
+                    if (group.rules[i].group) {
+                        group.rules[i - 1].groupstart = true;
+                    }
+                } catch (e) {
+                    //alert(e);
+                }
+
+                //This code is for removing the buttons from the group top
+                try {
+                    if (group.rules[i].group) {
+                        if (group.rules[i].group.rules[0].field != undefined) {
+                            group.rules[i].group.firstgroup = true;
+                            //group.rules[1].group.rules[0].group.firstgroup = true;
+                            if (group.rules[i].group.rules[group.rules[i].group.rules.length - 1].group.rules[0].field != "") {
+                                group.rules[1].group.rules[0].group.firstgroup = true;
+                            }
+                        }
+                    }
+                } catch (e) {
+                }
+            }
+            if (!group) return "";
+            for (var str = "(", i = 0; i < group.rules.length; i++) {
+                if (group.rules[0].group) {
+                    $('.btnremove').hide();
+                    $('.btnremove:first').show();
+                    $('.btnremoveclrAll').hide();
+                    $('.btnremoveclrAll:first').show();
+                    //$('.btnDiv').first().next().css("margin-top", "-22px");
+                    group.rules[0].group.removefirstcondition = false;
+                }
+
+                //This code is for removing condition operator before sub group.
+                if (!group.rules[i].group) {
+                    try {
+                        if (group.rules[i + 1].group != undefined) {
+                            group.rules[i].isoperator = false;
+                        }
+                        else {
+                            group.rules[i].isoperator = true;
+                        }
+                    } catch (e) {
+                        group.rules[i].isoperator = true;
+                    }
+                }
+
+                // This code is adding group operator in string
+                if (i > 0 && group.rules[i].group) {
+                    (str += group.rules[i].group.operator)
+                    if (i > 0) {
+                        group.rules[i].isgroupoperator = false
+                    }
+                }
+                str += group.rules[i].group ?
+                    computed(group.rules[i].group) :
+                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + addremoveqoute(group.rules[i].data, group.rules[i].type) + " " + group.rules[i].operator + " ";
+            }
+
+            str1 = str;
+            $scope.Querystring = str + ")";
+            return str + ")";
+        }
+        $scope.getstring = function () {
+
+            return $scope.Querystring;
+        }
+        $scope.filter = JSON.parse(data);
+        $scope.$watch('filter', function (newValue) {
+            $(".branch-value").remove("ng-hide")
+            $scope.json = JSON.stringify(newValue, null, 2);
+            $scope.json.object = newValue;
+            $scope.output = computed(newValue.group);
+        }, true);
+
+
+        $scope.Report;
+        $scope.Column = [];
+        $scope.ColumnId = [];
+
+        $scope.CallDirective = function () {
+            $rootScope.$emit('callDirective', $scope.Column);
+        };
+
+        $http.get("/ReportTest/GetColumn?reportId=" + "1=0").then(function (response) {
+            $scope.Column = response.data;
+            $scope.CallDirective();
+            $rootScope.testing = response.data;
+        })
+
+        $scope.getAllReports = function () {
+            $http.get("/ReportTest/GetReport?Filter=byDefinationType").then(function (response) {
+                $scope.Report = response.data;
+            })
+        }
+        //----------------------------------------------
+
+
+    });
+
+</script>
+
+
+<script type="text/javascript">
+
+    var responsiveHelper_dt_basic = undefined;
+    var responsiveHelper_datatable_fixed_column = undefined;
+    var responsiveHelper_datatable_col_reorder = undefined;
+    var responsiveHelper_datatable_tabletools = undefined;
+
+    var AllowEdit = '@ViewBag.AllowUri("/WorkOrder/Edit")';
+
+    //var ActiveDeactive = '@ViewBag.AllowUri("/Workorder/Status")';
+
+    // DO NOT REMOVE : GLOBAL FUNCTIONS!
+    $(document).ready(function () {
+
+        pageSetUp();
+
+        var breakpointDefinition = {
+            tablet: 1024,
+            phone: 480
+        };
+
+        $('#dt_basic').dataTable({
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
+                "t" +
+                "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+            "autoWidth": true,
+            "preDrawCallback": function () {
+                // Initialize the responsive datatables helper once.
+                if (!responsiveHelper_dt_basic) {
+                    responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_dt_basic.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_dt_basic.respond();
+            }
+        });
+        /* END BASIC */
+
+        /* COLUMN FILTER  */
+        var otable = $('#datatable_fixed_column').DataTable({
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6 hidden-xs'f><'col-sm-6 col-xs-12 hidden-xs'<'toolbar'>>r>" +
+                    "t" +
+                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+            "autoWidth": true,
+            "preDrawCallback": function () {
+                // Initialize the responsive datatables helper once.
+                if (!responsiveHelper_datatable_fixed_column) {
+                    responsiveHelper_datatable_fixed_column = new ResponsiveDatatablesHelper($('#datatable_fixed_column'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_datatable_fixed_column.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_datatable_fixed_column.respond();
+            }
+
+        });
+
+        // custom toolbar
+        $("div.toolbar").html('<div class="text-right"><img src="img/logo.png" alt="SmartAdmin" style="width: 111px; margin-top: 3px; margin-right: 10px;"></div>');
+
+        // Apply the filter
+        $("#datatable_fixed_column thead th input[type=text]").on('keyup change', function () {
+            otable
+                .column($(this).parent().index() + ':visible')
+                .search(this.value)
+                .draw();
+        });
+        /* END TABLETOOLS */
+    });
+
+    //$('#viewResult').attr('disabled', true);
+
+    /* END COLUMN FILTER */
+
+    var breakpointDefinition = {
+        tablet: 1024,
+        phone: 480
+    };
+
+
+    var stringQry = "";
+
+    $("#viewResult").click(function () {
+        stringQry = angular.element(document.getElementById('QueryBuilderCtrl')).scope().getstring();
+        // because it contains '()' when empty
+        if (stringQry.length > 2) {
+        }
+        else {
+            return;
+        }
+
+        // clear the old data before loading new data
+        $("#datatable_col_reorder").DataTable().destroy();
+        var minDate = moment.utc("0001-01-01");
+        /* COLUMN SHOW - HIDE */
+        $('#datatable_col_reorder').dataTable({
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'C>r>" +
+                    "t" +
+                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
+            "autoWidth": true,
+            "preDrawCallback": function () {
+                // Initialize the responsive datatables helper once.
+                if (!responsiveHelper_datatable_col_reorder) {
+                    responsiveHelper_datatable_col_reorder = new ResponsiveDatatablesHelper($('#datatable_col_reorder'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_datatable_col_reorder.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_datatable_col_reorder.respond();
+            },
+            "ajax": "/workorder/WOList?value1=" + stringQry + "&value2=null&value3=true",
+            "columns": [
+                        { "data": "WoRefNo" },
+                      //{ "data": "Client" },
+                        { "data": "Region" },
+                        { "data": "Market" },
+                        { "data": "SiteCode" },
+                        { "data": "Tester" },
+                        {
+                            "data": "ReceivedOn",
+                            render: function (data, type, row) {
+                                if (type === 'display' || type === 'filter') {
+                                    var rowvalue = row["ReceivedOn"];
+                                    var rowvalueallday = row["AllDayEvent"];
+                                    if (rowvalueallday == 0) {
+                                        return (moment(data).format("MM/DD/YY (HH:mm)"));
+                                    } else {
+                                        return (moment(data).format("MM/DD/YY"));
+                                    }
+                                }
+                                return data;
+                            }
+                        },
+
+                        {
+                            "data": "SubmittedOn",
+                            render: function (data, type, row) {
+                                if (type === 'display' || type === 'filter') {
+                                    var rowvalue = row["SubmittedOn"];
+                                    var rowvalueallday = row["AllDayEvent"];
+                                    if (rowvalueallday == 0) {
+                                        return (moment(data).format("MM/DD/YY (HH:mm)"));
+                                    } else {
+                                        return (moment(data).format("MM/DD/YY"));
+                                    }
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                            "data": "ScheduledOn",
+                            render: function (data, type, row) {
+                                if (type === 'display' || type === 'filter') {
+                                    var rowvalue = row["ScheduledOn"];
+                                    if (moment.utc(rowvalue).isAfter(minDate)) {
+                                        var rowvalueallday = row["AllDayEvent"];
+                                        if (rowvalueallday == 0) {
+                                            return (moment(data).format("MM/DD/YY (HH:mm)"));
+                                        } else {
+                                            return (moment(data).format("MM/DD/YY"));
+                                        }
+                                    }
+                                    else {
+                                        data = "";
+                                    }
+                                }
+                                return data;
+                            }
+                        },
+                         {
+                             "data": "DriveCompletedOn",
+                             render: function (data, type, row) {
+                                 if (type === 'display' || type === 'filter') {
+                                     var rowvalue = row["DriveCompletedOn"];
+                                     if (moment.utc(rowvalue).isAfter(minDate)) {
+                                         var rowvalueallday = row["AllDayEvent"];
+                                         if (rowvalueallday == 0) {
+                                             return (moment(data).format("MM/DD/YY (HH:mm)"));
+                                         } else {
+                                             return (moment(data).format("MM/DD/YY"));
+                                         }
+                                     }
+                                     else {
+                                         data = "";
+                                     }
+                                 }
+                                 return data;
+                             }
+                         },
+                         {
+                             "data": "ReportSubmittedOn",
+                             render: function (data, type, row) {
+                                 if (type === 'display' || type === 'filter') {
+                                     var rowvalue = row["ReportSubmittedOn"];
+                                     if (moment.utc(rowvalue).isAfter(minDate)) {
+                                         var rowvalueallday = row["AllDayEvent"];
+                                         if (rowvalueallday == 0) {
+                                             return (moment(data).format("MM/DD/YY (HH:mm)"));
+                                         } else {
+                                             return (moment(data).format("MM/DD/YY"));
+                                         }
+                                     }
+                                     else {
+                                         data = "";
+                                     }
+                                 }
+                                 return data;
+                             }
+                         },
+                         {
+                             "data": "CompletedOn",
+                             render: function (data, type, row) {
+                                 if (type === 'display' || type === 'filter') {
+                                     var rowvalue = row["CompletedOn"];
+
+                                     if (moment.utc(rowvalue).isAfter(minDate)) {
+                                         var rowvalueallday = row["AllDayEvent"];
+                                         if (rowvalueallday == 0) {
+                                             return (moment(data).format("MM/DD/YY (HH:mm)"));
+                                         } else {
+                                             return (moment(data).format("MM/DD/YY"));
+                                         }
+                                     }
+                                     else {
+                                         data = "";
+                                     }
+                                 }
+                                 return data;
+                             }
+                         },
+                         { "data": "StatusName" },
+                         {
+                             render: function (data, type, row) {
+                                 var permissions = "";
+
+                                 if (AllowEdit == "True") {
+                                     permissions = '<a href="/WorkOrder/Edit/' + row.SiteId + '" class="table-edit" data-id="Id"><span title="Edit" class="glyphicon glyphicon-pencil"></span></a>' + " | " +
+                                                   '<a href="#"  onclick="IsActiveWo(' + row.SiteId + ',\'false\'); return false;"><span style="color:red;" title="Deactive" class="glyphicon glyphicon-remove-sign"></span></a>'
+                                 }
+                                 return permissions;
+                             }
+                         }
+            ]
+        });
+        /* END COLUMN SHOW - HIDE */
+
+        /* TABLETOOLS */
+        $('#datatable_tabletools').dataTable({
+
+            // Tabletools options:
+            //   https://datatables.net/extensions/tabletools/button_options
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>" +
+                    "t" +
+                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
+            "oTableTools": {
+                "aButtons": [
+                "copy",
+                "csv",
+                "xls",
+                   {
+                       "sExtends": "pdf",
+                       "sTitle": "SmartAdmin_PDF",
+                       "sPdfMessage": "SmartAdmin PDF Export",
+                       "sPdfSize": "letter"
+                   },
+                   {
+                       "sExtends": "print",
+                       "sMessage": "Generated by SmartAdmin <i>(press Esc to close)</i>"
+                   }
+                ],
+                "sSwfPath": "js/plugin/datatables/swf/copy_csv_xls_pdf.swf"
+            },
+            "autoWidth": true,
+            "preDrawCallback": function () {
+                // Initialize the responsive datatables helper once.
+                if (!responsiveHelper_datatable_tabletools) {
+                    responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper($('#datatable_tabletools'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_datatable_tabletools.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_datatable_tabletools.respond();
+            }
+        });
+    });
+    //-----------------------------
+
+
+
+
+
+
+
+</script>
+
+<!-- Your GOOGLE ANALYTICS CODE Below -->
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-XXXXXXXX-X']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+<script type="text/javascript">
+
+
+    function Notify(Message) {
+        $("#errorAlert").fadeIn("slow");
+        $("#errorAlert").delay(4000).fadeOut("slow");
+    }
+
+    function IsActiveWo(SiteId, Status) {
+
+        $.ajax({
+            url: '/Site/Status?SiteId=' + SiteId + '&Status=' + Status,
+            type: 'post',
+            success: function (res) {
+                if (res != 'session expired') {
+                    if (res.Status == 'success') {
+                    } else {
+                        //  $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                    }
+                } else {
+                    //  $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                }
+            }
+        });
+
+        $("#datatable_col_reorder").on('click', '.glyphicon-remove-sign', function () {
+            $(this).closest('tr').remove();
+        });
+
+        return false;
+    }
+
+</script>
+
+

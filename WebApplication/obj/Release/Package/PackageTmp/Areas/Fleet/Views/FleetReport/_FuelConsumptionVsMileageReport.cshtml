@@ -1,0 +1,167 @@
+﻿<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="fcvmr-title">Fuel Report <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Fuel consumption vs mileage report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="fuelcomsumptionvsmileage-custom-filters">
+            <div class="filter-field">
+                <label>Vehicle</label>
+                <input type="text" id="fcvmrassets" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="date-rangefcvmr">
+                </div>
+            </div>
+            <div class="filter-field button">
+                <button id="apply_filtersflcpvsmgrpt" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="fuelcomsumptionvsmileage-table">
+            <table id="fcvmrreport" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Vehicle</th>
+                        <th>Tracker Id</th>
+                        <th>Running Mileage (km)</th>
+                        <th>Use Fuel (%)</th>
+                        <th>Use Fuel (Ltr)</th>
+                        <th>Start Time</th>
+                        <th>Start Address</th>
+                        <th>Start Fuel (%)</th>
+                        <th>Start Fuel (Ltr)</th>
+                        <th>Start Mileage (km)</th>
+                        <th>End Time</th>
+                        <th>End Address</th>
+                        <th>End Fuel (%)</th>
+                        <th>End Fuel (Ltr)</th>
+                        <th>End Mileage</th>
+                        <th>Start Latitude</th>
+                        <th>Start Longitude</th>
+                        <th>End Latitude</th>
+                        <th>End Longitude</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#apply_filtersflcpvsmgrpt").click(function () {
+        debugger;
+        var assets = $("#fcvmrassets").val();
+        var daterange = $("#date-rangefcvmr").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var reportexporttitle = $("#fcvmr-title").text();
+        var exportfilename = $("#fcvmr-title").text();
+        var frcmodel = {
+            ReportFilter: "FuelConsumptionVsMileageReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device:assets
+        }
+
+        var table = $('#fcvmrreport').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy:true,
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_FuelReport",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'AssetName', "name": "Vehicle" },
+               { data: 'TrackerId', "name": "Tracker Id" },
+               { data: 'RunningMileage', "name": "Running mileage" },
+               { data: 'UseFuelPercentage', "name": "Use Fuel (%)" },
+               { data: 'UseFuelLitre', "name": "Use Fuel (Ltr)" },
+               { data: 'StartTime', "name": "Start Time" },
+               { data: 'StartAddress', "name": "Start address" },
+               { data: 'StartFuelPercentage', "name": "Start Fuel (%)" },
+               { data: 'StartFuelLitre', "name": "Start Fuel (Ltr)" },
+               { data: 'StartMileage', "name": "Start mileage (km)" },
+               { data: 'EndTime', "name": "End Time" },
+               { data: 'EndAddress', "name": "End address" },
+               { data: 'EndFuelPercentage', "name": "End fuel (%)" },
+               { data: 'EndFuelLitre', "name": "End fuel (Ltr)" },
+               { data: 'EndMileage', "name": "End mileage" },
+               { data: 'StartLatitude', "name": "Start Latitude" },
+               { data: 'StartLongitude', "name": "Start Longitude" },
+               { data: 'EndLatitude', "name": "End Latitude" },
+               { data: 'EndLongitude', "name": "End Longitude" },
+               
+            ],
+            initComplete: function (settings, json) {
+                $("#fuelcomsumptionvsmileage-custom-filters .top").remove();
+                $($("#fuelcomsumptionvsmileage-table .top")).appendTo("#fuelcomsumptionvsmileage-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+        //$.ajax({
+        //    url: window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+        //    type: "POST",
+        //    traditional: true,
+        //    data:JSON.stringify(frcmodel),
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    error: function (response) {
+        //        alert(response.responseText);
+        //    },
+
+        //    success: function (response) {
+        //        alert(response);
+        //    }
+        //});
+    });
+</script>
+
+

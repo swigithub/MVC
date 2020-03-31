@@ -1,0 +1,14 @@
+﻿
+@*@inherits System.Web.Mvc.WebViewPage*@
+@using GleamTech.AspNet.Mvc;
+@using GleamTech.DocumentUltimate.AspNet.UI;
+@{
+    var doc = new DocumentViewer();
+    doc = ViewBag.documentViewer;
+}
+
+<div>
+    @this.RenderHead(doc)
+    @this.RenderBody(doc)
+
+</div>

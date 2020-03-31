@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23">
+  <g id="Add_Entity_List" data-name="Add Entity List" transform="translate(-6543 -4592)">
+    <g id="Group_3909" data-name="Group 3909">
+      <path id="Subtraction_4" data-name="Subtraction 4" d="M14.5,21.255H1.238A1.284,1.284,0,0,1,0,19.931V6.064H.43c.036,0,.073.005.108.005H3.928A1.809,1.809,0,0,0,5.67,4.2V.578c0-.045,0-.092-.007-.139V0H14.5a1.284,1.284,0,0,1,1.237,1.324V9.651A2,2,0,0,0,14.5,11.5V15H11a2,2,0,0,0,0,4h3.5v2.254ZM3.937,4.971H.538a.514.514,0,0,1-.482-.322.512.512,0,0,1,.113-.567L4.077.173A.51.51,0,0,1,4.442.019.518.518,0,0,1,4.966.54v3.4A1.044,1.044,0,0,1,3.937,4.971Z" transform="translate(6543 4592)" fill="#5d5d5d"/>
+      <g id="Rectangle_2228" data-name="Rectangle 2228" transform="translate(6559 4603)" fill="#5d5d5d" stroke="#5d5d5d" stroke-width="0.2">
+        <rect width="2" height="12" rx="1" stroke="none"/>
+        <rect x="0.1" y="0.1" width="1.8" height="11.8" rx="0.9" fill="none"/>
+      </g>
+      <g id="Rectangle_2229" data-name="Rectangle 2229" transform="translate(6566 4608) rotate(90)" fill="#5d5d5d" stroke="#5d5d5d" stroke-width="1">
+        <rect width="2" height="12" rx="1" stroke="none"/>
+        <rect x="0.5" y="0.5" width="1" height="11" rx="0.5" fill="none"/>
+      </g>
+      <g id="Group_3905" data-name="Group 3905" transform="translate(35 25)">
+        <path id="Path_2888" data-name="Path 2888" d="M.1-1.036h9" transform="translate(6511.5 4576.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+        <line id="Line_1050" data-name="Line 1050" x2="9" transform="translate(6511.5 4579.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+        <path id="Path_2889" data-name="Path 2889" d="M0,0H4.2" transform="translate(6511.5 4583.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+      </g>
+    </g>
+  </g>
+</svg>

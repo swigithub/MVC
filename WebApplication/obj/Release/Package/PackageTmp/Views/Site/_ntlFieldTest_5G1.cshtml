@@ -1,0 +1,862 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_SiteTestSummary>
+@if (Model.Count() > 0)
+{
+    Layout = null;
+    int count = 0;
+    int RowSpan = Model.Count() + Model.Count() + 1;
+    int TotalRecord = Model.Count();
+    var First = Model.FirstOrDefault();
+    string market = string.Empty;
+    bool isCCW = true;
+    bool isCW = true;
+    var ccwCheckExist = Model.Where(a => a.Ccwhandoverstatus == null).Count();
+    if (ccwCheckExist >= 3)
+    {
+        isCCW = false;
+    }
+    var cwCheckExist = Model.Where(a => a.CwHandoverStatus == null).Count();
+    if (cwCheckExist >= 3)
+    {
+        isCW = false;
+    }
+    market = First.City;
+    string NetwordMode = string.Empty;
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+    double NROoklaDLSiteLevel = 0;
+    double LTEOoklaDLSiteLevel = 0;
+    if (Model.FirstOrDefault().OoklaDLSiteLevels.Count()>0)
+    {
+        var nrOokla = Model.FirstOrDefault().OoklaDLSiteLevels.FirstOrDefault(a => a.NetworkMode == "NR");
+        var lteOokla = Model.FirstOrDefault().OoklaDLSiteLevels.FirstOrDefault(a => a.NetworkMode == "LTE");
+        if (nrOokla!=null)
+        {
+            NROoklaDLSiteLevel = nrOokla.OoklaDLSiteLevel;
+        }
+        if (lteOokla != null)
+        {
+            LTEOoklaDLSiteLevel = lteOokla.OoklaDLSiteLevel;
+        }
+    }
+    double dlT = 0;
+    bool? dlStatus = null;
+    if (LTEOoklaDLSiteLevel > 0 && NROoklaDLSiteLevel > 0)
+    {
+        dlT = NROoklaDLSiteLevel - LTEOoklaDLSiteLevel;
+        switch (Model.FirstOrDefault().BandWidth)
+        {
+            case 5:
+                if (dlT >= 0)
+                {
+                    dlStatus = true;
+                }
+                else
+                {
+                    dlStatus = false;
+                }
+                break;
+
+            case 10:
+                if (dlT >= 20)
+                {
+                    dlStatus = true;
+                }
+                else
+                {
+                    dlStatus = false;
+                }
+                break;
+
+            case 15:
+                if (dlT >= 38)
+                {
+                    dlStatus = true;
+                }
+                else
+                {
+                    dlStatus = false;
+                }
+                break;
+            case 20:
+                if (dlT >= 57)
+                {
+                    dlStatus = true;
+                }
+                else
+                {
+                    dlStatus = false;
+                }
+                break;
+            default:
+                dlStatus = false;
+                break;
+        }
+    }
+
+    <div id="pan-FIELD_TEST1">
+
+        @if (ViewBag.mail == "yes")
+        {
+            <div class="ForMail">
+                <br /><br /><br /><b>Dear Client,</b>
+                <br /><br /> Please find below quick summary of site @First.Site for @First.Band carrier @First.Carrier .<br /><br />
+            </div>
+        }
+        <div class="page_title">
+            <h2 data-type="BOOLEAN,STRING" data-preValue="@First.Site">@First.Site - Stationary & Mobility Results</h2>
+        </div>
+        <div class="page_title mb-0">
+            <h3 class="siteID_title" @*id="FIELD_TEST1"*@ data-type="BOOLEAN,STRING" data-preValue="@First.Site">Stationary Test Throughputs & Latency</h3>
+            @*<h4 class="siteID_sub_title">Stationary Test Throughputs & Latency</h4>*@
+        </div>
+        <div class="table_wrapper">
+            <table class="report_table">
+                <tr class="tbl-heading">
+                    <th>Sector</th>
+                    <th>RAT</th>
+                    <th>Test <br>Count</th>
+                    <th>Ookla DL <br> (peak)</th>
+                    @*<th>DL throughput status</th>*@
+                    <th>Ookla DL <br> (avg)</th>
+                    <th>Ookla UL <br> (peak)</th>
+                    <th>Ookla UL <br> (avg)</th>
+                    <th>RTT <br> (avg)</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>
+                        @{
+                            NetwordMode = Model.First().NetworkMode;
+                            if (NetwordMode == "LTE")
+                            {
+                                <span> RSRP</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span> RSSI</span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span> RSCP</span>
+                            }
+                            if (NetwordMode == "NR")
+                            {
+                                <span>RSRP</span>
+                            }
+
+                        }
+                    </th>
+                    <th>
+                        @{
+                            NetwordMode = Model.First().NetworkMode;
+                            if (NetwordMode == "LTE")
+                            {
+                                <span> RSRQ</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span> </span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span> </span>
+                            }
+                            if (NetwordMode == "NR")
+                            {
+                                <span>RSRQ</span>
+                            }
+
+                        }
+                    </th>
+                    <th>
+                        @{
+                            if (NetwordMode == "LTE")
+                            {
+                                <span> SNR</span>
+                            }
+                            if (NetwordMode == "GSM")
+                            {
+                                <span> RxQual</span>
+                            }
+                            if (NetwordMode == "WCDMA")
+                            {
+                                <span> Ec/Io</span>
+                            }
+                            if (NetwordMode == "NR")
+                            {
+                                <span>SNR</span>
+                            }
+                        }
+                    </th>
+                </tr>
+                <tr class="tbl_subHeading">
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>Mbps</th>
+                    @*<th></th>*@
+                    <th>Mbps</th>
+                    <th>Mbps</th>
+                    <th>Mbps</th>
+                    <th>ms</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    
+                    <tr class="tbl-data">
+                        <td><b data-type="STRING" @*class="SECTOR_@item.Sector.ToUpper()"*@>@item.Sector  </b></td>
+                        <td>NR</td>
+                        <td>
+                            @if (item.Testcount > 0)
+                            {
+                                @:@item.Testcount
+                            }
+                        </td>
+                        <td>
+                            @if (item.Testcount >0)
+                            {
+                                @:@item.DownlinkMaxResult.ToString("0.00")
+                            }
+                        </td>
+                        @*@if (dlStatus == true)
+                        {
+                            <td class="pass"><span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span></td>
+                        }
+                        else if (dlStatus == false)
+                        {
+                            <td class="fail"><span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span></td>
+                        }
+                        else
+                        {
+                            <td><span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span></td>
+                        }*@
+                        <td>
+                            @if (item.Testcount > 0)
+                            {
+                                @:@item.DownlinkAvgResult.ToString("0.00")
+                            }
+                        </td>
+                        <td>
+                            @if (item.Testcount > 0)
+                            {
+                                @:@item.UplinkMaxResult.ToString("0.00")
+                            }
+                        </td>
+                        <td>
+                            @if (item.Testcount > 0)
+                            {
+                                @:@item.UplinkAvgResult.ToString("0.00")
+                            }
+                        </td>
+                        <td>
+                            @if (item.Testcount > 0)
+                            {
+                                @:@item.PingAverageResult.ToString("0.00")
+                            }
+                        </td>
+                        <td>
+                            @if (item.Testcount > 0)
+                            {
+                                @:@item.TestLatitude.ToString("0.00000")
+                            }
+                        </td>
+                        <td>
+                            @if (item.Testcount > 0)
+                            {
+                                @:@item.TestLongitude.ToString("0.00000")
+                            }
+                        </td>
+
+                        <td>
+                            @{
+                                if (NetwordMode == "LTE")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.LteRsrp.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "GSM")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.GsmRssi.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "WCDMA")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.WcdmaRscp.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "NR")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.LteRsrp.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+
+                            }
+
+
+
+                        </td>
+                        <td>
+                            @{
+                                if (NetwordMode == "LTE")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.LteRsrq.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "GSM")
+                                {
+                                    <span></span>
+                                }
+                                if (NetwordMode == "WCDMA")
+                                {
+                                    <span></span>
+                                }
+                                if (NetwordMode == "NR")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.LteRsrq.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+
+                            }
+
+
+
+                        </td>
+                        <td>
+                            @{
+                                if (NetwordMode == "LTE")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.LteRsnr.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "GSM")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.GsmRxQual.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "WCDMA")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.WcdmaEcio.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "NR")
+                                {
+                                    <span>
+                                        @if (item.Testcount > 0)
+                                        {
+                                            @:@item.LteRsnr.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                            }
+                        </td>
+                    </tr>
+                    <tr class="tbl-data">
+                        <td><b data-type="STRING" @*class="SECTOR_@item.Sector.ToUpper()"*@>@item.Sector </b> </td>
+                        <td>LTE</td>
+                        <td>
+                            @if (item.MinConSetupTime > 0)
+                            {
+                                @:@item.MinConSetupTime
+                            }
+
+                        </td>
+                        <td>
+                            @if (item.MinConSetupTime > 0)
+                            {
+                                @:@item.DownlinkMinResult.ToString("0.00")
+                            }
+                        </td>
+                        @*<td></td>*@
+                        <td>
+                            @if (item.MinConSetupTime > 0)
+                            {
+                                @:@item.CADLSpeed.ToString("0.00")
+                            }
+                        </td>
+                        <td>
+                            @if (item.MinConSetupTime> 0)
+                            {
+                                @:@item.UplinkMinResult.ToString("0.00")
+                            }
+                        </td>
+                        <td>
+                            @if (item.MinConSetupTime > 0)
+                            {
+                                @:@item.CAULSpeed.ToString("0.00")
+                            }
+
+                        </td>
+                        <!--<td>@item.PingAverageResult.ToString("0.00")</td>-->
+                        <td>
+                            @if (item.MinConSetupTime > 0)
+                            {
+                                @:@item.PingMinResult.ToString("0.00")
+                            }
+
+                        </td>
+                        <td>
+                            @if (item.MinConSetupTime > 0)
+                            {
+                                @:@item.WcdmaEcio.ToString("0.00000")
+                            }
+
+                        </td>
+                        <td>
+                            @if (item.MinConSetupTime > 0)
+                            {
+                                @:@item.LteCqi.ToString("0.00000")
+                            }
+
+                        </td>
+
+                        <td>
+                            @{
+                                if (NetwordMode == "LTE")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.LteRsrp.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "GSM")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.GsmRssi.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "WCDMA")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.WcdmaRscp.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "NR")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.LteRssi.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+
+                            }
+
+
+
+                        </td>
+                        <td>
+                            @{
+                                if (NetwordMode == "LTE")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.LteRsrq.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "GSM")
+                                {
+                                    <span></span>
+                                }
+                                if (NetwordMode == "WCDMA")
+                                {
+                                    <span></span>
+                                }
+                                if (NetwordMode == "NR")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.WcdmaRssi.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+
+                            }
+
+
+
+                        </td>
+                        <td>
+                            @{
+                                if (NetwordMode == "LTE")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.LteRsnr.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "GSM")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.GsmRxQual.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "WCDMA")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.WcdmaEcio.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                                if (NetwordMode == "NR")
+                                {
+                                    <span>
+                                        @if (item.MinConSetupTime > 0)
+                                        {
+                                            @:@item.PhyDLSpeedMin.ToString("0.00")
+                                        }
+
+                                    </span>
+                                }
+                            }
+                        </td>
+                    </tr>
+                                }
+            </table>
+        </div>
+        <div class="table_wrapper">
+            <table class="report_table">
+                <tr class="tbl-heading">
+                    <th>
+                        NR Ookla DL site level <br>
+                        @if (market == "Memphis" || market == "Birmingham")
+                        {
+                            @:(avg)
+          }
+                        else
+                        {
+                            @:(peak)
+          }
+                    </th>
+                    <th>
+                        LTE Ookla DL site level <br>
+                        @if (market == "Memphis" || market == "Birmingham")
+                        {
+                            @:(avg)
+          }
+                        else
+                        {
+                            @:(peak)
+          }
+                    </th>
+                    <th>DL throughput status</th>
+                </tr>
+                <tr class="tbl_subHeading">
+                    <th>Mbps</th>
+                    <th>Mbps</th>
+                    <th></th>
+                </tr>
+                
+                <tr>
+                    <td>@Math.Round(NROoklaDLSiteLevel,2)</td>
+                    <td>@Math.Round(LTEOoklaDLSiteLevel,2)</td>
+                    @if (dlStatus == true)
+                    {
+                        <td class="pass"><span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span></td>
+                    }
+                    else if (dlStatus == false)
+                    {
+                        <td class="fail"><span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span></td>
+                    }
+                    else
+                    {
+                        <td><span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span></td>
+                    }
+                </tr>
+
+            </table>
+        </div>
+        <div class="page_title mb-0 mt-5">
+            <h3 class="siteID_title" data-type="BOOLEAN,STRING">Mobility CW, CCW & VoLTE Call</h3>
+            @*<h4 class="siteID_sub_title">Mobility Test CW, CCW & VoLTE Call</h4>*@
+        </div>
+        <div class="table_wrapper">
+            <table class="report_table">
+                <tr class="tbl-heading">
+                    <th>Sector</th>
+                    <th style="width:100px !important">VoLTE MO</th>
+                    @if (isCW)
+                    {
+                        if (isCW && isCCW)
+                        {
+                            <th>CW (Intra-Site)</th>
+                        }
+                        else
+                        {
+                            <th>Intra-Site HO</th>
+                        }
+                        <th style="width:100px !important">Result </th>
+
+                    }
+
+                    @if (isCCW)
+                    {
+                        if (isCW && isCCW)
+                        {
+                            <th>CCW (Intra-Site)</th>
+                        }
+                        else
+                        {
+                            <th>Intra-Site HO</th>
+                        }
+                        <th style="width:100px !important">Result </th>
+                    }
+                    <th>Inter-Site HO</th>
+                    <th style="width:100px !important">Result</th>
+                </tr>
+                @*<tr class="tbl_subHeading">
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>*@
+                @{
+                    int i = 0;
+                    String[] secOrder = { "alpha", "beta", "gamma", "delta", "epsilon", "digamma", "iota" };
+                    List<string> Sectors = new List<string>();
+                    Sectors.AddRange(Model.Select(m => m.Sector).ToList());
+                    List<string> CCWSectors = new List<string>();
+                    CCWSectors.AddRange(Model.Select(m => m.Sector).Reverse().ToList());
+                    List<string> fCCWSectors = new List<string>();
+                    List<string> tCCWSectors = new List<string>();
+                    for (int s = 0; s < Model.Count(); s++)
+                    {
+                        fCCWSectors.Add(Sectors[s]);
+                        if (s + 1 == Model.Count())
+                        {
+                            tCCWSectors.Add(Sectors[0]);
+                        }
+                        else
+                        {
+                            tCCWSectors.Add(Sectors[s + 1]);
+                        }
+
+                    }
+                }
+                @foreach (var item in Model)
+                {
+                    fCCWSectors.Reverse();
+                    tCCWSectors.Reverse();
+                    String fromSector = Sectors[i];
+                    String toSector = "";
+                    if (i + 1 == Model.Count())
+                    {
+                        toSector = Sectors[0];
+                    }
+                    else
+                    {
+                        toSector = Sectors[i + 1];
+                    }
+                    <tr>
+                        <td>@item.Sector</td>
+                        @if (item.VMoStatus == true)
+                        {
+                            <td class="pass"><span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span></td>
+                        }
+                        else if (item.VMoStatus == false)
+                        {
+                            <td class="fail"><span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span></td>
+                        }
+                        else
+                        {
+                            <td><span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span></td>
+                        }
+                        @if (isCW)
+                        {
+                            <td>@fromSector - @toSector</td>
+                            if (item.CwHandoverStatus == true)
+                            {
+                                <td class="pass"><span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span></td>
+                            }
+                            else if (item.CwHandoverStatus == false)
+                            {
+                            <!--<td class="fail"><span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span></td>-->
+                                <td><span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span></td>
+                            }
+                            else
+                            {
+                                <td><span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span></td>
+                            }
+                        }
+                        
+                        @if (isCCW)
+                        {
+                            <td>@tCCWSectors[i] - @fCCWSectors[i]</td>
+                            if (item.Ccwhandoverstatus == true)
+                            {
+                                <td class="pass"><span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span></td>
+                            }
+                            else if (item.Ccwhandoverstatus == false)
+                            {
+                            <!--<td class="fail"><span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span></td>-->
+                                <td><span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span></td>
+                            }
+                            else
+                            {
+                                <td><span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span></td>
+                            }
+                        }
+                        
+                        <td>@item.Sector</td>
+                        @if (item.ICwHandoverStatus == true)
+                        {
+                            <td class="pass"><span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span></td>
+                        }
+                        else if (item.ICwHandoverStatus == false)
+                        {
+                            <!--<td class="fail"><span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span></td>-->
+                            <td><span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span></td>
+                        }
+                        else
+                        {
+                            <td><span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span></td>
+                        }
+                    </tr>
+                    i++;
+                }
+            </table>
+        </div>
+
+        @if (ViewBag.mail == "yes")
+        {
+            <div class="ForMail">
+                For Detail Reoprt: <a target="_blank" href="@ViewBag.Domain/site/netlayerreport?SiteId=@First.SiteId&BandId=@First.BandId&Carrier=@First.CarrierId&NetworkMode=@First.NetworkModeId&CircleRadios=17&AzmuthRadius=200&Auto=0">Click Here</a>
+                <br /><br /><br /> Regards, <br /><br /><br />
+                <img src="http://airview.swius.com/Content/Images/Application/swi_logo.png" style="width: 131px;height: 58px;" /><br />
+                <b>Sublime Wireless Inc.</b>
+                <br /><br />
+                <span style="color:#1F497D;font-size: 11.0pt;font-family:Calibri,sans-serif;text-align:justify;"> This electronic transmission and any documents which may accompany it, contain information from SWI, SWI's Entity and SWIs's Clients which is intended only for the use of the individual (s) or entity to which it is addressed, and which may contain information that is privileged, confidential, and/or otherwise exempt from disclosure under applicable law. If the reader of this message is not the intended recipient or the employee or agent responsible for delivering the message to the intended recipient, any disclosure, dissemination, distribution, copying or other use of this communication or its substance is prohibited. If you have received this communication in error, please immediately notify us by telephone to arrange for the destruction of the communication or its return to us at our expense. Thank you.</span>
+            </div>
+        }
+
+
+
+
+
+
+    </div>
+
+    <script>
+        var ReportConfiguration = JSON.parse('@Html.Raw(ReportConfiguration)');
+        function Configurations(keyCode, dataType, value, IsActive) {
+            debugger
+            // console.log(keyCode + '-' + dataType + '-' + value + '-' + IsActive);
+            if (dataType == 'BOOLEAN') {
+                if (IsActive == true) {
+                    $('#' + keyCode).show();
+                    $('.' + keyCode).show();
+                    $('#pan-' + keyCode).show();
+                } else {
+                    $('#' + keyCode).hide();
+                    $('.' + keyCode).hide();
+                    $('#pan-' + keyCode).hide();
+                }
+            }
+
+            if (dataType == 'BGCOLOR') {
+                debugger
+                $('.' + keyCode).css({
+                    'background': value
+                });
+            }
+
+            if (dataType == 'STRING') {
+                if (value != null || value != '') {
+                    var preValue = $('#' + keyCode).attr('data-preValue');
+                    if (preValue != undefined) {
+                        $('#' + keyCode).text(preValue + ' ' + value);
+                    } else {
+                        $('#' + keyCode).text(value);
+                    }
+
+                    $('.' + keyCode).text(value);
+                }
+            }
+        }
+
+    </script>
+                    }

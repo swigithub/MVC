@@ -1,0 +1,349 @@
+﻿@using SWI.Libraries.AirView.Entities
+@{
+    ViewBag.Title = "Site History";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = Int32.MaxValue;
+    var Bands = jss.Serialize(ViewBag.Bands);
+    List<BandVM> NetworkMode = ViewBag.NetworkModeBag as List<BandVM>;
+}
+<style>
+    label{
+        padding-top: 8px;
+            font-size: 15px;
+    }
+    #tbl-events th{
+            font-size: 15px;
+    }
+    tr.clicked {
+      background-color: #d2d2d2 !important;
+    }
+    tr {
+    cursor: pointer;
+    }
+</style>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="box-tools pull-right">
+                    <button id="btn-reload" type="button" class="btn btn-box-tool"><i class="fa fa-refresh"></i></button>
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body" style="display: block;">
+                <div id="SiteGrid" class="table-responsive">
+                    @Html.Action("SiteGrid", "SiteDashboard", new { Page = 1, SiteId = ViewBag.SiteId,filter= "SINGLE_SITE" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <div class="col-sm-5">
+                    <h3 style="margin-left: -1.5%;" class="box-title">Events</h3>
+                </div>
+                <div class="col-sm-7">
+                    <h3 class="box-title">Message</h3>
+                </div>
+                <div class="box-tools pull-right">
+                    <button id="btn-reload" type="button" class="btn btn-box-tool"><i class="fa fa-refresh"></i></button>
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+               
+            </div>
+            <div class="box-header with-border">
+                    @*<div class="form-group col-md-3">
+                        @Html.Label("Test Type", htmlAttributes: new { @class = "control-label col-md-5" })
+                        <div class="col-md-7">
+                            <select style="margin-left: -14px;" onchange="LoadAVXFiles(this)" id="TestType" class="form-control">
+                                <option value="All">All</option>
+                                <option value="Stationary">Stationary</option>
+                                <option value="Mobility">Mobility</option>
+                            </select>
+                        </div>
+                    </div>*@
+
+                <div class="form-group col-md-2">
+                    @Html.Label("Network Mode", htmlAttributes: new { @class = "control-label col-md-5" })
+                    <div class="col-md-7">
+                        <select onchange="BindSectors(this);" id="networkMode" class="form-control">
+                            @if (NetworkMode.Count()>0)
+                            {
+                                <option value="All">All</option>
+                                foreach (var item in NetworkMode)
+                                {
+                                    <option value="@item.NetworkMode" data-NetworkModeID="@item.NetworkModeId"  data-BandId="@item.BandId" data-CarrierID="@item.CarrierId" data-SiteID="@ViewBag.SiteId" data-ScopeID="@item.ScopeId">@item.NetworkMode:@item.BandName:@item.Carrier</option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+
+                </div>
+                <div class="form-group col-md-2">
+                    @Html.Label("Sectors", htmlAttributes: new { @class = "control-label col-md-5" })
+                    <div class="col-md-7">
+                        <select onchange="BindAVXFiles(this)" id="sectors" class="form-control">
+                            @if (NetworkMode.Count() > 0)
+                            {
+                                <option value="All">All</option>
+                                foreach (var item in ViewBag.Sectors)
+                                {
+                                    <option value="@item.SectorId">@item.SectorCode</option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+
+                </div>
+
+                    <div class="form-group col-md-2">
+                        @Html.Label("File Picker", htmlAttributes: new { @class = "control-label col-md-5" })
+                        <div class="col-md-7">
+                            <input type="hidden" value="@ViewBag.FilePath" id="FilePath" />
+                            <select onchange="GetInformation();" id="AVXFiles" class="form-control">
+                                @if (ViewBag.AVXFiles != null)
+                                {
+                                    <option value="All">All</option>
+                                    foreach (var item in ViewBag.AVXFiles)
+                                    {
+                                        <option value="@item.fileName">@item.fileName</option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
+
+                    </div>
+            </div>
+                    
+            
+            <div class="box-body">
+                <div class="row split-me">
+                    <div class="col-sm-5">
+                        <div style="height:600px;overflow:auto">                            
+                            
+                                <table class="table table-striped table-hover table-responsive" id="tbl-events">
+                                    <thead>
+                                        <tr style="background-color:rgba(53, 124, 165, 0.89);color:white">
+                                            <th>Timestamp</th>
+                                            <th>RAT</th>
+                                            <th>Radio Bearer ID</th>
+                                            <th>Frequency</th>
+                                            <th>PCI</th>
+                                            <th>Channel</th>
+                                            <th>Event</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbl-events-tbody"></tbody>
+                                </table>
+                            </div>
+                    </div>
+                    <div class="col-sm-7" id="pan-msg">
+                        <div id="element" style="height:600px;overflow:auto;background-color:#f1f1f1"></div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+<script src="~/Content/js/Plugins/MultiColumnDropdown/jquery.inputpicker.js"></script>
+<script src="~/Content/js/Plugins/JsonToTree/jquery.json-view.js"></script>
+<script src="~/Content/js/Plugins/TableSearch/html-table-search.js"></script>
+@*<script src="~/Content/js/SiteGrid.js"></script>*@
+<script src="~/Content/js/Dashboard/js/SiteGrid.js"></script>
+<script src="~/Content/js/Plugins/Confirm/js/confirm.min.js"></script><!--Confirm box-->
+<script src="https://www.jqueryscript.net/demo/Mobile-Slit-Layout-Plugin-jQuery-Touch-Splitter/src/jquery.touchsplitter.js"></script>
+<link href="https://unpkg.com/jquery.splitter/css/jquery.splitter.css" rel="stylesheet" />
+<script>
+        splitter = $('.split-me').touchSplit({
+            leftMin: 0,
+            rightMin: 0,
+            thickness: "5px",
+            dock: "left",
+            bp: 0.1
+        });
+</script>
+    <script>
+        var path = $('#FilePath').val();
+
+        $(document).on('click', '.SectorRow', function () {
+          //  debugger
+            $(".SectorRow").removeClass("SelectedRow");
+            $(this).addClass("SelectedRow");
+            SelectedSector = $(this).attr('data-sector');
+
+            NetLayer = $(this).parent().parent().parent().parent()[0].previousElementSibling.dataset.netlayer;
+            GetInformation();
+        });
+        function EventRowClick(e, Time, Event, channel) {
+           // debugger
+            //    $(e).css('color','red');
+            $("tr").removeClass('clicked');
+            $(e).toggleClass("clicked");
+            path = path.substr(0, path.lastIndexOf("\\")) + '\\' + SelectedSiteCode;
+
+            $.ajax({
+                url: '/NetLayerStatus/LayerMessage',
+                type: 'post',
+                data: { Layer: NetLayer.replace("/", "_") + '_' + SelectedSector, Chennel: channel, FilePath: path, Time: Time, Event: Event },
+                success: function (res) {
+                    $('#element').empty();
+                    if (res.Status == 'success') {
+                        $('#element').jsonView(JSON.parse(res.Message));
+                    }
+                   // console.log(res);
+                   // $('#element').jsonView(JSON.parse(res));
+                }
+            });
+        }
+        function BindSectors(e) {
+            debugger;
+            var SiteId = $("#networkMode option:selected").attr('data-siteid');
+            var NetworkModId = $("#networkMode option:selected").attr("data-networkmodeid");
+            var BandId = $("#networkMode option:selected").attr("data-bandid");
+            var CarrierId = $("#networkMode option:selected").attr("data-carrierid");
+            var ScopeId = $("#networkMode option:selected").attr("data-scopeid");
+            $.get("../../NetLayerStatus/GetSectors", { SiteId: SiteId, NetworkModId: NetworkModId, BandId: BandId, CarrierId: CarrierId, ScopeId: ScopeId }, function (data) {
+                var dropDown = "<select><option value='All'>All</option>";
+                $.each(data, function (index, value) {
+                    dropDown = dropDown + "<option " + value.SectorId + ">" + value.SectorCode + "</option>";
+                });
+                dropDown = dropDown + "</select>";
+                $("#sectors").html(dropDown);
+            });
+            GetInformation();
+        }
+        function BindAVXFiles(e) {
+            //debugger;
+            //var SiteId = $("#networkMode option:selected").attr('data-siteid');
+            //var NetworkModId = $("#networkMode option:selected").attr("data-networkmodeid");
+            //var BandId = $("#networkMode option:selected").attr("data-bandid");
+            //var CarrierId = $("#networkMode option:selected").attr("data-carrierid");
+            //var ScopeId = $("#networkMode option:selected").attr("data-scopeid");
+            //$.get("../../NetLayerStatus/GetSectors", { SiteId: SiteId, NetworkModId: NetworkModId, BandId: BandId, CarrierId: CarrierId, ScopeId: ScopeId }, function (data) {
+            //    var dropDown = "<select><option value='All'>All</option>";
+            //    $.each(data, function (index, value) {
+            //        dropDown = dropDown + "<option " + value.SectorId + ">" + value.SectorCode + "</option>";
+            //    });
+            //    dropDown = dropDown + "</select>";
+            //    $("#sectors").html(dropDown);
+            //});
+            GetInformation();
+        }
+        function GetInformation() {
+
+            //  console.log($('#SiteLayer').val() + '_' + $('#sector').val());
+            var hkh = $("td").find(".details-control");
+            console.log(NetLayer.replace("/", "_") + '_' + SelectedSector);  //NetLayer.replace("/", "_") + '_' + SelectedSector
+            //  path= path.substr(0, path.lastIndexOf("\\")) + '\\' + SelectedSiteCode;
+              path = path.substr(0, path.lastIndexOf("\\")) + '\\'+$(".details-control").attr("data-SiteCode");
+            $.ajax({
+                url: '/NetLayerStatus/Information',
+                type: 'post',
+                data: { Layer: NetLayer.replace("/", "_") + '_' + SelectedSector, networkMode: $("#networkMode").val(), FilePath: path, File: $("#AVXFiles").val() },
+                success: function (res) {
+                    //NetLayer = "";
+                    debugger
+                    $('#element').empty();
+                    $('#tbl-events-tbody').empty();
+                    if (res!=null && res.Status !="error" ) {
+                        $.each(res, function (index, value) {
+                            if (value != null) {
+                                ///    console.log(value);
+                                var evnt = "";
+                                if (value.Event!=null) {
+                                    evnt = value.Event.replace(/[a-z][A-Z]/g, function (str, offset) {
+                                        return str[0] + ' ' + str[1];
+                                    });
+                                }
+                                var bgColorRat = ""
+                                if (value.rat=="LTE") {
+                                    bgColorRat = "#99d9ff";
+                                }
+                                if (value.rat == "NR5G") {
+                                    bgColorRat = "#99ffa7";
+                                }
+                                $('#tbl-events-tbody').append('<tr onclick="javascript: EventRowClick(this,\'' + value.time + '\',\'' + value.Event + '\',\'' + value.channel + '\'); return false;"><td>' + value.time + '</td><td style="background:' + bgColorRat + '">' + value.rat + '</td><td>' + value.RadioBearerID + '</td><td>' + value.Freq + '</td><td>' + value.PCI + '</td><td>' + value.channel + '</td><td>' + evnt + '</td></tr>');
+                            }
+
+                        });
+                    }
+
+
+                    $("#gbox_packages").empty();
+                },
+                error: function (res) {
+                   // NetLayer = "";
+                }
+            });
+
+        }
+
+        var array = JSON.parse('@Html.Raw(Bands)');
+       // console.log(array);
+        $('#tbl-events').tableSearch();
+
+
+        $('#SiteLayer').inputpicker({
+
+            data: array,
+
+            fields: [
+                { name: 'NetworkMode', text: 'Network Mode' },
+                { name: 'BandName', text: 'Band' },
+                { name: 'Carrier', text: 'Carrier' }
+            ],
+
+            headShow: true,
+            filterOpen: true,
+            fieldText: 'Text',
+            fieldValue: 'Value',
+        });
+        //$('#btn-search').click(function () {
+
+        //  //  console.log($('#SiteLayer').val() + '_' + $('#sector').val());
+        //  //  console.log(NetLayer.replace("/", "_") + '_' + SelectedSector);
+        //    $.ajax({
+        //        url: '/NetLayerStatus/Information',
+        //        type:'post',
+        //        data: { Layer: NetLayer.replace("/", "_") + '_' + SelectedSector, Chennel: $('#Chennel').val(), FilePath: $('#FilePath').val() },
+        //        success: function (res) {
+        //            $('#element').empty();
+        //            $('#tbl-events-tbody').empty();
+        //            $.each(res, function (index, value) {
+        //                var evnt = value.Event.replace(/[a-z][A-Z]/g, function (str, offset) {
+        //                    return str[0] + ' ' + str[1];
+        //                });
+        //                $('#tbl-events-tbody').append('<tr onclick="javascript: EventRowClick(' + value.Ticket + ',\'' + value.Event + '\'); return false;"><td>' + value.time + '</td><td>' + value.channel + '</td><td>' + evnt + '</td></tr>');
+        //            });
+
+        //            $("#gbox_packages").empty();
+        //        }
+        //    });
+        //});
+
+    </script>
+    }
+@section style{
+@Styles.Render("~/AdminLTE/plugins/datatables/css")
+<link href="~/Content/js/Plugins/MultiColumnDropdown/jquery.inputpicker.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/JsonToTree/jquery.json-view.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/Confirm/css/confirm.min.css" rel="stylesheet" />
+    }
+

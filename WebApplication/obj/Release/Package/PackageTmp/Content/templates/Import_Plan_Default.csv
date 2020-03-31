@@ -1,0 +1,5 @@
+FACode,Cluster,Market,Latitude,Longitude,SiteName,SiteType,SiteClass,Scope,Description,Task,PlanDate,ForecastStartDate,ForecastEndDate,TargetDate,ActualStartDate,ActualEndDate,Status,Priority
+12222301,CLS001,New Jersey,31.74,74.28,CARBONDALE,N/A,N/A,SSV,,Book Hotel,1/8/2018,1/8/2018,2/8/2018,2/8/2018,1/8/2018,1/8/2018,Completed,High
+,,,,,,,,,,Book Tax,1/8/2018,1/8/2018,2/8/2018,2/8/2018,1/8/2018,1/8/2018,Completed,Low
+,,,,,,,,,,Book Hotel,1/8/2018,1/8/2018,2/8/2018,2/8/2018,1/8/2018,1/8/2018,Completed,Low
+,,,,,,,,,,Book Tax,1/8/2018,1/8/2018,2/8/2018,2/8/2018,1/8/2018,1/8/2018,Completed,Low

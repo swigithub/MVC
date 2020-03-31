@@ -1,0 +1,17 @@
+﻿@model IEnumerable<AirView.DBLayer.AirView.Entities.AD_Help>
+@{
+    ViewBag.Title = "Read Help";
+    Layout = "~/Views/Shared/_LayoutHelp.cshtml";
+}
+
+<div id="display">
+    @foreach (var item in Model)
+    {
+        <h2>@Html.DisplayFor(modelItem => item.Title)</h2>
+        <div>@Html.Raw(item.Description)</div>
+        <p>
+            @Html.ActionLink("Edit", "edit/" + item.HelpId) |
+            @Html.ActionLink("Back to List", "/all")
+        </p>
+    }
+</div>

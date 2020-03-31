@@ -1,0 +1,377 @@
+﻿<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+<style>
+    .zoom {      
+-webkit-transition: all 0.35s ease-in-out;    
+-moz-transition: all 0.35s ease-in-out;    
+transition: all 0.35s ease-in-out;     
+cursor: -webkit-zoom-in;      
+cursor: -moz-zoom-in;      
+cursor: zoom-in;  
+}     
+
+.zoom:hover,  
+.zoom:active,   
+.zoom:focus {
+/**adjust scale to desired size, 
+add browser prefixes**/
+-ms-transform: scale(1.5);    
+-moz-transform: scale(1.5);  
+-webkit-transform: scale(1.5);  
+-o-transform: scale(1.5);  
+transform: scale(1.5);    
+position:relative;      
+z-index:100;  
+}
+</style>
+<div class="" id="schedule-model">
+   @{ 
+       Int64 Counter = 2000;
+   }
+@using (Html.BeginForm("", "", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-Floorplan" }))
+{
+        <div class="row" style="overflow:auto;max-height:700px">
+          
+            <div class="col-sm-12">
+                <div class="Row">
+                    <div class="col-lg-12">
+                        <div class="alert alert-danger" id="Error">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-condensed" style="margin-left:15px; border-spacing: 10px;border-collapse: separate;" id="tbl-PlanFloor">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th><span style="font-size:20px;">Floor</span></th>
+                                    <th><span style="font-size:20px;">Floor Plan</span></th>
+                                    <th></th>
+                               </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item2 in ViewBag.Planned)
+                                {
+                                    var IsActive = "IsActive-r" + Counter;
+                                    var FloorFile = "FloorFile-r" + Counter;
+                                    var Floor = "Floor-r" + Counter;
+                                    var PlanId = "PlanId-r"+Counter;
+                                    var Error = "error-r"+Counter;
+                                    Counter++;
+                                    <tr class="AlreadyPlanned">
+                                        <td>
+                                            <input type="checkbox" class="IsActive" Plan-Id="@item2.PlanId" checked="@item2.IsActive" name="IsActive1" id="@IsActive" />
+
+                                        </td>
+                                        <td>
+                                            <select disabled required class="form-control select" data-name="Floor1" Is-Active="@item2.IsActive" Plan-Id="@item2.PlanId" data-parsley-min="1" name="Floor1" id="@Floor" data-row="r0" style="width:150px;" required>
+                                                <option value="0">-Floor-</option>
+                                                @foreach (var item in ViewBag.Floors)
+                                                {
+                                                    if (item2.FloorId == item.DefinationId)
+                                                    {
+                                                        <option selected value="@item.DefinationId"> @item.DefinationName </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.DefinationId"> @item.DefinationName </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <img class="img-thumbnail zoom" src="@item2.PlanFile" height="64px" width="64px" style="height:100px !important;width:100px !important" />
+                                            <input data-required="no" type="hidden" id="@PlanId" value="@item2.PlanId" name="PlanId1" data-name="PlanId1" />
+                                        </td>
+                                       <td></td>
+                                    </tr>
+                                }
+
+                                <tr id="PlanFloorNewRow" class="PlanFloorNewRow">
+                                    <td><input  type="checkbox" disabled value="true" checked name="IsActive" id="IsActive-r0" /></td>
+                                    <td>
+                                        <select required Is-Active="true" class="select Row Floor PlanRowFirst" data-name="Floor" data-parsley-min="1" name="Floor" id="Floor-r0" data-row="r0" style="width:150px;" >
+                                            <option value="0">-Floor-</option>
+                                            @foreach (var item in ViewBag.Floors)
+                                            {
+                                                <option value="@item.DefinationId">@item.DefinationName</option>
+                                            }
+                                        </select>
+
+                                    </td>
+                                    <td>
+                                        <input data-required="no" type="hidden" id="Clientprefix" value="@ViewBag.Clientprefix" name="Clientprefix" data-name="Clientprefix" />
+                                        <input data-required="no" type="hidden" id="SiteCode" value="@ViewBag.SiteCode" name="SiteCode" data-name="SiteCode" />
+                                        <input data-required="no" type="hidden" id="SiteId" value="@ViewBag.SiteId" name="SiteId" data-name="SiteId" />
+                                        <input data-required="no" required type="file" id="FloorFile-r0" class="file filer PlanRowLast " data-name="FloorFile" name="FloorFile" accept="image/x-png,image/jpeg,image/jpg">
+                                        <input data-required="no" type="hidden" id="PlanId-r0" value="0" name="PlanId" data-name="PlanId" />
+                                       
+                                    </td>
+                                    <td>
+                                        <a style="margin-left:5px" href="#" id="r0" class="deleterow"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+ </div>
+ </div>
+        </div>
+        <div class="Row">
+            <div class="col-lg-12">
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-success btn-sm "><span class="fa fa-calendar-check-o"></span>&nbsp;Plan</button>
+                    <a href="#" class="btn btn-danger btn-sm " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span> Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+}
+   
+</div>
+
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+<script>
+    //Global variables
+    var PlanFloorNewRowInitial = "";
+    var PlanFloorNewRow = "";
+    var AlreadyPlanned = '@ViewBag.Planned.Count';
+    AlreadyPlanned++;
+    var Total = '@ViewBag.Floors.Count';
+    var RowCounter = 1;
+   ////event NewPlanRow
+    function NewPlanRow(CurrentCounter) {
+        debugger
+        var Counter = RowCounter - 1;
+        var RowsFields = (PlanFloorNewRow.match(new RegExp("r" + Counter, "g")) || []).length;
+        for (var i = 0; i < RowsFields; i++) {
+            PlanFloorNewRow = PlanFloorNewRow.replace("r" + Counter, "r" + RowCounter + "");
+        }
+        $('#tbl-PlanFloor').append('<tr class="PlanFloorNewRow">' + PlanFloorNewRow + '</tr>');
+        $('.PlanRowFirst').last().focus();
+        RowCounter++;
+        ///Disable last one
+       // $("#FloorFile-r" + CurrentCounter).css('pointer-events', 'none');
+    //    $("#Floor-r" + CurrentCounter).css('pointer-events', 'none');
+        ///disabled already seleced values
+       // $("#FloorFile-r"+CurrentCounter+" option:selected").attr('disabled', 'disabled');
+    }
+    ////key event for NewPlanRow
+    $(document).on('keydown', '.PlanRowLast', function (e) {
+        var keyCode = e.keyCode || e.which;
+        debugger
+        // AlreadyPlanned < Total
+        if (keyCode == 9) {
+            
+            var eId = e.target.id;
+            var CurrentCounter = parseInt(eId.split("-r")[1]);
+            var SelectedFloor = parseInt($("#Floor-r" + CurrentCounter + " option:selected").val());
+            e.preventDefault();
+            if (this.files.length > 0 && SelectedFloor!=0)
+            {
+                   // AlreadyPlanned++;
+                    NewPlanRow(CurrentCounter);
+               
+            }
+        }
+    });
+    $(document).ready(function () {
+        $("#Error").hide();
+         ////cloning initial row for additional rows
+         PlanFloorNewRowInitial = $('#PlanFloorNewRow').html();
+         PlanFloorNewRow = PlanFloorNewRowInitial;
+
+         //if(AlreadyPlanned >=Total)
+         //{
+         //    $("#FloorFile-r0").attr('disabled', true);
+         //    $("#Floor-r0").attr('disabled', true);
+         //}
+    });
+    ///save floor plan
+     $("#frm-Floorplan").submit(function (evt) {
+         var OK = true;
+         $("#tbl-PlanFloor").find('select').each(function () {
+             debugger
+             var current = $(this).val();
+             if (current ==="0") {
+                 OK = false;
+                 $("#Error").fadeIn();
+                 $("#Error").empty();
+                 $("#Error").append("<strong>Select Floor!</strong>");
+                 setTimeout(function () { $("#Error").fadeOut(); }, 2000);
+                 // $.notify("Select Floor", { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+             }
+         });
+         debugger
+         evt.preventDefault();
+         if (OK == true) {
+             var formData = new FormData($(this)[0]);
+             $.ajax({
+                 url: '/Dashboard/SaveFloorPlan',
+                 type: 'POST',
+                 data: formData,
+                 async: false,
+                 cache: false,
+                 contentType: false,
+                 enctype: 'multipart/form-data',
+                 processData: false,
+                 success: function (response) {
+                     if (response.Status == "danger") {
+                         $.notify(response.Message, { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                     }
+                     else {
+                         $.notify(response.Message, { type: "success", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+                         fnHideModal();
+                     }
+                 }
+                 , error: function () {
+                     $.notify("Error occured !", { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+
+                 }
+             });
+             return false;
+         }
+         return false;
+     });
+    ////onselect change
+   
+
+     /////select floor change
+     $(document).on('change', 'select', function (e) {
+         // debugger
+         var value = $(this).val();
+         var Pid = e.target.id;
+         var Eventselect = $(this);
+        
+        $("#tbl-PlanFloor").find('select').each(function () {
+            debugger
+            var current = $(this).val();
+            var PId = parseInt(this.id.split("-r")[1]);
+            var PIsActive = $('#IsActive-r'+PId).prop("checked");
+            var CId = parseInt(this.id.split("-r")[1]);
+            var CIsActive = $('#IsActive-r'+CId).prop("checked");
+            if (current === value && this.id != e.target.id && CIsActive==true) {
+                // var fgfg = this.id;
+                $("#" + e.target.id).prop("selected", false) //.siblings().removeAttr('disabled');
+               // Eventselect.val(0);
+               //  Eventselect.prop("selected", false); //.siblings().removeAttr('disabled');
+                 //Eventselect.val('0');
+                $("#" + e.target.id).val('0');
+                $("#select2-" + e.target.id + "-container").html("-Floor-");
+               $("#Error").fadeIn();
+                $("#Error").empty();
+                $("#Error").append("<strong>Floor Already Selected!</strong>");
+                setTimeout(function () { $("#Error").fadeOut(); }, 2000);
+                  //$('#select2-Floor-r0-result-gy3m-163350').prop('selected', 'selected');
+                // $("#" + e.target.id+ " option:contains(-Floor-)").attr('selected', 'selected');
+                 //$("#" + e.target.id + " option[value=0]").prop('selected', 'selected');
+                 //console.log($("#" + e.target.id + " option[value=0]"));
+               //  $("#" + e.target.id + " option[value=1]").attr('selected', 'selected');
+               //  $("#" + e.target.id + " option[value=0]").prop('selected', true);
+                // $("#" + e.target.id + " option[value=1]").attr('selected', true);
+
+
+
+             }
+         });
+         //$(".AlreadyPlanned").each(function () {
+         //    debugger
+         //    var fdfdf = $(this).find('select').val();
+         //    var checked = $(this).find('input[type=checkbox]')[0].checked;
+         //    var Cid = $(this).find('select')[0].id;
+         //    if (fdfdf === value && checked==true) {
+         //        Eventselect.prop("selected", false); 
+         //        Eventselect.val(0);
+         //    }
+         //});
+     });
+    ///ajax request on change checked (Is Active)
+     $(".IsActive").change(function (e) {
+     if (!this.checked) {
+                 $.ajax({
+                     url: '/Dashboard/IsActiveFloorPlan',
+                     data: { PlanId: $(this).attr('Plan-Id'), IsActive: this.checked },
+                     type: 'POST',
+                     dataType: "json",
+                     success: function (response) {
+                         if (response.Status == "danger") {
+                             // $.notify(response.Message, { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                         }
+                         else {
+                             // $.notify(response.Message, { type: "success", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                         }
+                     }
+        , error: function () {
+            // $.notify("Error occured !", { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+
+        }
+                 });
+             }
+             else {
+                 var Ok = true;
+                 $("#tbl-PlanFloor").find('select').each(function () {
+                     debugger
+                     var PId = e.target.id;
+                     var PSelected = $('#Floor-r' + PId.split("-r")[1] + " option:selected").val();
+                     var current = $(this).val();
+                     var currentId = $(this).id;
+                     var CId = parseInt(this.id.split("-r")[1]);
+                     var CIsActive = $('#IsActive-r' + CId).prop("checked");
+                     if (current === PSelected && this.id.split("-r")[1] != e.target.id.split("-r")[1] && CIsActive == true) {
+                         // var fgfg = this.id;
+                        // $("#"+e.target.id).prop("selected", false) //.siblings().removeAttr('disabled');
+                         Ok = false;
+                         var na= '#IsActive-r'+PId.split("-r")[1];
+                         $(na).prop("checked", false);
+                         $("#Error").fadeIn();
+                         $("#Error").empty();
+                         $("#Error").append("<strong>Floor Already Active !</strong>");
+                         setTimeout(function () { $("#Error").fadeOut(); }, 2000);
+                     }
+                 });
+                 if (Ok == true) {
+                     $.ajax({
+                         url: '/Dashboard/IsActiveFloorPlan',
+                         data: { PlanId: $(this).attr('Plan-Id'), IsActive: this.checked },
+                         type: 'POST',
+                         dataType: "json",
+                         success: function (response) {
+                             if (response.Status == "danger") {
+                                 // $.notify(response.Message, { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                             }
+                             else {
+                                 // $.notify(response.Message, { type: "success", color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                             }
+                         }
+      , error: function () {
+          // $.notify("Error occured !", { type: "error", color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+
+      }
+                     });
+                     return false;
+                 }
+                 else {
+                    // this.checked = !this.checked;
+                 }
+             }
+          
+         });
+    
+    ///DELETE ROW
+
+     $(document).on("click", ".deleterow", function (e) { //user click on remove text
+         e.preventDefault();
+         var Delete=0;
+         $(".PlanFloorNewRow").each(function () {
+             Delete++
+         });
+         if (Delete > 1) {
+             $(this).parent().parent().remove();
+         }
+     })
+</script>

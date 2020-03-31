@@ -1,0 +1,303 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model AD_ClientContacts
+
+@if (ViewBag.Count == 0)
+{
+    <div class="box box-solid">
+        <div class="box-header with-border BoxHeaderBgcolor">
+            <h3 class="box-title" style="text-align:center">Contact info</h3>
+            <a class="btn btn-sm btn-info pull-right" id="btn-NewRow">New Row</a>
+
+        </div>
+        <div class="box-body">
+
+            <table class="table table-hover" id="tbl-def">
+                <tr>
+                    <th>Title</th>
+                    <th>Contact Person</th>
+                    <th>Designation</th>
+                    <th>Gender</th>
+                    <th>Contact Type</th>
+                    <th>Contact No</th>
+                    <th>User</th>
+                    <th>Region</th>
+                    <th>City</th>
+                    <th>Report To</th>
+                    <th>IsPrimary</th>
+                    <th>IsActive</th>
+
+                </tr>
+                @Html.HiddenFor(m => m.ContactId)
+                <tr id="NewRow">
+                    <td>
+                        @Html.DropDownListFor(m => m.Title, new List<SelectListItem>{
+                               new SelectListItem{ Text="MR", Value="MR"},
+                               new SelectListItem{ Text="MRS", Value="MRS"},
+                                new SelectListItem{ Text="MISS", Value="MISS"},
+                               new SelectListItem{ Text="MS", Value="MS"},
+                                new SelectListItem{ Text="SIR", Value="SIR"},
+                               new SelectListItem{ Text="REV", Value="REV"},
+                               new SelectListItem{ Text="DR", Value="DR"}
+                            }, "--- Select ---", new { @class = "form-control Row", name = "Title", data_name = "Title", id = "Title" })
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => m.ContactPerson, new { htmlAttributes = new { @class = "form-control Row", name = "ContactPerson", data_name = "ContactPerson", id = "ContactPerson" } })
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => m.Designation, new { htmlAttributes = new { @class = "form-control Row", name = "Designation", data_name = "Designation", id = "Designation" } })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => m.Gender, new List<SelectListItem>{
+                               new SelectListItem{ Text="Male", Value="Male"},
+                               new SelectListItem{ Text="Female", Value="Female"}
+                            }, "--- Select ---", new { @class = "form-control Row", name = "Gender", data_name = "Gender", id = "Gender" })
+                    </td>
+
+                    <td>
+                        @Html.DropDownListFor(m => m.ContactType, new List<SelectListItem>{
+                               new SelectListItem{ Text="Mobile", Value="Mobile"},
+                               new SelectListItem{ Text="Phone", Value="Phone"}
+                            }, "--- Select ---", new { @class = "form-control Row", name = "ContactType", data_name = "ContactType", id = "ContactType" })
+
+
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.ContactNo, new { @class = "form-control Row", name = "ContactNo", data_name = "ContactNo", id = "ContactNo" })
+                    </td>
+
+
+                    <td>@Html.DropDownListFor(m => m.UserId, ViewBag.Users as List<SelectListItem>, new { @class = "form-control select Row RowFirst UserId", id = "UserId-r0", required = "required", data_parsley_min = "1", data_name = "UserId", data_row = "r0", style = "width:100px;", name = "UserId" })</td>
+                    <td>@Html.DropDownListFor(m => m.RegionId, ViewBag.Regions as List<SelectListItem>, new { @class = "form-control select Row RowFirst RegionId", id = "RegionId-r0", required = "required", data_parsley_min = "1", data_name = "RegionId", data_value = "aa", data_row = "r0", style = "width:100px;", name = "RegionId" })</td>
+
+                    <td>
+                        <select class="form-control select Row RowFirst CityId" data-name="CityId" data-parsley-min="1" name="CityId" id="CityId-r0" data-row="r0" style="width:100px;">
+                            <option>Select City</option>
+                        </select>
+                        @*@Html.DropDownListFor(m => m.CityId, ViewBag.Cities as List<SelectListItem>, new { @class = "form-control select Row RowFirst CityId", id = "CityId-r0", required = "required", data_parsley_min = "1", data_name = "CityId", data_row = "r0", style = "width:100px;", name = "CityId" })*@
+                    </td>
+
+                    <td>@Html.DropDownListFor(m => m.ReportToId, ViewBag.Reports as List<SelectListItem>, new { @class = "form-control select Row RowFirst ReportToId", id = "ReportToId-r0", required = "required", data_parsley_min = "1", data_name = "ReportToId", data_row = "r0", style = "width:100px;", name = "ReportToId" })</td>
+                    <td>
+                        @Html.CheckBoxFor(m => m.IsPrimary, new { @class = "Row IsPrimary", data_name = "IsPrimary", data_row = "r0", @checked = "", name = "IsPrimary" })
+                        <input type="hidden" value="true" data-name="IsPrimary" id="IsPrimary-r0" />
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(m => m.IsActive, new { @class = "Row IsActive", data_name = "IsActive", data_row = "r0", @checked = "", value = "true", name = "IsActive" })
+                        @*<input type="checkbox" class="Row IsActivebox" checked data-name="IsActivebox" data-row="r0" name="IsActivebox" />*@
+                        <input type="hidden" value="true" data-name="IsActive" id="IsActive-r0" />
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+
+}
+else
+{
+
+    <div class="box box-solid">
+        <div class="box-header with-border BoxHeaderBgcolor">
+            <h3 class="box-title" style="text-align:center">Contact info</h3>
+            <a class="btn btn-sm btn-info pull-right" id="btn-NewRow">New Row</a>
+
+        </div>
+        <div class="box-body">
+
+            <table class="table table-hover" id="tbl-def">
+                <tr>
+                    <th>Title</th>
+                    <th>Contact Person</th>
+                    <th>Designation</th>
+                    <th>Gender</th>
+                    <th>Contact Type</th>
+                    <th>Contact No</th>
+                    <th>User</th>
+                    <th>Region</th>
+                    <th>City</th>
+                    <th>Report To</th>
+                    <th>IsPrimary</th>
+                    <th>IsActive</th>
+
+                </tr>
+                @foreach (var item in Model.Client)
+               {
+                @Html.HiddenFor(m => item.ContactId)
+                    @Html.HiddenFor(m => item.ClientId)
+                <tr id="NewRow">
+                    <td>
+                        @Html.DropDownListFor(m => item.Title, new List<SelectListItem>{
+                               new SelectListItem{ Text="MR", Value="MR"},
+                               new SelectListItem{ Text="MRS", Value="MRS"},
+                                new SelectListItem{ Text="MISS", Value="MISS"},
+                               new SelectListItem{ Text="MS", Value="MS"},
+                                new SelectListItem{ Text="SIR", Value="SIR"},
+                               new SelectListItem{ Text="REV", Value="REV"},
+                               new SelectListItem{ Text="DR", Value="DR"}
+                            }, "--- Select ---", new { @class = "form-control Row", name = "Title", data_name = "Title", id = "Title" })
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => item.ContactPerson, new { htmlAttributes = new { @class = "form-control Row", name = "ContactPerson", data_name = "ContactPerson", id = "ContactPerson" } })
+                    </td>
+                    <td>
+                        @Html.EditorFor(m => item.Designation, new { htmlAttributes = new { @class = "form-control Row", name = "Designation", data_name = "Designation", id = "Designation" } })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(m => item.Gender, new List<SelectListItem>{
+                               new SelectListItem{ Text="Male", Value="Male"},
+                               new SelectListItem{ Text="Female", Value="Female"}
+                            }, "--- Select ---", new { @class = "form-control Row", name = "Gender", data_name = "Gender", id = "Gender" })
+                    </td>
+
+                    <td>
+                        @Html.DropDownListFor(m => item.ContactType, new List<SelectListItem>{
+                               new SelectListItem{ Text="Mobile", Value="Mobile"},
+                               new SelectListItem{ Text="Phone", Value="Phone"}
+                            }, "--- Select ---", new { @class = "form-control Row", name = "ContactType", data_name = "ContactType", id = "ContactType" })
+
+
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => item.ContactNo, new { @class = "form-control Row", name = "ContactNo", data_name = "ContactNo", id = "ContactNo" })
+                    </td>
+
+
+                    <td>@Html.DropDownListFor(m => item.UserId, ViewBag.Users as List<SelectListItem>, new { @class = "form-control select Row RowFirst UserId", id = "UserId-r0", required = "required", data_parsley_min = "1", data_name = "UserId", data_row = "r0", style = "width:100px;", name = "UserId" })</td>
+                    <td>@Html.DropDownListFor(m => item.RegionId, ViewBag.Regions as List<SelectListItem>, new { @class = "form-control select Row RowFirst RegionId", id = "RegionId-r0", required = "required", data_parsley_min = "1", data_name = "RegionId", data_value = "aa", data_row = "r0", style = "width:100px;", name = "RegionId" })</td>
+
+                    <td>
+                        <select class="form-control select Row RowFirst CityId" data-name="CityId" data-parsley-min="1" name="CityId" id="CityId-r0" data-row="r0" style="width:100px;">
+                            <option>Select City</option>
+                        </select>
+                        @*@Html.DropDownListFor(m => m.CityId, ViewBag.Cities as List<SelectListItem>, new { @class = "form-control select Row RowFirst CityId", id = "CityId-r0", required = "required", data_parsley_min = "1", data_name = "CityId", data_row = "r0", style = "width:100px;", name = "CityId" })*@
+                    </td>
+
+                    <td>@Html.DropDownListFor(m => item.ReportToId, ViewBag.Reports as List<SelectListItem>, new { @class = "form-control select Row RowFirst ReportToId", id = "ReportToId-r0", required = "required", data_parsley_min = "1", data_name = "ReportToId", data_row = "r0", style = "width:100px;", name = "ReportToId" })</td>
+                    <td>
+                        @Html.CheckBoxFor(m => item.IsPrimary, new { @class = "Row IsPrimary", data_name = "IsPrimary", data_row = "r0", @checked = "", name = "IsPrimary" })
+                        <input type="hidden" value="true" data-name="IsPrimary" id="IsPrimary-r0" />
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(m => item.IsActive, new { @class = "Row IsActive", data_name = "IsActive", data_row = "r0", @checked = "", value = "true", name = "IsActive" })
+                        @*<input type="checkbox" class="Row IsActivebox" checked data-name="IsActivebox" data-row="r0" name="IsActivebox" />*@
+                        <input type="hidden" value="true" data-name="IsActive" id="IsActive-r0" />
+                    </td>
+                </tr>
+               }
+            </table>
+
+        </div>
+
+    </div>
+}
+
+<script>
+        $(function () {
+            var NewRowHTML = $('#NewRow').html();
+            var count = 1;
+            var SelectedDefinationType = 0;
+            var SelectedPDefinationId = 0;
+            var SelectedRegion = 0;
+            var SelectedCity = 0;
+            //select last DefinationTypeId
+
+            //   $("select").select2();
+            $(document).on('click', '#btn-NewRow', function () {
+                NewRow();
+            });
+
+            $(document).on('keydown', '.RowLast', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (keyCode == 9) {
+                    e.preventDefault();
+                    NewRow();
+                }
+            });
+            function NewRow() {
+                var str = NewRowHTML.replace("Band-r0", "Band-r" + count+ "");
+                var RowsFields = (str.match(new RegExp("r0", "g")) || []).length;
+                for (var i = 0; i < RowsFields; i++) {
+                    str = str.replace("r0", "r" + count + "");
+                }
+
+                $('#tbl-def').append('<tr class="NewRow">' + str + '</tr>');
+
+                //$('.RowFirst').last().focus();
+
+                count++;
+
+                ////select last DefinationTypeId
+                //$('.DefinationTypeId').last().val(SelectedDefinationType);
+                //var row = $('.PDefinationId').last().attr('data-row');
+                //LoadPDefinationId(row, SelectedDefinationType);
+                //$('.PDefinationId').last().val(SelectedPDefinationId);
+                ////   $("select").select2();
+            }
+
+
+            $(document).on('keydown', '.Row', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (e.keyCode == 46) {
+                    e.preventDefault();
+                    $(this).closest('tr').remove();
+                    $('.RowLast').last().focus();
+                }
+
+            });
+         
+
+
+            $(document).on('change', '.RegionId', function () {
+
+                var value = $(this).val();
+                SelectedRegion = value;
+                var row = $(this).attr('data-row');
+
+                    LoadCityId(row, value);
+
+
+            });
+
+
+
+            $(document).on('change', '.CityId', function () {
+
+                var value = $(this).val();
+                SelectedCity = value;
+            });
+            function LoadCityId(row, value) {
+
+                $('#CityId-' + row).empty;
+              //  $('#CityId-' + row).append(' <option>-Select City-</option></select>');
+                $.ajax({
+                    url: '/Client/ToList?filter=CitiesByPId&value=' + value,
+                    type: 'post',
+                    success: function (res) {
+                        //$('#CityId-r0').empty();
+                        $.each(res, function (i, v) {
+                            $('#CityId-' + row).append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                        });
+                    }
+                });
+            }
+            function LoadCity(row, value) {
+                $('#CityId-' + row).empty;
+               // $('#CityId-' + row).append(' <option>-Select City-</option></select>');
+                $.ajax({
+                    url: '/Client/ToList?filter=CitiesByPId&value=' + value,
+                    type: 'post',
+                    success: function (res) {
+                        $('#CityId-r0').empty();
+                        $.each(res, function (i, v) {
+                            $('#CityId-' + row).append(' <option value=' + v.DefinationId + '>' + v.DefinationName + '</option></select>');
+                        });
+                    }
+                });
+
+            }
+        });
+
+</script>

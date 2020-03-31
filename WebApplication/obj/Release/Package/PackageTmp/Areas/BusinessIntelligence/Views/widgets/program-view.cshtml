@@ -1,0 +1,436 @@
+<div class="widget" ng-controller="PV">
+    <div class="title-bar" style="background:{{titlebg}};">
+        <h3>
+            <img src="images/title-icon1.png" alt="" />
+            <span class="update-name">{{widgetname_01}}</span>
+            <span class="cache-value"></span>
+            <input ng-model="widgetname_01" ng-init="widgetname_01='Program View'" type="text" />
+        </h3>
+        <div class="buttons-sets">
+            <a class="custom-btn icon-only remove-btn"><i class="fa fa-times"></i><span class="custom-tooltip">Remove</span></a>
+            <a class="custom-btn icon-only collapse-btn"><i class="fa fa-minus"></i><span class="custom-tooltip">Collapse</span></a>
+            <a class="custom-btn icon-only opt-btn"><i class="fa fa-columns"></i><span class="custom-tooltip">Panel Size</span></a>
+            <ul class="opt-dropdown">
+                <li class="has-children">
+                    <a href="#" title="">Panel Size</a>
+                    <ul class="column-size">
+                        <li><a class="twothird" href="#" title="">Two Thrid <img src="images/twothird.png" alt=""></a></li>
+                        <li><a class="fullwide" href="#" title="">Full Wide <img src="images/full.png" alt=""></a></li>
+                    </ul>
+                </li>
+                <li class="has-children">
+                    <a href="#" title="">Panel Color</a>
+                    <ul class="panel-color">
+                        <li>
+                            <a href="#" title="">
+                                <input class="bgcolor" type="text" value="#fff" ng-model="titlebg" ng-init="titlebg = '#fff'" />
+                                <div class="colorpickerwrapper style2"><div colorpicker></div></div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+        <ul class="nav tabs-selectors">
+            <li> <a class="active" data-toggle="tab" data-target="#tracking"><span class="sprite-icon tracking"></span> <i>Tracking</i> <img src="images/tracking-big.png" alt="" /></a> </li>
+            <li> <a data-toggle="tab" data-target="#sites"><span class="sprite-icon sites"></span> <i>Sites</i> <img src="images/sites-big.png" alt="" /></a></li>
+            <li> <a data-toggle="tab" data-target="#issues"><span class="sprite-icon issues"></span> <i>Issues</i>  <img src="images/issues-big.png" alt="" /></a></li>
+            <li> <a data-toggle="tab" data-target="#summary"><span class="sprite-icon summary "></span> <i>Summary</i>  <img src="images/summary-big.png" alt="" /></a></li>
+        </ul>
+        <div class="buttons-sets">
+            <a class="custom-btn target icon-only"><i class="far fa-dot-circle"></i><span class="custom-tooltip">Set Target</span></a>
+            <a class="custom-btn import icon-only"><i class="fa fa-download"></i><span class="custom-tooltip">Import</span></a>
+            <a class="opt-btn custom-btn icon-only" href="#" title=""><i class="fa fa-filter"></i></a>
+            <ul class="opt-dropdown style2 wider">
+                <li><a href="javascript:void(0)" title=""><div class="date-range" datepicker> <span class="getValue"></span> </div></a></li>
+                <li>
+                    <select class="multiselect" multiple="multiple" multiselect>
+                        <optgroup label="North East" class="group-1">
+                            <option>NY/NNJ</option>
+                            <option>Michigan/Indiana</option>
+                            <option>E.Pa/S.Nj/De</option>
+                            <option>Ohio/Western Pennsylvania</option>
+                            <option>Washington DC-Baltimore</option>
+                        </optgroup>
+                        <optgroup label="West" class="group-2">
+                            <option>Desert Southwest</option>
+                            <option>Pacific Northwest</option>
+                            <option>San Diego/Las Vegas</option>
+                            <option>Rocky Mountain Region</option>
+                        </optgroup>
+                        <optgroup label="Central" class="group-3">
+                            <option> Illinois/Wisconsin</option>
+                            <option>Northern Plains</option>
+                            <option>Greater Midwest</option>
+                        </optgroup>
+                    </select>
+                </li>
+                <li>
+                    <select class="multiselect" multiselect>
+                        <option>TSS</option>
+                        <option>EPL</option>
+                        <option>Pre Install</option>
+                        <option>Migration</option>
+                        <optgroup label="SSM" class="group-1">
+                            <option>Ordered</option>
+                            <option>Called Out</option>
+                            <option>Delivered</option>
+                        </optgroup>
+                    </select>
+                </li>
+                <!-- <li><a href="#" title="">All Markets</a>
+                        <ul class="checkList">
+                                <li><label><input name="all" type="checkbox"> Select All</label></li>
+                                <li>
+                                        <label><input name="northeast" type="checkbox"> North East</label>
+                                        <ul>
+                                                <li><label><input name="northeast" type="checkbox"> NY/NNJ</label></li>
+                                                <li><label><input name="northeast" type="checkbox"> Michigan/Indiana</label></li>
+                                                <li><label><input name="northeast" type="checkbox"> E.Pa/S.Nj/De</label></li>
+                                                <li><label><input name="northeast" type="checkbox"> Ohio/Western Pennsylvania</label></li>
+                                                <li><label><input name="northeast" type="checkbox"> Washington DC-Baltimore</label></li>
+                                        </ul>
+                                </li>
+                                <li>
+                                        <label><input name="west" type="checkbox"> West</label>
+                                        <ul>
+                                                <li><label><input name="west" type="checkbox"> Desert Southwest</label></li>
+                                                <li><label><input name="west" type="checkbox"> Pacific Northwest</label></li>
+                                                <li><label><input name="west" type="checkbox"> San Diego/Las Vegas</label></li>
+                                                <li><label><input name="west" type="checkbox"> Rocky Mountain Region</label></li>
+                                        </ul>
+                                </li>
+                                <li>
+                                        <label><input name="central" type="checkbox"> Central</label>
+                                        <ul>
+                                                <li><label><input name="central" type="checkbox"> Illinois/Wisconsin</label></li>
+                                                <li><label><input name="central" type="checkbox"> Northern Plains</label></li>
+                                                <li><label><input name="central" type="checkbox"> Greater Midwest</label></li>
+                                        </ul>
+                                </li>
+                        </ul>
+                </li>
+                <li><a href="#" title="">All Milestone</a>
+                        <ul class="checkList">
+                                <li><label><input name="milestone" type="radio"> TSS</label></li>
+                                <li><label><input name="milestone" type="radio"> SSM</label>
+                                        <ul>
+                                                <li><label><input name="milestone" type="checkbox"> Ordered</label></li>
+                                                <li><label><input name="milestone" type="checkbox"> Called Out</label></li>
+                                                <li><label><input name="milestone" type="checkbox"> Delivered</label></li>
+                                        </ul>
+                                </li>
+                                <li><label><input name="milestone" type="radio"> EPL</label></li>
+                                <li><label><input name="milestone" type="radio"> Pre Install</label></li>
+                                <li><label><input name="milestone" type="radio"> Migration</label></li>
+                        </ul>
+                </li> -->
+
+                <li><a class="filter-btn" href="#" title="">Apply</a></li>
+            </ul>
+        </div>
+        <div class="selected-filters">
+        </div><!-- Selected Filters -->
+    </div>
+
+    <div class="content-wrapper">
+        <div class="programview-content tab-content">
+            <div id="tracking" class="tab-pane fade show active">
+                <div class="row">
+                    <div class="col-xl-8 col-lg-12 col-md-12">
+                        <div class="pv-info-wrapper">
+                            <div class="pv-info"><span>Forcasted MTD:<i>6279</i></span><span>Actual MTD:<i>4831</i></span></div>
+                            <div class="pv-info"><span>Forcasted MTD:<i>6279</i></span><span>Actual MTD:<i>4831</i></span></div>
+                        </div><!-- PV Info Wrapper -->
+
+                        <div class="custom-selectbox">
+                            <span class="opt-btn"><img src="images/calendar.png" alt="" />  <i>Yearly</i></span>
+                            <ul class="opt-dropdown">
+                                <li><a href="#" title="">Daily</a></li>
+                                <li><a href="#" title="">Weekly</a></li>
+                                <li><a href="#" title="">Monthly</a></li>
+                                <li><a href="#" title="">Quarterly</a></li>
+                                <li><a href="#" title="">Yearly</a></li>
+                            </ul>
+                        </div><!-- Custom SelectBox -->
+
+                        <div id="programview"></div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-12 col-md-12">
+                        <div class="progress-bars scrollbar">
+                            <div ng-repeat="x in progress" class="pv-progresser">
+                                <a class="{{x.class}}" href="#" title=""><i class="fa fa-plus"></i></a> <input id="{{x.id}}" type="checkbox" /> <label class="{{x.textclr}} {{x.borderclr}}" for="{{x.for}}">{{x.title}}</label>
+                                <span>{{x.range}}</span>
+                                <div class="pv-progress"><span>{{x.percent}}</span> <div class="progress-fill {{x.class}}" style="width:{{x.percent}}"></div> </div>
+                                <div class="pv-progresser-dropdown" ng-if="x.progressDropdown">
+                                    <div ng-repeat="y in x.progressDropdown" class="pv-progresser">
+                                        <a class="{{y.class}}" href="#" title=""><i class="fa fa-plus"></i></a> <input id="{{y.id}}" type="checkbox" /> <label class="{{y.textclr}} {{y.borderclr}}" for="{{y.for}}">{{y.title}}</label>
+                                        <span>{{y.range}}</span>
+                                        <div class="pv-progress"><span>{{y.percent}}</span> <div class="progress-fill {{y.class}}" style="width:{{y.percent}}"></div> </div>
+                                        <div class="pv-progresser-dropdown" ng-if="y.progressDropdown">
+                                            <div ng-repeat="z in y.progressDropdown" class="pv-progresser">
+                                                <a class="{{z.class}}" href="#" title=""><i class="fa fa-plus"></i></a> <input id="{{z.id}}" type="checkbox" /> <label class="{{z.textclr}} {{z.borderclr}}" for="{{z.for}}">{{z.title}}</label>
+                                                <span>{{z.range}}</span>
+                                                <div class="pv-progress"><span>{{z.percent}}</span> <div class="progress-fill {{z.class}}" style="width:{{z.percent}}"></div> </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- Progress Bars -->
+                    </div>
+                </div>
+            </div><!-- Tracking -->
+            <div id="sites" class="tab-pane fade">
+                <div class="table-top">
+                    <div class="row align-items-start">
+                        <div class="col-lg-auto col-md-12">
+                            <a class="custom-btn color9" href="#" title="">Add New Sites</a>
+                        </div>
+                        <div class="col-lg-auto ml-auto col-md-12">
+                            <form class="search-form">
+                                <input type="text" placeholder="Search" />
+                                <button><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="sortable">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>FA Code</th>
+                                <th>Common Id</th>
+                                <th>Region</th>
+                                <th>Market</th>
+                                <th>USID</th>
+                                <th>vMME</th>
+                                <th>ControlledIntro</th>
+                                <th>SuperBowl</th>
+                                <th>isDASInBuild</th>
+                                <th>FirstNetRan</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="tablerow" ng-repeat-start="td in sites">
+                                <td><a class="more-table-btn" href="#{{td.dropdownid}}" title="">+</a></td>
+                                <td>{{td.code}}</td>
+                                <td>{{td.id}}</td>
+                                <td>{{td.region}}</td>
+                                <td>{{td.market}}</td>
+                                <td>{{td.usid}}</td>
+                                <td>{{td.vmme}}</td>
+                                <td>{{td.controlledintro}}</td>
+                                <td>{{td.superbowl}}</td>
+                                <td>{{td.isdasinbuild}}</td>
+                                <td>{{td.firstnetran}}</td>
+                                <td><a class="tabledata-status {{td.color}}" href="#" title="">{{td.status}}</a></td>
+                                <td><a class="custom-btn color13 opt-btn icon-btn-only" href="" title=""><i class="fa fa-caret-down"></i></a></td>
+
+                                <td class="options-drop">
+                                    <ul class="opt-dropdown">
+                                        <li><a class="open-popup" href="#site-status" title=""><i class="ion-calendar"></i> Site Status</a></li>
+                                    </ul>
+                                </td>
+                            </tr>
+
+                            <tr ng-repeat-end class="child-table" ng-if="td.dropdown">
+                                <td colspan="15">
+                                    <div class="further-table">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Milestone</th>
+                                                    <th>Forecast Date</th>
+                                                    <th>Plan Date</th>
+                                                    <th>Actual Date</th>
+                                                    <th>Target Date</th>
+                                                    <th>Priority</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="tablerow" ng-repeat-start="row in td.dropdown">
+                                                    <td><a href="#" class="more-table-btn" title="">+</a></td>
+                                                    <td>{{row.milestone}}</td>
+                                                    <td>{{row.forecast}}</td>
+                                                    <td>{{row.plandate}}</td>
+                                                    <td>{{row.actualdate}}</td>
+                                                    <td>{{row.targetdate}}</td>
+                                                    <td><a class="tabledata-status {{row.prioritycolor}} color1" href="#" title="">{{row.priority}}</a></td>
+                                                    <td><a class="tabledata-status {{row.statuscolor}} color2" href="#" title="">{{row.status}}</a></td>
+                                                    <td>
+                                                        <div class="action-btns">
+                                                            <a class="open-popup" href="#data-entry" title=""><img src="images/table-icon4.png" alt="" /></a>
+                                                            <a class="open-popup" href="#issue-ticket" title=""><img src="images/table-icon5.png" alt="" /></a>
+                                                            <a class="open-popup" href="#site-planning" title=""><img src="images/table-icon6.png" alt="" /></a>
+                                                            <a class="open-popup" href="#change-status" title=""><img src="images/table-icon2.png" alt="" /></a>
+                                                            <a class="open-popup" href="#work-log" title=""><img src="images/table-icon3.png" alt="" /></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat-end class="child-table" ng-if="row.childdropdownrow">
+                                                    <td colspan="15">
+                                                        <div class="further-table">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th>Milestone</th>
+                                                                        <th>Forecast Date</th>
+                                                                        <th>Plan Date</th>
+                                                                        <th>Actual Date</th>
+                                                                        <th>Target Date</th>
+                                                                        <th>Priority</th>
+                                                                        <th>Status</th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="tablerow" ng-repeat="childrow in row.childdropdownrow">
+                                                                        <td><a class="more-table-btn" href="#" title="">+</a></td>
+                                                                        <td>{{childrow.milestone}}</td>
+                                                                        <td>{{childrow.forecast}}</td>
+                                                                        <td>{{childrow.plandate}}</td>
+                                                                        <td>{{childrow.actualdate}}</td>
+                                                                        <td>{{childrow.targetdate}}</td>
+                                                                        <td><a class="tabledata-status {{childrow.prioritycolor}} color1" href="#" title="">{{childrow.priority}}</a></td>
+                                                                        <td><a class="tabledata-status {{childrow.statuscolor}} color2" href="#" title="">{{childrow.status}}</a></td>
+                                                                        <td>
+                                                                            <div class="action-btns">
+                                                                                <a class="open-popup" href="#data-entry" title=""><img src="images/table-icon4.png" alt="" /></a>
+                                                                                <a class="open-popup" href="#issue-ticket" title=""><img src="images/table-icon5.png" alt="" /></a>
+                                                                                <a class="open-popup" href="#site-planning" title=""><img src="images/table-icon6.png" alt="" /></a>
+                                                                                <a class="open-popup" href="#change-status" title=""><img src="images/table-icon2.png" alt="" /></a>
+                                                                                <a class="open-popup" href="#work-log" title=""><img src="images/table-icon3.png" alt="" /></a>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-bottom">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12"> <span>Showing 5 of 60 entries</span> </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <ul class="pagination">
+                                <li><a href="#" title="">Previous</a></li>
+                                <li><a class="current" href="#" title="">1</a></li>
+                                <li><a href="#" title="">2</a></li>
+                                <li><a href="#" title="">3</a></li>
+                                <li><a href="#" title="">4</a></li>
+                                <li>...</li>
+                                <li><a href="#" title="">10</a></li>
+                                <li><a href="#" title="">Next</a></li>
+                            </ul><!-- Pagination -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="issues" class="tab-pane fade">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>FA Code</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Task</th>
+                                <th>Description</th>
+                                <th>Assigned To</th>
+                                <th>Target</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="tablerow" ng-repeat="iss in issuestable">
+                                <td><span class="status-clr {{iss.color}}"></span></td>
+                                <td>{{iss.code}}</td>
+                                <td>{{iss.priority}}</td>
+                                <td>{{iss.status}}</td>
+                                <td>{{iss.task}}</td>
+                                <td class="description">{{iss.description}}</td>
+                                <td>{{iss.assignedto}}</td>
+                                <td>{{iss.target}}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <a class="open-popup" href="#issue-ticket" title=""><img src="images/table-icon1.png" alt="" /></a>
+                                        <a class="open-popup" href="#change-issue-status" title=""><img src="images/table-icon2.png" alt="" /></a>
+                                        <a class="open-popup" href="#work-log" title=""><img src="images/table-icon3.png" alt="" /></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="summary" class="tab-pane fade">
+                <div class="donut-boxes">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-12">
+                            <div class="donut-box">
+                                <div class="donut-wrapper" id="donutchart2"></div>
+                                <a class="label-drop" href="#" title=""><i class="fa fa-bars"></i></a>
+                                <ul class="labeling">
+                                    <li><span style="background:#7cb5ec"></span> Planned Sites</li>
+                                    <li><span style="background:#5c5c61"></span> Completed Sites</li>
+                                    <li><span style="background:#90ed7d"></span> Migrated Sites</li>
+                                    <li><span style="background:#f7a35c"></span> Cancelled Sites</li>
+                                </ul>
+                            </div><!-- Donut Box -->
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div class="donut-box">
+                                <div class="donut-wrapper" id="donutchart3"></div>
+                                <a class="label-drop" href="#" title=""><i class="fa fa-bars"></i></a>
+                                <ul class="labeling">
+                                    <li><span style="background:#7cb5ec"></span> Un-Avoidable</li>
+                                    <li><span style="background:#5c5c61"></span> Nokia </li>
+                                    <li><span style="background:#90ed7d"></span> Nokia Un-Avoidable</li>
+                                    <li><span style="background:#f7a35c"></span> ATT</li>
+                                    <li><span style="background:#d0d2f7"></span> ATT Un-Avoidable</li>
+                                </ul>
+                            </div><!-- Donut Box -->
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div class="donut-box">
+                                <div class="donut-wrapper" id="donutchart4"></div>
+                                <a class="label-drop" href="#" title=""><i class="fa fa-bars"></i></a>
+                                <ul class="labeling">
+                                    <li><span style="background:#7cb5ec"></span> Access</li>
+                                    <li><span style="background:#5c5c61"></span> Engineering</li>
+                                    <li><span style="background:#90ed7d"></span> Execution</li>
+                                    <li><span style="background:#f7a35c"></span> Fiber</li>
+                                    <li><span style="background:#d0d2f7"></span> Materials</li>
+                                    <li><span style="background:#f15c80"></span> Pre-Existing</li>
+                                    <li><span style="background:#2b908f"></span> Spares</li>
+                                    <li><span style="background:#7cb5ec"></span> Weather-FM</li>
+                                </ul>
+                            </div><!-- Donut Box -->
+                        </div>
+                    </div>
+                </div><!-- Donut Boxes -->
+            </div>
+        </div>
+    </div><!-- Program View -->
+</div>

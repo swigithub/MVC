@@ -1,0 +1,80 @@
+
+<div ng-controller="header as vm" class="header">
+    <header>
+        <div class="logo"><a href="#" title=""><img src="/Theme/AirViewX/images/logo.png" alt="" /><img class="white-logo" src="/Theme/AirViewX/images/logo2.png" alt="" /></a></div><!-- Logo -->
+        <a class="menu-icon" ng-click="vm.resizeAllWidget()" href="#" title=""><i class="fa fa-bars"></i></a>
+
+        @*<div class="header-search">
+            <form> <input type="text" placeholder="Search..." /> <button> <img src="images/search.png" alt=""> </button> </form>
+        </div>*@
+
+        @*<div class="info">
+            <a href="#" title=""><strong>Project:</strong> FSM4</a>
+            <a href="#" title=""><strong>Start Date:</strong> 01 Jan, 2018</a>
+            <a href="#" title=""><strong>Expected End Date:</strong> 07 Jan, 2020</a>
+        </div>*@
+
+        <div class="ml-auto"  ng-include="'dsrpt/DashboardNReport/getPartialPage/TopSections/TopSection_DashboardAndReport.cshtml'"></div>
+       
+
+    </header>
+</div><!-- Header -->
+
+
+
+
+<div class="responsive-header">
+    <div class="responsive-logo"><a href="#" title=""><img src="images/logo.png" alt="" /></a></div><!-- Responsive Logo -->
+    <div class="responsive-btns">
+        <a class="respsonive-menu-btn responsive-btn" href="#" title=""><i class="fa fa-bars"></i></a>
+        <a class="search responsive-btn" href="#" title=""><i class="fa fa-search"></i></a>
+        <a class="show-info responsive-btn" href="#" title=""><i class="fa fa-info"></i></a>
+        <a class="others-opts responsive-btn" href="#" title=""><i class="fa fa-ellipsis-v"></i></a>
+        <div class="responsive-profile">
+            <a class="opt-btn" href="#" title=""><img src="images/login.png" alt="" /> </a>
+            <ul class="opt-dropdown">
+                <li><a href="#" title=""><img src="images/icon5.png" alt="" /> Profile</a></li>
+                <li><a href="#" title=""><img src="images/icon6.png" alt="" /> Sign Out</a></li>
+            </ul>
+        </div>
+    </div><!-- Responsive Button -->
+    <div class="responsive-header-search">
+        <a class="close-search" href="#" tite=""><i class="fa fa-times"></i></a>
+        <form> <input type="text" placeholder="Search..." /> <button> <i class="fa fa-search"></i></button> </form>
+    </div><!-- Responsive Search -->
+    <div class="responsive-info">
+        <a href="#" title=""><strong>Project:</strong> FSM4</a>
+        <a href="#" title=""><strong>Start Date:</strong> 01 Jan, 2018</a>
+        <a href="#" title=""><strong>Expected End Date:</strong> 07 Jan, 2020</a>
+    </div><!-- Responsive Info -->
+    <div class="responsive-opts">
+        <div class="more-links">
+            <img src="images/sub-logo.png" alt="" />
+            <ul>
+                <li><a class="color1" href="#" title=""><img src="images/icon1.png" alt="" /></a></li>
+                <li>
+                    <a class="color3 opt-btn" href="#" title=""><img src="images/icon3.png" alt="" /></a>
+                    <ul class="opt-dropdown">
+                        <li><a class="header-converter" href="#" title="">Sidemenu /  Topmenu</a></li>
+                        <li>
+                            <a href="#" title="">Change Theme</a>
+                            <ul class="themes-list">
+                                <li><a data-theme="theme1" class="active" href="#" title="">Theme 1</a></li>
+                                <li><a data-theme="theme2" href="#" title="">Theme 2</a></li>
+                                <li><a data-theme="theme3" href="#" title="">Theme 3</a></li>
+                                <li><a data-theme="theme4" href="#" title="">Theme 4 </a></li>
+                                <li><a data-theme="theme5" href="#" title="">Theme 5</a></li>
+                                <li><a data-theme="theme6" href="#" title="">Theme 6</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="collapsed-menu" href="#" title="">Collapsed Menu On/Off</a></li>
+                        <li><a class="show-search-btn" href="#" title="">Show/Hide Search</a></li>
+                    </ul>
+                </li>
+                <li><a class="color2" href="#" title=""><img src="images/icon2.png" alt="" /></a></li>
+                <li class="modal-demo"><a class="color4 text-btn" href="#addnew-panel" title="">Add New</a></li>
+            </ul>
+        </div><!-- More Links -->
+
+    </div><!-- Responsive Info -->
+</div>

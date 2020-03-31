@@ -1,0 +1,271 @@
+﻿
+
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<script>
+
+    // Load Template
+    function GetTemplateById() {
+        var templateId = $("#Templates option:selected").val();
+        $.ajax({
+            url: "/Parser/GetTemplates",
+            type: "POST",
+            data: JSON.stringify({ 'TemplateId': templateId }),
+            contentType: "application/json; charset=utf-8",
+            success: function (res) {
+                //console.log(res);
+                // check Already Selected Nodes
+                SelectedTemplateNodes(res);
+                $("#GetTemplateById").modal('hide');
+            },
+            error: function (e) {
+                console.log("Error:" + e);
+            }
+        });
+    }
+    // delete Already Exists Tempalte 
+    function DeleteTemplateById() {
+        var templateId = $("#Templates option:selected").val();
+        if (templateId != 0 && templateId != null) {
+            var a = confirm("Are you sure you want to delete?");
+            if (a) {
+                $.ajax({
+                    url: "/Parser/DeleteTemplate",
+                    type: "POST",
+                    data: JSON.stringify({ 'TemplateId': templateId }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (res) {
+                        // deleted Successfully
+
+                        $("#TemplatesValidation").text('Deleted Successfully!').css('color', 'red');
+                        // Load Templates
+                        var templates = $("#Templates");
+                        templates.empty();
+                        templates.append('<option value="0" selected disabled>Select Template</option>');
+                        $.each(res, function (i, e) {
+                            templates.append('<option value="' + e.TemplateId + '">' + e.TemplateName + '</option>');
+                        })
+                    },
+                    error: function (e) {
+                        console.log("Error:" + e);
+                    }
+                });
+            }
+        }
+        else {
+            $("#TemplatesValidation").text('Please Select First!').css('color', 'red');
+        }
+    }
+    //
+    function removeMessage() {
+        $("#TemplatesValidation").text(' ').css('color', 'red');
+    }
+    // Retreive Tempalte From DB agianst User
+    function GetTemplates() {
+        $.ajax({
+            url: "/Parser/GetTemplates",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (res) {
+                var templates = $("#Templates");
+                templates.empty();
+                templates.append('<option value="0" selected disabled>Select Template</option>');
+                $.each(res, function (i, e) {
+                    templates.append('<option value="' + e.TemplateId + '">' + e.TemplateName + '</option>');
+                })
+            },
+            error: function (e) {
+                console.log("Error:" + e);
+            }
+        }
+    );
+    }
+
+    function removeValidation() {
+        var x = $("#tempname").val();
+        if (x != "") {
+            $("#ValdiationMessage").text(" ").css('color', 'red');
+            $('#tempname').css('border-color', 'lightgray');
+        }
+        else {
+            $('#tempname').css('border-color', 'red');
+            $("#ValdiationMessage").text("Template Name is Required").css('color', 'red');
+        }
+    }
+    function SaveTemplate() {
+
+        var Model = new Object();
+        var templatename = $("#tempname").val();
+        Model.FieldsModelList = FieldsModelList;
+
+        if ($('#tempname').val() == '') {
+            $('#tempname').css('border-color', 'red');
+            //alert("Template Name is Required");
+            $("#ValdiationMessage").text("Template Name is Required").css('color', 'red');
+
+
+        }
+        else if (Model.FieldsModelList == null || Model.FieldsModelList.length == 0) {
+            alert("Please Select Any Field First");
+        }
+        else {
+
+            $.ajax({
+                url: "/Parser/SaveTemplate",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({ 'Model': Model, 'tempname': templatename, 'keys': Selectedkeys }),
+                success: function (res) {
+                    if (res) {
+                        // Remove Button and Show Message
+                        $(".TemplateNameArea").addClass("hidden");
+                        $("#TemplateSaveButton").addClass("hidden");
+                        $("#TemplateOKButton").removeClass("hidden");
+                        $("#ValdiationMessage").text("Template Saved Successfully!").css('color', 'green');
+                    }
+                    else {
+                        $("#ValdiationMessage").text("Template name already exists").css('color', 'red');
+                        $('#tempname').css('border-color', 'red');
+                    }
+                },
+                error: function (e) {
+
+                    console.log("Error:" + e);
+                },
+                complete: function (msg) {
+
+                }
+            }
+    );
+        }
+
+    }
+    // Reset Template Load Popup Fileds
+    function resetData() {
+        $("#tempname").val('').css('border-color', 'lightgray');
+        $(".TemplateNameArea").removeClass("hidden");
+        $("#TemplateSaveButton").removeClass("hidden");
+        $("#TemplateOKButton").addClass("hidden");
+        $("#ValdiationMessage").text(" ").css('color', 'green');
+    }
+    // Select and Mark Checked Nodes From Template
+    function SelectedTemplateNodes(keys) {
+        var tree = $("#treeview-container").dynatree("getTree");
+        $("#treeview-container").dynatree("getRoot").visit(function (node) {
+            node.select(false);
+        });
+        $.each(keys, function (i, key) {
+            tree.activateKey(key).select(true);
+        });
+    }
+
+</script>
+   
+</head>
+<body>
+    <!-- Trigger the modal with a button -->
+    <!-- Modal -->
+    <div class="modal fade" id="SaveTemplate" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Save Template</h4>
+                </div>
+                <div class="modal-body">
+                    <p  class="TemplateNameArea">Template Name</p>
+                    <input type="text" class="form-control TemplateNameArea" style="height:33px !important" onkeyup="removeValidation()" placeholder="Template Name" required id="tempname" />
+
+                    <p id="ValdiationMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="TemplateSaveButton" class="btn btn-success" onclick="SaveTemplate()">Save</button>
+                    <button type="button" id="TemplateOKButton" data-dismiss="modal" onclick="resetData()" class="btn btn-success hidden">Okay</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="GetTemplateById" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Save Template</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Templates</p>
+                    <select class="form-control" id="Templates" onchange="removeMessage()" style="height:unset !important;">
+                        <option value="0">Select Template</option>
+                    </select>
+                    <p id="TemplatesValidation"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger"  onclick="DeleteTemplateById()">Delete</button>
+                    <button type="submit" class="btn btn-success" data-dismiss="modal" onclick="GetTemplateById()">Load</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div style="padding:10px;">
+        <ul class="nav nav-tabs" id="tabs">
+            <li class="active"><a data-toggle="tab" href="#home">Select</a></li>
+            <li><a data-toggle="tab" href="#menu1">Result</a></li>
+            <li style="float:right !important">
+                <div style="float:left;padding-right:10px"> <input type="button" value="Filter" onclick="FilterFields()" class="btn btn-primary" /></div>
+                <div style="float:left;padding-right:10px"> <input type="button" class="btn btn-danger" value="Reset" onclick="ResetAll()" /></div>
+                <div style="float:left;padding-right:10px"> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#SaveTemplate" onclick="resetData()">Save Template</button></div>
+                <div style="float:left;padding-right:10px"> <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#GetTemplateById" onclick="GetTemplates()">Templates</button></div>
+                <div style="float:right;padding-right:10px"> <input type="button" class="btn btn-success" value="Excel" onclick="window.location = '/parser/ExportToExcel'" /></div>
+                <div style="float:right;padding-right:10px"> <input type="button" class="btn btn-success" value="CSV" onclick="window.location = '/parser/ExportToCsv'" /></div>
+
+            </li>
+        </ul>
+    </div>
+
+    @*<div id="tree3"></div>*@
+
+
+
+
+
+
+    @*<div>Selected keys: <span id="echoSelection3">-</span></div>
+        <div>Selected root keys: <span id="echoSelectionRootKeys3">-</span></div>
+        <div>Selected root nodes: <span id="echoSelectionRoots3">-</span></div>*@
+
+
+    @*<br/><br /><br /><br /><br /> <input type="button" onclick="downloadjsonfile()" class="btn btn-primary" value="Download Json" />*@
+    @*<button onclick="getselected()" >check</button>*@
+    <div style="width: 100%;text-align: center;margin-left: -4%;">
+        <img style="display:none;position: fixed;opacity: 0.7; width: 100px;z-index: 100;margin-top: 250px;" id="LOAD" src="https://i.gifer.com/ZKZg.gif" />
+    </div>
+
+
+</body>
+@*<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>*@
+<script src="~/Scripts/jquery-3.1.1.js"></script>
+@*<script src="~/Assets/jquery/jquery.js"></script>*@
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+@{ Html.RenderPartial("ParserView"); }
+
+<style>
+    .body-content {
+    margin-top: unset !important;
+}
+    .container {
+        width: 100%;
+    }
+</style>

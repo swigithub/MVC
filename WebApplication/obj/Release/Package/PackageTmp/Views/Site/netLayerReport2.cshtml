@@ -1,0 +1,917 @@
+﻿@using System.Web.Mvc.Html
+@using SWI.Libraries.Common
+@using SWI.Libraries.AirView.Entities
+@using Jmelosegui.Mvc.GoogleMap;
+@using System.Drawing;
+@using SWI.AirView.Models;
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    // for Chicago
+    Layout = null;
+    DirectoryHandler dh = new DirectoryHandler();
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var NetLayerReport = jss.Serialize(ViewBag.NetLayerReport);
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+    var LagentPCI = jss.Serialize(ViewBag.LagentPCI);
+    var PORSites = jss.Serialize(ViewBag.PORSites);
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Layer Report</title>
+
+    <link href="~/Content/js/Plugins/DateTimePicker/dtpicker.css" rel="stylesheet" />
+    <link href="~/Content/NetLayreReport2.css" rel="stylesheet" />
+    @Scripts.Render("~/AdminLTE/plugins/jquery/js")
+
+</head>
+
+<body>
+
+    @functions{
+
+        public string SectorCode(int key)
+        {
+            try
+            {
+                switch (key)
+                {
+                    case 1:
+                        return "A";
+                    case 2:
+                        return "B";
+                    case 3:
+                        return "C";
+                    case 4:
+                        return "D";
+                    case 5:
+                        return "E";
+                    case 6:
+                        return "F";
+                    case 7:
+                        return "G";
+                    default:
+                        {
+                            return null;
+                        }
+                }
+            }
+            catch
+            {
+
+                return null;
+            }
+
+        }
+
+        public string getSectorName(string SiteCode, string BandCode, string SectorCode)
+        {
+            string sector = "";
+            string band = "";
+
+            if (SectorCode == "Alpha")
+            {
+                sector = "11";
+            }
+            else if (SectorCode == "Beta")
+            {
+                sector = "21";
+            }
+            else if (SectorCode == "Gamma")
+            {
+                sector = "31";
+            }
+            else if (SectorCode == "Delta")
+            {
+                sector = "41";
+            }
+            else if (SectorCode == "Epsilon")
+            {
+                sector = "51";
+            }
+            else if (SectorCode == "DiGamma")
+            {
+                sector = "61";
+            }
+            else if (SectorCode == "Iota")
+            {
+                sector = "71";
+            }
+
+
+            if (BandCode == "Band-12" || BandCode == "Band-12 Add")
+            {
+                band = "D";
+            }
+            else if (BandCode == "Band-2" || BandCode == "Band-2 Add")
+            {
+                band = "B";
+            }
+            else if (BandCode == "Band-4" || BandCode == "Band-4 Add")
+            {
+                band = "L";
+            }
+            else
+            {
+                band = "";
+            }
+
+
+
+            return band + SiteCode + sector;
+        }
+
+    }
+
+    @if (Model != null && Model.Count() > 0)
+    {
+        var First = Model.FirstOrDefault();
+        int TotalRecord = Model.Count();
+        string NetworkMode = First.NetworkMode;
+        string Market = "Chicago";
+        if (First.Site.ToLower().StartsWith("ch"))
+        {
+            Market = "Chicago".ToUpper();
+        }
+        else if (First.Site.ToLower().StartsWith("ml"))
+        {
+            Market = "Milwaukee".ToUpper();
+        }
+
+        if (ViewBag.RoleName != "Client POC")
+        {
+            <a href="#" style="float:right; position: fixed; left: 100px;z-index: 10000;" id="btn-setting" class="clear">
+                <img src="~/Content/Images/Common/kpi_x24.png" />
+            </a>
+        }
+
+        <div id="pan-settings" style="position: fixed;left: 10px;top: 50px;background-color:#333;color:white; width: 230px;display:none;height:760px;overflow-x:hidden;overflow-y:auto;z-index: 10000; /*visibility:hidden*/">
+            <div class="settingHeading">Report Settings</div>
+
+            @if (ViewBag.RoleName != "Client POC")
+                {
+                <div>
+                    <hr />
+                    <div class="settingHeading">POR Sites</div>
+                    <form action="#" method="post" id="frm-removeDrive">
+                        <div style="margin-left: 10px;">
+                            @foreach (var ts in ViewBag.PORSites)
+                            {
+                                <label>
+                                    <input type="checkbox" data-Site="@ts.SiteCode" data-lat="@ts.Latitude" data-lng="@ts.Longitude" class="ch-Timestamp">
+                                    @ts.SiteCode
+                                </label>
+                                <br />
+
+                            }
+                        </div>
+                        <div class="settingFooter">
+                            <a id="btn-PORSites" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                        </div>
+                    </form>
+
+                </div>
+
+                <div>
+                    <hr />
+                    <div class="settingHeading">Remove Drive</div>
+                    <form action="#" method="post" id="frm-removeDrive">
+                        <div style="margin-left: 10px;">
+                            @foreach (var ts in ViewBag.ServerTimestamp)
+                            {
+                                <label>
+                                    <input type="checkbox" data-value="@ts.value1" class="ch-Timestamp">
+                                    @ts.value1
+                                </label>
+                                <br />
+
+                            }
+                        </div>
+                        <div class="settingFooter">
+                            <a class="btn-RemoveDrive" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                            <a class="btn-RemoveDrive" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                        </div>
+                    </form>
+
+                </div>
+            }
+
+
+            <div>
+
+
+            </div>
+
+        </div>
+
+
+        <div style="width:1600px; margin:0 auto;">
+            <div class="page" style="color: white; background-color: #004B99;">
+
+                <div style="padding-top: 350px;font-size: 20mm;padding-left: 80px;">ILLINOIS/@Market</div>
+                <div style="font-size: 20mm;padding-left: 80px;">@First.Band SSV Test Report</div>
+                <div style="padding-left: 80px;">
+                    <ul style="list-style-type:square;font-size: xx-large;">
+                        <li>@First.Site</li>
+                    </ul>
+                </div>
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>1 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Site Overview-->
+            <div class="page">
+                <div style="padding-top:30px;">
+                    <div class="left" style="width:30%;padding-top:45px">
+                        <h1 class="HeadingColor">Site Overview:</h1>
+                        <table class="SiteOverview">
+                            <tr>
+                                <th>Site ID:</th>
+                                <td>@First.Site</td>
+                            </tr>
+                            <tr>
+                                <th>Site Name:</th>
+                                <td>@First.SiteName</td>
+                            </tr>
+                            <tr>
+                                <th>Site Class:</th>
+                                <td>@First.SiteClass</td>
+                            </tr>
+                            <tr>
+                                <th>Site Type:</th>
+                                <td>@First.SiteType</td>
+                            </tr>
+                            <tr>
+                                <th>Site Address:</th>
+                                <td>@First.SiteAddress</td>
+                            </tr>
+                            <tr>
+                                <th>City, State: </th>
+                                <td>@First.City @First.Region</td>
+                            </tr>
+                            <tr>
+                                <th>Azimuth: </th>
+                                <td>
+                                    (@foreach (var item in Model)
+                                    {
+                                        @item.Azimuth<span>, </span>
+                                    })
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Mtilt (@First.Band): </th>
+                                <td>
+                                    (@foreach (var item in Model)
+                                    {
+                                        @item.MTilt<span>, </span>
+                                    })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Etilt (@First.Band): </th>
+                                <td>
+                                    (@foreach (var item in Model)
+                                    {
+                                        @item.ETilt<span>, </span>
+                                    })
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="right" style="width:70%;height: 100%;">
+                        <h1 class="HeadingColor"></h1><br /><br /><br />
+                        <div style="height:800px;width:100%" id="site_data_map"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>2 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <!--Stationary Test Results-->
+            <div class="page" >
+                <div style="padding-top:30px;">
+                    <div class="TitlePage" >
+                        <div class="TitlePageHeading">Stationary Test Results</div>
+                    </div>
+                </div>
+                <div class="footer">
+
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>3 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <!--Stationary Test Results:-->
+            <div class="page">
+                <div style="padding-top:30px;">
+                    <h1 class="HeadingColor">Stationary Test Results:</h1>
+                    <table class="StationaryTable">
+                        <tr>
+                            <th class="StationaryTableTh">Project</th>
+                            <th class="StationaryTableTh">Market</th>
+                            <th class="StationaryTableTh">Drive Date</th>
+                            @*<th class="StationaryTableTh">Task ID</th>*@
+                            <th class="StationaryTableTh">Site Name</th>
+                            <th class="StationaryTableTh">Sector Name</th>
+                            <th class="StationaryTableTh">Band</th>
+                            <th class="StationaryTableTh">EARFCN</th>
+                            <th class="StationaryTableTh">BW</th>
+                            <th class="StationaryTableTh">Azimuth</th>
+                            <th class="StationaryTableTh" style="width:40px;">PCI<br />(Swap Sector Check)</th>
+                            <th class="StationaryTableTh2">RSRP</th>
+                            <th class="StationaryTableTh2">CINR</th>
+                            <th class="StationaryTableTh2">RSRQ</th>
+                            <th class="StationaryTableTh2">Average<br />THPUT DL</th>
+                            <th class="StationaryTableTh2">Average<br />THPUT UL</th>
+                            <th class="StationaryTableTh2">eCSFB<br />Call Test</th>
+                            <th class="StationaryTableTh2">VoLTE<br />Call Test</th>
+                            @for (int i = 0; i < Model.Count(); i++)
+                            {
+                                String[] secOrder = { "alpha", "beta", "gamma", "delta", "epsilon", "digamma", "iota" };
+                                List<string> Sectors = new List<string>();
+                                Sectors.AddRange(Model.OrderBy(m => m.Azimuth).Select(m => m.Sector).ToList());
+                                String fromSector = Sectors[i];
+                                String toSector = "";
+
+                                if (i + 1 == Model.Count())
+                                {
+                                    toSector = Sectors[0];
+                                }
+                                else
+                                {
+                                    toSector = Sectors[i + 1];
+                                }
+
+                                int fromSecIndex = Array.IndexOf(secOrder, fromSector.ToLower()) + 1;
+                                int toSecIndex = Array.IndexOf(secOrder, toSector.ToLower()) + 1;
+
+                            <th class="StationaryTableTh2">LTE-LTE<br />Intra Site HO<br />@SectorCode(fromSecIndex)<->@SectorCode(toSecIndex)</th>
+                            }
+
+
+                            <th class="StationaryTableTh2">LTE-LTE<br />Inter Site HO</th>
+                        </tr>
+                        @{var lst = Model.ToList();}
+                        @foreach (var item in Model)
+                          {
+                        <tr>
+                            <td class="StationaryTableTd">@item.Band</td>
+                            <td class="StationaryTableTd">@item.City</td>
+                            <td class="StationaryTableTd">@item.SiteScheduleDate.Value.ToString("MM/dd/yyyy")</td>
+                            @*<td class="StationaryTableTd">n/a</td>*@
+                            <td class="StationaryTableTd">@item.Site</td>
+                            <td class="StationaryTableTd">@getSectorName(@item.Site, @item.BandNo, @item.Sector)</td>
+                            <td class="StationaryTableTd">@item.BandNo</td>
+                            <td class="StationaryTableTd">@item.Carrier</td>
+                            <td class="StationaryTableTd">
+                                @if (item.BandWidth > 0)
+                                {
+                                    <span>@item.BandWidth MHz</span>
+                                }
+                            </td>
+                            <td class="StationaryTableTd">@item.Azimuth</td>
+                            <td class="StationaryTableTd2">@item.PciId</td>
+                            <td class="StationaryTableTd2">
+                                @{
+                                    if (NetworkMode == "LTE")
+                                    {
+                                    <span>@item.LteRsrp</span>
+                                    }
+                                    if (NetworkMode == "GSM")
+                                    {
+                                    <span>@item.GsmRssi</span>
+                                    }
+                                    if (NetworkMode == "WCDMA")
+                                    {
+                                    <span>@item.WcdmaRscp</span>
+                                    }
+
+                                }
+                            </td>
+                            <td class="StationaryTableTd2">
+                                @{
+                                    if (NetworkMode == "LTE")
+                                    {
+                                    <span>@item.LteRsnr.ToString("0.00")</span>
+                                    }
+                                    if (NetworkMode == "GSM")
+                                    {
+                                    <span>@item.GsmRxQual.ToString("0.00")</span>
+                                    }
+                                    if (NetworkMode == "WCDMA")
+                                    {
+                                    <span>@item.WcdmaEcio.ToString("0.00")</span>
+                                    }
+                                }
+                            </td>
+                            <td class="StationaryTableTd2">@item.LteRsrq</td>
+                            <td class="StationaryTableTd2">@item.DownlinkMaxResult.ToString("0.00")</td>
+                            <td class="StationaryTableTd2">@item.UplinkMaxResult.ToString("0.00")</td>
+                            <td class="StationaryTableTd2">
+                                @if (item.MoStatus == true)
+                                {<span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE"></span> }
+                                else if (item.MoStatus == false)
+                                { <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE"></span> }
+                                else
+                                {<span class="bold MO_MT_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_NULL"></span>}
+                            </td>
+                            <td class="StationaryTableTd2">
+                                @if (item.MoStatus == true)
+                                {<span class="bold MO_MT_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_TRUE"></span> }
+                                else if (item.MoStatus == false)
+                                { <span class="bold MO_MT_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_FALSE"></span> }
+                                else
+                                {<span class="bold MO_MT_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="MO_MT_STATUS_NULL"></span>}
+                            </td>
+
+                            @for (int i = 0; i < Model.Count(); i++)
+                               {
+                                <td class="StationaryTableTd2">
+                                    @if (lst[i].MobHandoverStatus == true)
+                                    {<span class="bold INTRA_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_TRUE"></span>}
+                                    else if (lst[i].MobHandoverStatus == false)
+                                    {<span class="bold INTRA_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_FALSE"></span> }
+                                    else
+                                    {<span class="bold INTRA_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTRA_HO_STATUS_NULL"></span>}
+                                </td>
+                               }
+                            <td class="StationaryTableTd2">
+                                @if (item.ICwHandoverStatus == true)
+                                {<span class="bold INTER_HO_STATUS_TRUE" data-type="BOOLEAN,STRING,COLOR" id="INTER_HO_STATUS_TRUE"></span> }
+                                else if (item.ICwHandoverStatus == false)
+                                {<span class="bold INTER_HO_STATUS_FALSE" data-type="BOOLEAN,STRING,COLOR" id="INTER_HO_STATUS_FALSE"></span>}
+                                else
+                                {<span class="bold INTER_HO_STATUS_NULL" data-type="BOOLEAN,STRING,COLOR" id="INTER_HO_STATUS_NULL"></span>}
+
+                            </td>
+                        </tr>
+                                    }
+
+                    </table>
+                </div>
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>4 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+            <!--Mobility Test Results-->
+            <div class="page" >
+                <div style="padding-top: 30px;">
+                    <div class="TitlePage">
+                        <div class="TitlePageHeading">Mobility Test Results</div>
+                    </div>
+                    <div class="footer">
+                        <div>
+                            <div class="left" style="width:500px;padding-left:10px;">
+                                <div>5 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                                <div>Confidential </div>
+                            </div>
+                            <div class="right" style="width:1000px">
+                                <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+            <!--Mobility (Band 2 Locked)-->
+            <div class="page" >
+                <div style="padding-top:30px;">
+                    <h1 class="HeadingColor">Mobility (@First.BandNo Locked)</h1>
+                    <div class="left" style="width:30%">
+
+                        <div style="position: absolute;bottom: 220px;left: 50px;width: 300px;">
+                            <div>
+                                <img src="~/Content/Images/Common/MobilityLegend.png" />
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <div class="right" style="width:70%;height: 100%;">
+                        <h1 class="HeadingColor"></h1><br />
+                        <div style="height: 800px;width: 100%;" id="HO_Plot"></div>
+                        <div class="Note" id="Note">
+                            @if (First.Band == "LTE 700")
+                            {
+                            <span><b>NOTE:</b> </span><span><u> Colored cells are L700 while Blank cells are L1900 and L2100 only.</u></span>
+                            }
+                            else if (First.Band == "LTE 2100")
+                            {
+                            <span><b>NOTE:</b> </span><span><u>Colored cells are L2100 while Blank cells are L700 and L1900 only.</u></span>
+                            }
+                            else if (First.Band == "LTE 1900")
+                            {
+                            <span><b>NOTE:</b> </span><span><u>Colored cells are L1900 while Blank cells are L700 and L2100 only.</u></span>
+                            }
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>6 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <!--PCI-->
+            <div class="page" >
+                <div style="padding-top:30px;">
+                    <h1 class="HeadingColor">PCI</h1>
+                    <div class="left" style="width:30%">
+
+                        <div style="position: absolute;bottom: 220px;left: 50px;width: 300px;">
+                            <div>
+                                <div>
+                                    @if (NetworkMode == "LTE")
+                                    {
+                                    <span>@First.Site pci_id </span>
+                                    }
+                                    else if (NetworkMode == "GSM")
+                                    {
+                                    <span>@First.Site BCCH Plot</span>
+                                    }
+                                    else if (NetworkMode == "WCDMA")
+                                    {
+                                    <span>@First.Site PSC Plot</span>
+                                    }
+
+                                </div>
+                                <br />
+                                <table style="width:55%">
+                                    @{
+                                        var Pcis = (ViewBag.PciDisLagend as List<AV_NetLayerReportPlot>);
+                                        int PcisCount = Pcis.Count;
+
+                                        for (int i = 0; i < PcisCount; i += 2)
+                                        {
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:@Pcis[i].Color;"></div>
+                                        </td>
+                                        <td><span>@Pcis[i].PCI</span></td>
+
+                                        @if (i + 1 < PcisCount)
+                                                {
+                                                <td>
+                                                    <div class="colorBox" style="background-color:@Pcis[i+1].Color;"></div>
+                                                </td>
+                                                <td><span>@Pcis[i + 1].PCI</span></td>
+                                                }
+                                    </tr>
+                                        }
+                                    }
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="right" style="width:70%;height: 100%;">
+                        <br />
+                        <div style="height: 800px;width: 100%;" id="PCI_Plot"></div>
+                        <div class="Note"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>7 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+            <!--EARFCN Utilization Plot-->
+
+            <div class="page" >
+                <div style="padding-top:30px;">
+                    <h1 class="HeadingColor">EARFCN Utilization Plot</h1>
+                    <div class="left" style="width:30%">
+
+                        <div style="position: absolute;bottom: 220px;left: 100px;width: 300px;">
+                            <div>
+                                <div>
+                                    <span>@First.Site Carrier </span>
+                                </div>
+                                <br />
+                                <table style="width:55%">
+                                    @if (ViewBag.chLagend != null)
+                                    {
+
+                                        foreach (var item in ViewBag.chLagend)
+                                        {
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:@item.Color;"></div>
+                                        </td>
+                                        <td><span>@item.PCI</span></td>
+                                    </tr>
+
+                                        }
+                                    }
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="right" style="width:70%;height: 100%;">
+                        <br />
+                        <div style="height: 800px;width: 100%;" id="CH_Plot"></div>
+                        <div class="Note"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>8 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="clear"></div>
+            <!--RSRP-->
+            <div class="page" style="padding-top:30px;">
+                <div>
+                    <h1 class="HeadingColor">RSRP</h1>
+                    <div class="left" style="width:30%">
+
+                        <div style="position: absolute;bottom: 140px;left: 50px;width: 300px;">
+                            <br />
+                            <img src="~/Content/Images/Common/rsrpLegend.png" />
+                        </div>
+
+                    </div>
+                    <div class="right" style="width:70%;height: 100%;">
+                        <br />
+                        <div style="height: 900px;width: 100%;" id="RSRP_Plot"></div>
+                        <div class="Note"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>9 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="clear"></div>
+            <!--SINR-->
+            <div class="page" >
+                <div style="padding-top:30px;">
+                    <h1 class="HeadingColor">SINR</h1>
+                    <div class="left" style="width:30%">
+
+                        <div style="position: absolute;bottom: 230px;left: 50px;width: 300px;">
+                            <div>
+                                <img src="~/Content/Images/Common/SINRLegend.png" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="right" style="width:70%;height: 100%;">
+                        <br />
+                        <div style="height: 800px;width: 100%;" id="CINR_Plot"></div>
+                        <div class="Note"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>10 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!--RSRQ-->
+            <div class="clear"></div>
+            <div class="page" >
+                <div style="padding-top:30px;">
+                    <h1 class="HeadingColor">RSRQ</h1>
+                    <div class="left" style="width:30%">
+
+                        <div style="position: absolute;bottom: 230px;left: 50px;width: 300px;">
+                            <div>
+                                <img src="~/Content/Images/Common/RSRQLegend.png" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="right" style="width:70%;height: 100%;">
+                        <br />
+                        <div style="height: 800px;width: 100%;" id="RSRQ_Plot"></div>
+                        <div class="Note"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>11 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!--Summary & Recommendations-->
+            <div class="clear"></div>
+            <div class="page" >
+                <div style="padding-top:30px;">
+                    <h1 class="HeadingColor">Summary & Recommendations</h1>
+                    <div class="left" style="width:50%;text-align:center">
+                        <br />
+                        <table id="tbl-summary">
+                            <thead>
+                                <tr style="background-color:#00B0F0;font-size: small;">
+                                    <th>Site Type</th>
+                                    <th>POR Tool Check</th>
+                                    <th>Site ID</th>
+                                    <th>Ring ID</th>
+                                    <th>POR</th>
+                                    <th>@First.Band Capable</th>
+                                    <th>@First.Band POR</th>
+                                    <th>@First.Band OA/NOA</th>
+                                    <th>Comments</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div style="position: absolute;bottom: 150px;left: 50px;width: 300px;">
+                            <div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="right" style="width:50%;height: 100%;">
+                        <br />
+                        <div style="height: 800px;width: 100%;" id="SummeryPlot"></div>
+                        <div class="Note"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="footer">
+                    <div>
+                        <div class="left" style="width:500px;padding-left:10px;">
+                            <div>12 &emsp; @DateTime.Now.ToShortDateString() &emsp; &#x24B8;Nokia 2014 </div>
+                            <div>Confidential </div>
+                        </div>
+                        <div class="right" style="width:1000px">
+                            <img src="~/Content/Images/ClientLogo/nokia_logo_blue.png" style="height: 25px;position: absolute;right: 0px;bottom: 10px;" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+           <br />
+            <div class="WELCOME_PAGE_COLOR" id="thank-you" style="background:#004B99;padding-top:150px;height:880px;margin-left: -50px;margin-right: -20px;margin-top: 10px;padding-bottom: 50px;">
+                <img src="~/Content/Images/Report/Nokia-bg.png" style="margin-top: 215px;margin-left: 381px;" />
+
+            </div>
+
+        </div>
+
+        <div style="display:none" id="Azmiuth_Circle">1</div>
+      
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.ApiMapKey)&sensor=false&libraries=geometry&bogusParam=.js"></script>
+        <script src="~/Content/js/MapLabel.js"></script>
+        <script src="~/Content/js/Plugins/kml/geoxml3.js"></script>
+        <script src="~/Content/js/Plugins/kml/ProjectedOverlay.js"></script>
+        <script src="~/Content/js/GoogleMapsNetLayerReport2.js"></script>
+        <script src="~/Content/js/Plugins/DateTimePicker/dtpicker.js"></script>
+        <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script><!--loading-->
+        <script>
+            @{
+                string NetLayer = First.ActualSiteCode+ "/"+First.NetworkMode + "_" +First.Band + "_" +First.Carrier;
+            }
+            var NetLayerReport = JSON.parse('@Html.Raw(NetLayerReport)');
+            var PORSites = JSON.parse('@Html.Raw(PORSites)');
+            var ReportConfiguration = JSON.parse('@Html.Raw(ReportConfiguration)');
+            var SiteId = '@First.SiteId';
+            var NetworkModeId = '@First.NetworkModeId';
+            var BandId = '@First.BandId';
+            var CarrierId = '@First.CarrierId';
+            var ScopeId = '@First.ScopeId';
+            var LastMap;
+            var SiteLatitude = '@First.Latitude';
+            var SiteLongitude = '@First.Longitude';
+            var SiteCode = '@First.Site _ @First.Band';
+            var NetLayer = '@NetLayer';
+            var AfterDate = '@ViewBag.AfterDate';
+            var domain = '@ViewBag.domain';
+            var AzmuthRadius = '@ViewBag.AzmuthRadius';
+
+        </script>
+        <script src="/Content/js/NetLayerReport2.js"></script>
+       
+    }
+</body>
+
+</html>

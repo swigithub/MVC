@@ -1,0 +1,229 @@
+﻿@using eSpares.Levity;
+@{
+    string CopyrightValue = string.Empty;
+    string Version = string.Empty;
+    var Copyright = ApplicationAssemblyUtility.ApplicationAssembly.CustomAttributes.Where(m => m.AttributeType.Name == "AssemblyCopyrightAttribute").FirstOrDefault();
+    var VersionAttribute = ApplicationAssemblyUtility.ApplicationAssembly.CustomAttributes.Where(m => m.AttributeType.Name == "AssemblyFileVersionAttribute").FirstOrDefault();
+    if (Copyright != null)
+    {
+        CopyrightValue = Copyright.ConstructorArguments.FirstOrDefault().Value.ToString().Replace("Year", DateTime.Now.Year.ToString());
+    }
+
+    if (VersionAttribute != null)
+    {
+        Version = VersionAttribute.ConstructorArguments.FirstOrDefault().Value.ToString();
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en" class="app">
+<!-- Mirrored from flatfull.com/themes/scale/grid.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 21 Jul 2017 17:36:52 GMT -->
+
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title : AirView</title>
+    <meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="~/Scale/css/app.v1.css" type="text/css" />
+    @RenderSection("style", false)
+
+    <script src="~/AdminLTE/plugins/jquery/js/jQuery-2.1.4.min.js"></script>
+    <script src="~/Scripts/angular.js"></script>
+    @*<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>*@
+    <!--[if lt IE 9]> <script src="~/Scale/js/ie/html5shiv.js"></script> <script src="~/Scale/js/ie/respond.min.js"></script> <script src="~/Scale/js/ie/excanvas.js"></script> <![endif]-->
+</head>
+
+<body class="">
+   
+    <section class="vbox">
+        <header class="bg-white header header-md navbar navbar-fixed-top-xs box-shadow">
+            <div class="navbar-header aside-md dk">
+                <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen,open" data-target="#nav,html"> <i class="fa fa-bars"></i> </a>
+                <a href="@ViewBag.DefaultUrl" class="navbar-brand"> <img src="~/Content/Images/Application/swi_logo_globe.png" class="m-r-sm" alt="scale"> <span class="hidden-nav-xs">AirView</span> </a>
+                <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".user"> <i class="fa fa-cog"></i> </a>
+            </div>
+            <ul class="nav navbar-nav hidden-xs">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="i i-grid"></i> </a>
+                    <section class="dropdown-menu aside-lg bg-white on animated fadeInLeft">
+                        <div class="row m-l-none m-r-none m-t m-b text-center">
+                            <div class="col-xs-4">
+                                <div class="padder-v">
+                                    <a href="#"> <span class="m-b-xs block"> <i class="i i-mail i-2x text-primary-lt"></i> </span> <small class="text-muted">Mailbox</small> </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="padder-v">
+                                    <a href="#"> <span class="m-b-xs block"> <i class="i i-calendar i-2x text-danger-lt"></i> </span> <small class="text-muted">Calendar</small> </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="padder-v">
+                                    <a href="#"> <span class="m-b-xs block"> <i class="i i-map i-2x text-success-lt"></i> </span> <small class="text-muted">Map</small> </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="padder-v">
+                                    <a href="#"> <span class="m-b-xs block"> <i class="i i-paperplane i-2x text-info-lt"></i> </span> <small class="text-muted">Trainning</small> </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="padder-v">
+                                    <a href="#"> <span class="m-b-xs block"> <i class="i i-images i-2x text-muted"></i> </span> <small class="text-muted">Photos</small> </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="padder-v">
+                                    <a href="#"> <span class="m-b-xs block"> <i class="i i-clock i-2x text-warning-lter"></i> </span> <small class="text-muted">Timeline</small> </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left input-s-lg m-t m-l-n-xs hidden-xs" role="search">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-btn"> <button type="submit" class="btn btn-sm bg-white b-white btn-icon"><i class="fa fa-search"></i></button> </span>
+                        <input type="text" class="form-control input-sm no-border" placeholder="Search apps, projects...">
+                    </div>
+                </div>
+            </form>
+            <ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user user">
+                <li class="hidden-xs">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="i i-chat3"></i> <span class="badge badge-sm up bg-danger count">2</span> </a>
+                    <section class="dropdown-menu aside-xl animated flipInY">
+                        <section class="panel bg-white">
+                            <div class="panel-heading b-light bg-light"> <strong>You have <span class="count">2</span> notifications</strong> </div>
+                            <div class="list-group list-group-alt">
+                                <a href="#" class="media list-group-item"> <span class="pull-left thumb-sm"> <img src="~/Scale/images/a0.png" alt="..." class="img-circle"> </span> <span class="media-body block m-b-none"> Use awesome animate.css<br> <small class="text-muted">10 minutes ago</small> </span> </a>
+                                <a href="#" class="media list-group-item"> <span class="media-body block m-b-none"> 1.0 initial released<br> <small class="text-muted">1 hour ago</small> </span> </a>
+                            </div>
+                            <div class="panel-footer text-sm"> <a href="#" class="pull-right"><i class="fa fa-cog"></i></a> <a href="#notes" data-toggle="class:show animated fadeInRight">See all the notifications</a> </div>
+                        </section>
+                    </section>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span class="thumb-sm avatar pull-left"> <img src="@ViewBag.picture" alt="..."> </span>@ViewBag.Name<b class="caret"></b> </a>
+                    <ul class="dropdown-menu animated fadeInRight">
+                        <li><span class="arrow top"></span> <a href="/user/details/@ViewBag.UserId">Profile</a> </li>
+                        
+                        <li class="divider"></li>
+                        <li> <a href="/Login/Logout">Logout</a> </li>
+                    </ul>
+                </li>
+            </ul>
+        </header>
+        <section>
+            <section class="hbox stretch">
+                <!-- .aside -->
+                <aside class="bg-black aside-md hidden-print hidden-xs" id="nav">
+                    <section class="vbox">
+                        <section class="w-f scrollable">
+                            <div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0" data-size="10px" data-railOpacity="0.2">
+                                <div class="clearfix wrapper dk nav-user hidden-xs">
+                                    <div class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <span class="thumb avatar pull-left m-r"> <img src="@ViewBag.Picture" class="dker" alt="..."> <i class="on md b-black"></i> </span> <span class="hidden-nav-xs clear"> <span class="block m-t-xs"> <strong class="font-bold text-lt">@ViewBag.Name</strong> <b class="caret"></b> </span> <span class="text-muted text-xs block">@ViewBag.RoleName</span> </span>
+                                        </a>
+                                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                            <li><span class="arrow top"></span> <a href="/user/details/@ViewBag.UserId">Profile</a> </li>
+
+                                            <li class="divider"></li>
+                                            <li> <a href="/Login/Logout">Logout</a> </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- nav -->
+                                @if (SWI.Security.Filters.Permission.IsLogin())
+                                {
+                                    @Html.Action("Menu", "Permission", new { area = "", type = "Scale" })
+                                }
+                                @*@Html.Partial("~/Areas/Survey/Views/Shared/_menu.cshtml")*@
+                                <!-- / nav -->
+                            </div>
+                        </section>
+                        <footer class="footer hidden-xs no-padder text-center-nav-xs">
+                            <a href="modal.lockme.html" data-toggle="ajaxModal" class="btn btn-icon icon-muted btn-inactive pull-right m-l-xs m-r-xs hidden-nav-xs"> <i class="i i-logout"></i> </a>
+                            <a href="#nav" data-toggle="class:nav-xs" class="btn btn-icon icon-muted btn-inactive m-l-xs m-r-xs"> <i class="i i-circleleft text"></i> <i class="i i-circleright text-active"></i> </a>
+                        </footer>
+                    </section>
+                </aside>
+                <!-- /.aside -->
+                <section id="content">
+                    <section class="hbox stretch">
+                        <section>
+                            <section class="vbox">
+                                <section class="scrollable padder">
+                                    @RenderBody()
+                                </section>
+                            </section>
+                        </section>
+                        <!-- side content -->
+                        <aside class="aside-md bg-black hide" id="sidebar">
+                            <section class="vbox animated fadeInRight">
+                                <section class="scrollable">
+                                    <div class="wrapper"><strong>Live feed</strong></div>
+                                    <ul class="list-group no-bg no-borders auto">
+                                        <li class="list-group-item"> <span class="fa-stack pull-left m-r-sm"> <i class="fa fa-circle fa-stack-2x text-success"></i> <i class="fa fa-reply fa-stack-1x text-white"></i> </span> <span class="clear"> <a href="#">Goody@gmail.com</a> sent your email <small class="icon-muted">13 minutes ago</small> </span> </li>
+                                        <li class="list-group-item"> <span class="fa-stack pull-left m-r-sm"> <i class="fa fa-circle fa-stack-2x text-danger"></i> <i class="fa fa-file-o fa-stack-1x text-white"></i> </span> <span class="clear"> <a href="#">Mide@live.com</a> invite you to join a meeting <small class="icon-muted">20 minutes ago</small> </span> </li>
+                                        <li class="list-group-item"> <span class="fa-stack pull-left m-r-sm"> <i class="fa fa-circle fa-stack-2x text-info"></i> <i class="fa fa-map-marker fa-stack-1x text-white"></i> </span> <span class="clear"> <a href="#">Geoge@yahoo.com</a> is online <small class="icon-muted">1 hour ago</small> </span> </li>
+                                        <li class="list-group-item"> <span class="fa-stack pull-left m-r-sm"> <i class="fa fa-circle fa-stack-2x text-primary"></i> <i class="fa fa-info fa-stack-1x text-white"></i> </span> <span class="clear"> <a href="#"><strong>Admin</strong></a> post a info <small class="icon-muted">1 day ago</small> </span> </li>
+                                    </ul>
+                                    <div class="wrapper"><strong>Friends</strong></div>
+                                    <ul class="list-group no-bg no-borders auto">
+                                        <li class="list-group-item">
+                                            <div class="media">
+                                                <span class="pull-left thumb-sm avatar"> <img src="~/Scale/images/a3.png" alt="..." class="img-circle"> <i class="on b-black bottom"></i> </span>
+                                                <div class="media-body">
+                                                    <div><a href="#">Chris Fox</a></div> <small class="text-muted">about 2 minutes ago</small>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="media">
+                                                <span class="pull-left thumb-sm avatar"> <img src="~/Scale/images/a2.png" alt="..."> <i class="on b-black bottom"></i> </span>
+                                                <div class="media-body">
+                                                    <div><a href="#">Amanda Conlan</a></div> <small class="text-muted">about 2 hours ago</small>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="media">
+                                                <span class="pull-left thumb-sm avatar"> <img src="~/Scale/images/a1.png" alt="..."> <i class="busy b-black bottom"></i> </span>
+                                                <div class="media-body">
+                                                    <div><a href="#">Dan Doorack</a></div> <small class="text-muted">3 days ago</small>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="media">
+                                                <span class="pull-left thumb-sm avatar"> <img src="~/Scale/images/a0.png" alt="..."> <i class="away b-black bottom"></i> </span>
+                                                <div class="media-body">
+                                                    <div><a href="#">Lauren Taylor</a></div> <small class="text-muted">about 2 minutes ago</small>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </section>
+                            </section>
+                        </aside>
+                        <!-- / side content -->
+                    </section>
+                    <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen,open" data-target="#nav,html"></a>
+                </section>
+            </section>
+        </section>
+    </section>
+    <!-- Bootstrap -->
+    <!-- App -->
+    <script src="~/Scale/js/app.v1.js"></script>
+    <script src="~/Scale/js/app.plugin.js"></script>
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+    <script>
+        var loading = $.loading();
+    </script>
+    @RenderSection("scripts",false)
+</body>
+
+</html>

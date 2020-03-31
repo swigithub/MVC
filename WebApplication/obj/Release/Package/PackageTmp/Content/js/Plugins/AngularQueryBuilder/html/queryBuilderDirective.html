@@ -1,0 +1,191 @@
+﻿<script type="text/ng-template" id="myModalContent.html">
+
+    <div class="modal-header" style="background-color:#4c4f53;color:white!important;height:57px;">
+        <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+            ×
+        </button>
+        <h3 style="margin-top:0px;">Warning</h3>
+    </div>
+    
+        <div class="modal-body">
+            <h4 class="modal-title">Are You Sure?</h4>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" ng-click="cancel('cancil')">Cancel</button>
+            <button class="btn btn-danger" ng-click="submit('delete')">Yes</button>
+        </div>
+    
+</script>
+<!--<button class="btn" ng-click="open()">Open me!</button>-->
+<!--<div ng-show="selected">Selection from a modal: {{ selected }}</div>-->
+  
+        <!--<div class="mainButtonDiv">
+            <button id="btnremove" ng-click="addGroup('m')" class="btn btn-sm btn-success  btnremove btnMain"><span class="glyphicon glyphicon-plus-sign"></span> Add Group</button>
+            <button id="btnremove" ng-click="open()" class="btn btn-sm btn-danger  btnremoveclrAll btnMain"><span class="glyphicon glyphicon-remove-sign"></span>  Clear All</button>
+        </div>
+        <select ng-options="o.name as o.name for o in operators" ng-if="group.removefirstcondition" ng-model="group.operator" class="form-control input-sm groupOperator first2"></select>
+        <div class="alert alert-group removeborber outerdiv" >
+
+            <div class="form-inline btnDiv first3" ng-hide="group.firstgroup">
+                <button  ng-click="addGroup('i')" class="btn btn-sm btn-success innerButton"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                <button  ng-click="addCondition()" class="btn btn-sm btn-success first innerButton"><span class="glyphicon glyphicon-plus"></span> </button>
+                <button  ng-click="removeGroup()" class="btn btn-sm btn-danger first1 innerButton"><span class="glyphicon glyphicon-minus-sign"></span></button>
+            </div>
+            <div class="group-conditions">
+                <div ng-repeat="rule in group.rules track by $index" class="condition">
+
+                    <div ng-switch="rule.hasOwnProperty('group')">
+                        <div ng-switch-when="true">
+                            <query-builder group="rule.group"></query-builder>
+                        </div>
+
+                        <div ng-switch-default="ng-switch-default" style="margin-bottom:-16px; color:#000;">
+                       
+                            <table class="tbl-query-builder">
+                                <tr ng-if="rule.aftercondition">
+                                    <td >
+                                        <select  ng-options="o.name as o.name for o in operators" ng-model="rule.operator" ng-change="test(rule)" class="form-control input-sm conditionOperator"></select>
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td >
+                                        <div class="rules-row-td" ng-show="$last||rule.zeep||rule.group.length>0">
+                                            <select ng-options="c.name as c.name for c in fields" ng-model="rule.field" ng-change="addType($index)" class="customSelect form-control input-sm custom-select-dropdown-columns "></select>
+                                        </div>
+                                       <div class="rules-row-td" ng-show="$last||rule.zeep">
+                                           <select ng-if="rule.isString" ng-options="c.name as c.name for c in conditions" ng-model="rule.condition" ng-change="checkfromCondition(rule.condition,$index)" class="customSelect form-control input-sm custom-select-rules"></select>
+                                           <select ng-if="!rule.isString" ng-options="c.name as c.name for c in datecondition" ng-model="rule.condition" ng-change="checkfromCondition(rule.condition,$index)" class="customSelect form-control input-sm custom-select-rules"></select>
+                                       </div>
+                                        <div class="rules-row-td" ng-show="$last||rule.zeep">
+                                            <input type="text" ng-model="rule.data" ng-if="rule.type=='System.String'" class="customSelect form-control input-sm custom-select-input">
+                                            <input type="number" ng-model="rule.data" ng-if="rule.type=='System.Int32'||rule.type=='System.Double'" class="customSelect form-control input-sm custom-select-input">
+                                            <input type="date" ng-model="rule.data" ng-if="rule.type=='System.DateTime'" class="customSelect form-control input-sm custom-select-input">
+                                            <select class="customSelect form-control input-sm col-md-3 custom-select-data-dropdown" ng-model="rule.data" ng-if="rule.type=='select'" ng-options="rep.DefinationName as rep.DefinationName for rep in rule.definition"></select>
+                                        </div>
+                                        <div class="rules-row-td" ng-show="$last||rule.zeep">
+                                            <button ng-click="removeCondition($index)" class="btn btn-sm btn-danger btnremovecondition"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                        </div>
+                                        <div class="rules-row-td" ng-show="$last||rule.groupstart">
+                                            <div class="form-inline btnDiv first3" style="background:0;margin-left:14px;">
+                                                <button ng-click="addGroup('i')" class="btn btn-sm btn-success innerButton"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                                <button ng-click="addCondition()" class="btn btn-sm btn-success first innerButton"><span class="glyphicon glyphicon-plus"></span> </button>
+                                                <button ng-click="removeGroup()" class="btn btn-sm btn-danger first1 innerButton"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <select  ng-options="o.name as o.name for o in operators" ng-show="!$last && rule.isoperator" ng-model="rule.operator" ng-change="test(rule)" class="form-control input-sm conditionOperator"></select>
+                                    </td>
+                                </tr>
+
+                                <tr ng-if="rule.isgroupoperator && !$last+1">
+                                    <td>
+                                        <label ng-if="!$last+1" ng-click="test1(rule)" style="color:red;margin-bottom:15px;font-size:12px;"></label>
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>-->
+  
+
+
+<select ng-options="o.name as o.name for o in operators" ng-if="group.removefirstcondition" ng-model="group.operator" class="form-control input-sm group-operator"></select>
+<div class="alert alert-group outerdiv">
+
+    
+    <div class="form-inline btnDiv first3">
+        <button ng-click="addGroup()" class="btn btn-sm btn-success innerButton" title="Add Group"><span class="glyphicon glyphicon-plus-sign"></span></button>
+        <button ng-click="addCondition()" class="btn btn-sm btn-success first innerButton" title="Add Condition"><span class="glyphicon glyphicon-plus"></span></button>
+        <button ng-click="removeGroup()" class="btn btn-sm btn-danger first1 innerButton btnremovegroup" title="Clear Group"><span class="glyphicon glyphicon-minus-sign"></span></button>
+    </div>
+    <div class="group-conditions">
+        <div ng-repeat="rule in group.rules track by $index" class="condition">
+
+            <div ng-switch="rule.hasOwnProperty('group')">
+                <div ng-switch-when="true">
+                    <query-builder group="rule.group"></query-builder>
+                </div>
+
+                <div ng-switch-default="ng-switch-default" style="margin-bottom:-16px; color:#000;">
+
+                    <table class="tbl-query-builder">
+
+                        <tr ng-if="rule.isoperator">
+                            <td>
+                                <select ng-options="o.name as o.name for o in operators" ng-model="rule.operator" class="form-control input-sm conditionOperator"></select>
+                            </td>
+                        </tr>
+
+                   
+                        <tr>
+
+                            <td>
+                                <div class="rules-row-td">
+                                    <select ng-options="c.name as c.name for c in fields" ng-model="rule.field" ng-change="addType($index)" class="customSelect form-control input-sm custom-select-dropdown-columns "></select>
+                                </div>
+                                <div class="rules-row-td">
+                                    <select ng-if="rule.isString" ng-options="c.name as c.name for c in conditions" ng-model="rule.condition" ng-change="checkfromCondition(rule.condition,$index)" class="customSelect form-control input-sm custom-select-rules"></select>
+                                    <select ng-if="!rule.isString" ng-options="c.name as c.name for c in datecondition" ng-model="rule.condition" ng-change="checkfromCondition(rule.condition,$index)" class="customSelect form-control input-sm custom-select-rules"></select>
+                                </div>
+                                <div class="rules-row-td">
+                                    <input type="text" ng-model="rule.data" ng-if="rule.type=='System.String'" class="customSelect form-control input-sm custom-select-input">
+                                    <input type="number" ng-model="rule.data" ng-if="rule.type=='System.Int32'||rule.type=='System.Double'" class="customSelect form-control input-sm custom-select-input">
+                                    <input type="date" ng-model="rule.data" value="{{ rule.data | date: 'yyyy-MM-dd' }}" ng-if="rule.type=='System.DateTime'" class="customSelect form-control input-sm custom-select-input">
+                                    <select class="customSelect form-control input-sm col-md-3 custom-select-data-dropdown" ng-model="rule.data" ng-if="rule.type=='select'" ng-options="rep.DefinationName as rep.DefinationName for rep in rule.definition"></select>
+                                </div>
+                                <div class="rules-row-td">
+                                    <button ng-click="removeCondition($index)" title="Remove Condition" class="btn btn-sm btn-danger btnremovecondition"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                </div>
+                                <div class="rules-row-td">
+                                    <div class="form-inline btnDiv first3" style="background:0;margin-left:14px;">
+                                        <button ng-click="addGroup()" title="Add Group" class="btn btn-sm btn-success innerButton"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                        <button ng-click="addCondition()" title="Add Condition" class="btn btn-sm btn-success first innerButton"><span class="glyphicon glyphicon-plus"></span> </button>
+                                        <button ng-click="removeGroup()" title="Clear Group" class="btn btn-sm btn-danger first1 innerButton"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $(".btnDiv:first").find("button:eq(2)").attr('style', 'display:none');
+    });
+   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

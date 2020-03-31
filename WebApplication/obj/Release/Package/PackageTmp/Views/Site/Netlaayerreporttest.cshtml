@@ -1,0 +1,793 @@
+﻿@using System.Web.Mvc.Html
+@using SWI.Libraries.Common
+@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.AD.Entities
+@using Jmelosegui.Mvc.GoogleMap;
+@using System.Drawing;
+@using SWI.AirView.Models;
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    Layout = null;
+    int count = 0;
+    int RowSpan = Model.Count() + 1;
+    DirectoryHandler dh = new DirectoryHandler();
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var NetLayerReport = jss.Serialize(ViewBag.NetLayerReport);
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+    var ReportConfigurationList = ViewBag.ReportConfiguration as List<AD_ReportConfiguration>;
+    string Contant = "";
+    string a = "";
+    int rachFailureCount = 0;
+    int rachSuccessCount = 0;
+    float rachFailureRate = 0;
+    float rachAbortPerc = 0;
+    float rachFailMSG2 = 0;
+    float rachFailMSG4 = 0;
+    float rachFirstAttempt = 0;
+    float rachMultipleAttempt = 0;
+    int rachAbortedCount = 0;
+    int rachFailMSG2Count = 0;
+    int rachFailMSG4Count = 0;
+    int LTEtoNRCount = 0;
+    int NRtoLTECount = 0;
+
+    var sectorOoklaTestNR = Model.ToList()[0].SectorsOoklaTest.Where(x => x.NetWorkMode == "NR").ToList();
+    var sectorOoklaTestLTE = Model.ToList()[0].SectorsOoklaTest.Where(x => x.NetWorkMode == "LTE").ToList();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Layer Report</title>
+
+    <link href="~/Content/js/Plugins/DateTimePicker/dtpicker.css" rel="stylesheet" />
+    <link href="~/Content/NetLayreReport.css" rel="stylesheet" />
+    @Scripts.Render("~/AdminLTE/plugins/jquery/js")
+    <script src="~/Content/js/Plugins/canvasjs/jquery.canvasjs.min.js"></script>
+    <style>
+        .mapdetail {
+            position: absolute;
+            bottom: 55px;
+            background-color: white;
+            border: solid 2px;
+            width: 153px;
+            left: 10px;
+            /*right: 158px;*/
+        }
+
+        .pan-map {
+            margin-left: 10px;
+            margin-right: 0px;
+            width: 1370px;
+            height: 750px;
+            position: relative;
+        }
+
+        .PciLegend {
+            position: absolute;
+            bottom: 55px;
+            background-color: white;
+            border: solid 2px;
+            left: 10px;
+            width: 170px;
+            /*right: 158px;*/
+        }
+
+            .PciLegend table td {
+                padding: 4px !important;
+            }
+
+            .PciLegend table {
+                padding-bottom: 7px !important;
+            }
+
+        .mapdetail table td {
+            padding: 4px !important;
+        }
+
+        .mapdetail table {
+            padding-bottom: 7px !important;
+        }
+
+        .rptFooter {
+            position: relative !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            margin-top: 110px !important;
+            /*min-top:300px !important;*/
+        }
+    </style>
+
+</head>
+
+<body>
+    @if (Model != null && Model.Count() > 0)
+    {
+
+        var Pcis = (ViewBag.PciDisLagend as List<AV_NetLayerReportPlot>);
+        var CwPcis = Pcis.Where(m => m.TestType == "CW").ToList();
+        var CcwPcis = Pcis.Where(m => m.TestType == "CCW").ToList();
+
+        @functions{
+
+            public string SectorColor(string key)
+            {
+                try
+                {
+                    var LagentPCI = ViewBag.Sectors as ICollection<AD_Defination>;
+                    return LagentPCI.Where(m => m.DefinationName == key).FirstOrDefault().ColorCode;
+                }
+                catch
+                {
+
+                    return null;
+                }
+
+            }
+
+        }
+
+
+        var First = Model.FirstOrDefault();
+        int TotalRecord = Model.Count();
+        string NetworkMode = First.NetworkMode;
+
+        // var rptConfig = ViewBag.ReportConfiguration as ICollection<AD_ReportConfiguration>;
+        ViewBag.ClientLogo = First.ClientLogo;
+        ViewBag.VendorLogo = First.VendorLogo;
+
+        <div class="container" id="pdf" style="width:1400px;margin: auto;padding:2px;">
+            <a href="#" style="float:right; position: fixed; right: 100px" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+            @if (ViewBag.RoleName != "Client POC")
+            {
+                <a href="#" style="float:right; position: fixed; left: 100px" id="btn-setting" class="clear">
+                    <img src="~/Content/Images/Common/kpi_x24.png" />
+                </a>
+            }
+            <div id="pan-settings" style="position: fixed;left: 10px;top: 50px;background-color:#333;color:white; width: 230px;display:none;height:760px;overflow-x:hidden;overflow-y:auto /*visibility:hidden*/">
+                <div class="settingHeading">Report Settings</div>
+                <div>
+                    <div id="pan-checkbox" style="margin-left: 10px;">
+                        @foreach (var conf in (ViewBag.ReportConfiguration as ICollection<AD_ReportConfiguration>).Where(m => m.IsPanelItem == true).OrderBy(m => m.InputType))
+                        {
+                            string[] InputTypes = conf.InputType.Split(',');
+
+                            foreach (var type in InputTypes)
+                            {
+                                if (type == "BOOLEAN")
+                                {
+
+                                    string check = "";
+                                    if (conf.isActive == true)
+                                    {
+                                        check = "checked";
+                                    }
+                                    else
+                                    {
+                                        check = "";
+                                    }
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" data-keycode="@conf.KeyCode" @check class="checkboxcontroll" id="@conf.KeyId">
+                                            @conf.DisplayText
+                                        </label>
+                                    </div>
+                                }
+
+                             
+                            }
+
+
+                        }
+                        <label>Fonts</label>
+                        <div>
+                            @Html.DropDownList("ddlFonts", ViewBag.Fonts as List<SelectListItem>, new { style = "width:150px" })
+                        </div>
+                    </div>
+
+                    <div class="settingFooter"><input style="font-weight:bold" type="button" id="btn-cofSave" value="Apply Settings" /></div>
+                </div>
+                @if (ViewBag.RoleName != "Client POC")
+                {
+                    <div>
+                        <hr />
+                        <div class="settingHeading">Disable Map Route</div>
+                        <div style="margin-left: 10px;">
+                            <label>From Time</label>
+                            <input type="text" class="datetime" id="txtFromDate" /><br />
+                            <label>To Time</label>
+                            <input type="text" class="datetime" id="txtToDate" /><br />
+                        </div>
+                        <div class="settingFooter">
+
+                            <a class="btn-mapRoot" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                            <a class="btn-mapRoot" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                        </div>
+
+                    </div>
+                }
+                @if (ViewBag.RoleName != "Client POC")
+                {
+                    <div>
+                        <hr />
+                        <div class="settingHeading">Remove Drive</div>
+                        <form action="#" method="post" id="frm-removeDrive">
+                            <div style="margin-left: 10px;">
+                                @foreach (var ts in ViewBag.ServerTimestamp)
+                                {
+                                    <label>
+                                        <input type="checkbox" data-value="@ts.value1" class="ch-Timestamp">
+                                        @ts.value1
+                                    </label>
+                                    <br />
+
+                                }
+                            </div>
+                            <div class="settingFooter">
+                                <a class="btn-RemoveDrive" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                                <a class="btn-RemoveDrive" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                            </div>
+                        </form>
+
+                    </div>
+                }
+
+
+                <div>
+                    <hr />
+                    <form action="#" method="post" id="frm-pcis">
+                        <div class="settingHeading">Disable CW Plots</div>
+                        <div style="margin-left: 10px;">
+                            @{int PciCount = 0; }
+                            @foreach (var pci in CwPcis)
+                            {
+                                if (PciCount == 3)
+                                {
+                                    <br />
+                                    PciCount = 0;
+                                }
+                                <label>
+                                    <input type="checkbox" data-value="@pci.PCI" class="ch-pci" id="pci-@pci.PCI">
+                                    @pci.PCI
+                                </label>
+
+                                PciCount++;
+                            }
+                            <hr />
+                            <div class="settingHeading">Disable CCW Plots</div>
+                            @{ PciCount = 0; }
+                            @foreach (var pci in CcwPcis)
+                            {
+                                if (PciCount == 3)
+                                {
+                                    <br />
+                                    PciCount = 0;
+                                }
+                                <label>
+                                    <input type="checkbox" data-value="@pci.PCI" class="ch-pci" id="pci-@pci.PCI">
+                                    @pci.PCI
+                                </label>
+
+                                PciCount++;
+                            }
+                        </div>
+                        <div class="settingFooter">
+                            <a class="btn-Pcis" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                            <a class="btn-Pcis" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+
+                            <!--<a class="btn-mapRoot" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                                <input type="image" src="~/Content/Images/Common/error.png">-->
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+
+            <div id="print" class="clear">
+                <div class="bgcolor WELCOME_PAGE_COLOR" data-type="BGCOLOR" style="color: white;padding-top: 201px;height: 801px;margin-left: -20px;margin-right: -20px;margin-bottom: 1px;">
+                    <img src="~/Content/Images/ClientLogo/nokia_logo.png" class="" style="top: -100px;position: relative;" />
+
+                    <div style="margin-left:50px;font-size:xx-large;font-family: Arial, Verdana;margin-top:-100px;">
+
+                        <h1 id="PROJECT_TITLE" class="" data-type="BOOLEAN,STRING" data-preValue="@First.Region"></h1>
+                        <h1 id="REPORT_TITLE" class="" data-type="BOOLEAN,STRING" style="margin-top:-30px;"></h1>
+                    </div>
+                    <div class="" style="margin-top:100px;margin-left:50px; font-size:large;font-family: Arial, Verdana;">
+                        <div>
+                            <div class="left">
+                                <h2>Site : @First.Site _ @First.Band</h2>
+                                <h2>@First.SiteScheduleDate.Value.ToString("MMM dd, yyyy")</h2>
+                            </div>
+                            <div class="left"></div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    @if (First.ClientPrefix == "TMO")
+                    {
+                        <img src="~/Content/Images/Common/tmobile.png" style="position: relative;right: -800px;bottom: -100px;width: 547px;height: 92px;" />
+                    }
+                    else if (First.ClientPrefix == "ATT")
+                    {
+                        <img src="~/Content/Images/ClientLogo/att_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 366px;height: 176px;" />
+                    }
+                    else if (First.ClientPrefix == "CSP")
+                    {
+                        <img src="~/Content/Images/ClientLogo/cspire_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 190px;" />
+                    }
+                    else if (First.ClientPrefix == "VRZ")
+                    {
+                        <img src="~/Content/Images/ClientLogo/verizon_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 107px;" />
+                    }
+                    else if (First.ClientPrefix == "SPR")
+                    {
+                        <img src="~/Content/Images/ClientLogo/sprint_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 190px;" />
+                    }
+                </div>
+
+                @*<p class="breakhere"></p>*@
+
+                <!--Site Data-->
+
+                <div class="" style="color:#3b39e2;margin-top:60px;height:786px;">
+                    <h1 id="SITE_DATA" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading" style="padding-top: 25px;"></h1>
+
+                    <div class="" style="width:100%;border-bottom:solid 2px;border-top:solid 2px;">
+
+                        @if (ReportConfigurationList.Any(m => m.KeyCode == "SITE_DATA_TYPE" && m.KeyValue == "2" && m.isActive == true))
+                        {
+                            @Html.Partial("~/views/site/_ntlSiteData2.cshtml", Model)
+                        }
+                        else
+                        {
+                            @Html.Partial("~/views/site/_ntlSiteData_5G.cshtml", Model)
+
+                        }
+
+                    </div>
+                    <br /><br />
+
+                    @*@if (TotalRecord < 2)
+                    {
+                        <div class="" id="site_data_map" style="width:auto;height:800px;"></div>
+                    }
+                    <div class="clear"></div>*@
+                </div>
+                <h1></h1>
+
+
+                @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+              
+                <p class="breakhere"></p>
+               
+                    <div class="" style="color:#3b39e2;margin-top:50px;height:870px;">
+                        <h1 id="SITE_DATA" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading"></h1>
+                        <br /><br />
+                        <div class="" id="site_data_map" style="width:auto;height:850px;"></div>
+                        <div class="clear"></div>
+                    </div>
+
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <p class="breakhere"></p>
+               
+
+
+                <!--Field Test-->
+                @*@Html.Partial("~/views/site/_ntlFieldTest.cshtml", Model)*@
+                @if (ReportConfigurationList.Any(m => m.KeyCode == "FIELD_TEST_TYPE" && m.isActive == true))
+                {
+                    <style>
+                        .StationaryTable {
+                            margin-left: 0;
+                        }
+
+                        .StationaryTableTd {
+                            min-width: 62px;
+                        }
+
+                        .StationaryTableTh {
+                            padding: 0 !important;
+                        }
+
+                        .StationaryTableTh2 {
+                            padding: 0 !important;
+                        }
+
+                        .StationaryTableTd {
+                            padding: 0 !important;
+                        }
+
+                        .StationaryTableTd2 {
+                            padding: 0 !important;
+                        }
+                    </style>
+                    @Html.Partial("~/views/site/_ntlFieldTest_5G1.cshtml", Model)
+                }
+                else
+                {
+                    @Html.Partial("~/views/site/_ntlFieldTest_5G1.cshtml", Model)
+
+                }
+
+
+
+                <!--Field Test1-->
+             
+
+
+                <!--Summary Result-->
+                <p class="breakhere"></p>
+                <div id="pan-RSRQ_PLOT" data-type="BOOLEAN" style="position:relative;margin-top:80px;">
+                    <h1 class="heading" id="RSRQ_PLOT" data-type="BOOLEAN" data-preValue="@First.Site">
+                        @First.Site
+                        <span> Summary Result</span>
+                    </h1>
+                    <div>
+                        <table class="font" style="text-align:center;font-family:Arial;height:90%;width:100%;">
+                            <tr class="tbl-heading">
+                                <th></th>
+                                <th>All Tests</th>
+                                <th>5G Only</th>
+                                <th>LTE Only</th>
+                                <th>Mixed Mode</th>
+                            </tr>
+                            @{
+                                rachFailureCount = Model.ToList()[0].SiteTestLog.Where(s => s.StackTrace.Contains("Rach_Attempt:Failure")).Count();
+                                rachFailMSG2Count = Model.ToList()[0].SiteTestLog.Where(s => s.StackTrace.Contains("Rach_Attempt:Failure_Msg2")).Count();
+                                rachFailMSG4Count = Model.ToList()[0].SiteTestLog.Where(s => s.StackTrace.Contains("Rach_Attempt:Failure_Msg4")).Count();
+                                rachAbortedCount = Model.ToList()[0].SiteTestLog.Where(s => s.StackTrace.Contains("Rach_Attempt:Aborted")).Count();
+                                rachSuccessCount = Model.ToList()[0].SiteTestLog.Where(s => s.StackTrace.Contains("Rach_Attempt:Success")).Count();
+                                NRtoLTECount = Model.ToList()[0].SiteTestLog.Where(s => s.StackTrace.Contains("HO:Success:NR-LTE")).Count();
+                                LTEtoNRCount = Model.ToList()[0].SiteTestLog.Where(s => s.StackTrace.Contains("HO:Success:LTE-NR")).Count();
+                                var containRachAttemptSuccess = Model.ToList()[0].SiteTestLog.Where(s => s.StackTrace.Contains("Rach_Attempt:Success"));
+                                var firstAttemptSuccess = containRachAttemptSuccess.Where(s => s.StackTrace.Contains("CONT_UL_GRANT:1"));
+                                int totalCounts = 0;
+                                totalCounts = rachFailureCount + rachSuccessCount + rachAbortedCount;
+                                if (totalCounts > 0)
+                                {
+                                    rachFailureRate = (rachFailureCount * 100) / totalCounts;
+                                    rachAbortPerc = (rachAbortedCount * 100) / totalCounts;
+                                    rachFailMSG2 = (rachFailMSG2Count * 100) / totalCounts;
+                                    rachFailMSG4 = (rachFailMSG4Count * 100) / totalCounts;
+                                }
+                                if (rachSuccessCount > 0)
+                                {
+                                    rachFirstAttempt = (firstAttemptSuccess.Count() * 100) / (rachSuccessCount);
+                                    rachMultipleAttempt = (containRachAttemptSuccess.Except(firstAttemptSuccess).Count() * 100) / (rachSuccessCount);
+                                }
+                            }
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left">% Time on LTE-5GNR</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left"># 5G to 4G Transitions</td>
+                                <td>@NRtoLTECount</td>
+                                <td>@NRtoLTECount</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left"># 4G to 5G Transitions</td>
+                                <td>@LTEtoNRCount</td>
+                                <td>@LTEtoNRCount</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left">RACH Failure Count (#)</td>
+                                <td>@rachFailureCount</td>
+                                <td>@rachFailureCount</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left">RACH Success Count (#)</td>
+                                <td>@rachSuccessCount</td>
+                                <td>@rachSuccessCount</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left">Overall RACH Failure Rate (%)</td>
+                                <td>@Math.Round(rachFailureRate, 1)</td>
+                                <td>@Math.Round(rachFailureRate, 1)</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left">RACH OK in first attempt (%)</td>
+                                <td>@Math.Round(rachFirstAttempt, 1)</td>
+                                <td>@Math.Round(rachFirstAttempt, 1)</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left">RACH OK in multiple attempts (%)</td>
+                                <td>@Math.Round(rachMultipleAttempt, 1)</td>
+                                <td>@Math.Round(rachMultipleAttempt, 1)</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left">RACH Failure at MSG2 incl. retries (%)</td>
+                                <td>@Math.Round(rachFailMSG2, 1)</td>
+                                <td>@Math.Round(rachFailMSG2, 1)</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left">RACH Failure at MSG4 incl. retries (%)</td>
+                                <td>@Math.Round(rachFailMSG4, 1)</td>
+                                <td>@Math.Round(rachFailMSG4, 1)</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="tbl-data">
+                                <td style="background-color: #004b99;color: white;text-align:left">RACH Aborted incl. retries (%)</td>
+                                <td>@Math.Round(rachAbortPerc, 1)</td>
+                                <td>@Math.Round(rachAbortPerc, 1)</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <!--<div id="DLULChart" style="height: 400px; width: 100%;"></div>-->
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <p class="breakhere"></p>
+
+                </div>
+
+                <!--Rach Events-->
+              
+
+                <!--CH Plot-->
+                <div id="pan-CH_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 class="heading" data-type="BOOLEAN" data-preValue="@First.Site">
+                        <span>@First.Site Carrier Plot </span>
+                    </h1>
+                    <div id="frm-chPlot">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="chPlot-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="50" id="chPlot-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-chPlot" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="CH_PLOT" data-type="BOOLEAN" style="width:100%;height:900px"></div>
+
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            <span> Carrier Plot </span>
+                        </div>
+                        <table style="border-spacing: 1px;width:100%">
+                            @if (ViewBag.chLagend != null)
+                            {
+                                foreach (var item in ViewBag.chLagend)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:@item.Color;"></div>
+                                        </td>
+                                        <td><span>@item.PCI</span></td>
+                                    </tr>
+
+                                }
+                            }
+
+                        </table>
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <p class="breakhere"></p>
+                </div>
+
+                <!--End CH Plot-->
+                <!-- PCI Plot-->
+                <div id="pan-PCI_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 id="PCI_PLOT" data-type="BOOLEAN" data-preValue="@First.Site" class="heading">
+                        @First.Site
+                        @if (NetworkMode == "LTE" || NetworkMode == "NR")
+                        {
+                            <span> PCI Plot </span>
+                        }
+                        else if (NetworkMode == "GSM")
+                        {
+                            <span>BCCH Plot</span>
+                        }
+                        else if (NetworkMode == "WCDMA")
+                        {
+                            <span>PSC Plot</span>
+                        }
+
+                    </h1>
+
+                    <div id="frm-pci">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="pci-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="50" id="pci-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-pci" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="PCI_Plot" style="width:100%;"></div>
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            @if (NetworkMode == "LTE" || NetworkMode == "NR")
+                            {
+                                <span> PCI Plot </span>
+                            }
+                            else if (NetworkMode == "GSM")
+                            {
+                                <span>BCCH Plot</span>
+                            }
+                            else if (NetworkMode == "WCDMA")
+                            {
+                                <span>PSC Plot</span>
+                            }
+
+                        </div>
+                        <table style="">
+                            @{
+
+                                int PcisCount = Pcis.Count;
+                                //if (ViewBag.AfterDate == false || First.City != "Chicago")
+                                //{
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="colorBox" style="background-color:@item.SectorColor;"></div>
+                                        </td>
+                                        <td><span class="pci-count">@item.PciId</span></td>
+                                    </tr>
+                                }
+                                @*}
+                                    else
+                                    {*@
+
+                            var PcisList = Pcis.Select(d => new { d.PCI, d.Color }).Distinct();
+                            foreach (var f in PcisList)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="colorBox" style="background-color:@f.Color;"></div>
+                                    </td>
+                                    <td><span>@f.PCI</span></td>
+                                </tr>
+                                }
+
+                            }
+
+
+                        </table>
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <p class="breakhere"></p>
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <div class="WELCOME_PAGE_COLOR" id="thank-you" style="background:#004B99;padding-top:150px;height:800px;margin-left: -50px;margin-right: -20px;margin-top: 10px;padding-bottom: 50px;">
+                    <img src="~/Content/Images/Report/Nokia-bg.png" style="margin-top: 215px;margin-left: 381px;" />
+
+                </div>
+            </div>
+
+            <a href="" style="float:right;" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+
+        </div>
+        <div style="display:none" id="Azimuth_Circle">0</div>
+
+        <script src="~/Content/js/Plugins/DateTimePicker/dtpicker.js"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.ApiMapKey)&sensor=false&libraries=geometry&bogusParam=.js"></script>
+        <script src="~/Content/js/MapLabel.js"></script>
+        @*<script src = "/Content/js/Plugins/kml/js/geoxml3.js" ></script>
+            <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>*@
+
+                                <script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+                                <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+
+                                <script src="~/Content/js/GoogleMapsNTL.js"></script>
+                                <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script><!--loading-->
+                                <script>
+                                    var NetLayerReport = JSON.parse('@Html.Raw(NetLayerReport)');
+                                    var SiteId = '@First.SiteId';
+                                    var NetworkModeId = '@First.NetworkModeId';
+                                    var BandId = '@First.BandId';
+                                    var CarrierId = '@First.CarrierId';
+                                    var ScopeId = '@First.ScopeId';
+                                    @{
+                 string NetLayer = First.ActualSiteCode+ "/"+First.NetworkMode + "_" +First.Band + "_" +First.Carrier;
+             }
+
+                                    var SiteLatitude = '@First.Latitude';
+                                    var SiteLongitude = '@First.Longitude';
+                                    var SiteCode = '@First.Site _ @First.Band';
+                                    var NetLayer = '@NetLayer';
+                                    var AfterDate = '@ViewBag.AfterDate';
+                                    var domain = '@ViewBag.domain';
+                                    var AzmuthRadius = '@ViewBag.AzmuthRadius';
+                                    var ClientPrefix = '@First.ClientPrefix';
+                                    // console.log(NetLayerReport);
+                                </script>
+                                            <script type="text/javascript">
+                                                $("#DLULChart").CanvasJSChart({
+                                                    title: {
+                                                        text: "# RACH Attempts per RACH Procedure Distribution",
+
+                                                    },
+                                                    dataPointWidth: 50,
+                                                    data: [
+                                                    {
+                                                        showInLegend: true,
+                                                        legendText: "PDF",
+                                                        indexLabel: "{y}",
+                                                        indexLabelFontColor: "black",
+                                                        indexLabelFontWeight: "bold",
+                                                        //indexLabelFontSize: 20,
+                                                        dataPoints: [
+
+                                                            { x: 1, y: '1', label: "1" },
+                                                        ]
+                                                    },
+                                                    @*@{Count = 1; }*@
+                                                {
+                                                    showInLegend: true,
+                                                    legendText: "CDF",
+                                                    indexLabel: "{y}",
+                                                    indexLabelFontColor: "black",
+                                                    indexLabelFontWeight: "bold",
+                                                    dataPoints: [
+
+                                                                { x: 1, y: '1', label: "1" },
+                                                    ]
+                                                }
+                                                    ]
+                                                });
+                                                //----------------------------------------------------------------------
+
+
+                                            </script>
+                                            <script src="/Content/js/NetLayerReport.js"></script>
+    }
+</body>
+
+</html>

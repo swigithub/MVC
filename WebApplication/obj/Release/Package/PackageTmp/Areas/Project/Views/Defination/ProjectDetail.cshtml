@@ -1,0 +1,430 @@
+﻿@using WebApplication.Areas.Project.View_Models
+
+@model VM_ProjectsDetail
+
+
+@{
+    ViewBag.Title = "Project Detail";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.min.css">
+
+@*<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>*@
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-sanitize.js"></script>
+
+<script src="//npmcdn.com/api-check@latest/dist/api-check.js"></script>
+<script src="//npmcdn.com/angular-formly@latest/dist/formly.js"></script>
+<script src="//npmcdn.com/angular-formly-templates-bootstrap@latest/dist/angular-formly-templates-bootstrap.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.min.js"></script>
+
+
+
+<script src="~/Areas/Project/Angular/ui-bootstrap-tpls-0.13.4.min.js"></script>
+
+
+@*------------for Charts----------*@
+
+@*<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>*@
+
+
+<script src="~/Content/js/Plugins/canvasjs/jquery.canvasjs.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.13/daterangepicker.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.13/daterangepicker.min.js"></script>
+
+<script src="~/Areas/Project/Angular/Service.js"></script>
+
+
+<script>
+    var ProjectID = '@ViewBag.ProjectID';
+
+
+    //SubmittedOn
+    //SiteCount
+    function siteCount(items) {
+        var cnts = [];
+        for (i = 0; i < items.length; i++) {
+            cnts.push({
+                y: items[i].SiteCount,
+                label: items[i].SubmittedOn
+            });
+        }
+
+        $("#chartContainer1").CanvasJSChart({
+            title: {
+                text: "",
+            },
+            axisX: {
+                valueFormatString: "MMM",
+                interval: 1,
+                intervalType: "month"
+            },
+            axisY: {
+                includeZero: false
+
+            },
+            data: [
+                    {
+                        type: "line",
+                        dataPoints: cnts
+                    }
+            ]
+        });
+    }
+
+
+    function siteStatus(objsts) {
+        var sts = [];
+        $.each(objsts, function (key2, value2) {
+            var o = { indexLabel: key2, y: value2 };
+            sts.push(o);
+        });
+
+        $("#chartContainer2").CanvasJSChart({
+            title: {
+                text: "",
+            },
+            legend: {
+                maxWidth: 350,
+                itemWidth: 120
+            },
+            data: [
+                    {
+                        type: "pie",
+                        showInLegend: true,
+                        legendText: "{indexLabel}",
+                        dataPoints: sts
+                    }
+            ]
+        });
+    }
+</script>
+
+
+<script src="~/Areas/Project/Angular/ProjectDashBoard.js"></script>
+<script src="~/Areas/Project/Angular/CustomeFilters.js"></script>
+<style>
+    /*.formPadding {
+        padding: 10px;
+    }*/
+
+    .ui-select-multiple.ui-select-bootstrap input.ui-select-search {
+        width: 100% !important;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 5px;
+        padding: 0;
+    }
+
+    #divScopes .divScopes {
+        float: left;
+        width: 420px;
+    }
+
+    .box-solid {
+        padding: 7px;
+        margin-bottom: 7px;
+    }   
+    .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9 {
+        padding-right: 7px;
+        padding-left: 7px;
+    }
+
+    .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4 {
+        padding-right: 0px;
+        padding-left: 10px;
+    }
+
+    .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3 {
+        padding-right: 7px;
+        padding-left: 7px;
+    }
+    .nav-tabs-custom>.tab-content{
+        padding:15px;
+    }
+    .nav-tabs-custom > .nav-tabs > li {
+        margin-right: 0px;
+    }
+    .nav > li > a {
+        padding:7px 7px;
+    }
+    /*-----------------------------------------*/
+</style>
+
+
+
+
+<div class="row" ng-app="appProject" ng-controller="ngCtrlProjectDashBoard">
+    <div class="col-lg-12 box box-solid">
+
+
+        <div style="float:right; margin-top:10px; margin-right:20px;">
+            <a style="margin-left:5px;" href="@Url.Action("All","Defination")" class="pull-right">List</a>
+            @Html.ActionLink("Edit", "New", "Defination", new { id = @ViewBag.ProjectID, @class = "btn btn-primary" }, null) |
+        </div>
+        <section class="panel panel-default" style="box-shadow:5px 4px 5px #88887B; margin-left:9px; margin-right:9px;">
+
+
+            <header class="panel-heading font-bold">
+                Project Details
+            </header>
+
+
+            <div class="panel-body">
+                <table class="table table-bordered table-condensed">
+                    <tr>
+                        <td style="padding:5px;">
+
+                            @*{{projectDetail.ProjectID}}*@
+                            {{projectDetail.ProjectName}}<br />
+                            {{projectDetail.Vendor}}
+
+                        </td>
+                        <td>
+                            Status:
+                            <span style="background-color:green; color:#fff; border-radius:5px;padding:3px;">
+                                {{projectDetail.Status}}
+                            </span>
+                            <br />
+                            Color :&nbsp;
+                            @*<span id="myspan" style="padding-left:2px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>*@
+                            <span style="background-color:{{'#' + projectDetail.Color}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            @*<script>
+                                var col = '#' + '@Html.DisplayFor(model => model.Project.Color)'
+                                $("#myspan").css("background-color", col);
+                                </script>*@
+
+                        </td>
+                        <td>
+                            Project Start: {{projectDetail.StartDate}}<br />
+                            End Date:      {{projectDetail.EndDate}}
+                        </td>
+                    </tr>
+                </table>
+
+                <div id="divScopes">
+
+                    <div class="divScopes">
+                        <label>SCOPES:</label>
+                        @*<ul class="list-group">
+                            <li class="list-group-item" ng-repeat="s in scopeByProject">
+                            {{s.Scope}}
+                            </li>
+                            </ul>*@
+
+                        <span ng-repeat="s in scopeByProject | limitTo: limitS">
+                            <span style="font-size:18px;border:1px solid gray; border-radius:4px;margin:5px;padding-left:5px;padding-right:5px;">
+                                {{s.Scope}}
+                            </span>
+                        </span>
+
+                        <span ng-if="(limitS=='2' && scopeByProject.length > 2)">
+                            <a style="margin-top:5px;" ng-click='moreScope()'>Show More...</a>
+                        </span>
+
+                        <span ng-if="!(limitS=='2')">
+                            <a style="margin-top:5px;" ng-click='lessScope()'>Show Less...</a>
+                        </span>
+
+                    </div>
+
+                    <div class="divScopes">
+                        <label>MARKETS:</label>
+                        @*<ul class="list-group">
+                            <li class="list-group-item" ng-repeat="m in marketByProject | limitTo: limit">
+                            {{m.Market}}
+                            </li>
+                            <li ng-if="(limit=='2' && marketByProject.length > 2)">
+                            <button style="margin-top:5px;" ng-click='more()'>Show More...</button>
+                            </li>
+                            <li ng-if="!(limit=='2')">
+                            <button style="margin-top:5px;" ng-click='less()'>Show Less...</button>
+                            </li>
+                            </ul>*@
+
+                        <span ng-repeat="m in marketByProject | limitTo: limitM">
+                            <span style="font-size:18px;border:1px solid gray; border-radius:4px;margin:5px; padding-left:5px;padding-right:5px;">
+                                {{m.Market}}
+                            </span>
+                        </span>
+
+                        <span ng-if="(limitM=='2' && marketByProject.length > 2)">
+                            <a style="margin-top:5px;" ng-click='moreMarkets()'>Show More...</a>
+                        </span>
+
+                        <span ng-if="!(limitM=='2')">
+                            <a style="margin-top:5px;" ng-click='lessMarkets()'>Show Less...</a>
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+
+    <div>
+        <div class="col-lg-12 box box-solid">
+            <div class="col-lg-9">
+                <div class="col-lg-4" style="width:50%;">
+                    <form ng-submit="GetSiteCountByDates()">
+                        <div id="reportrange" ng-model="selectedDate" class="pull-right" style="margin-top:10px; margin-right:7px;">
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+                            <span></span> <b class="caret"></b>
+                        </div>
+                    </form>
+                    <section class="panel panel-default" style="box-shadow:5px 4px 5px #88887B;margin-left:-8px;">
+                        <header class="panel-heading font-bold">
+                            Sites WO's Count
+                        </header>
+                        <div class="panel-body">
+                            <div id="pan-chartContainer1">
+                                <div id="chartContainer1" style="height: 250px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <script type="text/javascript">
+                        $(function () {
+                            //var count = 0;
+                            var start = moment().subtract(29, 'days');
+                            var end = moment();
+
+                            function cb(start, end) {
+                                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                                var dt1 = GetFormattedDateRange(start.format('MMMM D, YYYY'));
+                                var dt2 = GetFormattedDateRange(end.format('MMMM D, YYYY'));
+                                angular.element(document.getElementById('reportrange')).scope().GetSiteCountByDates([dt1, dt2]);
+                            }
+
+                            $('#reportrange').daterangepicker({
+                                startDate: start,
+                                endDate: end,
+                                ranges: {
+                                    'Today': [moment(), moment()],
+                                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                                }
+                            }, cb);
+
+                            cb(start, end);
+                        });
+
+                        function GetFormattedDateRange(date) {
+                            var formatedDate = new Date(date);
+                            var month = formatedDate.getMonth() + 1;
+                            var day = formatedDate.getDate();
+                            var year = formatedDate.getFullYear();
+                            return month + "/" + day + "/" + year;
+                        }
+                    </script>
+
+                    @*</div>*@
+
+
+                </div>
+
+                <div class="col-lg-4" style="width:50%;">
+                    <section class="panel panel-default" style="box-shadow:5px 4px 5px #88887B;">
+
+                        <header class="panel-heading font-bold">Sites WO's Status</header>
+                        <div class="panel-body">
+                            <div id="pan-chartContainer2">
+                                <div id="chartContainer2" style="height: 250px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <section class="panel panel-default" style="box-shadow:5px 4px 5px #88887B;min-height:323px;">
+                    <header class="panel-heading font-bold">
+                        Manage Project
+                    </header>
+                    <div class="panel-body">
+                        <!-- Custom Tabs -->
+                        <div class="nav-tabs-custom" style="margin-bottom:15px;">
+                            <ul class="nav nav-tabs boxHeader">
+                                <li class="active"><a href="#Scopes" data-toggle="tab">Add Scopes</a></li>
+                                <li><a href="#Markets" data-toggle="tab">Add Markets</a></li>
+                                <li><a href="#Teams" data-toggle="tab">Add Teams</a></li>
+                            </ul>
+
+                            <div class="tab-content boxBody">
+
+                                <div class="tab-pane active" id="Scopes">
+                                    <div class="row">
+                                        <form name="pScope" ng-submit="AddScopes()">
+                                            @*<multiselect multiple="true" required="true"
+                                                ng-model="ScopeID"
+                                                options="ps.ProjectScopeID as ps.Scope for ps in projScope"
+                                                change="selected()">
+                                                </multiselect>*@
+                                            @*<div class="col-lg-4">*@
+                                            <div ng-init="DefType_Scope = 'DefType_Scope'"></div>
+                                            <formly-form model="proj" fields="multiScopes"></formly-form>
+                                            <div class="form-group">
+                                                <input type="submit" value="Save" class="btn btn-primary  pull-right" />
+                                            </div>
+                                            @*</div>*@
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="Markets">
+                                    <div class="row formPadding">
+                                        <form name="pMarket" ng-submit="AddMarkets()">
+                                            @*<multiselect multiple="true" required="true"
+                                                ng-model="DefinationId"
+                                                options="m.DefinationId as m.DefinationName for m in projMarket"
+                                                change="selected()">
+                                                </multiselect>*@
+                                            @*<div class="col-lg-4">*@
+                                            <div ng-init="DefType_Market = 'DefType_Market'"></div>
+                                            <formly-form model="mark" fields="multiMarkets"></formly-form>
+
+                                            <div class="form-group">
+                                                <input type="submit" value="Save" class="btn btn-primary  pull-right" />
+                                            </div>
+                                            @*</div>*@
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="Teams">
+                                    <div class="row formPadding">
+                                        <form name="pTeam">
+                                            <div class="form-group">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

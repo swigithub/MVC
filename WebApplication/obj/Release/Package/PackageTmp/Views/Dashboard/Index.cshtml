@@ -1,0 +1,1662 @@
+﻿@using System.Web.Mvc.Html
+@using Jmelosegui.Mvc.GoogleMap
+@using SWI.Libraries.AirView.Entities
+@model DashboardVM
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+
+    DayOfWeek day = DateTime.Now.DayOfWeek;
+    int days = day - DayOfWeek.Monday + 1;
+    DateTime Weekstart = DateTime.Now.AddDays(-days);
+    DateTime Weekend = Weekstart.AddDays(6);
+
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = Int32.MaxValue;
+    var WoStatus = jss.Serialize(ViewBag.WoStatus);
+    var UserClients = jss.Serialize(ViewBag.UserClients);
+
+    var Count = Model.SiteStatuses.TotalSites;
+
+    double pageCount = (double)((decimal)Count / Convert.ToDecimal(5));
+    int TotalPages = (int)Math.Ceiling(pageCount);
+}
+
+@if (TempData["error"] !=null)
+{
+    <script>
+        $(document).ready(function () {
+
+            $.notify("No Logs Available", { type: "Please Select Option", color: "#ffffff", background: "#cc0000", blur: 0.6, delay: 1500, });
+        });
+       
+    </script>
+}
+
+
+
+<div class="row">
+    <div class="col-md-10">
+        <div class="row" id="divstatus">
+            <!--Status-->
+
+            @Html.Partial("~/Views/Dashboard/_SitesStatuses.cshtml", @Model.SiteStatuses)
+
+        </div>
+    </div>
+    <!--File uploader-->
+
+    <div class="col-md-2">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title" id="UploadTitle">Upload Work Orders</h3>
+                        <div class="box-tools pull-right">
+                            <div class="btn-group">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="background-color:#337ab7;color:white;" aria-expanded="false">
+                                    <span style="margin: 5px;" class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @if (ViewBag.AllowUri("/Site/Upload"))
+                                    {
+                                        <li><a class="UploadSite" data-value="wo">Upload Work Orders</a></li>
+                                    }
+                                    @if (ViewBag.AllowUri("/site/UploadSiteLogs"))
+                                    {
+                                        <li><a class="UploadSite" data-value="log">Upload Test Logs</a></li>
+                                    }
+                                    @if (ViewBag.AllowUri("/WorkOrder/New"))
+                                    {
+                                        <li><a class="" href="/workorder/New/">New Workorder</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body" style="height:75px;">
+                        @if (ViewBag.AllowUri("/Site/Upload"))
+                        {
+                            using (Html.BeginForm("Upload", "Site", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "frmuploadfile" }))
+                            {
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <select name="WOtype" class="form-control" style="height: 31px;font-size: 13px;margin-bottom:4px;">
+                                                <option value=""> Select Template </option>
+                                                <option value="Field Test Template">Field Test Template</option>
+                                                <option value="Audit Template">Audit Template</option>
+                                            </select>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <input type="file" id="file" class="file " name="upload" accept=".csv">
+                                    </div>
+                                </div>
+                            }
+                        }
+                        @if (ViewBag.AllowUri("/site/UploadSiteLogs"))
+                        {
+                            using (Html.BeginForm("UploadSiteLogs", "Site", null, FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-UploadSiteLogs", style = "visibility:hidden" }))
+                            {
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <input type="file" id="SiteLogFile" class="file " name="Files" multiple accept=".csv">
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div id="overlay_fileupload" class="overlay" style="display:none;">
+                        <i class="fa fa-refresh fa-spin"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!--In case of empty search-->
+<div class="row mainrow">
+    <div class="col-sm-10">
+        <!--Filters-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <div class="row Web" style="margin-top: -7px;overflow-x:auto;overflow-y:hidden">
+                            <table class="table" style="margin-bottom: -6px;">
+                                <tr>
+                                    <td><h3 class="box-title" style="padding-top: 7px;">Work Order View</h3></td>
+                                    <td>
+
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info btn-sm date-filter" data-displayText="Day" onclick="javascript: BtnFilterSitesGrid_Click('Date', 'TodayPrev', '', 'btn-today'); return false;"><</button>
+                                            <button type="button" class="btn btn-info btn-sm date-filter hideRange tip" id="btn-today" data-displayText="Today" data-DisplayValue="@DateTime.Now.ToString("MM/dd/yyy")" onclick="javascript: BtnFilterSitesGrid_Click('Date', 'Today', '', 'btn-today'); return false;"><i class="fa fa-calendar-times-o"></i> Today</button>
+                                            <button type="button" class="btn btn-info btn-sm date-filter" data-displayText="Day" onclick="javascript: BtnFilterSitesGrid_Click('Date', 'TodayNext', '', 'btn-today'); return false;">></button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info btn-sm date-filter" data-displayText="Week" onclick="javascript: BtnFilterSitesGrid_Click('Date', 'WeekPrev', '', 'btn-ThisWeek'); return false;"><</button>
+                                            <button type="button" class="btn btn-info btn-sm date-filter hideRange" data-displayText="This Week" id="btn-ThisWeek" data-DisplayValue="@Weekstart.ToString("MM/dd/yyy") - @Weekend.ToString("MM/dd/yyy")" onclick="javascript: BtnFilterSitesGrid_Click('Date', 'ThisWeek', '', 'btn-ThisWeek'); return false;"><i class="fa fa-calendar-minus-o"></i> This Week</button>
+                                            <button type="button" class="btn btn-info btn-sm date-filter" data-displayText="Week" onclick="javascript: BtnFilterSitesGrid_Click('Date', 'WeekNext', '', 'btn-ThisWeek'); return false;">></button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" data-displayText="Month" class="btn btn-info btn-sm date-filter" onclick="javascript: BtnFilterSitesGrid_Click('Date', 'MonthPrev', '', 'btn-ThisMonth'); return false;"><</button>
+                                            <button type="button" data-displayText="This Month" class="btn btn-info btn-sm date-filter hideRange" id="btn-This Month" data-DisplayValue="@DateTime.Now.ToString("MMM / yyy")" onclick="javascript: BtnFilterSitesGrid_Click('Date', 'ThisMonth', '', 'btn-ThisMonth'); return false;"><i class="fa fa-calendar-check-o"></i> This Month</button>
+                                            <button type="button" data-displayText="Month" class="btn btn-info btn-sm date-filter" onclick="javascript: BtnFilterSitesGrid_Click('Date', 'MonthNext', '', 'btn-ThisMonth'); return false;">></button>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info btn-sm hideRange" id="btn-wo-PickRange"><i class="fa fa-calendar-plus-o"></i> Pick Date Range</button>
+                                        </div>
+                                    </td>
+                                    <td class="wo-date-box">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" class="form-control required UserLiveDate" id="fromdate" style="width:120px;height: 29px;" readonly placeholder="From Date" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-date-box">
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" class="form-control required UserLiveDate" id="todate" style="width:120px;height: 29px;" readonly placeholder="To Date" />
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success btn-date-filter-search btn-flat" onclick="javascript: BtnFilterSitesGrid_Click('DateRange', 'Total', ''); return false;">Go!</button>
+                                            </span>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        @if (ViewBag.AllowUri("/Dashboard/ExportWorkOrderStatus"))
+                                        {
+                                            <a href="/Dashboard/ExportWorkOrderStatus" id="btn-Export-xlx" class=""><span><img src="/Content/Images/Common/excel_x32.png" alt="View Report" title="WorkOrder Status" height="24" width="24" style="margin-right:10px;" /></span></a>
+                                        }
+                                        @if (ViewBag.AllowUri("/Dashboard/NetLayerExport"))
+                                        {
+                                            <a href="/Dashboard/NetLayerExport" id="btn-Export-xlx" class=""><span><img src="/Content/Images/Common/netLayer_x24.png" title="Net Layer Status" alt="View Report" /></span></a>
+                                        }
+
+                                        <input type="text" id="searchbox" style="width:180px;height: 29px;margin-right:31px" placeholder="Search" class="form-control pull-right Web">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+
+
+                        <div class="box-tools pull-right ">
+
+                            <button type="button" class="btn btn-box-tool pull-right my1" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+
+                        </div>
+
+                        <!--old panel-->
+
+                    </div>
+
+                    <div class="box-body">
+
+                        <div id="divclientsites">
+                            @Html.Partial("~/Views/Dashboard/_SiteGrid.cshtml", @Model.ClientSites)
+
+
+                        </div>
+                        <div class="pull-left">Showing <span id="GridShowing"> </span>  of <span id="GridShowingTotal"></span> entries</div>
+                        <div id="SiteGridPagination" class="pull-right"></div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--Map View-->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <div class="pull-right box-tools">
+                            <span class="RouteInfo" style="font-weight:bold"></span>
+                            <button type="button" title="Drive Testers" class="btn btn-box-tool" id="pan-tester">
+                                <i style="font-size: large;" class="fa fa-users"></i>
+                            </button>
+                            <button type="button" class="btn btn-box-tool my2" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <i class="fa fa-map-marker"></i>
+                        <h3 class="box-title">Map View</h3>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="row">
+
+                            <div class="col-sm-12">
+
+                                <div id="divsitelocations">
+                                    @Html.Partial("~/Views/Dashboard/_SiteLocations.cshtml", Model.ClientSites.Markers)
+
+                                </div>
+                            </div>
+                            <div class="row" id="divtestersites" style="position:absolute;top:36px;right:25px;opacity: 0.9;overflow:auto;height:500px;width:400px; ">
+                                @Html.Partial("~/Views/Dashboard/_TesterSites.cshtml", Model.TesterSites)
+                            </div>
+                            <div class="col-sm-1">
+                                @*<div class="row" id="divtestersites">@Html.Partial("~/Views/Shared/PartialTesterSites.cshtml", Model.TesterSites)</div>*@
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-2 rightcols">
+        <div class="row">
+            @{
+                string style = string.Empty;
+            }
+            <!--Country and Clients-->
+            @if (ViewBag.UserClients.Count > 0)
+            {
+                style = "display:block";
+            }
+            else { style = "display:none"; }
+
+            @using (Html.BeginForm("Index", "Dashboard", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="col-sm-12">
+                    <div class="box box-primary" style="@style">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <input type="hidden" id="Countries" name="Countries" value="@Session["CountryId"]" />
+                                    <input type="hidden" id="Clients" name="Clients" value="@Session["Client"]" />
+                                    <input type="hidden" id="Scopes" name="Scopes" value="@Session["Scopes"]" />
+                                    <input type="hidden" id="Markets" name="Markets" value="@Session["Markets"]" />
+                                    <input type="hidden" id="Projects" name="Projects" value="@Session["Projects"]" />
+                                    <div class="input-group margin">
+                                        <select id="ddlCountry" class="form-control" multiple>
+                                            <optgroup label="Countries">
+                                                @foreach (var item in ViewBag.UserClientsCountry)
+                                                {
+                                                    <option value="cntr-@item.CountryId">@item.CountryName</option>
+                                                }
+
+                                            </optgroup>
+
+                                            <optgroup label="Clients">
+                                                @foreach (var item in ViewBag.UserClients)
+                                                {
+                                                    <option value="clnt-@item.ClientId">@item.ClientName</option>
+                                                }
+
+                                            </optgroup>
+                                            <optgroup label="Projects">
+                                                @foreach (var item in ViewBag.Projects)
+                                                {
+                                                    <option value="proj-@item.ProjectId">@item.ProjectName</option>
+                                                }
+                                            </optgroup>
+                                            <optgroup label="Scopes">
+                                                @foreach (var item in ViewBag.UserScopes)
+                                                {
+                                                    <option value="scop-@item.DefinationId">@item.DefinationName</option>
+                                                }
+                                            </optgroup>
+
+                                            <optgroup label="Markets">
+                                                @foreach (var item in Model.Regions)
+                                                {
+                                                    <option value="city-@item.ID">@item.RegionName</option>
+                                                }
+
+                                            </optgroup>
+
+                                        </select>
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-info btn-flat">Go!</button>
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div id="divregionalsites">
+                @Html.Partial("~/Views/Dashboard/_RegionalSites.cshtml", Model.Regions)
+            </div>
+        </div>
+        <div class="row" id="divdrivetesterview">
+            @Html.Partial("~/Views/Dashboard/_DriveTesterSites.cshtml", Model.DriveTesterSites)
+        </div>
+    </div>
+</div>
+<div style="display:none" id="sec-ApproveWithComment">
+    <form action="/site/ChangeStatus" method="post" id="frm-ApproveWithComment">
+        <div class="row">
+            <div class="col-sm-12">
+                <input type="hidden" name="SiteId" id="SiteId-ApproveWithComment" />
+                <input type="hidden" name="Status" value="COMPLETED" />
+                <div class="form-group">
+                    @Html.Label("Comment", htmlAttributes: new { @class = "control-label" })
+                    <div class="">
+                        <textarea name="Comment" class="form-control" required="required" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-info pull-right">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div id="tempData" style="display:none;"></div>
+
+
+
+<div class="modal fade" id="select-sections">
+    <div class="modal-dialog modal-lg" ng-app="TSS1">
+        <div class="modal-content" ng-controller="SiteSurvey">
+            <div class="modal-header" style="background: gray;color: white;">
+                <h4 class="modal-title">Select Section(s)</h4>
+            </div>
+            <div class="modal-body gray">
+                <div class="modal-panel-wrap">
+                    <div class="row">
+                        <script type="text/ng-template" id="checklist_item_renderer_index.html">
+
+                            <div class="hv-box">
+                                <div class="hv-boxname" ng-click="GetSectionQuestions(data)">
+                                    <h3><input type="checkbox" class="chkbox" ng-change="IsSectionAdded(data)" ng-model="data.IsInclude"> {{data.SectionTitle}}</h3>
+                                </div>
+                               
+
+                            </div>
+                            <ul ng-if="data.Sections.length > 0">
+                                <li ng-repeat="data in data.Sections" ng-include src="'checklist_item_renderer_index.html'"></li>
+                            </ul>
+
+                        </script>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="modal-panel">
+                                <div class="modal-panel-top">
+                                    <div class="form-group">
+                                        <div class="checkbox"> <label> <input type="checkbox" ng-click="Isselectallsections(selectallsections)" ng-model="selectallsections"> Select All </label> </div>
+                                    </div>
+                                    <a class="collapse-all" href="#" title="">Collapse All</a>
+                                </div>
+
+                                <div class="hierarchy-view">
+                                    <ul>
+                                        <li ng-repeat="data in sections" ng-class="data.Sections.length > 0 ? 'hasChild' : ''" ng-include src="'checklist_item_renderer_index.html'">
+                                            <div class="hv-box">
+                                                <div class="hv-boxname">
+                                                    <h3> <input type="checkbox" class="chkbox" ng-change="IsSectionAdded(data)" ng-model="data.IsInclude"> {{data.SectionTitle}} </h3>
+                                                </div>
+
+                                            </div><!-- HV Box -->
+
+                                        </li>
+
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-md-12">
+                            <div class="modal-panel">
+                                <div class="modal-panel-top">
+                                    <div class="form-group">
+                                        <div class="checkbox"> <label> <input type="checkbox" ng-click="Isselectallquestions(selectallquestions)" ng-model="selectallquestions"> Select All </label> </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-list">
+                                    <div class="av-question-box" ng-repeat="data in Questions | filter: { SiteSectionId: questionfilters}" ng-if="questionfilters != ''">
+
+                                        <input type="checkbox" class="chkboxquestions" ng-click="IsSectionQuestionsAdded(data)" ng-model="data.IsInclude" />
+                                        <div class="av-question">
+                                            <p>{{data.Question}}</p>
+                                        </div>
+                                    </div>
+                                </div><!-- Question List -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="button-set ">
+                    <a class="btn btn-danger btn-sm" style="cursor:pointer;" ng-click="CancelSectionQuestions()" title=""> Cancel </a>
+                    <a class="btn btn-success btn-sm" style="cursor:pointer;" ng-click="SaveSectionQuestions()" title=""> Save </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="select-attendee">
+    <div class="modal-dialog modal-lg" id="TSS2" ng-app="TSS2">
+        <div class="modal-content"  ng-controller="Attendees">
+            <div class="modal-header" style="background: gray;color: white;">
+                <a ng-click="AddNewRow()" class="btn btn-success btn-sm" style="float: right;margin-top: -3px;">Add Attendee</a>
+              
+                <h4 class="modal-title">Attendee List</h4>
+            </div>
+            <div class="modal-body gray">
+                <div class="modal-panel-wrap">
+                    <div class="row">
+                    
+                        <div class="col-md-12">
+                            <table class="table holiday-table table-bordered table-attendee">
+                               
+                                    <thead>
+                                        <tr style="background: silver;">
+                                            <th style="width:68%">Attendee Info</th>
+                                           
+                                            <th style="width:26%">Signature</th>
+                                            <th style="width:6%">Action</th>
+                                        </tr>
+
+                                    </thead>
+                              
+                                <tbody>
+
+                                    <tr ng-repeat="attendeesRows in AttendeesRows">
+                                      
+                                        <td>
+                                            <p style="display: inline-flex;width: 100%;margin-bottom: 22px;"><label style="font-weight: bold;margin-right: 43px;">Name:</label> <input type="text" style="width: 100%;" ng-model="attendeesRows.Name" /></p>
+                                            <p style="display: inline-flex;width: 100%;margin-bottom: 22px;"><label style="font-weight: bold;margin-right: 5px;">Designation:</label> <input type="text" style="width: 100%;" ng-model="attendeesRows.Designation" /></p>
+                                            <p style="display: inline-flex;width: 100%;margin-bottom: 0px;"><label style="font-weight: bold;margin-right: 20px;">Company:</label> <input type="text" style="width: 100%;" ng-model="attendeesRows.Company" /></p>
+
+                                        </td>
+                                       
+                                        <td>
+                                           <div style="text-align:center;">
+                                               <canvas class="js-signature" ng-if="attendeesRows.RowType == 'New'" ng-model="attendeesRows.Signature" data-rowid="{{attendeesRows.RowId}}" width="205" height="113" drawing></canvas>
+                                               <img class="js-signaure-img" src="{{attendeesRows.Signature}}" ng-if="attendeesRows.RowType == 'Edit'" />
+                                           </div>
+                                           
+                                       
+                                        </td>
+                                        <td>
+                                            <div style="text-align:center;">
+    <a title="Remove Row" ng-click="RemoveRow(attendeesRows.RowId)" class="btn btn-danger bg-color-red txt-color-white"><i class="fa fa-trash-o"></i></a>
+   
+</div>
+                                            <div style="text-align:center;margin-top: 5px;">
+                                                <a title="Clear Signature" ng-click="ClearSignature(attendeesRows.RowId, $event)" class="btn btn-warning bg-color-red txt-color-white" style="padding: 6px 10px;"><i class="fa fa-eraser"></i></a>
+                                            </div>
+                                        </td>    
+                                    </tr>
+
+                                 
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="button-set ">
+                    <a class="btn btn-danger btn-sm" style="cursor:pointer;" ng-click="CancelAttendees()" > Cancel </a>
+                    <a class="btn btn-success btn-sm" style="cursor:pointer;" ng-click="SaveAttendees()" > Save </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section scripts
+{
+
+    @Scripts.Render("~/AdminLTE/plugins/jquery-ui/js")
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+    @Scripts.Render("~/AdminLTE/plugins/datepicker/js")
+    <script src="~/AdminLTE/plugins/select2/js/select2.js"></script><!--dropdown search-->
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script><!--Notification-->
+    <script src="~/Content/js/Plugins/Pagination/js/simplePagination.js"></script><!--Pagination-->
+    <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script><!--loading-->
+<script src="~/AdminLTE/dist/js/signature_pad.min.js"></script>
+    <script>
+        $(document).tooltip();
+        var domain = domain = document.location.origin;// '@ViewBag.domain';
+        var CurrentUserId = '@ViewBag.UserId';
+        var WoStatus = JSON.parse('@Html.Raw(WoStatus)');
+        var RoleNameToLower = '@ViewBag.RoleName.ToString().ToLower()';
+        var UserClients = JSON.parse('@Html.Raw(UserClients)');
+        // loading.open();
+
+        //var windowHeight;
+        //var windowWidth;
+
+        //$(window).resize(function () {
+        //    debugger
+        //    // This will execute whenever the window is resized
+        //    windowHeight=$(window).height()// New height
+        //    Resize(windowHeight);
+        //    windowWidth=$(window).width();
+        //    //alert($(window).height());
+        //    //alert($(window).width());// New width
+        //});
+
+        //function Resize(windowHeight)
+        //{
+        //    debugger
+        //    var discount = 32;
+        //    var discount2 = 50;
+        //    if (windowHeight == undefined) {
+        //        windowHeight = $(window).height();
+        //    }
+        //    var hi = windowHeight;
+        //    //var calcPerc = 100 - (discount * 100 / price);
+        //    var calcPerc = discount * hi / 100;
+        //    var calcPerc2 = discount2 * hi / 100;
+        //    setTimeout(function () {
+        //        if ($(".my1 i").hasClass("fa fa-minus") && $(".my2 i").hasClass("fa fa-minus")) {
+
+
+        //            $('#divclientsites').css({ height: calcPerc + 'px' });
+        //            $('#SiteLocations').css({ height: calcPerc2 + 'px' });
+
+
+
+        //        }
+        //    }, 200);
+        //    setTimeout(function () {
+        //        if ($(".my1 i").hasClass("fa fa-plus") && $(".my2 i").hasClass("fa fa-minus")) {
+
+        //            var val3 = (windowHeight * 70 / 100)
+        //            $('#SiteLocations').css({ height: val3 + 'px' });
+
+
+        //        }
+        //    }, 200);
+        //    if ($(".my2 i").hasClass("fa fa-plus")) {
+        //        var val2 = (windowHeight * 65 / 100)
+        //        $('#divclientsites').css({ height: val2 + 'px' });
+        //    }
+        //    else {
+        //        $('#divclientsites').css({ height: calcPerc + 'px' });
+        //    }
+        //    setTimeout(function () {
+        //        if ($(".my1 i").hasClass("fa fa-minus") && $(".my2 i").hasClass("fa fa-minus")) {
+
+
+        //            $('#divclientsites').css({ height: calcPerc + 'px' });
+        //            $('#SiteLocations').css({ height: calcPerc2 + 'px' });
+
+        //        }
+        //    }, 200);
+
+        //    if ($(".my1 i").hasClass("fa fa-minus")) {
+        //        var val1 = (windowHeight * 65 / 100)
+        //        $('#divclientsites').css({ height: val1 + 'px' });
+        //    }
+        //    else {
+        //        var val = (windowHeight * 70 / 100)
+        //        setTimeout(function () {
+        //            $('#SiteLocations').css({ height: val + 'px' });
+        //        }, 200);
+        //    }
+
+
+        //}
+        //$('.my1').click(function () {
+
+        //    Resize(windowHeight);
+
+
+
+
+        //    //This method keeps increasing the height by 36px
+        //});
+        //$('.my2').click(function () {
+        //    Resize(windowHeight);
+
+
+
+        //});
+
+
+    </script>
+
+    <script src="~/Content/js/Dashboard/js/SiteRoute.js"></script>
+
+    <script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script><!--kml-->
+    <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script><!--kml-->
+    <script src="~/Content/js/Plugins/ColorPicker/js/spectrum.js"></script><!--color picker-->
+
+    <script src="~/Content/js/Plugins/Confirm/js/confirm.min.js"></script><!--Confirm box-->
+    <script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+
+    <script src="~/Content/js/Dashboard/js/Dashboard.js"></script>
+    <script src="~/Content/js/Dashboard/js/SiteGrid.js"></script>
+    <script src="~/Content/js/Angular/angular-filter.js"></script>
+    <script>
+
+        var loadSections = '';
+       
+        var surveyid = ''
+        var app = angular.module('TSS1', ['angular.filter']);
+     
+        app.run(function ($rootScope) {
+
+            $rootScope.Sections = {};
+
+
+        });
+
+        app.service('service', function ($q, $compile, $http) {
+            this.post = function (url, param) {
+                var promise = $http.post(url, param);
+                promise = promise.then(function (response) {
+                    return response.data;
+
+                });
+                return promise;
+            };
+
+            this.get = function (url) {
+                var promise = $http.get(url);
+                promise = promise.then(function (response) {
+                    return response.data;
+
+                });
+                return promise;
+            };
+
+        });
+       
+        app.controller('SiteSurvey', function ($scope, $http, $filter, $rootScope, $timeout) {
+            $scope.sections = [];
+            $scope.questionfilters = '';
+
+            $scope.selectedquestions = [];
+            $scope.selectallsections = false;
+            $scope.selectallquestions = false;
+            $scope.selectedsection = '';
+            $scope.selectedsectionsforsave = '';
+            $scope.surveyid = '';
+            $scope.selectedquestionsforsave = '';
+            $scope.SiteSectionIds = '';
+
+
+            loadSections = function loadSections(e) {
+                $scope.surveyid = '';
+                var Surveyid = $(e).attr("data-sitesurveyid");
+                $scope.surveyid = Surveyid;
+                $http({
+                    url: "/Document/GetSectionsForDashboard?id=" + $scope.surveyid
+                }).then(function success(res) {
+                    console.log(res.data);
+                    $scope.selectallsections = false;
+                    $scope.selectallquestions = false;
+                    $scope.SiteSectionIds = '';
+                    $scope.selectedsectionsforsave = '';
+                    $scope.selectedquestionsforsave = '';
+                    $scope.sections = res.data;
+                    $scope.GetAllQuestions();
+
+
+                    $('#select-sections').modal('show');
+
+
+                });
+
+
+            }
+
+
+            $scope.Repeatable = function (data) {
+                $scope.RepeatableCurentSection = data;
+                $("#repeatable-popup").modal("show");
+            };
+
+            $scope.GetAllQuestions = function () {
+
+
+                $http({
+                    url: "/Document/GetSectionQuestonsForDashboard?surveyId=" + $scope.surveyid
+                }).then(function success(res) {
+
+                    $scope.Questions = res.data;
+                    console.log(res.data);
+                    var count = 0;
+
+                    var totalcount = 0;
+
+                    $.each($scope.Questions, function (i, val) {
+                        if (val.IsInclude == true) {
+                            count += 1;
+                        }
+                        totalcount += 1;
+                    });
+                    $.each($scope.sections, function (i, val) {
+                        if (val.IsInclude == true) {
+                            count += 1;
+                        }
+                        totalcount += 1;
+                    });
+                    if (count == totalcount) {
+                        $scope.selectallquestions = true;
+                        $scope.selectallsections = true;
+                    }
+                    if (res.data.length === 0)
+                        $.notify("No Questions are found in this section", { type: "Please Select Option", color: "#ffffff", background: "#ffd28a", blur: 0.6, delay: 0, });
+                }, function () {
+                    $.notify("Internal Server Error", { type: "Please Select Option", color: "#ffffff", background: "red", blur: 0.6, delay: 0, });
+                });
+
+            }
+
+            $scope.GetSectionQuestions = function (data) {
+
+
+                var totalcount = 0;
+                var count = 0;
+                var countforselectall = 0;
+                if (data.IsInclude == true) {
+                    //if (data.PSectionId != 0) {
+                    //    $.each($scope.sections, function (key, val) { $scope.checkparentrecursiveFunction(key, val, data.PSectionId) });
+                    //}
+                    $.each($scope.Questions, function (i, val) {
+                        if (data.SectionId == val.SiteSectionId) {
+                            if (val.IsInclude == true) {
+                                count += 1;
+
+                            }
+                            totalcount += 1;
+                        }
+
+                    });
+                    if (count == totalcount) {
+                        $scope.selectallquestions = true;
+                    }
+                    else {
+                        $scope.selectallquestions = false;
+                    }
+
+                }
+                else {
+                    //$.each($scope.sections, function (key, val) { $scope.checkchildrecursiveFunction(key, val, data.SectionId) });
+
+                    $.each($scope.Questions, function (i, val) {
+                        if (data.SectionId == val.SiteSectionId) {
+
+                            if (val.IsInclude == false) {
+                                count += 1;
+
+                            }
+                            totalcount += 1;
+                        }
+
+                    });
+                    if (count == totalcount) {
+                        $scope.selectallquestions = false;
+                    }
+                    if (count > 0) {
+                        $scope.selectallquestions = false;
+                    }
+                }
+
+
+
+
+
+                $scope.selectedsection = data.SectionId;
+                $scope.questionfilters = data.SectionId;
+
+                //  $scope.questionfilters = section;
+                //console.log(section.SectionId);
+                //$scope.selectedsection = section.SectionId;
+                //console.log($scope.selectedsection);
+
+                //var filteredNames = $scope.Questions.filter(function (i) {
+                //    return $scope.Questions[i].SectionId === section.SectionId;
+                //});
+
+
+
+            }
+
+            $scope.IsSectionAdded = function (data) {
+
+
+
+
+                if (data.IsInclude == true) {
+                    if (data.PSectionId != 0) {
+                        $.each($scope.sections, function (key, val) { $scope.checkparentrecursiveFunction(key, val, data.PSectionId) });
+                    }
+                    $.each($scope.Questions, function (i, val) {
+                        if (data.SectionId == val.SiteSectionId) {
+                            val.IsInclude = true;
+
+                        }
+
+                    });
+                    $scope.selectallquestions = true;
+                }
+                else {
+
+                    $.each($scope.sections, function (key, val) { $scope.checkchildrecursiveFunction(key, val, data.SectionId) });
+
+
+
+                    $scope.selectallquestions = false;
+                }
+            };
+
+
+            $scope.IsSectionQuestionsAdded = function (data) {
+
+
+
+                var totalcount = 0;
+                var count = 0;
+                var countforselectall = 0;
+                if (data.IsInclude == true) {
+                    $.each($scope.Questions, function (i, val) {
+                        if (val.SiteSectionId == $scope.selectedsection) {
+                            if (val.IsInclude == true) {
+                                count += 1;
+                            }
+
+                            totalcount += 1;
+                        }
+
+                    });
+                    if (count > 0) {
+                        $.each($scope.sections, function (key, val) { $scope.recursiveFunction(key, val, data.SiteSectionId, true) });
+                    }
+                    if (count == totalcount) {
+                        $scope.selectallquestions = true;
+                    }
+
+                }
+                else {
+                    $.each($scope.Questions, function (i, val) {
+                        if (val.SiteSectionId == $scope.selectedsection) {
+                            if (val.IsInclude == true) {
+                                count += 1;
+
+                            }
+                            if (val.IsInclude == false) {
+                                countforselectall += 1;
+
+                            }
+                            totalcount += 1;
+
+                        }
+
+                    });
+                    if (count == 0) {
+                        $.each($scope.sections, function (key, val) { $scope.recursiveFunction(key, val, data.SiteSectionId, false) });
+                    }
+                    if (countforselectall == totalcount) {
+                        $scope.selectallquestions = false;
+                    }
+                    if (countforselectall > 0) {
+                        $scope.selectallquestions = false;
+                    }
+
+                }
+
+
+            };
+
+
+
+            $scope.Isselectallsections = function (selectallsections) {
+
+                if (selectallsections == true) {
+                    $scope.selectallsections = true;
+                    $scope.selectallquestions = true;
+                    //  $('.hierarchy-view').find(".chkbox").prop("checked", true);
+                    $.each($scope.sections, function (key, val) { $scope.recursiveFunctionForSelectAll(key, val, true) });
+                    $.each($scope.Questions, function (i, val) {
+                        val.IsInclude = true;
+                    });
+                }
+                else {
+                    //  $('.hierarchy-view').find(".chkbox").prop("checked", false);
+                    $scope.selectallsections = false;
+                    $scope.selectallquestions = false;
+                    $.each($scope.sections, function (key, val) { $scope.recursiveFunctionForSelectAll(key, val, false) });
+                    $.each($scope.Questions, function (i, val) {
+                        val.IsInclude = false;
+                    });
+                }
+
+            }
+
+            $scope.Isselectallquestions = function (selectallquestions) {
+
+                var count = 0;
+                if (selectallquestions == true) {
+
+                    $.each($scope.sections, function (key, val) { $scope.recursiveFunction(key, val, $scope.selectedsection, true) });
+                    $.each($scope.Questions, function (i, val) {
+                        if (val.SiteSectionId == $scope.selectedsection) {
+
+                            val.IsInclude = true;
+                        }
+
+                    });
+                }
+                else {
+                    $.each($scope.sections, function (key, val) { $scope.recursiveFunction(key, val, $scope.selectedsection, false) });
+                    $.each($scope.Questions, function (i, val) {
+                        if (val.SiteSectionId == $scope.selectedsection) {
+
+
+
+                            val.IsInclude = false;
+                        }
+
+                    });
+                }
+
+            }
+
+
+
+            $scope.recursiveFunctionForSelectAll = function (key, val, check) {
+                if (check) {
+
+                    val.IsInclude = true;
+
+
+
+                }
+                else if (!check) {
+
+                    val.IsInclude = false;
+
+
+                }
+
+                var value = val['Sections'];
+                if (value instanceof Object) {
+                    $.each(value, function (key, val) {
+
+                        $scope.recursiveFunctionForSelectAll(key, val, check);
+                    });
+                }
+
+            }
+
+            $scope.recursiveFunctionForSaveSections = function (key, val) {
+                if (val.IsInclude == true) {
+                    $scope.selectedsectionsforsave += val.SectionId + ',';
+                }
+                $scope.SiteSectionIds += val.SectionId + ',';
+                var value = val['Sections'];
+                if (value instanceof Object) {
+                    $.each(value, function (key, val) {
+
+                        $scope.recursiveFunctionForSaveSections(key, val);
+                    });
+                }
+
+            }
+
+            $scope.recursiveFunction = function (key, val, SectionID, check) {
+
+                if (check && val.SectionId == SectionID) {
+
+
+                    val.IsInclude = true;
+
+                    if (val.PSectionId != 0) {
+                        var PSectionId = val.PSectionId;
+                        $.each($scope.sections, function (key, val) { $scope.checkparentrecursiveFunction(key, val, PSectionId) });
+                    }
+
+
+
+                }
+                else if (!check && val.SectionId == SectionID) {
+
+
+                    if (val.PSectionId != 0) {
+                        $.each($scope.sections, function (key, val) { $scope.checkparentrecursiveFunction(key, val, val.PSectionId) });
+
+                    }
+                    else {
+                        val.IsInclude = false;
+                    }
+
+
+                    if (val.Sections.length > 0) {
+
+                        $.each($scope.sections, function (key, val) { $scope.checkchildrecursiveFunction(key, val, SectionID) });
+                    }
+                    else {
+                        val.IsInclude = false;
+                    }
+
+
+                }
+
+                var value = val['Sections'];
+                if (value instanceof Object) {
+                    $.each(value, function (key, val) {
+
+                        $scope.recursiveFunction(key, val, SectionID, check);
+                    });
+                }
+
+            }
+
+
+
+            $scope.checkparentrecursiveFunction = function (key, val, pSectionID) {
+
+                if (val.SectionId == pSectionID || val.SiteSectionId == pSectionID) {
+
+                    val.IsInclude = true;
+
+                    $.each($scope.Questions, function (i, val2) {
+                        if (pSectionID == val2.SiteSectionId || pSectionID == val2.SectionId) {
+                            val2.IsInclude = true;
+
+                        }
+
+                    });
+
+                    pSectionID = val.PSectionId;
+
+
+
+                    $.each($scope.sections, function (key1, val1) { $scope.checkparentrecursiveFunction(key1, val1, pSectionID) });
+
+
+
+                }
+
+
+                var value = val['Sections'];
+                if (value instanceof Object) {
+                    $.each(value, function (key, val) {
+
+                        $scope.checkparentrecursiveFunction(key, val, pSectionID);
+                    });
+                }
+
+            }
+
+            $scope.checkchildrecursiveFunction = function (key, val, SectionID) {
+
+                if (val.SectionId == SectionID || val.SiteSectionId == SectionID) {
+                    if (val.IsInclude == false) {
+
+                        if (val.Sections.length > 0) {
+
+                            var count = 0;
+                            var value = val['Sections'];
+                            if (value instanceof Object) {
+                                $.each(value, function (key, val1) {
+                                    if (val1.IsInclude == true) {
+
+                                        count += 1;
+
+                                    }
+
+                                });
+                            }
+                            if (count > 0) {
+                                val.IsInclude = true;
+                            }
+                            else {
+                                val.IsInclude = false;
+                                $.each($scope.Questions, function (i, val2) {
+                                    if (val.SectionId == val2.SiteSectionId) {
+                                        val2.IsInclude = false;
+                                    }
+
+                                });
+                            }
+                        }
+                        else {
+                            $.each($scope.Questions, function (i, val2) {
+                                if (val.SectionId == val2.SiteSectionId) {
+                                    val2.IsInclude = false;
+                                }
+
+                            });
+                        }
+
+                    }
+                    else {
+                        if (val.Sections.length > 0) {
+
+                            var count = 0;
+                            var value = val['Sections'];
+                            if (value instanceof Object) {
+                                $.each(value, function (key, val1) {
+                                    if (val1.IsInclude == true) {
+
+                                        count += 1;
+
+                                    }
+
+                                });
+                            }
+
+                            if (count > 0) {
+                                val.IsInclude = true;
+                            }
+                            else {
+                                val.IsInclude = false;
+                                $.each($scope.Questions, function (i, val2) {
+                                    if (val.SectionId == val2.SiteSectionId) {
+                                        val2.IsInclude = false;
+                                    }
+
+                                });
+                            }
+                        }
+                        else {
+                            $.each($scope.Questions, function (i, val2) {
+                                if (val.SectionId == val2.SiteSectionId) {
+                                    val2.IsInclude = false;
+                                }
+
+                            });
+                        }
+
+                    }
+
+
+
+                }
+
+                var value = val['Sections'];
+                if (value instanceof Object) {
+                    $.each(value, function (key, val) {
+
+                        $scope.checkchildrecursiveFunction(key, val, SectionID);
+                    });
+                }
+
+
+            }
+
+            $scope.SaveSectionQuestions = function () {
+
+                $.each($scope.sections, function (key, val) { $scope.recursiveFunctionForSaveSections(key, val) });
+                $scope.selectedsectionsforsave = $scope.selectedsectionsforsave.substring(0, $scope.selectedsectionsforsave.length - 1);
+                if ($scope.selectedsectionsforsave != '') {
+                    $.each($scope.Questions, function (i, val) {
+                        if (val.IsInclude == true) {
+                            $scope.selectedquestionsforsave += val.SiteQuestionId + ',';
+                        }
+
+
+                    });
+                    $scope.selectedquestionsforsave = $scope.selectedquestionsforsave.substring(0, $scope.selectedquestionsforsave.length - 1);
+                    $scope.SiteSectionIds = $scope.SiteSectionIds.substring(0, $scope.SiteSectionIds.length - 1);
+                    console.log($scope.selectedsectionsforsave);
+                    console.log($scope.selectedquestionsforsave);
+                    console.log($scope.SiteSectionIds);
+
+                    $http({
+                        url: "/Document/UpdateCheckListSectionsQuestions?sections=" + $scope.selectedsectionsforsave + "&questions=" + $scope.selectedquestionsforsave + "&surveyid=" + $scope.surveyid + "&sitesectionids=" + $scope.SiteSectionIds
+                    }).then(function success(res) {
+
+                        $('#select-sections').modal('hide');
+                        $scope.sections = [];
+                        $scope.Questions = [];
+                        $scope.questionfilters = '';
+                        $scope.selectedquestions = [];
+                        $scope.selectallsections = false;
+                        $scope.selectallquestions = false;
+                        $scope.selectedsection = '';
+                        $scope.SiteSectionIds = '';
+                        $scope.selectedsectionsforsave = '';
+                        $scope.selectedquestionsforsave = '';
+                        $.notify("Updated Record Successfully", { type: "Please Select Option", color: "white", background: "#49a02d", blur: 0.6, delay: 0, });
+                    }, function () {
+                        $.notify("Internal Server Error", { type: "Please Select Option", color: "#ffffff", background: "red", blur: 0.6, delay: 0, });
+                    });
+
+
+                }
+                else {
+                    $.notify("Please select section", { type: "Please Select Option", color: "#ffffff", background: "red", blur: 0.6, delay: 0, });
+
+                    $scope.SiteSectionIds = '';
+                    $scope.selectedsectionsforsave = '';
+                    $scope.selectedquestionsforsave = '';
+                }
+
+
+
+            };
+
+            $scope.CancelSectionQuestions = function () {
+                $('#select-sections').modal('hide');
+                $scope.sections = [];
+                $scope.Questions = [];
+                $scope.questionfilters = '';
+                $scope.selectedquestions = [];
+                $scope.selectallsections = false;
+                $scope.selectallquestions = false;
+                $scope.selectedsection = '';
+                $scope.SiteSectionIds = '';
+                $scope.selectedsectionsforsave = '';
+                $scope.selectedquestionsforsave = '';
+                $scope.surveyid = '';
+
+
+            }
+
+        });
+
+
+       
+        var attendeesitesurveyid = ''
+        var app2 = angular.module('TSS2', ['TSS1']);
+        app2.run(function ($rootScope) {
+
+         
+
+
+        });
+
+        app2.service('service', function ($q, $compile, $http) {
+            this.post = function (url, param) {
+                var promise = $http.post(url, param);
+                promise = promise.then(function (response) {
+                    return response.data;
+
+                });
+                return promise;
+            };
+
+            this.get = function (url) {
+                var promise = $http.get(url);
+                promise = promise.then(function (response) {
+                    return response.data;
+
+                });
+                return promise;
+            };
+
+        });
+       
+        app2.controller('Attendees', function ($scope, $http, $filter, $rootScope, $timeout) {
+            $scope.siteId = '';
+            $scope.surveyid = '';
+            $scope.AttendeesRows = [];
+            $scope.AttendeesRowsCounter = 0;
+            loadAttendee = function loadAttendee(e) {
+                $scope.siteId = '';
+                $scope.surveyid = '';
+                var Surveyid = $(e).attr("data-sitesurveyid");
+                var SiteId = $(e).attr("data-SiteId");
+                $scope.siteId = SiteId;
+                $scope.surveyid = Surveyid;
+                $scope.AttendeesRows = [];
+                $scope.AttendeesRowsCounter = 0;
+                $http({
+                    method: "POST",
+                    url: "/Survey/Dashboard/GetSiteAttendees",
+                    data: { siteId: $scope.siteId, siteSurveyId: $scope.surveyid },
+                    // headers: { 'Content-Type': undefined},
+                }).then(function Success(result) {
+                    $scope.AttendeesRows = result.data;
+                    for (var i = 0; i < $scope.AttendeesRows.length; i++) {
+                        $scope.AttendeesRowsCounter = $scope.AttendeesRowsCounter + 1;
+                        $scope.AttendeesRows[i].RowId = $scope.AttendeesRowsCounter;
+                        $scope.AttendeesRows[i].RowType = 'Edit';
+                    }
+                    $('#select-attendee').modal('show');
+
+
+                }, function myError(response) {
+                    $.notify("Internal Server Error", { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6 });
+                });
+
+               
+                
+               
+
+            }
+
+
+
+           $scope.AddNewRow = function () {
+               $scope.AttendeesRowsCounter = $scope.AttendeesRowsCounter + 1;
+               $scope.AttendeesRows.push({
+                   'RowId': $scope.AttendeesRowsCounter,
+                   "SiteId": $scope.siteId,
+                   "SiteSurveyId": $scope.surveyid,
+                   'Name': "",
+                   'Designation': "",
+                   'Company': "",
+                   'Signature': "",
+                   'RowType': "New",
+                   
+               });
+              
+            
+              
+           }
+
+           $scope.CancelAttendees = function () {
+               $scope.AttendeesRows = [];
+               $scope.AttendeesRowsCounter = 0;
+               $('#select-attendee').modal('hide');
+           }
+
+           $scope.RemoveRow = function (rowid) {
+
+               var index = $scope.AttendeesRows.findIndex(p => p.RowId == rowid);
+               $scope.AttendeesRows.splice(index, 1);
+              
+           };
+
+           $scope.ClearSignature = function (rowid, event) {
+      
+               console.log(event);
+              
+               var index = $scope.AttendeesRows.findIndex(p => p.RowId == rowid);
+               if ($scope.AttendeesRows[index].RowType == 'Edit')
+               {
+                   $scope.AttendeesRows[index].RowType = 'New';
+                   $scope.AttendeesRows[index].Signature = '';
+               }
+               else
+               {
+                   $scope.AttendeesRows[index].RowType = 'New';
+                   $scope.AttendeesRows[index].Signature = '';
+                   var tr = $(event.currentTarget.parentElement.parentElement.parentElement);
+                   console.log($(event.currentTarget.parentElement.parentElement.parentElement));
+                   var canvas = $(tr).find('canvas')[0];
+
+             
+                   var signaturePad = new SignaturePad(canvas);
+               }
+              
+               
+
+           };
+
+           $scope.SaveAttendees = function () {
+
+               $http({
+                   method: "POST",
+                   url: "/Survey/Dashboard/SaveSiteAttendees",
+                   data: { siteAttendees: $scope.AttendeesRows, siteId: $scope.siteId, siteSurveyId: $scope.surveyid },
+                   // headers: { 'Content-Type': undefined},
+               }).then(function Success(result) {
+                   $.notify("Saved Record Successfully", { type: "Please Select Option", color: "white", background: "#49a02d", blur: 0.6, delay: 0, });
+               }, function myError(response) {
+                   $.notify("Internal Server Error", { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6 });
+               });
+
+           };
+
+        });
+
+        app2.directive("drawing", function () {
+            return {
+                restrict: "A",
+                link: function (scope, element) {
+
+                    var canvas = element[0];
+                  
+                    var signaturePad = new SignaturePad(canvas);
+                    var drawing = false;
+
+                    element.bind('mousedown', function (event) {
+
+                        var rowid = $(event.currentTarget).attr("data-RowId");
+                        var index = scope.AttendeesRows.findIndex(p => p.RowId == rowid);
+                        var dataUrl = signaturePad.toDataURL();
+                        scope.AttendeesRows[index].Signature = dataUrl;
+                        drawing = true;
+
+                    });
+                    element.bind('mousemove', function (event) {
+                        if (drawing) {
+                            var rowid = $(event.currentTarget).attr("data-RowId");
+                            var index = scope.AttendeesRows.findIndex(p => p.RowId == rowid);
+                            var dataUrl = signaturePad.toDataURL();
+                            scope.AttendeesRows[index].Signature = dataUrl;
+                        }
+
+                    });
+                    element.bind('mouseup', function (event) {
+                       
+                        drawing = false;
+                       
+                    });
+                }
+            }
+        });
+
+        //app2.directive("redraw", function () {
+        //    return {
+        //        restrict: "A",
+        //        link: function (scope, element, attrs) {
+                  
+        //            for (var i = 0; i < scope.AttendeesRows.length; i++) {
+        //                draw(scope.AttendeesRows[i].Signature);
+        //            }
+
+        //            function draw(signature) {
+
+        //                ctx.moveTo(lX, lY);
+
+        //                ctx.lineTo(cX, cY);
+
+        //                ctx.strokeStyle = "#4bf";
+
+        //                ctx.stroke();
+        //            }
+        //        }
+        //    };
+        //});
+
+        angular.element(document).ready(function () {
+            angular.bootstrap(document.getElementById("TSS2"), ['TSS2']);
+           
+        });
+
+      
+    </script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $(".hierarchy-view ul li ul").parent('li').addClass('hasChild');
+
+            $(".hierarchy-view").on("click", ".hv-boxname", function () {
+                $(this).parents('.hv-box').siblings('ul').slideToggle();
+                $(this).parents('.hierarchy-view').find('.active').removeClass('active');
+                $(this).parents('.hv-box').addClass('active');
+            });
+           
+
+        });
+       
+</script>
+}
+@section style{
+    @Styles.Render("~/AdminLTE/plugins/datatables/css")
+    @Styles.Render("~/AdminLTE/plugins/datepicker/css")
+
+    <link href="~/AdminLTE/plugins/select2/css/select2.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/Pagination/css/simplePagination.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/ColorPicker/css/spectrum.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/Confirm/css/confirm.min.css" rel="stylesheet" />
+    <link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/AdminLTE/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<link href="~/Areas/Survey/Content/bootstrap-treefy.css" rel="stylesheet" />
+<link type="text/css" href="http://keith-wood.name/css/jquery.signature.css" rel="stylesheet">
+    <style type="text/css">
+        .error {
+            border: 1px solid red;
+        }
+
+        .child-table tr td {
+            padding: 0px !important;
+        }
+
+        .child-table tr th {
+            padding: 0px !important;
+        }
+
+        table.dataTable {
+            margin-top: 0px !important;
+        }
+
+        .dropdown-menu li a {
+            color: #0064a9 !important;
+        }
+
+        .box-title {
+            color: #0064a9;
+        }
+
+        .box-body ul li a {
+            color: #770d0d;
+        }
+
+            .box-body ul li a:hover {
+                color: #337ab7;
+            }
+
+        .icon-margin {
+            margin-right: 10px;
+        }
+
+        .selectedDate {
+            background-color: forestgreen;
+            color: white;
+        }
+
+        .StatusShadow {
+            box-shadow: 5px 4px 5px #88887B;
+        }
+
+        #example1_wrapper, .googlemap {
+            -webkit-transition: all 0.3s linear;
+            -moz-transition: all 0.3s linear;
+            transition: all 0.3s linear;
+        }
+
+        .av-question-box > input {
+            flex: inherit;
+        }
+
+        .av-question-box
+        {
+            padding: 0px;
+            background: transparent;
+        }
+        .av-question-box > input
+        {
+                margin-top: 4px;
+        }
+       .js-signature {
+   width:auto;
+    margin-left: 0;
+        padding-bottom: 5px;
+    border-bottom: 2px solid #808080;
+    margin-right: 0;
+}
+       .js-signaure-img
+       {
+          width: 205px;
+    height: 120px;
+  
+    margin-left: 0;
+        margin-bottom: 5px;
+    border-bottom: 2px solid #808080;
+    margin-right: 0;
+       }
+       .table-attendee
+       {
+           border: 1px solid #c3c3c3 !important;
+       }
+       .table-attendee>thead>tr>th, .table-attendee>tbody>tr>th, .table-attendee>tfoot>tr>th, .table-attendee>thead>tr>td, .table-attendee>tbody>tr>td, .table-attendee>tfoot>tr>td
+       {
+           border: 1px solid #c3c3c3 !important;
+       }
+    </style>
+}
+
+<script>
+    $(window).load(function () {
+        var rightside = $('.rightcols').innerHeight();
+
+        $(".my1").on('click', function () {
+            if ($(this).find('i').hasClass('fa-minus')) {
+                $(".googlemap").css({
+                    "height": rightside - 160
+                });
+            }
+            if ($(this).find('i').hasClass('fa-plus')) {
+                $(".googlemap").css({
+                    "height": "600px"
+                });
+            }
+
+        });
+
+        $(".my2").on('click', function () {
+            if ($(this).find('i').hasClass('fa-minus')) {
+                $("#example1_wrapper").css({
+                    "min-height": rightside - 190
+                });
+            }
+            if ($(this).find('i').hasClass('fa-plus')) {
+                $("#example1_wrapper").css({
+                    "min-height": "100px"
+                });
+            }
+        });
+
+
+
+    });
+</script>
+.

@@ -1,0 +1,204 @@
+﻿@using SWI.Libraries.AirView.Entities
+
+@model AV_ScopeTests
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Scope Tests</h3>
+                <a href="@Url.Action("All","ScopeTest")" class="btn btn-sm btn-info btn-flat pull-right">Back</a>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row" >
+                    <div class="col-sm-6">
+                        @using (Html.BeginForm("New", "ScopeTest", FormMethod.Post, new { Id = "frm-ScopeTest" }))
+                        {
+
+                            <table class="table table-striped"   id="tbl-ScopeTest">
+                                <tr>
+                                    <th>Client</th>
+                                    <th>City</th>
+                                    <th>Network Mode</th>
+                                    <th>Scope</th>
+                                    <th>Test</th>
+                                </tr>
+
+                                <tr id="NewTestRow">
+                                    <td>@Html.DropDownListFor(m => m.ClientId, ViewBag.Clients as List<SelectListItem>, new { @class = "form-control select STRowFirst", required = "required", data_row = "r0" })</td>
+                                    <td>@Html.DropDownListFor(m => m.CityId, new SelectList(ViewBag.Cities, "Value", "Text"), new { @class = "form-control select", required = "required", data_row = "r0" })</td>
+                                    <td>@Html.DropDownListFor(m => m.NetworkModeId, new SelectList(ViewBag.NetworkModes, "Value", "Text"), new { @class = "form-control select", required = "required", data_row = "r0" })</td>
+                                    <td>@Html.DropDownListFor(m => m.ScopeId, ViewBag.Scope as List<SelectListItem>, new { @class = "form-control select", required = "required", data_row = "r0" })</td>
+                                    <td>@Html.DropDownListFor(m => m.TestTypeId, ViewBag.TestTypes as List<SelectListItem>, new { @class = "form-control select RowLast", required = "required", data_row = "r0" })</td>
+                                </tr>
+                            </table>
+
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Save" class="btn btn-success pull-right" />
+
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+    <script>
+        var RowCount = 0;
+        var NewTestRow = $('#NewTestRow').html();
+        var RowsData = [];
+        var SelectedClient = 0;
+        var SelectedCity = 0;
+        var SelectedNetworkMode = 0;
+        var SelectedScope = 0;
+        var SelectedTest= 0;
+
+
+        function NewRow() {
+            var str = NewTestRow.replace("Band-r0", "Band-r" + RowCount + "");
+
+            var RowsFields = (NewTestRow.match(new RegExp("r0", "g")) || []).length;
+
+            for (var i = 0; i < RowsFields; i++) {
+                str = str.replace("r0", "r" + RowCount + "");
+            }
+           
+            $('#tbl-ScopeTest').append('<tr class="NewRow">' + str + '</tr>');
+           
+            RowCount++;
+
+            var $row = $('#tbl-ScopeTest tr').last();
+            var obj = RowsData[(RowsData.length - 1)];
+            //read object
+            //for (var key in obj) {
+            //    console.log('key: ' + key + '\n' + 'value: ' + obj[key]);
+            //}
+            $("td .form-control", $row).each(function (j) {
+                var name = $(this).attr('name');
+                $(this).val(obj[name]);
+            });
+
+            $('.STRowFirst').last().focus();
+        }
+        $(function () {
+            $('#frm-ScopeTest').parsley();
+
+
+            $(document).on('keydown', '.RowLast', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (keyCode == 9) {
+                    e.preventDefault();
+
+                    //RowsData = [];
+                    var $row = $(this).closest("tr");
+
+                    var data = {};
+                    $("td .form-control", $row).each(function (j) {
+                        var name = $(this).attr('name');
+                        var value = $(this).val();
+                        data[name] = value;
+
+                    });
+                    RowsData.push(data);
+                    NewRow();
+                }
+            });
+
+
+            $(document).on('submit', '#frm-ScopeTest', function () {
+              
+                var hit = 0;
+
+
+                $('#frm-ScopeTest select').each(function () {
+                  
+                    var value = $.trim($(this).val())
+                    var required = $(this).attr('data-required');
+                    if (required != 'no' || required != undefined) {
+                        if (value == "0" || value == '' || value == null) {
+                            $(this).addClass('required');
+                            hit = 1;
+                          //  $.notify('Select ' + $(this).attr('data-name'), { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            return false;
+                        } else {
+                            $(this).removeClass('required');
+                        }
+                    }
+                });
+              
+              //  debugger;
+                
+                if (hit == 0) {
+
+                    $('#frm-ScopeTest tr').each(function (i) {
+                      //  debugger;
+                        i = i - 1;
+                        $("td select", this).each(function (j) {
+                            var name = $(this).attr('name');
+                            $(this).attr('name', '[' + i + '].' + name);
+                        });
+                    });
+
+                    $.ajax({
+                        url: '/ScopeTest/New',
+                        type: 'post',
+                        async: false,
+                        data: $(this).serialize(),
+                        success: function (res) {
+                            if (res != 'session expired') {
+                                if (res.Status == 'success') {
+                                    $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+                                } else {
+                                    $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                                }
+                            } else {
+                                $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+                            }
+                            //  console.log(res);
+
+                            // alert(res);
+                        },
+                        error: function (err) {
+                            $.notify(err.statusText, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6 });
+
+                        },
+
+                    });
+                }
+
+                return false;
+            });
+           
+
+            
+        });
+    </script>
+}
+@section style{
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+<link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+    <style>
+          .required {
+            border-color: red;
+        }
+    </style>
+}

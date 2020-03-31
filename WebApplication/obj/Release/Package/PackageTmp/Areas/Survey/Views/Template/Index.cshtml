@@ -1,0 +1,194 @@
+﻿
+@{
+    ViewBag.Title = "Template";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="row" ng-app="TSS" ng-controller="Template" >
+
+    <div class="col-sm-12" style="margin-bottom:10px">
+        <a href="#" class="btn btn-sm btn-success btn-flat pull-right" ng-click="AddQuestion()">Add Questions</a>
+
+        <a href="/Survey/Document/Index/@ViewBag.SurveyId" class="btn btn-sm btn-info btn-flat pull-right" style="margin-right: 5px;">Back</a>
+
+    </div>
+
+    <div class="col-sm-4">
+        <section class="panel panel-default" style="box-shadow: 5px 4px 5px #88887B;">
+            <header class="panel-heading font-bold">Search from Templates</header>
+            <div class="panel-body" >
+               <div>
+                   <div class="form-group">
+                       <label>Domain<span style="color:red">*</span></label>
+                       <select class="form-control" ng-model="CategoryId" ng-change="LoadSubCategories()">
+                           <option value="">-Domain-</option>
+                           <option ng-repeat="item in Categories" value="{{item.DefinationId}}">{{item.DefinationName}}</option>
+                       </select>
+                   </div>
+
+                   <div class="form-group">
+                       <label>Category<span style="color:red">*</span></label>
+                       <select class="form-control" ng-model="SubCategoryId" ng-change="LoadSurveys()">
+                           <option value="">-Category-</option>
+                           <option ng-repeat="item in SubCategories" value="{{item.DefinationId}}">{{item.DefinationName}}</option>
+                       </select>
+                   </div>
+
+                   <div class="form-group">
+                       <label>Survey Document<span style="color:red">*</span></label>
+                       <select class="form-control" ng-model="SurveyId" ng-change="LoadSections()">
+                           <option value="">-Survey Document-</option>
+                           <option ng-repeat="item in Surveys" value="{{item.SurveyId}}">{{item.SurveyTitle}}</option>
+                       </select>
+                   </div>
+                 
+               </div>
+            </div>
+        </section>
+
+
+        <section class="panel panel-default" style="box-shadow: 5px 4px 5px #88887B;">
+            <header class="panel-heading font-bold">Survey Templates</header>
+            <div class="panel-body">
+                <div>
+                    <ul class="list-group alt"> 
+                    <li class="list-group-item" ng-repeat="item in Sections">
+                        <div class="media">
+                            <div class="media-body">
+                                <div class="checkbox">
+                                    <label class="SelectItem"> <input type="checkbox" ng-model="item.selected" value="item.SectionId"   > {{item.SectionTitle}} </label>
+                                </div>
+                            </div>
+                        </div> 
+                    </li> 
+                    
+                    </ul>
+                   <a href="#"  class="btn btn-success pull-right" ng-click="Search()">Search</a>
+                </div>
+            </div>
+        </section>
+
+        <div id="divLoading"></div>
+        </div>
+
+    
+    <div class="col-sm-8">
+        <section class="panel panel-default"  style="box-shadow: 5px 4px 5px #88887B;">
+
+            <header class="panel-heading font-bold">Sections</header>
+            <div class="panel-body">
+                <div class="panel-group m-b" id="accordion{{$index}}" ng-repeat="item in SearchedSections">
+                    <div class="panel panel-default">
+                        <div class="panel-heading accordion-toggle collapsed SelectItem" data-target="#collapse{{$index}}" data-toggle="collapse" ng-click="LoadQuestions(item)" data-parent="#accordion{{$index}}" > <a class="SelectItem"> {{item.SectionTitle}} </a><span class="arrowsupdown"><i class="fa fa-angle-down"></i></span> </div>
+                        <div id="collapse{{$index}}" class="panel-collapse collapse" style="height: 0px;">
+                            <div class="panel-body text-sm" ng-if="item.QuestionList.length>0">
+                                <table class="table">
+                                    <tr>
+                                        <th><label class="SelectItem"><input type="checkbox" ng-model="item.CheckAll" ng-change="ChangeSelection(item,item.CheckAll,$index)" /> Select All</label></th>
+                                        <th>Question</th>
+                                        <th>Type</th>
+                                        <th></th>
+                                    </tr>
+
+                                    <tr ng-repeat="q in item.QuestionList">
+                                        <td style="width:10%">
+                                                <label class="SelectItem" style="font-weight:500"><input type="checkbox" ng-model="q.selected" value="{{item.SectionId}}-{{q.QuestionId}}"> Q-{{$index+1}} </label>
+                                        
+                                        </td>
+
+                                        <td style="width:50%">{{q.Question}}</td>
+                                        <td style="width:30%">{{q.QuestionType}}</td>
+                                        <td style="width:20%"><a data-toggle="modal" href="#myModal" ng-click="GetSingleQuestion(q.QuestionId)"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+
+                                    </tr>
+                                </table>
+                            </div>
+                            <h5  ng-if="item.QuestionList.length==0" style="padding:5px;padding-left:20px">No Question Found!</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" draggable="" id="myModal" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button aria-hidden="true" class="close" data-dismiss="modal" type="button">×</button>
+                    <h4 class="modal-title">{{SingleQuestion.Question}}<label ng-if="SingleQuestion.IsRequired" style="color:red;">*</label></h4>
+                </div>
+                <div class="modal-body">
+                    <div ng-repeat="n in SingleQuestion.Responses" ng-if="SingleQuestion.QuestionType=='Single Select'">
+                        <br /><input type="radio" name="Question"  ng-model="n.IsPassed" ng-value="n" /> {{n.ResponseText}}
+                    </div>
+
+                    <div ng-repeat="n in SingleQuestion.Responses" ng-if="SingleQuestion.QuestionType=='Multi Select'">
+                        <br /><input type="checkbox" ng-checked="n.IsPassed" ng-value="n" /> {{n.ResponseText}}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" ng-show="SingleQuestion.IsBarCodeRequired"><span class="glyphicon glyphicon-barcode " style="float:left;font-size:27px;"></span></a>
+                    <a href="#" ng-show="SingleQuestion.IsImageRequired"><span class="glyphicon glyphicon-camera " style="float:left;font-size:27px;margin-left:10px;"></span></a>
+                    <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+                   <!-- <button class="btn btn-primary" type="button">Ok</button>-->
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+@Html.Partial("~/views/shared/_modal.cshtml")
+
+@section scripts{
+<script src="~/Content/js/Plugins/notify/js/notify.js"></script>
+
+    <script>
+        var SurveyId = '@ViewBag.SurveyId'
+        var IdType = '@ViewBag.IdType'
+        var SectionId = '@ViewBag.SectionId'
+    </script>
+<script src="~/Areas/Survey/Content/Template.js"></script>
+    <script>
+        $(document).on("show.bs.collapse", ".collapse", function () {
+            $(this).parent().find("span").children().removeClass('fa-angle-down').addClass('fa-angle-up')
+        })
+        $(document).on("hide.bs.collapse", ".collapse", function () {
+            $(this).parent().find("span").children().removeClass('fa-angle-down').addClass('fa-angle-down')
+        })
+    </script>
+    }
+@section style{
+    <link href="~/Content/js/Plugins/notify/css/notify.css" rel="stylesheet" />
+
+<style>
+  
+
+    .panel-heading {
+        font-size: 14px;
+        font-weight: bold;
+    }
+    span.arrowsupdown {
+    float: right;
+    font-size: 18px;
+}
+    .SelectItem{
+        user-select:none;
+        cursor:pointer;
+    }
+
+            #divLoading.show {
+                background-image: url('../../../../Content/Images/Application/Logo_Loading.gif');
+                display: block;
+                position: fixed;
+                z-index: 100;
+                background-repeat: no-repeat;
+                background-position: center;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                top: 0;
+            }
+    
+</style>
+}

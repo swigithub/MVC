@@ -1,0 +1,138 @@
+﻿@using System.Data;
+@using SWI.Libraries.AirView.Entities
+@model AV_Widgets
+
+@if (Model != null)
+{
+    int count = 1;
+    <div id="chart-@Model.WidgetType" style="height: 300px;width:100% "></div>
+
+
+    <script src="~/Content/js/Plugins/canvasjs/jquery.canvasjs.min.js"></script>
+    <script>
+        $(function(){
+
+
+            var WidgetType = '';
+            WidgetType = '@Model.WidgetType';
+
+            var data;
+            var legend;
+            //console.log(WidgetType);
+            if (WidgetType == "Pie") {
+                data = null;
+                data = [
+                        {
+                            type: "pie",
+                            showInLegend: true,
+                            legendText: "{indexLabel}",
+                            dataPoints: [
+                                 @if (ViewBag.Result.Columns.Contains("Value"))
+                                 {
+                                foreach (DataRow row in ViewBag.Result.Rows)
+                                {
+                            @: { y: '@row["Value"]', indexLabel: '@row["Title"]' },
+                                }
+                                     }
+                            ]
+                        }
+                ]
+            } else if (WidgetType == "Stacked") {
+                data = null;
+                data = [
+                    {
+                        type: "stackedColumn",
+                        dataPoints: [
+                             @if (ViewBag.Result.Columns.Contains("Value"))
+                             {
+                            foreach (DataRow row in ViewBag.Result.Rows)
+                            {
+                            @: { y: @row["Value"], indexLabel: '@row["Title"]' },
+                            }
+                                 }
+                        ]
+                    }
+                ];
+            }else if (WidgetType == "Bar") {
+                data = null;
+                data = [
+                    {
+                        type: "bar",
+                        dataPoints: [
+                            @if (ViewBag.Result.Columns.Contains("Value"))
+                            {
+                            foreach (DataRow row in ViewBag.Result.Rows)
+                            {
+                        @: { y: @row["Value"], indexLabel: '@row["Title"]' },
+                            }
+                                }
+                        ]
+                    }
+                ];
+            }else if (WidgetType == "Doughnut") {
+                data = null;
+                data = [
+                    {
+                        type: "doughnut",
+                        dataPoints: [
+                        @if (ViewBag.Result.Columns.Contains("Value"))
+                        {
+                             foreach (DataRow row in ViewBag.Result.Rows)
+                             {
+                                @: { y: @row["Value"], indexLabel: '@row["Title"]' },
+                             }
+                        }
+                            ]
+                    }
+                ];
+            }else if (WidgetType == "Column") {
+                data = [
+                            {
+                                dataPoints: [
+                                    @if (ViewBag.Result.Columns.Contains("Value") )
+                                    {
+                                        foreach (DataRow row in ViewBag.Result.Rows)
+                                        {
+                                             @: { x: @count, y: @row["Value"], label: '@row["Title"]' },
+                                        count++;  }
+                                    }
+
+                                ]
+                            }
+                ];
+            }else if (WidgetType == "Line") {
+                data = null;
+                data = [
+                    {
+                        type: "line",
+                        dataPoints: [
+                            @if (ViewBag.Result.Columns.Contains("x"))
+                            {
+                                foreach (DataRow row in ViewBag.Result.Rows)
+                                {
+                                    DateTime time = Convert.ToDateTime(row["x"]);
+                                    @: { x: new Date('@time.Month @time.Day, @time.Year @time.Hour:@time.Minute:@time.Second:@time.Millisecond'), y: '@row["y"]' },
+                                 }
+                            }
+                        ]
+                    }
+                ];
+            }
+
+
+            // console.log(data);
+
+            var chart = new CanvasJS.Chart("chart-@Model.WidgetType",
+              {
+                  title: {
+                      text: '@Model.Tilte'
+                  },
+                  legend: legend,
+                  data: data
+              });
+            chart.render();
+
+
+        });
+    </script>
+}

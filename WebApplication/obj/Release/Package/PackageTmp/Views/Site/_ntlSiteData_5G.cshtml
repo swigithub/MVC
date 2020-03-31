@@ -1,0 +1,113 @@
+﻿
+@using SWI.Libraries.AirView.Entities
+
+@model IEnumerable<AV_SiteTestSummary>
+
+
+
+@if (Model != null && Model.Count() > 0)
+{
+    var First = Model.FirstOrDefault();
+    string TempNetworkMode = First.NetworkMode;
+
+    <div class="table_wrapper">
+        <table class="report_table" id="sitedatatblResult" style="border-top:4px solid #004b99;border-bottom:4px solid #004b99">
+            <thead>
+                <tr>
+                    <th style="text-align:center;width:10%" >Site Id	</th>
+                    <th style="text-align:center;width:10%" >Sector Id </th>
+                    <th style="text-align:center;width:10%">Network Mode </th>
+                    <th style="text-align:center;width:10%">Band </th>
+                    <th style="text-align:center;width:10%">Carrier	</th>
+                    <th style="text-align:center;width:10%">Latitude	</th>
+                    <th style="text-align:center;width:10%">Longitude	</th>
+                    <th style="text-align:center;width:10%">Azimuth	</th>
+                    <th style="text-align:center;width:10%">
+                        @if (TempNetworkMode == "LTE" || TempNetworkMode == "NR")
+                        {
+                            @: PCI
+                        }
+                        @if (TempNetworkMode == "GSM")
+                        {
+                            @:BCCH
+                        }
+                        @if (TempNetworkMode == "WCDMA")
+                        {
+                            @:PSC
+                        }
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr style="background-color:white !important;">
+                        <td style="text-align:center">@item.Site</td>
+                        <td style="text-align:center" data-type="STRING" class="SECTOR_@item.Sector.ToUpper()">@item.Sector</td>
+                        <td style="text-align:center">@item.NetworkMode</td>
+                        <td style="text-align:center">@item.Band</td>
+                        <td style="text-align:center">@item.Carrier</td>
+                        <td style="text-align:center">@item.Latitude</td>
+                        <td style="text-align:center">@item.Longitude</td>
+                        <td style="text-align:center">@item.Azimuth</td>
+                        <td style="text-align:center">@item.PciId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @*<table style="width:100%;text-align:center;border-bottom:solid 2px;border-top:solid 2px;" class="font">
+            <tr class="tbl-heading ">
+                <th style="width:10%">Site Id</th>
+                <th style="width:10%">Sector Id</th>
+                <th style="width:10%">Network Mode</th>
+                <th style="width:10%">Band</th>
+                <th style="width:10%">Carrier</th>
+                <th style="width:10%">Latitude</th>
+                <th style="width:10%">Longitude</th>
+                <th style="width:10%">Azimuth</th>
+                <th style="width:10%">
+                    @if (TempNetworkMode == "LTE" || TempNetworkMode == "NR")
+                    {
+                        <span>PCI</span>
+                    }
+                    @if (TempNetworkMode == "GSM")
+                    {
+                        <span>BCCH</span>
+                    }
+                    @if (TempNetworkMode == "WCDMA")
+                    {
+                        <span>PSC</span>
+                    }
+                </th>
+
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Site</td>
+                    <td data-type="STRING" class="SECTOR_@item.Sector.ToUpper()">@item.Sector</td>
+                    <td>@item.NetworkMode</td>
+                    <td>@item.Band</td>
+                    <td>@item.Carrier</td>
+                    <td>@item.Latitude</td>
+                    <td>@item.Longitude</td>
+                    <td>@item.Azimuth</td>
+                    <td>@item.PciId</td>
+                </tr>
+            }
+
+
+        </table>*@
+
+
+
+    @*if ((((double)TempCount / 3) % 1) == 0)
+        {
+            PageBreak = true;
+            <P CLASS="breakhere" />
+        }*@
+}
+
+
+

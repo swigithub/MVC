@@ -1,0 +1,101 @@
+﻿
+@using SWI.Libraries.AirView.Entities
+
+@model IEnumerable<AV_SiteTestSummary>
+
+@functions{
+              public string GetSector(string sectorName) {
+					if (sectorName == "Alpha")
+                      return "1";
+					else if (sectorName == "Beta")
+                      return "2";
+					else if (sectorName == "Gamma")
+                      return "3";
+					else if (sectorName == "Delta")
+                      return "4";
+					else if (sectorName == "Epsilon")
+                      return "5";
+					else if (sectorName == "DiGamma")
+                      return "6";  
+					else if (sectorName == "Eta")
+                      return "7";  
+					else if (sectorName == "Theta")
+                      return "8";
+					else if (sectorName == "Iota")
+                      return "9";
+                  else
+                      return "";
+
+              } 
+			  }
+
+@if (Model != null && Model.Count() > 0)
+{
+    var First = Model.FirstOrDefault();
+    string TempNetworkMode = First.NetworkMode;
+	<div style="background-color: #00ccff;height: 25px;text-align: center;vertical-align: middle;padding-top: 8px;color: white;font-weight:white;font-weight: bold;font-size: 17px;margin-top: -14px; border-top: 1px; border-color: black;">Site Data</div>
+    <table style="width:100%;text-align:center;border-bottom:solid 2px;border-top:solid 2px;" class="font">
+        <tr class="tbl-heading ">
+            <th style="width:10%">Site Id</th>
+            <th style="width:10%">Sector ID</th>
+            <!--<th style="width:10%">Network Mode</th>
+            <th style="width:10%">Band</th>
+            <th style="width:10%">Carrier</th>-->
+            <th style="width:10%">Latitude</th>
+            <th style="width:10%">Longitude</th>
+            <th style="width:10%">Azimuth</th>
+			<th style="width:10%">Antenna Model</th>
+            
+            <th style="width:5%">EDT</th>
+            <th style="width:5%">MDT</th>
+			
+			<th style="width:10%">
+                @if (TempNetworkMode == "LTE")
+                {
+                    <span>PCID</span>
+                }
+                @if (TempNetworkMode == "GSM")
+                {
+                    <span>BCCH</span>
+                }
+                @if (TempNetworkMode == "WCDMA")
+                {
+                    <span>PSC</span>
+                }
+            </th>
+			<th style="width:10%">Comments</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Site</td>
+                <td data-type="STRING" class="">@GetSector(@item.Sector)</td>
+                <!--<td>@item.NetworkMode</td>
+                <td>@item.Band</td>
+                <td>@item.Carrier</td>-->
+                <td>@item.Latitude</td>
+                <td>@item.Longitude</td>
+                <td>@item.Azimuth</td>
+				<td>EXISTING</td>
+                
+                <td>0</td>
+                <td>0</td>
+				<td>@item.PciId</td>
+				<td></td>
+            </tr>
+        }
+
+
+    </table>
+
+
+
+    @*if ((((double)TempCount / 3) % 1) == 0)
+    {
+        PageBreak = true;
+        <P CLASS="breakhere" />
+    }*@
+}
+
+
+

@@ -1,0 +1,51 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model IEnumerable<OoklaTestResult>
+
+@if (Model != null)
+{
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Ookla Results</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body no-padding">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th>Sector</th>
+                        <th>Ping</th>
+                        <th>Downlink</th>
+                        <th>Uplink</th>
+                    </tr>
+                    @foreach (var item in Model)
+                      {
+                        <tr>
+                            <td ><a href="@item.OoklaTestFilePath"  class="swipebox"  @*onclick="ShowOoklaImage('@item.OoklaTestFilePath'); return false;"*@ > @item.SectorCode</a></td>
+                            <td>
+                                @if (item.OoklaPingResult > 0)
+                                {
+                                    <span>@item.OoklaPingResult</span>
+                                }
+                               
+                            </td>
+                            <td>
+                                @if (item.OoklaDownlinkResult > 0)
+                                {
+                                    <span>@item.OoklaDownlinkResult</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.OoklaUplinkResult > 0)
+                                {
+                                    <span>@item.OoklaUplinkResult</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+  
+}

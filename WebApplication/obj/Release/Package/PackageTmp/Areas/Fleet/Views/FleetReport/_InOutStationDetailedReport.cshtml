@@ -1,0 +1,143 @@
+﻿<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="inoutstationdetailed-title">Geo-Fence Reports <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> In/Out Station Detailed Report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="inoutstationdetailed-custom-filters">
+            <div class="filter-field">
+                <label>Device</label>
+                <input type="text" id="inoutstationdetailed-asset" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="inoutstationdetailed-date-range">
+                </div>
+            </div>
+            <div class="filter-field button">
+                <button id="inoutstationdetailed-apply_filters" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="inoutstationdetailed-table">
+            <table id="inoutstationdetailed-report" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Time</th>
+                        <th>Asset Name</th>
+                        <th>Tracker Id</th>
+                        <th>Station name</th>
+                        <th>Fence status</th>
+
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#inoutstationdetailed-apply_filters").click(function () {
+        debugger;
+
+        var assetname = $("#inoutstationdetailed-asset").val();
+        var daterange = $("#inoutstationdetailed-date-range").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var reportexporttitle = $("#inoutstationdetailed-title").text();
+        var exportfilename = $("#inoutstationdetailed-title").text();
+        var frcmodel = {
+            ReportFilter: "InOutStationDetailedReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname
+        }
+
+        var table = $('#inoutstationdetailed-report').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_GeoFenceReport",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            //"deferRender": true,
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0,
+                "className": "dt-center", "targets": "_all"
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'Time', "name": "Time", "autoWidth": true },
+               { data: 'AssetName', "name": "Asset Name" },
+               { data: 'TrackerId', "name": "Tracker Id" },
+               { data: 'StationName', "name": "Station name", "autoWidth": true },
+               { data: 'FenceStatus', "name": "Fence status", "autoWidth": true },
+
+            ],
+            initComplete: function (settings, json) {
+                $("#inoutstationdetailed-custom-filters .top").remove();
+                $($("#inoutstationdetailed-table .top")).appendTo("#inoutstationdetailed-custom-filters");
+            }
+
+
+        });
+        createIndex(table);
+
+        //$.ajax({
+        //    url: window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+        //    type: "POST",
+        //    traditional: true,
+        //    data:JSON.stringify(frcmodel),
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    error: function (response) {
+        //        alert(response.responseText);
+        //    },
+
+        //    success: function (response) {
+        //        alert(response);
+        //    }
+        //});
+    });
+</script>
+

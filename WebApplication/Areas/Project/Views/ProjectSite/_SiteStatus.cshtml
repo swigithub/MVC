@@ -1,0 +1,174 @@
+﻿<ul class="nav nav-tabs" >
+    <li class="active"><a data-toggle="tab" href="#Status">Site Status</a></li>
+    <li><a data-toggle="tab" href="#history">Status History</a></li>
+
+</ul>
+<div class="tab-content">
+    <div id="Status" class="tab-pane fade in active">
+        <form ng-submit="SaveSiteStatus()" name="SiteStatusForm" role="form" novalidate>
+            <div class="row">
+                <br />
+                <div class="col-md-9" style="border-right:1px solid #e5e5e5;">
+
+                    <div class="form-row" style="margin-left:-13px;">
+                        <div class="form-group col-md-4">
+                            <label for="inputPassword4">Status <span style="color: red;"> *</span></label><span style="color:red" ng-if="IsCompleted"> You can not set status completed</span>
+                            <select required style="border:1px solid #a9a9a9;height:32px;" name="Status" class="form-control" ng-change="CheckStatusCount(SiteStatus.StatusId)" ng-model="SiteStatus.StatusId" ng-options="x.DefinationId as x.DisplayText for x in ProjectSiteStatus">
+                                <option value="">Select Status</option>
+                            </select>
+                        @*    <span ng-if="SiteStatus.StatusId == null && IsFormSubmited == true" class="text-danger">Status is required </span>*@
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="inputPassword4">Activity Type<span style="color: red;"> *</span></label>
+                            <select required style="border:1px solid #a9a9a9;height:32px;" name="Status" class="form-control" ng-model="SiteStatus.ActivityTypeId" ng-options="x.DefinationId as x.DefinationName for x in ActivityType" >
+                                <option value="">Select Activity Type</option>
+                            </select>
+                       @*     <span ng-if="SiteStatus.ActivityTypeId == null && IsFormSubmited == true" class="text-danger">Activity Type is required. </span>*@
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputPassword4">Alarms<span style="color: red;"> *</span></label>
+                            <select required style="border:1px solid #a9a9a9;height:32px;" name="Window" class="form-control" ng-model="SiteStatus.AlarmId" ng-options="x.DefinationId as x.DefinationName for x in Alarm" >
+                                <option value="">Select Alarms</option>
+                            </select>
+                          @*  <span ng-if="SiteStatus.AlarmId == null && IsFormSubmited == true" class="text-danger">Alarms is required</span>*@
+                        </div>
+                        
+
+
+                    </div>
+                    <div class="form-row" style="margin-left:-13px;">
+
+                        
+                        <div class="form-group col-md-4">
+                            <label for="inputEmail4">Go/No Go<span style="color: red;"> *</span></label>
+                            <select required style="border:1px solid #a9a9a9;height:32px;" class="form-control" name="GNG" ng-model="SiteStatus.GNGId" ng-disabled="DisableIssueBy" ng-options="x.DefinationId as x.DefinationName for x in GNG" >
+                                <option value="">Select</option>
+                            </select>
+                           @* <span ng-if="SiteStatus.GNGId == null && IsFormSubmited == true" class="text-danger">Go/No Go is required </span>*@
+                        </div>
+                        @*<div class="form-group col-md-4" style="margin-top:23px;">
+                            <input ng-checked="SiteStatus.IsAddionalSite" type="checkbox">&nbsp;&nbsp;
+                            <label>Additional Site</label>
+
+                        </div>*@
+                        <div class="form-group col-md-4">
+                            <label for="inputPassword4">Scheduled<span style="color: red;"> *</span></label>
+                            <select required style="border:1px solid #a9a9a9;height:32px;" ng-model="SiteStatus.IsAddionalSite" class="form-control" name="IsAddionalSite" >
+                                <option value="">Select Scheduled</option>
+                                <option value="false" selected>No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                            @*<span ng-if="SiteStatus.IsAddionalSite == null && IsFormSubmited == true" class="text-danger">Scheduled is required </span>*@
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputPassword4">Maintenance Window<span style="color: red;"> *</span></label>
+                            <select style="border:1px solid #a9a9a9;height:32px;" name="Window" class="form-control" ng-model="SiteStatus.MSWindowId" ng-options="x.DefinationId as x.DefinationName for x in MilestoneWindow" required>
+                                <option value="">Maintenance Window</option>
+                            </select>
+                           @* <span ng-if="SiteStatus.MSWindowId == null && IsFormSubmited == true" class="text-danger">Maintenance Window is required </span>*@
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-row" style="margin-left:-13px;">
+                        <br /><br />
+                        <br /><br /><br /><br /><br /><br />
+                        @*<div class="form-group col-md-4">
+                            <label for="inputPassword4">AOTS CR</label>
+                            <input type="text" style="border:1px solid #a9a9a9;height:32px;" name="OthereNB" class="form-control" ng-model="SiteStatus.AOTSCR" required />
+                        </div>*@
+                        <div class="form-group col-md-4">
+                            <label for="inputEmail4">Attachment</label>
+                            <select style="border:1px solid #a9a9a9;height:32px;" class="form-control" name="IssueOnwer" ng-change="ShowfileloaderIssue(SiteStatus.ItemTypeId)" ng-model="SiteStatus.ItemTypeId" ng-disabled="DisableIssueBy" ng-options="x.DefinationId as x.DefinationName for x in ItemType">
+                                <option value="">Select</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3" @*style="margin-top:29px;"*@>
+                            <label ng-show="Showfileloaderissuejpg">Max 3 mb, jpg,png,jpeg are allowed !</label>
+                            <input type="file" accept=".jpg,.png,.jpeg" ng-show="Showfileloaderissuejpg" onchange="angular.element(this).scope().selectFileforUpload(this)">
+                            <label ng-show="Showfileloaderissuefile">Max 3 mb, .csv is allowed !</label>
+                            <input type="file" accept=".csv" ng-show="Showfileloaderissuefile" onchange="angular.element(this).scope().selectFileforUpload(this)">
+
+                        </div>
+
+                        @*<div class="form-group col-md-4" style="margin-top:29px;">
+                            <input ng-show="Showfileloader" type="file" onchange="angular.element(this).scope().selectFileforUpload(this.files)">
+
+                        </div>*@
+
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-row">
+                        <label>Notes</label>
+                        <textarea type="text" rows="5" ng-model="SiteStatus.Notes" style="border:1px solid #a9a9a9;width:99%;" class="form-control gh"></textarea>
+                    </div>
+
+
+                </div>
+               
+                <div class="col-md-3">
+                    <div class="form-row" style="margin-left:-13px;">
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">eNB</label>
+                            <input type="text" style="border:1px solid #a9a9a9;height:32px;" name="eNB" class="form-control" ng-model="SiteStatus.eNB"  />
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Extended eNB</label>
+                            <input type="text" style="border:1px solid #a9a9a9;height:32px;" name="OthereNB" class="form-control" ng-model="SiteStatus.ExtendedeNB"  />
+
+                        </div>
+
+
+                    </div>
+                    <div class="form-row" style="margin-left:-13px;">
+
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Equipment Id</label>
+                            <input type="text" style="border:1px solid #a9a9a9;height:32px;" name="Equipment" class="form-control" ng-model="SiteStatus.Equipment"  />
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">AOTS CR</label>
+                            <input type="text" style="border:1px solid #a9a9a9;height:32px;" name="Equipment" class="form-control" ng-model="SiteStatus.AOTSSD"  />
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+          
+            <div class="modal-footer">
+                <button class="btn custom-btn2" data-dismiss="modal">
+                    Cancel
+                </button>
+                <input type="submit" ng-disabled="SiteStatus.StatusId == null || SiteStatus.ActivityTypeId == null || SiteStatus.AlarmId == null || SiteStatus.GNGId == null || SiteStatus.IsAddionalSite == null || SiteStatus.MSWindowId == null" value="Save" id="siteStatusBn" class="btn custom-btn1" />
+            </div>
+        </form>
+    </div>
+    <div id="history" class="tab-pane fade">
+        <div class="IssueStatus">
+            <div class="direct-chat-messages" style="max-height:370px;overflow:auto;" ng-repeat="x in ProjectSiteStat">
+
+
+                <div  class="direct-chat-msg">
+                    <div class="direct-chat-info clearfix">
+                        <span class="direct-chat-name pull-left">{{x.UserName}}</span>
+                        <span class="direct-chat-timestamp pull-right">{{ x.CreatedOn.replace('/Date(','').replace(')/','') | date:"mediumDate" }}</span>
+                    </div>
+                    <img  class="direct-chat-img" src="{{x.Picture}}"><!-- /.direct-chat-img -->
+                    <div class="direct-chat-text" >
+                        <label><b>Status:&nbsp;</b></label>{{x.Status}}
+                        <p>{{x.Description}}</p>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div></div>
+ 
+</div>

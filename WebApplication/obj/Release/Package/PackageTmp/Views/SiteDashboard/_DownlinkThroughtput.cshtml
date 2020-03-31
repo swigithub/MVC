@@ -1,0 +1,77 @@
+﻿
+@using SWI.Libraries.AirView.Entities
+@model IEnumerable<SiteDashboardThroughtputChart>
+
+<div id="DLChart" style="height: 230px; width: 100%;"></div>
+
+<script>
+    var type='@ViewBag.type';
+    var DLgMax=[];
+    var DLMin=[];
+    var DLAvg=[];
+
+    @if (ViewBag.type == "Sector")
+     {
+         <text>
+    var DLLineChartData = [
+            @foreach (var item in Model)
+            {
+
+        @:{ x: new Date('@item.TimeStamp.Value.Month @item.TimeStamp.Value.Day, @item.TimeStamp.Value.Year @item.TimeStamp.Value.Hour:@item.TimeStamp.Value.Minute:@item.TimeStamp.Value.Second:@item.TimeStamp.Value.Millisecond'), y: @item.MaxResult },
+            }
+    ];
+
+    </text>
+
+     }
+     else {
+        <text>
+           @foreach (var item in Model)
+        {
+        @:DLgMax.push({ label: "@item.Sector", y: @item.MaxResult });
+                @:DLMin.push({ label: "@item.Sector", y: @item.MinResult });
+                @:DLAvg.push({ label: "@item.Sector", y: @item.AvgResult });
+                 }
+
+        var DLChartData=[
+                            {
+                                type: "stackedColumn",
+                                name: "Min",
+                                showInLegend: true,
+                                dataPoints: DLMin
+                            },
+                            {
+                                type: "stackedColumn",
+                                name: "Max",
+                                showInLegend: true,
+                                dataPoints: DLgMax
+                            },
+                            {
+                                type: "stackedColumn",
+                                name: "Avg",
+                                showInLegend: true,
+                                dataPoints: DLAvg
+                            },
+        ]
+
+        $("#DLChart").CanvasJSChart({
+            nimationEnabled: true,
+            title: {
+                text: ""
+            },
+            axisY: {
+                title: ""
+            },
+            toolTip: {
+                content: "{label} <br/>{name} : {y} "
+            },
+            data: DLChartData
+        });
+    </text>
+
+     }
+
+  
+
+
+</script>

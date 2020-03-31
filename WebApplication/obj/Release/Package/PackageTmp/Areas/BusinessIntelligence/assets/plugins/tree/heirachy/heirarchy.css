@@ -1,0 +1,42 @@
+
+/* required LIB STYLES */
+/* .Treant se automatski dodaje na svaki chart conatiner */
+.Treant{position:relative;overflow:auto;padding:0 !important}
+.Treant > .node,
+.Treant > .pseudo{position:absolute;display:block;visibility:hidden}
+.Treant.Treant-loaded .node,
+.Treant.Treant-loaded .pseudo{visibility:visible}
+.Treant > .pseudo{width:0;height:0;border:none;padding:0}
+.Treant .collapse-switch{width:3px;height:3px;display:block;border:1px solid black;position:absolute;top:1px;right:1px;cursor:pointer}
+.Treant .collapsed .collapse-switch{background-color:#868DEE}
+.Treant > .node img{  border:none;float:left}
+/*=============== Heirarchy Chart  ===================*/
+.nodeExample1{
+        padding:5px;
+        -webkit-border-radius:3px;
+        -moz-border-radius:3px;
+        border-radius:3px;
+        background-color:#ffffff;
+        border:1px solid #9F9F9F;
+        font-size:12px;
+        width:auto;
+        min-width:280px;
+        box-shadow:0 0 20px rgba(0,0,0,0.2);
+}
+.nodeExample1 img{
+        margin-right: 10px;
+}
+.node p{
+        margin:0;
+        overflow:hidden;
+        font-size:12px;
+        text-transform:uppercase;
+        line-height:1.2;
+        margin:0 0 4px;
+}
+.node p.node-name{
+        font-size:16px;
+        font-weight:600;
+        margin-top:5px;
+        margin-bottom:5px;
+}

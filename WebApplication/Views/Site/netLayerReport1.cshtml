@@ -1,0 +1,1113 @@
+﻿@using System.Web.Mvc.Html
+@using SWI.Libraries.Common
+@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.AD.Entities
+@using Jmelosegui.Mvc.GoogleMap;
+@using System.Drawing;
+@using SWI.AirView.Models;
+@model IEnumerable<AV_SiteTestSummary>
+@{
+    Layout = null;
+    int count = 0;
+    int RowSpan = Model.Count() + 1;
+    DirectoryHandler dh = new DirectoryHandler();
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var NetLayerReport = jss.Serialize(ViewBag.NetLayerReport);
+    var ReportConfiguration = jss.Serialize(ViewBag.ReportConfiguration);
+    var ReportConfigurationList = ViewBag.ReportConfiguration as List<AD_ReportConfiguration>;
+
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Layer Report</title>
+
+    <link href="~/Content/js/Plugins/DateTimePicker/dtpicker.css" rel="stylesheet" />
+    <link href="~/Content/NetLayreReport.css" rel="stylesheet" />
+    @Scripts.Render("~/AdminLTE/plugins/jquery/js")
+
+</head>
+
+<body>
+    @if (Model != null && Model.Count() > 0)
+    {
+
+        var Pcis = (ViewBag.PciDisLagend as List<AV_NetLayerReportPlot>);
+        var CwPcis = Pcis.Where(m => m.TestType == "CW").ToList();
+        var CcwPcis = Pcis.Where(m => m.TestType == "CCW").ToList();
+
+        @functions{
+
+            public string SectorColor(string key)
+            {
+                try
+                {
+                    var LagentPCI = ViewBag.Sectors as ICollection<AD_Defination>;
+                    return LagentPCI.Where(m => m.DefinationName == key).FirstOrDefault().ColorCode;
+                }
+                catch
+                {
+
+                    return null;
+                }
+
+            }
+
+        }
+
+
+        var First = Model.FirstOrDefault();
+        int TotalRecord = Model.Count();
+        string NetworkMode = First.NetworkMode;
+        // var rptConfig = ViewBag.ReportConfiguration as ICollection<AD_ReportConfiguration>;
+        ViewBag.ClientLogo = First.ClientLogo;
+        ViewBag.VendorLogo = First.VendorLogo;
+
+        <div class="container" id="pdf" style="width:1400px;margin: auto;padding:2px;">
+            <a href="#" style="float:right; position: fixed; right: 100px" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+            @if (ViewBag.RoleName != "Client POC")
+            {
+                <a href="#" style="float:right; position: fixed; left: 100px" id="btn-setting" class=" clear">
+                    <img src="~/Content/Images/Common/kpi_x24.png" />
+                </a>
+            }
+            <div id="pan-settings" style="position: fixed;left: 10px;top: 50px;background-color:#333;color:white; width: 230px;display:none;height:760px;overflow-x:hidden;overflow-y:auto /*visibility:hidden*/">
+                <div class="settingHeading">Report Settings</div>
+                <div>
+                    <div id="pan-checkbox" style="margin-left: 10px;">
+                        @foreach (var conf in (ViewBag.ReportConfiguration as ICollection<AD_ReportConfiguration>).Where(m => m.IsPanelItem == true).OrderBy(m => m.InputType))
+                        {
+                            string[] InputTypes = conf.InputType.Split(',');
+
+                            foreach (var type in InputTypes)
+                            {
+                                if (type == "BOOLEAN")
+                                {
+
+                                    string check = "";
+                                    if (conf.isActive == true)
+                                    {
+                                        check = "checked";
+                                    }
+                                    else
+                                    {
+                                        check = "";
+                                    }
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" data-keycode="@conf.KeyCode" @check class="checkboxcontroll" id="@conf.KeyId">
+                                            @conf.DisplayText
+                                        </label>
+                                    </div>
+                                }
+
+                                @*   if (type == "STRING")
+                                            {
+                                    <label>@conf.KeyCode</label>
+                                    <input type="text" class="panelItem" data-keycode="@conf.KeyCode" id="txt-@conf.KeyCode" />
+                                            }*@
+                            }
+
+
+                        }
+                        <label>Fonts</label>
+                        <div>
+                            @Html.DropDownList("ddlFonts", ViewBag.Fonts as List<SelectListItem>, new { style = "width:150px" })
+                        </div>
+                    </div>
+
+                    <div class="settingFooter"><input style="font-weight:bold" type="button" id="btn-cofSave" value="Apply Settings" /></div>
+                </div>
+                @if (ViewBag.RoleName != "Client POC")
+                {
+                    <div>
+                        <hr />
+                        <div class="settingHeading">Disable Map Route</div>
+                        <div style="margin-left: 10px;">
+                            <label>From Time</label>
+                            <input type="text" class="datetime" id="txtFromDate" /><br />
+                            <label>To Time</label>
+                            <input type="text" class="datetime" id="txtToDate" /><br />
+                        </div>
+                        <div class="settingFooter">
+
+                            <a class="btn-mapRoot" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                            <a class="btn-mapRoot" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                        </div>
+
+                    </div>
+                }
+                @if (ViewBag.RoleName != "Client POC")
+                {
+                    <div>
+                        <hr />
+                        <div class="settingHeading">Remove Drive</div>
+                        <form action="#" method="post" id="frm-removeDrive">
+                            <div style="margin-left: 10px;">
+                                @foreach (var ts in ViewBag.ServerTimestamp)
+                                {
+                                    <label>
+                                        <input type="checkbox" data-value="@ts.value1" class="ch-Timestamp">
+                                        @ts.value1
+                                    </label>
+                                    <br />
+
+                                }
+                            </div>
+                            <div class="settingFooter">
+                                <a class="btn-RemoveDrive" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                                <a class="btn-RemoveDrive" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                            </div>
+                        </form>
+
+                    </div>
+                }
+
+
+                <div>
+                    <hr />
+                    <form action="#" method="post" id="frm-pcis">
+                        <div class="settingHeading">Disable CW Plots</div>
+                        <div style="margin-left: 10px;">
+                            @{int PciCount = 0; }
+                            @foreach (var pci in CwPcis)
+                            {
+                                if (PciCount == 3)
+                                {
+                                    <br />
+                                    PciCount = 0;
+                                }
+                                <label>
+                                    <input type="checkbox" data-value="@pci.PCI"  class="ch-pci" id="pci-@pci.PCI">
+                                    @pci.PCI
+                                </label>
+
+                                PciCount++;
+                            }
+                            <hr />
+                            <div class="settingHeading">Disable CCW Plots</div>
+                            @{ PciCount = 0; }
+                            @foreach (var pci in CcwPcis)
+                            {
+                                if (PciCount == 3)
+                                {
+                                    <br />
+                                    PciCount = 0;
+                                }
+                                <label>
+                                    <input type="checkbox" data-value="@pci.PCI"  class="ch-pci" id="pci-@pci.PCI">
+                                    @pci.PCI
+                                </label>
+
+                                PciCount++;
+                            }
+                        </div>
+                        <div class="settingFooter">
+                               <a class="btn-Pcis" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                                <a class="btn-Pcis" href="#" data-value="false"><img src="~/Content/Images/Common/error.png" /></a>
+                            
+                            <!--<a class="btn-mapRoot" href="#" data-value="true"><img src="~/Content/Images/Common/success.png" /></a>
+                                <input type="image" src="~/Content/Images/Common/error.png">-->
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+
+            <div id="print" class="clear">
+                <div class="bgcolor WELCOME_PAGE_COLOR" data-type="BGCOLOR" style="color: white;padding-top: 201px;height: 801px;margin-left: -20px;margin-right: -20px;margin-bottom: -26px;">
+                    <img src="~/Content/Images/ClientLogo/nokia_logo.png" class="" style="top: -100px;position: relative;" />
+
+                    <div style="margin-left:50px;font-size:xx-large;font-family: Arial, Verdana;margin-top:-100px;">
+
+                        <h1 id="PROJECT_TITLE" class="" data-type="BOOLEAN,STRING" data-preValue="@First.Region"></h1>
+                        <h1 id="REPORT_TITLE" class="" data-type="BOOLEAN,STRING" style="margin-top:-30px;"></h1>
+                    </div>
+                    <div class="" style="margin-top:100px;margin-left:50px; font-size:large;font-family: Arial, Verdana;">
+                        <div>
+                            <div class="left">
+                                <h2>Site : @First.Site _ @First.Band</h2>
+                                <h2>@First.SiteScheduleDate.Value.ToString("MMM dd, yyyy")</h2>
+                            </div>
+                            <div class="left"></div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+					@if (First.ClientPrefix=="TMO")
+					{
+						<img src="~/Content/Images/Common/tmobile.png" style="position: relative;right: -800px;bottom: -100px;width: 547px;height: 92px;" />
+					}
+					else if (First.ClientPrefix=="ATT")
+					{
+						<img src="~/Content/Images/ClientLogo/att_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 366px;height: 176px;" />
+					}
+					else if (First.ClientPrefix=="CSP")
+					{
+						<img src="~/Content/Images/ClientLogo/cspire_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 190px;" />
+					}
+					else if (First.ClientPrefix=="VRZ")
+					{
+						<img src="~/Content/Images/ClientLogo/verizon_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 107px;" />
+					}
+					else if (First.ClientPrefix=="SPR")
+					{
+						<img src="~/Content/Images/ClientLogo/sprint_logo.png" style="position: relative;right: -893px;bottom: -100px;width: 406px;height: 190px;" />
+					}
+                </div>
+                @*@Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")*@
+
+
+                <P CLASS="breakhere" />
+                <!--Site Data-->
+
+                <div class="" style="color:#3b39e2;margin-top:50px;height:870px;">
+                    <h1 id="SITE_DATA" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading"></h1>
+
+                    <div class="" style="width:100%;border-bottom:solid 2px;border-top:solid 2px;">
+
+                        <table style="width:100%;text-align:center;" class="font">
+                            <tr class="tbl-heading ">
+                                <th>Site Id</th>
+                                <th>Sector Id</th>
+                                <th>Network Mode</th>
+                                <th>Band</th>
+                                <th>Carrier</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                @*<th>BeamWidth</th>*@
+                                <th>Azimuth</th>
+                                <th>
+                                    @if (First.NetworkMode == "LTE")
+                                    {
+                                        <span>PCI</span>
+                                    }
+                                    @if (First.NetworkMode == "GSM")
+                                    {
+                                        <span>BCCH</span>
+                                    }
+                                    @if (First.NetworkMode == "WCDMA")
+                                    {
+                                        <span>PSC</span>
+                                    }
+                                </th>
+                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Site</td>
+                                    <td data-type="STRING" class="SECTOR_@item.Sector.ToUpper()">@item.Sector</td>
+                                    <td>@item.NetworkMode</td>
+                                    <td>@item.Band</td>
+
+                                    <td>@item.Carrier</td>
+                                    <td>@item.Latitude</td>
+                                    <td>@item.Longitude</td>
+                                    @*<td>@item.BeamWidth</td>*@
+                                    <td>@item.Azimuth</td>
+                                    <td>@item.PciId</td>
+                                </tr>
+                            }
+
+
+                        </table>
+
+                    </div>
+                    <br /><br />
+                    <div class="" id="site_data_map" style="width:auto;height:560px;"></div>
+                    <div class="clear"></div>
+                </div>
+
+                @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                <hr />
+                <P CLASS="breakhere" />
+                <!--Field Test-->
+                @if (ReportConfigurationList.Any(m => m.KeyCode == "FIELD_TEST_TYPE" && m.isActive==true))
+                {
+                    <style>
+                        .StationaryTable{
+                            margin-left: 0;
+                        }
+                        .StationaryTableTd{
+                                min-width: 62px;
+                        }
+                        .StationaryTableTh {
+                            padding: 0 !important;
+                        }
+
+                        .StationaryTableTh2 {
+                            padding: 0 !important;
+                        }
+                        .StationaryTableTd{
+                             padding: 0 !important;
+                        }
+                        .StationaryTableTd2{
+                             padding: 0 !important;
+                        }
+                    </style>
+                    @Html.Partial("~/views/site/_ntlFieldTest2.cshtml", Model)
+                }
+                else
+                {
+                    @Html.Partial("~/views/site/_ntlFieldTest.cshtml", Model)
+
+                }
+
+                <!--CH Plot-->
+                <div id="pan-CH_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 class="heading" data-type="BOOLEAN" data-preValue="@First.Site">
+                        <span>@First.Site Carrier Plot </span>
+                    </h1>
+                    <div id="frm-chPlot">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="chPlot-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="chPlot-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-chPlot" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="CH_PLOT" data-type="BOOLEAN"></div>
+
+                    <div style="position:absolute;bottom: 100px;background-color:white;border:solid 2px;width: 153px;right: 36px;">
+
+                        <div class="lagendHeader">
+                            <span> Carrier Plot </span>
+                        </div>
+                        <table style="border-spacing: 1px;width:100%">
+                            @if (ViewBag.chLagend!=null)
+	                            {
+		                            foreach (var item in ViewBag.chLagend)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="background-color:@item.Color;"></div>
+                                            </td>
+                                            <td><span>@item.PCI</span></td>
+                                        </tr>
+
+                                    }
+                            }
+                            
+                        </table>
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+                <!--End CH Plot-->
+                <!-- PCI Plot-->
+                <div id="pan-PCI_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 id="PCI_PLOT" data-type="BOOLEAN" data-preValue="@First.Site" class="heading">
+                        @First.Site
+                        @if (NetworkMode == "LTE")
+                        {
+                            <span> PCI Plot </span>
+                        }
+                        else if (NetworkMode == "GSM")
+                        {
+                            <span>BCCH Plot</span>
+                        }
+                        else if (NetworkMode == "WCDMA")
+                        {
+                            <span>PSC Plot</span>
+                        }
+
+                    </h1>
+
+                    <div id="frm-pci">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="pci-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="pci-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-pci" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="PCI_Plot"></div>
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            @if (NetworkMode == "LTE")
+                            {
+                            <span> PCI Plot </span>
+                            }
+                            else if (NetworkMode == "GSM")
+                            {
+                            <span>BCCH Plot</span>
+                            }
+                            else if (NetworkMode == "WCDMA")
+                            {
+                            <span>PSC Plot</span>
+                            }
+
+                        </div>
+                        <table style="">
+                            @{
+                               
+                                int PcisCount = Pcis.Count;
+                                if (ViewBag.AfterDate == false || First.City!= "Chicago")
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+
+                                            <td>
+                                              
+                                                <div class="colorBox" style="background-color:@SectorColor(item.Sector);"></div>
+                                            </td>
+                                            <td><span class="pci-count">@item.PciId</span></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < PcisCount; i += 2)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="background-color:@Pcis[i].Color;"></div>
+                                            </td>
+                                            <td><span>@Pcis[i].PCI</span></td>
+
+                                            @if (i + 1 < PcisCount)
+                                            {
+                                                <td>
+                                                    <div class="colorBox" style="background-color:@Pcis[i + 1].Color;"></div>
+                                                </td>
+                                                    <td><span>@Pcis[i + 1].PCI</span></td>
+                                            }
+                                        </tr>
+                                    }
+
+                                }
+
+                            }
+                        </table>
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+                <!--CW HO Plot-->
+                <div id="pan-CW_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 id="CW_PLOT" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading">@First.Site CW Handover Plot</h1>
+
+                    <div id="frm-cw">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="cw-Radius" /> </td>
+                                <td> Azmuth Radius</td>
+                                <td><input type="number" value="200" id="cw-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-cw" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="HO_Plot"></div>
+
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            <span>  CW HO Plot</span>
+                        </div>
+                        <table>
+
+                            @{
+                               
+                                PcisCount = CwPcis.Count;
+                                if (ViewBag.AfterDate == false || First.City != "Chicago")
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+
+                                            <td>
+                                                <div class="colorBox" style="background-color:@SectorColor(item.Sector);"></div>
+                                            </td>
+                                            <td><span class="pci-count">@item.PciId</span></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < PcisCount; i += 2)
+                                    {
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:@CwPcis[i].Color;"></div>
+                                        </td>
+                                        <td><span>@CwPcis[i].PCI</span></td>
+
+                                        @if (i + 1 < PcisCount)
+                                        {
+                                            <td>
+                                                <div class="colorBox" style="background-color:@CwPcis[i + 1].Color;"></div>
+                                            </td>
+                                            <td><span>@CwPcis[i + 1].PCI</span></td>
+                                        }
+                                    </tr>
+                                    }
+                                }
+                                }
+
+                        </table>
+
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+
+                <!--CCW HO Plot-->
+                <div id="pan-CCW_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 id="CCW_PLOT" data-type="BOOLEAN,STRING" data-preValue="@First.Site" class="heading">@First.Site CCW Handover Plot</h1>
+                    <div id="frm-ccw">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="ccw-Radius" /> </td>
+                                <td> Azmuth Radius</td>
+                                <td><input type="number" value="200" id="ccw-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-ccw" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="pan-map googlemap" id="HO_Plot_CCW"></div>
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            <span>CCW HO Plot</span>
+                        </div>
+                        <table>
+                            @{
+                              
+                                PcisCount = CcwPcis.Count;
+                                if (ViewBag.AfterDate == false || First.City != "Chicago")
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                             
+                                                <div class="colorBox" style="background-color:@SectorColor(item.Sector);"></div>
+                                            </td>
+                                            <td><span class="pci-count">@item.PciId</span></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < PcisCount; i += 2)
+                                    {
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:@CcwPcis[i].Color;"></div>
+                                        </td>
+                                        <td><span>@CcwPcis[i].PCI</span></td>
+
+                                        @if (i + 1 < PcisCount)
+                                        {
+                                            <td>
+                                                <div class="colorBox" style="background-color:@CcwPcis[i + 1].Color;"></div>
+                                            </td>
+                                            <td><span>@CcwPcis[i + 1].PCI</span></td>
+                                        }
+                                    </tr>
+                                        }
+                                    }
+                                }
+                        </table>
+
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+
+
+                <!--HANDOVER_PLOT Plot-->
+                <div id="pan-HANDOVER_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 class="heading" id="HANDOVER_PLOT" data-type="BOOLEAN,STRING" data-preValue="@First.Site">@First.Site Handover Plot</h1>
+                    <div id="frm-cwccw">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="cwccw-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="cwccw-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-cwccw" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="pan-map googlemap" id="HO_Plot_CwCcw"></div>
+                    <div class="PciLegend">
+
+                        <div class="lagendHeader">
+                            <span>HO Plot</span>
+                        </div>
+                        <table style="">
+                            @{
+                               
+                                if (ViewBag.AfterDate == false || First.City != "Chicago")
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="background-color:@SectorColor(item.Sector);"></div>
+                                            </td>
+                                            <td><span class="pci-count">@item.PciId</span></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < PcisCount; i += 2)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="background-color:@Pcis[i].Color;"></div>
+                                            </td>
+                                            <td><span>@Pcis[i].PCI</span></td>
+
+                                            @if (i + 1 < PcisCount)
+                                            {
+                                                <td>
+                                                    <div class="colorBox" style="background-color:@Pcis[i + 1].Color;"></div>
+                                                </td>
+                                                <td><span>@Pcis[i + 1].PCI</span></td>
+                                            }
+                                        </tr>
+                                    }
+
+                                }
+
+                            }
+                        </table>
+
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+                <!--  RSRP Plot-->
+                <div id="pan-RSRP_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 class="heading" id="RSRP_PLOT" data-type="BOOLEAN" data-preValue="@First.Site">
+                        @First.Site @if(NetworkMode == "LTE")
+                        {
+                        <span> RSRP Plot </span>
+                        }
+                        else if (NetworkMode == "GSM")
+                        {
+                        <span>RSSI Plot</span>
+                        }
+                        else if (NetworkMode == "WCDMA")
+                        {
+                        <span>RSCP Plot</span>
+                        }
+                    </h1>
+
+                    <div id="frm-rsrp">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="rsrp-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="rsrp-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-rsrp" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="RSRP_Plot"></div>
+                    <div style="position:absolute;bottom: 100px;background-color:white;border:solid 2px;width: 153px;right: 36px;">
+
+                        <div class="lagendHeader">
+                            @if (NetworkMode == "LTE")
+                            {
+                            <span> RSRP(dBm) </span>
+                            }
+                            else if (NetworkMode == "GSM")
+                            {
+                            <span>RSSI(dBm)</span>
+                            }
+                            else if (NetworkMode == "WCDMA")
+                            {
+                            <span>RSCP(dBm)</span>
+                            }
+                        </div>
+                        <table style="border-spacing: 1px;width:100%">
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:DarkGreen;"></div>
+                                </td>
+                                <td><span>-75 to -40</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:LightGreen;color:white;"></div>
+                                </td>
+                                <td><span>-85 to -75</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:Yellow;color:white;"></div>
+                                </td>
+                                <td><span>-95 to -85</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:Orange;color:white;"></div>
+                                </td>
+                                <td><span>-105 to -95</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:Red;color:white;"></div>
+                                </td>
+                                <td><span> -120 to -105</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:darkred;color:white;"></div>
+                                </td>
+                                <td><span> -140 to -120</span></td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+                <!--  RSRQ Plot-->
+                <div id="pan-RSRQ_PLOT" data-type="BOOLEAN" style="position:relative">
+                    <h1 class="heading" id="RSRQ_PLOT" data-type="BOOLEAN" data-preValue="@First.Site">
+                        @First.Site @if (NetworkMode == "LTE")
+                        {
+                        <span> RSRQ Plot </span>
+                        }
+                        else if (NetworkMode == "GSM")
+                        {
+                        <span>RxQual Plot</span>
+                        }
+                        else if (NetworkMode == "WCDMA")
+                        {
+                        <span>EcIo Plot</span>
+                        }
+                    </h1>
+                    <div id="frm-rsrq">
+                        <table>
+                            <tr>
+                                <td> Circle Radius</td>
+                                <td><input type="number" value="17" id="rsrq-Radius" /> </td>
+                                <td>Azmuth Radius</td>
+                                <td><input type="number" value="200" id="rsrq-Azmuth" /> </td>
+                                <td><input type="button" value="Load" id="btn-rsrq" /> </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="pan-map googlemap" id="RSRQ_Plot"></div>
+
+                    <div style="position:absolute;bottom: 100px;background-color:white;border:solid 2px;width: 153px;right: 36px;">
+
+                        <div class="lagendHeader">
+                            @if (NetworkMode == "LTE")
+                            {
+                            <span> RSRQ(dBm) </span>
+                            }
+                            else if (NetworkMode == "GSM")
+                            {
+                            <span>RxQual(dBm)</span>
+                            }
+                            else if (NetworkMode == "WCDMA")
+                            {
+                            <span>EcIo(dBm)</span>
+                            }
+
+                        </div>
+                        @if (NetworkMode == "WCDMA")
+                        {
+                        <table style="border-spacing: 1px;width:100%">
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:DarkGreen;"></div>
+                                </td>
+                                <td><span>-6 to 0</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:LightGreen;color:white;"></div>
+                                </td>
+                                <td><span>-10 to -6</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:Yellow;color:white;"></div>
+                                </td>
+                                <td><span>-14 to -10</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:Orange;color:white;"></div>
+                                </td>
+                                <td><span>-16 to -14</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:Red;color:white;"></div>
+                                </td>
+                                <td><span> -40 to -16</span></td>
+                            </tr>
+                        </table>
+                        }
+                        else if (NetworkMode == "GSM")
+                        {
+                        <table style="border-spacing: 10px;width:100%">
+                            <tbody>
+                                <tr>
+
+                                    <td>
+                                        <div class="colorBox" style="background-color:DarkGreen;color:white;"></div>
+                                    </td>
+                                    <td><span>0 to 2</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="colorBox" style="background-color:LightGreen;color:white;"></div>
+                                    </td>
+                                    <td><span>2 to 4</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="colorBox" style="background-color:Yellow;color:white;"></div>
+                                    </td>
+                                    <td><span>4 to 6</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="colorBox" style="background-color:Orange;color:white;"></div>
+                                    </td>
+                                    <td><span>6 to 7</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        }
+
+                        else
+                        {
+
+                        <table style="border-spacing: 10px;width:100%">
+                            <tr>
+                                <td>
+
+                                    <div class="colorBox" style="background-color:DarkGreen;color:white;"></div>
+                                </td>
+                                <td><span>-7 to 0</span></td>
+                            </tr>
+
+
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:LightGreen;color:white;"></div>
+                                </td>
+                                <td><span>-12 to -7</span></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:Yellow;color:white;"></div>
+                                </td>
+                                <td><span>-16 to -12</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="colorBox" style="background-color:red;color:white;"></div>
+                                </td>
+                                <td><span>-20 to -16</span></td>
+                            </tr>
+                        </table>
+                        }
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                </div>
+
+
+
+                @if (First.NetworkMode == "LTE")
+                {
+
+                     <!--  CINR Plot-->
+                    <div id="pan-CINR_PLOT" data-type="BOOLEAN" style="position:relative">
+                        <h1 class="heading">@First.Site CINR Plot</h1>
+                        <div id="frm-cinr">
+                            <table>
+                                <tr>
+                                    <td> Circle Radius</td>
+                                    <td><input type="number" value="17" id="cinr-Radius" /> </td>
+                                    <td>Azmuth Radius</td>
+                                    <td><input type="number" value="200" id="cinr-Azmuth" /> </td>
+                                    <td><input type="button" value="Load" id="btn-cinr" /> </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="pan-map googlemap" id="CINR_Plot"></div>
+                        <div style="position:absolute;bottom: 100px;background-color:white;border:solid 2px;width: 153px;right: 36px;">
+
+                            <div class="lagendHeader">
+                                <span>CINR(dB)</span>
+                            </div>
+                            <table style="border-spacing: 10px;width:100%">
+
+
+
+                                <tbody>
+                                    <tr>
+
+                                        <td>
+                                            <div class="colorBox" style="background-color:DarkGreen;color:white;"></div>
+                                        </td>
+                                        <td><span>25 to 30</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:LightGreen;color:white;"></div>
+                                        </td>
+                                        <td><span>15 to 25</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:Yellow;color:white;"></div>
+                                        </td>
+                                        <td><span>5 to 15</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="background-color:Orange;color:white;"></div>
+                                        </td>
+                                        <td><span>-15 to 5</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                        <hr />
+                        <P CLASS="breakhere" />
+                    </div>
+
+                }
+                <!--Ookla Speed Test-->
+                @{ bool ImageStatus = false;
+
+                    foreach (var item in Model)
+                    {
+                        if (dh.FileExist(Server.MapPath(item.OoklaTestFilePath)))
+                        {
+                            ImageStatus = true;
+                            break;
+                        }
+                    }
+                }
+
+                @if (ImageStatus)
+                {
+                    count = 0;
+
+                    <center>
+                        <div class="">
+                            <h1 class="heading">@First.Site Ookla Speed Test</h1>
+                            @foreach (var item in Model)
+                            {
+                                if (dh.FileExist(Server.MapPath(item.OoklaTestFilePath)))
+                                {
+                                    if (count == 3)
+                                    {
+                                        <br />
+                                    }
+                                    <img src="@item.OoklaTestFilePath" class="ooklaImages" />
+
+                                    count++;
+                                }
+
+
+                            }
+
+                        </div>
+                    </center>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <hr />
+                    <P CLASS="breakhere" />
+                }
+
+
+                <div class="WELCOME_PAGE_COLOR" id="thank-you" style="background:#004B99;padding-top:150px;height:800px;margin-left: -50px;margin-right: -20px;margin-top: 10px;padding-bottom: 50px;">
+                    <img src="~/Content/Images/Report/Nokia-bg.png" style="margin-top: 215px;margin-left: 381px;" />
+
+                </div>
+            </div>
+
+            <a href="" style="float:right;" class="print clear">
+                <img src="~/Content/Images/Common/print.png" />
+            </a>
+
+        </div>
+      <div style="display:none" id="Azimuth_Circle">0</div>
+
+        <script src="~/Content/js/Plugins/DateTimePicker/dtpicker.js" ></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.ApiMapKey)&sensor=false&libraries=geometry&bogusParam=.js"></script>
+        <script src="~/Content/js/MapLabel.js"></script>
+        <script src="~/Content/js/Plugins/kml/geoxml3.js"></script>
+        <script src="~/Content/js/Plugins/kml/ProjectedOverlay.js"></script>
+        <script src="~/Content/js/GoogleMapsNTL.js"></script>
+        <script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script><!--loading-->
+        <script>
+            var NetLayerReport = JSON.parse('@Html.Raw(NetLayerReport)');
+            var SiteId = '@First.SiteId';
+            var NetworkModeId = '@First.NetworkModeId';
+            var BandId = '@First.BandId';
+            var CarrierId = '@First.CarrierId';
+            var ScopeId = '@First.ScopeId';
+            @{
+                 string NetLayer = First.ActualSiteCode+ "/"+First.NetworkMode + "_" +First.Band + "_" +First.Carrier;
+             }
+
+            var SiteLatitude = '@First.Latitude';
+            var SiteLongitude = '@First.Longitude';
+            var SiteCode = '@First.Site _ @First.Band';
+            var NetLayer = '@NetLayer';
+            var AfterDate = '@ViewBag.AfterDate';
+            var domain = '@ViewBag.domain';
+            var AzmuthRadius = '@ViewBag.AzmuthRadius';
+            var ClientPrefix = '@First.ClientPrefix';
+           // console.log(NetLayerReport);
+        </script>
+        <script src="/Content/js/NetLayerReport.js"></script>
+    }
+</body>
+
+</html>

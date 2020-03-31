@@ -1,0 +1,77 @@
+﻿  .exmaple{        
+        height:auto;
+        background-color:#e7e7e7;
+        color:#000;
+        margin-left:63px;
+        padding-left: 10px;
+        margin-right: -15px;
+        width:93%;
+
+    }
+    .btnMain{
+        height:auto;
+        border-radius:0;
+        margin-bottom:-9px;
+        margin-top:-18px;
+        padding: 0;
+    }
+    .innerButton {
+        height:auto;
+        border-radius:0;
+        margin-bottom:-9px;
+        margin-top:-18px;
+        padding: 0;
+    }
+    .btnDiv{
+        margin-bottom:-12px;
+        margin-left:-14px;
+        margin-top:-15px;        
+        margin-right:-16px;
+        height:30px;
+        text-align:right
+
+    }
+    .exmapleHeader {
+        padding-left: 15px;
+        height: 33px;
+        width:93%;
+        background-color: #c6c3c3;
+        padding-top: 4px;
+        margin-left:63px;
+        margin-top:10px;   
+        margin-right: -15px;
+    }
+     .outerdiv {
+        margin: 0px 0 -20px 2px;
+        border-radius:0;
+        border:1px solid;
+        margin-right:-9px;
+        margin-left: 12px;
+    }
+    .groupOperator {
+    height: 23px;
+    width:53px;
+    margin-left:-35px;
+    margin-bottom:2px;
+    padding: 1px;
+    font-size:10px;
+    font-weight:bold;
+    margin-top:-2px;
+    border-radius:0
+    }
+    .customSelect{
+        margin-left:5px;
+        border-radius:0;
+        height:25px;
+        width:160px;
+    }
+.conditionOperator {
+    height: 22px;
+    margin-top: 4px;
+    border-radius: 0;
+    padding: 2px;
+    margin-left: 4px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    width: 60px;
+}

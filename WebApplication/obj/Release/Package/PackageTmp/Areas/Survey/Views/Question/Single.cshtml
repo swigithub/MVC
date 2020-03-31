@@ -1,0 +1,23 @@
+﻿@model Library.SWI.Survey.Model.TSS_Question
+<div class="row">
+
+    
+        
+            <div class="col-sm-12">
+                        <div>@Model.Question</div>
+                        @foreach (var item in Model.Responses)
+                        {
+                            <div>item.IsPassed</div>
+                            @Html.RadioButtonFor(m=>m.Responses, item.ResponseText)
+
+                        }
+                
+            </div>
+       
+    
+  
+
+    
+</div>
+
+

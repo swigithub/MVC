@@ -1,0 +1,93 @@
+@import url("https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css");
+
+
+/* ======= Data Tables Customizations ======= */
+.dataTables_length select{
+        width: auto;
+        float: none;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0px 3px;
+        height: 26px!important;
+        padding: 1px;
+}
+.dataTables_filter input {
+        width: auto;
+        float: none;
+        display: inline-block;
+        height:30px;
+        margin-left: 10px;
+        width: 160px;
+}
+.dt-filters{ float: right }
+.dt-bottom {
+        display: flex;
+        align-items: center;
+        text-align: center;
+}
+.dt-bottom > div{ flex:1 }
+.dt-information{text-align: left;align-items: center;display: flex;}
+
+div.dataTables_length{
+        display: inline-block;
+        vertical-align: middle;
+        float:none;
+}
+.dt-information > div {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 14px;
+}
+
+.dt-bottom label {
+    margin: 0;
+    font-size: 13px;
+}
+tfoot {
+    display: table-header-group;
+}
+#datatable{
+        max-height:250px;
+        margin:20px 0;
+}
+.dataTables_wrapper .dataTables_info{
+    font-size: 13px;
+    float: none;
+    padding: 0;
+}
+.dataTables_wrapper .row:last-child{align-items:center }
+.dataTables_wrapper {
+        padding: 0;
+        overflow: hidden;
+        min-width: 1000px;
+}
+table.dataTable tbody tr.selected{ background-color: #7a9eff!important }
+table.dataTable tbody tr.selected td{color:#FFF}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    color: white !important;
+    border: 1px solid #111;
+    background: #585858;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.active{color:#FFF!important}
+
+
+table.dataTable thead th.hasinput {
+    padding: 0!important;
+    border-radius: 0!important;
+    border: 0;
+    background: #fafafa;
+}
+th.hide.hasinput input{display:none}
+table.dataTable thead th.hasinput input {
+    border: 0;
+    border-radius: 0;
+    padding: 0 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
+    background-color: #ebebeb!important;
+}

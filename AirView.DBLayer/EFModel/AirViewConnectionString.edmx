@@ -1,0 +1,577 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="AirViewModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AV_LogsInfo">
+          <Key>
+            <PropertyRef Name="fileID" />
+          </Key>
+          <Property Name="fileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fileName" Type="nvarchar" MaxLength="100" />
+          <Property Name="createDate" Type="datetime" />
+          <Property Name="pathFile" Type="nvarchar" MaxLength="200" />
+          <Property Name="siteID" Type="int" />
+          <Property Name="sectorID" Type="int" />
+          <Property Name="networkModeID" Type="int" />
+          <Property Name="bandID" Type="int" />
+          <Property Name="carrierID" Type="int" />
+          <Property Name="scopeID" Type="int" />
+          <Property Name="fileType" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="AV_NemoSiteLogs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Time" Type="nvarchar" MaxLength="50" />
+          <Property Name="Current_System" Type="nvarchar" MaxLength="50" />
+          <Property Name="Longitude" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="Latitude" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="fileID_Fk" Type="int" Nullable="false" />
+          <Property Name="Cell" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN" Type="bigint" />
+          <Property Name="RSSI_dBm" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cell1" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band1" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel1" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN1" Type="bigint" />
+          <Property Name="RSSI_dBm1" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db1" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm1" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cell2" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band2" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel2" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN2" Type="bigint" />
+          <Property Name="RSSI_dBm2" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db2" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm2" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cell3" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band3" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel3" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN3" Type="bigint" />
+          <Property Name="RSSI_dBm3" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db3" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm3" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cell4" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band4" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel4" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN4" Type="bigint" />
+          <Property Name="RSSI_dBm4" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db4" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm4" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cell5" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band5" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel5" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN5" Type="bigint" />
+          <Property Name="RSSI_dBm5" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db5" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm5" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cell6" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band6" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel6" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN6" Type="bigint" />
+          <Property Name="RSSI_dBm6" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db6" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm6" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cell7" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band7" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel7" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN7" Type="bigint" />
+          <Property Name="RSSI_dBm7" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db7" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm7" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cell8" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band8" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel8" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN8" Type="bigint" />
+          <Property Name="RSSI_dBm8" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db8" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm8" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cell9" Type="nvarchar" MaxLength="50" />
+          <Property Name="Band9" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel9" Type="nvarchar" MaxLength="50" />
+          <Property Name="PCI_PN9" Type="bigint" />
+          <Property Name="RSSI_dBm9" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db9" Type="nvarchar" MaxLength="50" />
+          <Property Name="RSRP_RSCP_dBm9" Type="nvarchar" MaxLength="50" />
+          <Property Name="HO_Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Current_Channel" Type="nvarchar" MaxLength="50" />
+          <Property Name="Current_Band" Type="nvarchar" MaxLength="50" />
+          <Property Name="Attempted_System" Type="nvarchar" MaxLength="50" />
+          <Property Name="Attempted_PCI" Type="nvarchar" MaxLength="50" />
+          <Property Name="Attempted_Band" Type="nvarchar" MaxLength="50" />
+          <Property Name="HO_Duration_ms" Type="nvarchar" MaxLength="50" />
+          <Property Name="HO_Uplane_interruption_ms" Type="nvarchar" MaxLength="50" />
+          <Property Name="Event" Type="nvarchar" MaxLength="250" />
+          <Property Name="Call_Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Call_Direction" Type="nvarchar" MaxLength="50" />
+          <Property Name="MO_MTPhone_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="Call_Connection_Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Ping_Size_bytes" Type="nvarchar" MaxLength="50" />
+          <Property Name="RTT_ms" Type="nvarchar" MaxLength="50" />
+          <Property Name="Connection_Setup_Time_ms" Type="nvarchar" MaxLength="50" />
+          <Property Name="Current_PCI" Type="nvarchar" MaxLength="50" />
+          <Property Name="Attempted_Channel" Type="nvarchar" MaxLength="50" />
+          <Property Name="PDSCH_DL_Throughput_bits" Type="nvarchar" MaxLength="50" />
+          <Property Name="PUSCH_UL_Throughput_bits" Type="nvarchar" MaxLength="50" />
+          <Property Name="Direction" Type="nvarchar" MaxLength="50" />
+          <Property Name="EventFields" Type="nvarchar" MaxLength="250" />
+          <Property Name="SNR" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SNR1" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SNR2" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SNR3" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SNR4" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SNR5" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SNR6" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SNR7" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="SNR8" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <Association Name="FK_tsvFileInformation_flieInformation">
+          <End Role="AV_LogsInfo" Type="Self.AV_LogsInfo" Multiplicity="1" />
+          <End Role="AV_NemoSiteLogs" Type="Self.AV_NemoSiteLogs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AV_LogsInfo">
+              <PropertyRef Name="fileID" />
+            </Principal>
+            <Dependent Role="AV_NemoSiteLogs">
+              <PropertyRef Name="fileID_Fk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="AV_ProcessNemoLogs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FileID" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="AirViewModelStoreContainer">
+          <EntitySet Name="AV_LogsInfo" EntityType="Self.AV_LogsInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AV_NemoSiteLogs" EntityType="Self.AV_NemoSiteLogs" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_tsvFileInformation_flieInformation" Association="Self.FK_tsvFileInformation_flieInformation">
+            <End Role="AV_LogsInfo" EntitySet="AV_LogsInfo" />
+            <End Role="AV_NemoSiteLogs" EntitySet="AV_NemoSiteLogs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AirViewModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="AV_ProcessNemoLogs" ReturnType="Collection(AirViewModel.AV_ProcessNemoLogs_Result)">
+          <Parameter Name="FileID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="AV_ProcessNemoLogs1">
+          <Parameter Name="FileID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="AV_LogsInfo" EntityType="AirViewModel.AV_LogsInfo" />
+          <EntitySet Name="AV_NemoSiteLogs" EntityType="AirViewModel.AV_NemoSiteLogs" />
+          <AssociationSet Name="FK_tsvFileInformation_flieInformation" Association="AirViewModel.FK_tsvFileInformation_flieInformation">
+            <End Role="AV_LogsInfo" EntitySet="AV_LogsInfo" />
+            <End Role="AV_NemoSiteLogs" EntitySet="AV_NemoSiteLogs" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="AV_ProcessNemoLogs_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Time" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Current_System" Nullable="true" MaxLength="50" />
+          <Property Type="Decimal" Name="Longitude" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="Decimal" Name="Latitude" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="Int32" Name="fileID_Fk" Nullable="false" />
+          <Property Type="String" Name="Cell" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Cell1" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band1" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel1" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN1" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm1" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db1" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm1" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Cell2" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band2" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel2" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN2" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm2" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db2" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm2" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Cell3" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band3" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel3" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN3" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm3" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db3" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm3" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Cell4" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band4" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel4" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN4" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm4" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db4" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm4" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Cell5" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band5" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel5" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN5" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm5" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db5" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm5" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Cell6" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band6" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel6" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN6" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm6" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db6" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm6" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Cell7" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band7" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel7" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN7" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm7" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db7" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm7" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Cell8" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band8" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel8" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN8" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm8" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db8" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm8" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Cell9" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Band9" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Channel9" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="PCI_PN9" Nullable="true" />
+          <Property Type="Decimal" Name="RSSI_dBm9" Nullable="true" Precision="18" Scale="5" />
+          <Property Type="String" Name="RSRQ_Ec_I0_db9" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RSRP_RSCP_dBm9" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="HO_Type" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Current_Channel" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Current_Band" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Attempted_System" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Attempted_PCI" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Attempted_Band" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="HO_Duration_ms" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="HO_Uplane_interruption_ms" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Event" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Call_Type" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Call_Direction" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="MO_MTPhone_Number" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Call_Connection_Status" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Ping_Size_bytes" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RTT_ms" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Connection_Setup_Time_ms" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Current_PCI" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Attempted_Channel" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="PDSCH_DL_Throughput_bits" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="PUSCH_UL_Throughput_bits" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="AV_LogsInfo">
+          <Key>
+            <PropertyRef Name="fileID" />
+          </Key>
+          <Property Name="fileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fileName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="createDate" Type="DateTime" Precision="3" />
+          <Property Name="pathFile" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="siteID" Type="Int32" />
+          <Property Name="sectorID" Type="Int32" />
+          <Property Name="networkModeID" Type="Int32" />
+          <Property Name="bandID" Type="Int32" />
+          <Property Name="carrierID" Type="Int32" />
+          <Property Name="scopeID" Type="Int32" />
+          <Property Name="fileType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AV_NemoSiteLogs" Relationship="AirViewModel.FK_tsvFileInformation_flieInformation" FromRole="AV_LogsInfo" ToRole="AV_NemoSiteLogs" />
+        </EntityType>
+        <EntityType Name="AV_NemoSiteLogs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Time" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Current_System" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="Latitude" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="fileID_Fk" Type="Int32" Nullable="false" />
+          <Property Name="Cell" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN" Type="Int64" />
+          <Property Name="RSSI_dBm" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cell1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN1" Type="Int64" />
+          <Property Name="RSSI_dBm1" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cell2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN2" Type="Int64" />
+          <Property Name="RSSI_dBm2" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cell3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN3" Type="Int64" />
+          <Property Name="RSSI_dBm3" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cell4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN4" Type="Int64" />
+          <Property Name="RSSI_dBm4" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cell5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN5" Type="Int64" />
+          <Property Name="RSSI_dBm5" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cell6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN6" Type="Int64" />
+          <Property Name="RSSI_dBm6" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cell7" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band7" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel7" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN7" Type="Int64" />
+          <Property Name="RSSI_dBm7" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db7" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm7" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cell8" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band8" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel8" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN8" Type="Int64" />
+          <Property Name="RSSI_dBm8" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db8" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm8" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cell9" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Band9" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel9" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PCI_PN9" Type="Int64" />
+          <Property Name="RSSI_dBm9" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="RSRQ_Ec_I0_db9" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RSRP_RSCP_dBm9" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HO_Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Current_Channel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Current_Band" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Attempted_System" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Attempted_PCI" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Attempted_Band" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HO_Duration_ms" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HO_Uplane_interruption_ms" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Event" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Call_Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Call_Direction" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MO_MTPhone_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Call_Connection_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Ping_Size_bytes" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RTT_ms" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Connection_Setup_Time_ms" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Current_PCI" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Attempted_Channel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PDSCH_DL_Throughput_bits" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PUSCH_UL_Throughput_bits" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Direction" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EventFields" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SNR" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SNR1" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SNR2" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SNR3" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SNR4" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SNR5" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SNR6" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SNR7" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SNR8" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="AV_LogsInfo" Relationship="AirViewModel.FK_tsvFileInformation_flieInformation" FromRole="AV_NemoSiteLogs" ToRole="AV_LogsInfo" />
+        </EntityType>
+        <Association Name="FK_tsvFileInformation_flieInformation">
+          <End Type="AirViewModel.AV_LogsInfo" Role="AV_LogsInfo" Multiplicity="1" />
+          <End Type="AirViewModel.AV_NemoSiteLogs" Role="AV_NemoSiteLogs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AV_LogsInfo">
+              <PropertyRef Name="fileID" />
+            </Principal>
+            <Dependent Role="AV_NemoSiteLogs">
+              <PropertyRef Name="fileID_Fk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AirViewModelStoreContainer" CdmEntityContainer="Entities">
+          <FunctionImportMapping FunctionImportName="AV_ProcessNemoLogs1" FunctionName="AirViewModel.Store.AV_ProcessNemoLogs" />
+          <EntitySetMapping Name="AV_LogsInfo">
+            <EntityTypeMapping TypeName="AirViewModel.AV_LogsInfo">
+              <MappingFragment StoreEntitySet="AV_LogsInfo">
+                <ScalarProperty Name="fileType" ColumnName="fileType" />
+                <ScalarProperty Name="scopeID" ColumnName="scopeID" />
+                <ScalarProperty Name="carrierID" ColumnName="carrierID" />
+                <ScalarProperty Name="bandID" ColumnName="bandID" />
+                <ScalarProperty Name="networkModeID" ColumnName="networkModeID" />
+                <ScalarProperty Name="sectorID" ColumnName="sectorID" />
+                <ScalarProperty Name="siteID" ColumnName="siteID" />
+                <ScalarProperty Name="pathFile" ColumnName="pathFile" />
+                <ScalarProperty Name="createDate" ColumnName="createDate" />
+                <ScalarProperty Name="fileName" ColumnName="fileName" />
+                <ScalarProperty Name="fileID" ColumnName="fileID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AV_NemoSiteLogs">
+            <EntityTypeMapping TypeName="AirViewModel.AV_NemoSiteLogs">
+              <MappingFragment StoreEntitySet="AV_NemoSiteLogs">
+                <ScalarProperty Name="SNR8" ColumnName="SNR8" />
+                <ScalarProperty Name="SNR7" ColumnName="SNR7" />
+                <ScalarProperty Name="SNR6" ColumnName="SNR6" />
+                <ScalarProperty Name="SNR5" ColumnName="SNR5" />
+                <ScalarProperty Name="SNR4" ColumnName="SNR4" />
+                <ScalarProperty Name="SNR3" ColumnName="SNR3" />
+                <ScalarProperty Name="SNR2" ColumnName="SNR2" />
+                <ScalarProperty Name="SNR1" ColumnName="SNR1" />
+                <ScalarProperty Name="SNR" ColumnName="SNR" />
+                <ScalarProperty Name="EventFields" ColumnName="EventFields" />
+                <ScalarProperty Name="Direction" ColumnName="Direction" />
+                <ScalarProperty Name="PUSCH_UL_Throughput_bits" ColumnName="PUSCH_UL_Throughput_bits" />
+                <ScalarProperty Name="PDSCH_DL_Throughput_bits" ColumnName="PDSCH_DL_Throughput_bits" />
+                <ScalarProperty Name="Attempted_Channel" ColumnName="Attempted_Channel" />
+                <ScalarProperty Name="Current_PCI" ColumnName="Current_PCI" />
+                <ScalarProperty Name="Connection_Setup_Time_ms" ColumnName="Connection_Setup_Time_ms" />
+                <ScalarProperty Name="RTT_ms" ColumnName="RTT_ms" />
+                <ScalarProperty Name="Ping_Size_bytes" ColumnName="Ping_Size_bytes" />
+                <ScalarProperty Name="Call_Connection_Status" ColumnName="Call_Connection_Status" />
+                <ScalarProperty Name="MO_MTPhone_Number" ColumnName="MO_MTPhone_Number" />
+                <ScalarProperty Name="Call_Direction" ColumnName="Call_Direction" />
+                <ScalarProperty Name="Call_Type" ColumnName="Call_Type" />
+                <ScalarProperty Name="Event" ColumnName="Event" />
+                <ScalarProperty Name="HO_Uplane_interruption_ms" ColumnName="HO_Uplane_interruption_ms" />
+                <ScalarProperty Name="HO_Duration_ms" ColumnName="HO_Duration_ms" />
+                <ScalarProperty Name="Attempted_Band" ColumnName="Attempted_Band" />
+                <ScalarProperty Name="Attempted_PCI" ColumnName="Attempted_PCI" />
+                <ScalarProperty Name="Attempted_System" ColumnName="Attempted_System" />
+                <ScalarProperty Name="Current_Band" ColumnName="Current_Band" />
+                <ScalarProperty Name="Current_Channel" ColumnName="Current_Channel" />
+                <ScalarProperty Name="HO_Type" ColumnName="HO_Type" />
+                <ScalarProperty Name="RSRP_RSCP_dBm9" ColumnName="RSRP_RSCP_dBm9" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db9" ColumnName="RSRQ_Ec_I0_db9" />
+                <ScalarProperty Name="RSSI_dBm9" ColumnName="RSSI_dBm9" />
+                <ScalarProperty Name="PCI_PN9" ColumnName="PCI_PN9" />
+                <ScalarProperty Name="Channel9" ColumnName="Channel9" />
+                <ScalarProperty Name="Band9" ColumnName="Band9" />
+                <ScalarProperty Name="Cell9" ColumnName="Cell9" />
+                <ScalarProperty Name="RSRP_RSCP_dBm8" ColumnName="RSRP_RSCP_dBm8" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db8" ColumnName="RSRQ_Ec_I0_db8" />
+                <ScalarProperty Name="RSSI_dBm8" ColumnName="RSSI_dBm8" />
+                <ScalarProperty Name="PCI_PN8" ColumnName="PCI_PN8" />
+                <ScalarProperty Name="Channel8" ColumnName="Channel8" />
+                <ScalarProperty Name="Band8" ColumnName="Band8" />
+                <ScalarProperty Name="Cell8" ColumnName="Cell8" />
+                <ScalarProperty Name="RSRP_RSCP_dBm7" ColumnName="RSRP_RSCP_dBm7" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db7" ColumnName="RSRQ_Ec_I0_db7" />
+                <ScalarProperty Name="RSSI_dBm7" ColumnName="RSSI_dBm7" />
+                <ScalarProperty Name="PCI_PN7" ColumnName="PCI_PN7" />
+                <ScalarProperty Name="Channel7" ColumnName="Channel7" />
+                <ScalarProperty Name="Band7" ColumnName="Band7" />
+                <ScalarProperty Name="Cell7" ColumnName="Cell7" />
+                <ScalarProperty Name="RSRP_RSCP_dBm6" ColumnName="RSRP_RSCP_dBm6" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db6" ColumnName="RSRQ_Ec_I0_db6" />
+                <ScalarProperty Name="RSSI_dBm6" ColumnName="RSSI_dBm6" />
+                <ScalarProperty Name="PCI_PN6" ColumnName="PCI_PN6" />
+                <ScalarProperty Name="Channel6" ColumnName="Channel6" />
+                <ScalarProperty Name="Band6" ColumnName="Band6" />
+                <ScalarProperty Name="Cell6" ColumnName="Cell6" />
+                <ScalarProperty Name="RSRP_RSCP_dBm5" ColumnName="RSRP_RSCP_dBm5" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db5" ColumnName="RSRQ_Ec_I0_db5" />
+                <ScalarProperty Name="RSSI_dBm5" ColumnName="RSSI_dBm5" />
+                <ScalarProperty Name="PCI_PN5" ColumnName="PCI_PN5" />
+                <ScalarProperty Name="Channel5" ColumnName="Channel5" />
+                <ScalarProperty Name="Band5" ColumnName="Band5" />
+                <ScalarProperty Name="Cell5" ColumnName="Cell5" />
+                <ScalarProperty Name="RSRP_RSCP_dBm4" ColumnName="RSRP_RSCP_dBm4" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db4" ColumnName="RSRQ_Ec_I0_db4" />
+                <ScalarProperty Name="RSSI_dBm4" ColumnName="RSSI_dBm4" />
+                <ScalarProperty Name="PCI_PN4" ColumnName="PCI_PN4" />
+                <ScalarProperty Name="Channel4" ColumnName="Channel4" />
+                <ScalarProperty Name="Band4" ColumnName="Band4" />
+                <ScalarProperty Name="Cell4" ColumnName="Cell4" />
+                <ScalarProperty Name="RSRP_RSCP_dBm3" ColumnName="RSRP_RSCP_dBm3" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db3" ColumnName="RSRQ_Ec_I0_db3" />
+                <ScalarProperty Name="RSSI_dBm3" ColumnName="RSSI_dBm3" />
+                <ScalarProperty Name="PCI_PN3" ColumnName="PCI_PN3" />
+                <ScalarProperty Name="Channel3" ColumnName="Channel3" />
+                <ScalarProperty Name="Band3" ColumnName="Band3" />
+                <ScalarProperty Name="Cell3" ColumnName="Cell3" />
+                <ScalarProperty Name="RSRP_RSCP_dBm2" ColumnName="RSRP_RSCP_dBm2" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db2" ColumnName="RSRQ_Ec_I0_db2" />
+                <ScalarProperty Name="RSSI_dBm2" ColumnName="RSSI_dBm2" />
+                <ScalarProperty Name="PCI_PN2" ColumnName="PCI_PN2" />
+                <ScalarProperty Name="Channel2" ColumnName="Channel2" />
+                <ScalarProperty Name="Band2" ColumnName="Band2" />
+                <ScalarProperty Name="Cell2" ColumnName="Cell2" />
+                <ScalarProperty Name="RSRP_RSCP_dBm1" ColumnName="RSRP_RSCP_dBm1" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db1" ColumnName="RSRQ_Ec_I0_db1" />
+                <ScalarProperty Name="RSSI_dBm1" ColumnName="RSSI_dBm1" />
+                <ScalarProperty Name="PCI_PN1" ColumnName="PCI_PN1" />
+                <ScalarProperty Name="Channel1" ColumnName="Channel1" />
+                <ScalarProperty Name="Band1" ColumnName="Band1" />
+                <ScalarProperty Name="Cell1" ColumnName="Cell1" />
+                <ScalarProperty Name="RSRP_RSCP_dBm" ColumnName="RSRP_RSCP_dBm" />
+                <ScalarProperty Name="RSRQ_Ec_I0_db" ColumnName="RSRQ_Ec_I0_db" />
+                <ScalarProperty Name="RSSI_dBm" ColumnName="RSSI_dBm" />
+                <ScalarProperty Name="PCI_PN" ColumnName="PCI_PN" />
+                <ScalarProperty Name="Channel" ColumnName="Channel" />
+                <ScalarProperty Name="Band" ColumnName="Band" />
+                <ScalarProperty Name="Cell" ColumnName="Cell" />
+                <ScalarProperty Name="fileID_Fk" ColumnName="fileID_Fk" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Current_System" ColumnName="Current_System" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

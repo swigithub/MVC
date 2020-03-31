@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+
+<div class="box box-solid">
+    <div class="box-header with-border">
+        <h3 class="box-title">Devices</h3>
+        <a href="#" class="btn btn-sm btn-info btn-flat pull-right " id="btn-new">New Device</a>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        @Html.Action("byUser", "UserDevice", new {Id= ViewBag.Id })
+    </div>
+    <!-- /.box-body -->
+</div>
+@Html.Partial("~/views/shared/_modal.cshtml")
+
+@section scripts{
+    
+    <script>
+        $(function () {
+
+            $(document).on('click', '#btn-new', function () {
+                $.ajax({
+                    url: '/UserDevice/new/'+'@ViewBag.Id',
+                    success: function (res) {
+                        $('#av-modal-title').text('New User Device');
+                        $('#av-modal-body').html(res);
+                        $('#av-modal').modal('show');
+                    },
+                    error: function (err) { }
+                });
+            });
+
+            $(document).on('submit', '#frm-userdev', function () {
+                var data = $(this).serialize();
+                $.ajax({
+                    url: '/UserDevice/new/',
+                    type: 'post',
+                    data:data,
+                    success: function (res) {
+                        window.location.reload();
+                    },
+                    error: function (err) { alert(err.statusText); }
+                });
+
+                return false;
+
+            });
+
+        });
+    </script>
+    }

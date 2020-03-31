@@ -1,0 +1,154 @@
+﻿@using System.Data;
+<table class="table table-striped childstages" >
+    <thead>
+        <tr>
+            <th style="width:20px;" ></th>
+            @foreach (DataColumn row in ViewBag.TLGrid.Columns)
+            {
+            
+                if (@row.Caption != "Count" && @row.Caption != "TaskId" && @row.Caption != "ProjectId" && @row.Caption != "PTaskId" && @row.Caption != "StatusColor" && @row.Caption != "PriorityColor" && @row.Caption != "StatusId")
+                {
+                    if (@row.Caption == "Milestone")
+                    {
+                        <th style="width:220px;"> @row.Caption </th>
+                    }
+                    else if (@row.Caption == "Priority" || @row.Caption == "Status")
+                    {
+                        <th style="width:100px;"> @row.Caption </th>
+                    }
+                    else if(@row.Caption =="Stage")
+                    {
+                        <th style="width:250px !important"> @row.Caption </th>
+                    }
+                    else
+                    {
+                        <th style="width:100px !important"> @row.Caption </th>
+                    }
+                }
+            }
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+      
+        @foreach (DataRow row in ViewBag.TLGrid.Rows)
+        {
+            <tr>
+                <td style="width:20px;"></td>
+                @foreach (DataColumn col in ViewBag.TLGrid.Columns)
+                {
+                    if (col.ColumnName != "Count" && col.ColumnName != "TaskId" && col.ColumnName != "ProjectId" && col.ColumnName != "PTaskId" && col.ColumnName != "StatusColor" && col.ColumnName != "PriorityColor" && col.ColumnName != "StatusId")
+                    {
+
+                        if (col.ColumnName == "Status")
+                        {
+                            <td style="width:100px;" ><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@row["StatusColor"]">@row["Status"]</span></td>
+                        }
+                        else if (col.ColumnName == "Priority")
+                        {
+                            <td style="width:100px;" ><span class="label COMPLETED_COLOR COMPLETED_TITLE" style="background-color:@row["PriorityColor"]">@row["Priority"]</span></td>
+                        }
+                        else if(col.ColumnName == "Stage")
+                        {
+                            <td style="width:220px !important" >@row[col.ColumnName]</td>
+                        }
+                        else
+                        {
+                            <td style="width:100px !important" > @row[col.ColumnName] </td>
+                        }
+                    }
+                }
+                <td data-ProjectId="@row["ProjectId"]" data-TaskId="@row["TaskId"]" data-TaskType="Task" style="text-align:left;">
+                    @if (ViewBag.AllowUri("/Project/Task/TaskEntry"))
+                    {
+                        <a class="customfrm" title="Data Entry" data-TaskId="@row["TaskId"]" data-toggle="modal" href="#">
+                            <span><img src="~/Content/Images/Common/paramform_x32.png" alt="View Report" style="margin-right:20px;" /></span>
+                        </a>
+                    }
+                    @if (ViewBag.AllowUri("/Project/Issue/New"))
+                    {
+                        <a class="modal-open siteid" title="Create @ViewBag.Entitytitle Issue" data-toggle="modal" data-target="#IssueModal" data-Milestone="@row["PTaskId"]" data-TaskId="@row["TaskId"]" data-ProjectSiteId="@row["ProjectId"]" style="cursor:pointer;">
+                            <span><img src="~/Content/Images/Common/reportissue_x32.png" alt="View Report" style="margin-right:20px;" /></span>
+                        </a>
+                    }
+                    @if (ViewBag.AllowUri("/Project/WorkLog/New"))
+                    {
+                        <a class="worklog" title="Work Log" data-ProjectId="@row["ProjectId"]" data-MilestobeId="@row["TaskId"]" data-LogType="Task" data-toggle="modal" data-target="#LogModal" href="#">
+                            <span><img src="~/Content/Images/Common/worklog_x32.png" alt="View Report" style="margin-right:20px;" /></span>
+                        </a>
+                    }
+
+                </td>
+            </tr>
+        }
+
+
+
+    </tbody>
+</table>
+<script>
+    $('.siteid').click(function () {
+        $('#Issuelbl').text("Task Issue Ticket");
+        var TskNme = $(this).parent().siblings("td:eq(1)").text();
+        FillLabel($('#lablevalues').attr('data-FACode'), $('#lablevalues').attr('data-SiteName'), TskNme, $('#lablevalues').attr('data-Status'), $('#lablevalues').attr('data-UpdatedBy'), $('#lablevalues').attr('data-UpdatedOn'));
+
+        //var labelText = 'FACode: ' + $(this).attr('data-FACode') + 'Site:' + $(this).attr('data-CommonId') + '       Status:' + $(this).attr('data-Status') + '&#09 &#09 Updated By:' + $(this).attr('data-UpdatedBy')
+
+        //$('.labelFacode').html($('#facode').attr('data-FACode'));
+        //$('.labelFacode').html($('#facode').attr('data-FACode'));
+        ProjectSiteId = $('#siteId').attr('data-siteId');
+        $('#TargetDate').val('');
+        $('#RequestedDate').val('');
+        angular.element(document.getElementById('widget-grid')).scope().GetUsers(@ViewBag.UserId);
+        angular.element(document.getElementById('widget-grid')).scope().GetDefinitions();
+        angular.element(document.getElementById('widget-grid')).scope().GetSiteIssues($(this).attr('data-taskid'), 0);
+
+        angular.element(document.getElementById('widget-grid')).scope().tickettype("Task Issue");
+
+    });
+    $('.worklog').click(function () {
+        var TskNme = $(this).parent().siblings("td:eq(1)").text();
+        FillLabel2($('#lablevalues').attr('data-FACode'), $('#lablevalues').attr('data-SiteName'), TskNme);
+
+        //var labelText = 'FACode: ' + $(this).attr('data-FACode') + 'Site:' + $(this).attr('data-CommonId') + '       Status:' + $(this).attr('data-Status') + '&#09 &#09 Updated By:' + $(this).attr('data-UpdatedBy')
+
+        //$('.labelFacode').html($('#facode').attr('data-FACode'));
+        angular.element(document.getElementById('widget-grid')).scope().clearfields();
+        workLog = {
+            ProjectId: parseInt($(this).attr('data-ProjectId')), ProjectSiteId: parseInt($('#siteId').attr('data-siteId')), TaskId: parseInt($(this).attr('data-MilestobeId')), LogType: $(this).attr('data-LogType')
+        }
+
+    })
+    $('.customfrm').click(function () {
+      
+        var TaskId = parseInt($(this).attr('data-TaskId'))
+        $.ajax({
+            url: '/Project/Template/GetFormBuilderRenderedHTML?FormTypeId=Stage&NodeId=' + TaskId + '&TemplateId=' + "",
+            type: 'Get',
+            async: false,
+            // dataType: 'text',
+            //   processData: false,
+            success: function (data) {
+                debugger
+                $('#CustomForm').html(data.FormHtml);
+                $('#FormModal').modal({
+                    show: 'true'
+                });
+                if (data == "") {
+                }
+                else {
+                    milestone = data;
+                }
+            }
+        });
+    })
+</script>
+<style>
+    .childstages{
+    width: calc(100% - 40px);
+    margin-left: 20px;
+    margin-top: 0px;
+    margin-bottom: 20px!important;
+    }
+</style>

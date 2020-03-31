@@ -1,0 +1,60 @@
+﻿@using AirView.DBLayer.Project.Model
+@using SWI.Libraries.AD.Entities
+@{
+    ViewBag.Title = "_trackerGroup";
+    List<PM_TrackerGroups> TrackerGroups = null;
+    if (ViewBag.TrackerGroups != null) {
+        TrackerGroups = ViewBag.TrackerGroups as List<PM_TrackerGroups>;
+       
+    }
+
+}
+@helper GetTreeView3(List<PM_TrackerGroups> dt, Int64 ParentId)
+{
+foreach (var item in dt.Where(m => m.ParentId == ParentId))
+{
+    var T = "";
+    var subItems = dt.Where(m => m.ParentId == item.TrackerGroupId).Count();
+        <li Id="@item.TrackerGroupId" class="control">
+            @if(item.GroupCode !="" && item.GroupCode != null) {
+                T = item.Title + " | " + @item.GroupCode;
+            }
+            else
+            {
+                T = item.Title;
+            }
+            @T
+            @if (subItems > 0)
+            {
+                <ul>
+                    @GetTreeView3(dt, item.TrackerGroupId)
+                </ul>
+                var subsbitems = dt.Where(m => m.ParentId == item.TrackerGroupId).ToList();
+                if (subsbitems.Count > 0)
+                {
+                    foreach (var ssb in subsbitems)
+                    {
+                        <ul>
+                            @GetTreeView3(dt, ssb.TrackerGroupId)
+                        </ul>
+                    }
+                }
+            }
+        </li>
+}
+}
+<div id="pan-DefinationType">
+    @*<ol><input style="margin-top:2px !important;margin-left:-15px !important;" type="checkbox" id="RAll" />&nbsp; Select All  </ol>*@
+    <div id="DefinationType-tree" style="margin-top:-30px !important;">
+        <ul>
+            @if (TrackerGroups != null && TrackerGroups.Count() > 0)
+            {
+                @GetTreeView3(TrackerGroups, TrackerGroups.OrderBy(m => m.TrackerGroupId).FirstOrDefault().ParentId)
+
+            }
+        </ul>
+
+        <input type="text" style="visibility:hidden" id="txt-selectedDefinationType" />
+    </div>
+
+    </div>

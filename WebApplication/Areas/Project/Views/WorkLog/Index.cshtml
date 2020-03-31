@@ -1,0 +1,1487 @@
+﻿@model SWI.Libraries.Security.Entities.Sec_User
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_SmartAdmin.cshtml";
+}
+
+<div class="row">
+    <article class="col-sm-12 sortable-grid ui-sortable">
+        <div class="jarviswidget light-widget jarviswidget-sortable">
+            <header>
+                <span class="widget-icon"> <i class="glyphicon glyphicon-stats"></i> </span>
+                <h2>WorkLog</h2>
+                <ul class="nav nav-tabs pull-right in" id="myTab">
+                    <li class="active"><a data-toggle="tab" title="" href="#worklog" style="z-index:1"> Work Logs</a></li>
+                    <li><a data-toggle="tab" title="" href="#summary" style="z-index:1"> Summary </a></li>
+                </ul>
+            </header>
+            <div class="no-padding worklog-flex" role="content">
+                <div class="worklog-filters">
+                    <div class="accordions">
+                        <div class="acc-box">
+                            <div class="acc-title"><h4>Selection Criteria</h4></div>
+                            <div class="acc-body">
+                                <div class="criteria-filter">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                                        <input id="datefilter" type="text" class="form-control" name="datetimes" />
+                                    </div>
+                                    <div id="criteria-filters"></div>
+                                </div>
+                            </div>
+                            <div class="acc-body-footer">
+                                <button class="get_logs disabled btn btn-sm bg-color-blueDark txt-color-white">Get Worklogs</button>
+                            </div>
+                        </div>
+                        <div class="acc-box adv-searcharea">
+                            <div class="acc-title"><h4>Advanced Search</h4></div>
+                            <div class="acc-body">
+                                @*<span class="adv-search-msg">Search Criteria Not Selected</span>*@
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                                    <input id="datefilteradvance" type="text" class="form-control" name="datetimes" />
+                                </div>
+                                <form class="smart-form">
+                                    <div class="row  adv-search">
+                                        <div class="col-lg-12 col-md-12"><section><label class="input"><select id="projectfilter" class="advancefilter" name="state"><option value="0">--Project--</option></select>  </label></section></div>
+                                        <div class="col-lg-12 col-md-12"><section><label class="input"><select id="sitefilter" class="advancefilter" name="state"><option value="0">--Site--</option></select>  </label></section></div>
+                                        <div class="col-lg-12 col-md-12"><section><label class="input"><select id="taskfilter" class="advancefilter" name="state"><option value="0">--Task--</option></select>  </label></section></div>
+                                        <div class="col-lg-12 col-md-12"><section><label class="input"><select id="workgroupfilter" class="advancefilter" name="state"><option value="0">--Workgroup--</option></select>  </label></section></div>
+                                        <div class="col-lg-12 col-md-12"><section><label class="input"><select id="resourcefilter" class="advancefilter" name="state"><option value="0">--Resource--</option></select>  </label></section></div>
+                                    </div>
+                                </form>
+                                @*<button class="get_search disabled btn btn-sm bg-color-blueDark txt-color-white">Apply</button>*@
+                            </div>
+                            <div class="acc-body-footer">
+                                <button class="advance_search disabled  btn btn-sm bg-color-blueDark txt-color-white">Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- Worklog Filters-->
+
+
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade  in active padding-10 no-padding-bottom" id="worklog">
+                        <div class="box-body">
+                            <div class="worklog-main ">
+                                <div class="worklog-content">
+                                    <ul class="nav nav-tabs tabs-pull-left bordered">
+                                        <li class="active">
+                                            <a href="#tasks" data-toggle="tab">Tasks </a>
+                                        </li>
+                                        <li>
+                                            <a href="#issues" data-toggle="tab">Issues</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade active in" id="tasks">
+                                            <div class="worklog-tables text-center ">
+                                                <table id="worklog-table" class="table table-hover table-striped custom-table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            @*<th></th>*@
+                                                            <th rowspan="2" colspan="1" style="text-align:left">Resource</th>
+                                                            <th rowspan="2" colspan="1" style="text-align:left">Project</th>
+                                                            @*<th>Site </th>
+                                                            <th>Task</th>
+                                                            <th>Work Group</th>*@
+                                                            <th rowspan="1" colspan="3">Expense</th>
+                                                            @if (@Model.IsManager.ToString().ToLower() == true.ToString().ToLower())
+                                                            {
+                                                                <th rowspan="1" colspan="2">Actions</th>
+                                                            }
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Hours</th>
+                                                            <th>Rate/Hr.</th>
+                                                            <th>Cost</th>
+                                                            @if (@Model.IsManager.ToString().ToLower() == true.ToString().ToLower())
+                                                            {
+                                                                <th>Approval</th>
+                                                                <th>Comment</th>
+                                                            }
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                            <div class="panel-footer">
+                                                <div class="footer-info">Total Log Hours : <strong id="tasktotalloghours">0</strong> </div>
+                                                <div class="footer-info">Total Cost : <strong id="tasktotalcost">0</strong> </div>
+                                                @if (@Model.IsManager.ToString().ToLower() == true.ToString().ToLower())
+                                                {
+                                                    <button class="btn btn-success pull-right TaskWorklog">Save</button>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="issues">
+                                            <div class="worklog-tables text-center ">
+                                                <table id="worklog-issue-table" class="table table-hover table-striped custom-table  table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            @*<th></th>*@
+                                                            <th rowspan="2" colspan="1" style="text-align:left">Resource</th>
+                                                            <th rowspan="2" colspan="1" style="text-align:left">Project</th>
+                                                            @*<th>Site </th>
+                                                            <th>Task</th>
+                                                            <th>Work Group</th>*@
+                                                            <th rowspan="1" colspan="3">Expense</th>
+                                                            @if (@Model.IsManager.ToString().ToLower() == true.ToString().ToLower())
+                                                            {
+                                                                <th rowspan="1" colspan="2">Actions</th>
+                                                            }
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Hours</th>
+                                                            <th>Rate/Hr.</th>
+                                                            <th>Cost</th>
+                                                            @if (@Model.IsManager.ToString().ToLower() == true.ToString().ToLower())
+                                                            {
+                                                                <th>Approval</th>
+                                                                <th>Comment</th>
+                                                            }
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                            <div class="panel-footer">
+                                                <div class="footer-info">Total Log Hours : <strong id="issuetotalloghours">0</strong> </div>
+                                                <div class="footer-info">Total Cost : <strong id="issuetotalcost">0</strong></div>
+                                                @if (@Model.IsManager.ToString().ToLower() == true.ToString().ToLower())
+                                                {
+                                                    <button class="btn btn-success pull-right IssueWorklog">Save</button>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!-- Work Log -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade padding-10 no-padding-bottom" id="summary">
+                        <div class="box-body">
+                            <div class="worklog-main summary-area">
+                                <div class="worklog-content">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="jarviswidget light-widget ">
+                                                <header>
+                                                    <span class="widget-icon"> <i class="glyphicon glyphicon-stats"></i> </span>
+                                                    <h2>Projects &  Tasks</h2>
+                                                </header>
+                                                <div class="box-body no-padding">
+                                                    <div id="projectsChart" style="height: 385px; width: 100%;"></div>
+                                                </div>
+                                            </div><!-- Projects & Tasks -->
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="jarviswidget light-widget ">
+                                                <header>
+                                                    <span class="widget-icon"> <i class="glyphicon glyphicon-stats"></i> </span>
+                                                    <h2>Workgroup & Resources</h2>
+                                                </header>
+                                                <div class="box-body no-padding">
+                                                    <div class="header-opts">
+                                                        <div class="header-select">
+                                                            <select id="summaryprojectfilter" class="select" data-placeholder="Select an option">
+                                                                
+                                                            </select>
+                                                        </div>
+                                                        <div class="header-select">
+                                                            <select id="summarytaskfilter" class="multiselect" multiple="multiple">
+                                                                </select>
+                                                        </div>
+                                                    </div>
+                                                    <div id="workgroupChart" style="height: 352px; width: 100%;"></div>
+                                                </div>
+                                            </div><!-- WorkGroup And -->
+                                        </div>
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="jarviswidget light-widget summary-panel">
+                                                <header>
+                                                    <h2 id="summarydatatabletitle" ></h2>
+                                                    <a class="collapse-widget" href="#" title=""><i class="fa fa-minus"></i></a>
+                                                </header>
+                                                <div class="box-body no-padding">
+                                                    <table id="summary-table" class="table table-hover table-striped custom-table table-bordered text-center">
+                                                        <thead>
+                                                            <tr>
+                                                                <th rowspan="2" colspan="1" style="text-align:left">Resource</th>
+                                                                <th rowspan="1" colspan="2">Expense</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Hours</th>
+                                                                <th>Cost</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div><!-- WorkGroup & Resources -->
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<link href="~/Scripts/datatable/datatable.css" rel="stylesheet" />
+<link href="http://easyautocomplete.com/dist/easy-autocomplete.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css" />
+<link href="~/Content/js/Plugins/MultiselectBootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<script src="~/Scripts/datatable/datatable.js"></script>
+<script src="http://easyautocomplete.com/dist/jquery.easy-autocomplete.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="~/Content/js/Plugins/MultiselectBootstrap/js/bootstrap-multiselect.js"></script>
+<link href="~/AdminLTE/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+<script src="~/AdminLTE/plugins/sweetalert/sweetalert.js"></script>
+<script>
+    let _approveworklogs = [];
+    let _approveworklogs_issue = [];
+    let _worklogs_charlie_bravo = [];
+    let _worklogs_charlie_bravo_issue = [];
+    let _global_workgroups_jstree = "";
+    let __global_users_jstree = "";
+    let _global_projects_jstree="";
+    $(document).on("ready", function () {
+        Array.prototype.groupBy = function(prop) {
+            return this.reduce(function(groups, item) {
+                const val = item[prop]
+                groups[val] = groups[val] || []
+                groups[val].push(item)
+                return groups
+            }, {})
+        }
+        $('input[name="datetimes"]').daterangepicker({
+            timePicker: false,
+            startDate: moment().startOf('hour'),
+            endDate: moment().startOf('hour').add(32, 'hour'),
+            locale: {
+                format: 'YYYY-MM-DD'
+            }
+        });
+        $('.advancefilter').select2();
+        var _Worklog = (function () {
+            // 'use strict';
+
+            function _getlookupdata(projectid) {
+                $.ajax({
+                    url: `/swi/pm/worklog/_lookupdata?projectid=${projectid}&userid=${@Model.UserId}`,
+                    success: function (result) {
+                        var myJson = [];
+                        // Get Work Groups
+                        function getWorkGroups(result) {
+                            let workgroup = [];
+                            $.each(result.WorkGroups, function (i, e) {
+                                let workgroupobj = {
+                                    text: e.WorkgroupName,
+                                    id:  e.WorkgroupId,
+                                    children: getResources(e),
+                                    ponka: 'workgroup'
+                                }
+                                workgroup.push(workgroupobj);
+                            });
+                            return workgroup;
+                        }
+
+                        // Get Resources
+                        function getResources(result) {
+                            let resource = [];
+                            $.each(result.Resources, function (i, e) {
+                                let resourceobj = {
+                                    text: e.ResourceName,
+                                    id: e.ResourceId,
+                                    ponka: 'resource'
+                                }
+                                resource.push(resourceobj);
+                            });
+                            return resource;
+                        }
+
+
+                        // JSON For JSTree
+                        $.each(result.Value, function (i, e) {
+                            let obj = {
+                                text: result.Value[i].ProjectName,
+                                id: result.Value[i].ProjectId,
+                                children: getWorkGroups(result.Value[i]),
+                                ponka: 'project'
+                            }
+                            myJson.push(obj);
+                            $("#projectfilter").html(`<option value="0" >--Project--</option>`)
+                            $("#projectfilter").append(`<option value=${result.Value[i].ProjectId} >${result.Value[i].ProjectName}</option>`)
+                            $("#summaryprojectfilter").html("")
+                            $("#summarydatatabletitle").html(`${result.Value[i].ProjectName}`)
+                            $("#summaryprojectfilter").append(`<option selected value=${result.Value[i].ProjectId} >${result.Value[i].ProjectName}</option>`)
+                            $("#summaryprojectfilter").select2('data', {id: result.Value[i].ProjectId, text:result.Value[i].ProjectName});
+                           });
+
+                        // Create Tree
+                        $('#criteria-filters, #summary-criteria-filters').jstree({
+                            'core': { 'data': myJson },
+                            "types": {
+                                "default": { "icon": false }
+                            },
+                            "checkbox": { "keep_selected_style": false },
+                            "plugins": ["types", "wholerow", "checkbox"]
+                        });
+
+
+                        // Change Button State If No Item Is Selected
+                        $('#criteria-filters, #summary-criteria-filters').on('changed.jstree', function (e, data) {
+                            let i, j, r = [];
+                            for (i = 0, j = data.selected.length; i < j; i++) {
+                                r.push(data.instance.get_node(data.selected[i]).text);
+                            }
+
+                            if (r.length < 1) {
+                                $(this).parents('.acc-box').find(".get_logs").addClass('disabled');
+                                $(this).parents('.acc-box').find(".get_summary").addClass('disabled');
+                            } else {
+                                $(this).parents('.acc-box').find(".get_logs").removeClass('disabled');
+                                $(this).parents('.acc-box').find(".get_summary").removeClass('disabled');
+                               
+                            }
+                        });
+
+                    },
+                    error: function (result) {
+                        console.log("error", result);
+                    }
+                });
+            }
+
+            function _getworklogs(logtype,date) {
+                let selectedNodes = $('#criteria-filters').jstree().get_selected(true);
+                let projects = [];
+                let workgroups = [];
+                let users = [];
+                $(selectedNodes).each(function (i, e) {
+                    if (selectedNodes[i].original.ponka == 'project')
+                        projects.push(selectedNodes[i].id)
+                    else if (selectedNodes[i].original.ponka == 'workgroup') {
+                        workgroups.push(selectedNodes[i].id)
+                        projects.push(selectedNodes[i].parent)
+                    }
+                    else if (selectedNodes[i].original.ponka == 'resource') {
+                        users.push(selectedNodes[i].id)
+                        workgroups.push(selectedNodes[i].parent)
+                        projects.push(selectedNodes[i].parents[1])
+                    }
+
+                })
+                var _result = [];
+                _global_workgroups_jstree = workgroups.filter((v, i, a) => a.indexOf(v) === i).length > 0 ? workgroups.filter((v, i, a) => a.indexOf(v) === i).join(",").toString() : "";
+                __global_users_jstree = users.filter((v, i, a) => a.indexOf(v) === i).length > 0 ? users.filter((v, i, a) => a.indexOf(v) === i).join(',').toString() : "";
+                _global_projects_jstree =projects.filter((v, i, a) => a.indexOf(v) === i).length > 0 ? projects.filter((v, i, a) => a.indexOf(v) === i).join(",").toString(): "";
+                $.ajax({
+                    async:false,
+                    url: `/swi/pm/worklog/_getworklogs?projectid=
+                        ${_global_projects_jstree.toString().trim()}
+                        &workgroups=${_global_workgroups_jstree.toString().trim()}
+                        &users=${__global_users_jstree.toString().trim()}
+                         &logtype=${logtype}&startdate=${date.toString().split(' - ')[0].toString().trim()}&enddate=${date.toString().split(' - ')[1].toString().trim()}`,
+                    success: function (result) {
+                        $("#summarytaskfilter").html(``)
+                        _result= result;
+                    },
+                    error: function (result) {
+                        console.log("error", result);
+                        // return null;
+                    }
+                });
+                return _result;
+            }
+
+            function _approveworklog(type) {
+                isempty = (type.toString().toLowerCase() == "task" ? JSON.stringify(_approveworklogs) : JSON.stringify(_approveworklogs_issue));
+                if(isempty =='[]')
+                return false;
+
+                var settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "/swi/pm/worklog/_approveworklogs",
+                    "method": "POST",
+                    "headers": {
+                        "content-type": "application/json",
+                        "cache-control": "no-cache",
+                        "postman-token": "da58ee1a-63dc-4e25-5d01-731995c41cb4"
+                    },
+                    "data": type.toString().toLowerCase() == "task" ? JSON.stringify(_approveworklogs) : JSON.stringify(_approveworklogs_issue)
+                }
+                $.ajax(settings).done(function (response) {
+                    if (response.Status.toString().toLowerCase() == true.toString().toLowerCase()) {
+                        swal("Worklog Saved Successfully !", "", "success");
+                        let querytype = $('#criteria-filters').jstree().get_selected(true);
+                        if (querytype.length > 0) {
+                        if (type.toString().toLowerCase() == "task"){
+                            _Worklog.setsummarydatatable("get");
+                            _Worklog.settaskdatatable("get");
+                        }
+                        else
+                        {
+                            _Worklog.setsummarydatatable("get");
+                            _Worklog.setissuedatatable("get");
+
+                        }
+                        }
+                        else{
+                            if (type.toString().toLowerCase() == "task"){
+                                _Worklog.setsummarydatatable("search");
+                                _Worklog.settaskdatatable("search");
+                            }
+                            else
+                            {
+                                _Worklog.setsummarydatatable("search");
+                                _Worklog.setissuedatatable("search");
+
+                            }
+                        }
+                    }
+                    else{
+                        swal("Error", "", "error");
+}
+                });
+
+
+            }
+            function _settaskdatatable(type,date) {
+
+                if(type.toString().toLowerCase() =="get")
+                    worklogData = _Worklog.getworklogs("Task",$("#datefilter").val());
+                else
+                    worklogData = _Worklog.advancesearch("Task",$("#datefilteradvance").val());
+                worklogData = worklogData.Value;
+                _worklogs_charlie_bravo = worklogData;
+                _approveworklogs = [];
+                let workLogObj = [];
+                $(worklogData).each(function (i, e) {
+                    let img = `<img src=${worklogData[i].Picture} alt="" />`;
+                    let attended = '';
+                    let approval = '';
+                    let comments = '';
+                    var IsAttend = false;
+
+                    let worklog_resource = `<div class="wl-res"><img src="${worklogData[i].Picture}" alt="" /><strong>${worklogData[i].Name}<i>${worklogData[i].WorkGroup}</i></strong></div>`;
+                    let worklog_project = `<div class="wl-project"><strong>${worklogData[i].ProjectName}</strong><span>${worklogData[i].FACode} - ${worklogData[i].Task}</span></div>`;
+             
+
+                    if (worklogData[i].Comment != '') {
+                        comments = `<textarea id="${worklogData[i].WLogId}_comment" logtype='task' logid="${worklogData[i].WLogId}" class="comments  ${IsAttend == false ? "" : ""}"  ${IsAttend == false ? "" : ""}  >${worklogData[i].Comment}</textarea>`
+                    } else {
+                        comments = `<textarea id="${worklogData[i].WLogId}_comment" logtype='task'  logid="${worklogData[i].WLogId}" class="comments" ></textarea>`
+                    }
+
+
+                    if (worklogData[i].IsAttended == true) {
+                        if (worklogData[i].IsApproved == true) {
+                            approval = `<div class="approval-radios"><input value='true' name="${worklogData[i].WLogId}_approval" logtype='task'  logid="${worklogData[i].WLogId}"  type="radio" checked="true"  /> <input name="${worklogData[i].WLogId}_approval" logtype='task'  logid="${worklogData[i].WLogId}" value='false'  type="radio"  /> </div>`;
+                        } else {
+                            approval = `<div class="approval-radios"><input value='true' name="${worklogData[i].WLogId}_approval" logtype='task'  logid="${worklogData[i].WLogId}"  type="radio"  /> <input name="${worklogData[i].WLogId}_approval" logtype='task' value='false'  logid="${worklogData[i].WLogId}"  type="radio"  checked="true" /> </div>`;
+                        }
+                    } else {
+                        approval = `<div class="approval-radios"><input value='true' name="${worklogData[i].WLogId}_approval" logtype='task'  logid="${worklogData[i].WLogId}"  type="radio"  /> <input name="${worklogData[i].WLogId}_approval" logtype='task' value='false'  logid="${worklogData[i].WLogId}"  type="radio"  /> </div>`;
+                    }
+
+                    let total = worklogData[i].LogHours * worklogData[i].RatePerHour;
+                    let obj ={};
+                   if(@Model.IsManager.ToString().ToLower() == true)
+                    {
+                      obj = {
+                         Name: worklog_resource,
+                         ProjectName: worklog_project,
+                         LogHours: worklogData[i].LogHours,
+                         RatePerHour: worklogData[i].RatePerHour,
+                         SubTotal: total,
+                         IsApproved: approval,
+                         Comment: comments
+                     }
+                    }
+                else{
+                    obj = {
+                    //Picture: img,
+                    Name: worklog_resource,
+                    ProjectName: worklog_project, //worklogData[i].ProjectName
+                    //SiteName: worklogData[i].SiteName,
+                    //Task: worklogData[i].Task,
+                    //WorkGroup: worklogData[i].WorkGroup,
+                    LogHours: worklogData[i].LogHours,
+                    RatePerHour: worklogData[i].RatePerHour,
+                    SubTotal: total,
+                     }
+                  }
+                  workLogObj.push(obj);
+                });
+
+
+
+                // Data Table
+                var columns=[];
+                if(@Model.IsManager.ToString().ToLower() == true)
+                {
+                    columns =  [
+                      { "data": "Name", "width": "30%"  },
+                      { "data": "ProjectName", "width": "25%"   },
+                     { "data": "LogHours" },
+                      { "data": "RatePerHour" },
+                      { "data": "SubTotal" },
+                      { "data": "IsApproved" },
+                      { "data": "Comment" }
+                    ];
+                }
+                else{
+                    columns =  [
+                     { "data": "Name" },
+                      { "data": "ProjectName" },
+                      { "data": "LogHours" },
+                      { "data": "RatePerHour" },
+                      { "data": "SubTotal" },
+                    ];
+                }
+
+                var workLogTable = $('#worklog-table').DataTable({
+                    "dom": '<"top"r>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                    lengthChange: true,
+                    ordering: true,
+                    destroy: true,
+                    data: workLogObj,
+                    "columns":columns,
+                });
+
+                _Worklog.footertasks("Task");
+                function filterColumn(i) {
+                    $('#worklog-table').DataTable().column(i).search(
+                        $('#col' + i).val()
+                    ).draw();
+                }
+            }
+            function _setissuedatatable(type,date) {
+
+                if(type.toString().toLowerCase() =="get")
+                    worklogData = _Worklog.getworklogs("Issue",$("#datefilter").val());
+                else
+                    worklogData = _Worklog.advancesearch("Issue",$("#datefilteradvance").val());
+                worklogData = worklogData.Value;
+                _worklogs_charlie_bravo_issue = worklogData;
+                _approveworklogs_issue = [];
+                let workLogObj = [];
+                $(worklogData).each(function (i, e) {
+                    let img = `<img src=${worklogData[i].Picture} alt="" />`;
+                    let attended = '';
+                    let approval = '';
+                    let comments = '';
+                    var IsAttend = false;
+
+
+                    let worklog_resource = `<div class="wl-res"><img src="${worklogData[i].Picture}" alt="" /><strong>${worklogData[i].Name}<i>${worklogData[i].WorkGroup}</i></strong></div>`;
+                    let worklog_project = `<div class="wl-project"><strong>${worklogData[i].ProjectName}</strong><span>${worklogData[i].FACode} - ${worklogData[i].Task}</span></div>`;
+
+
+                    if (worklogData[i].Comment != null || worklogData[i].Comment != '') {
+                        comments = `<textarea id="${worklogData[i].WLogId}_comment" logtype='issue' logid="${worklogData[i].WLogId}" class="comments  ${IsAttend == false ? "" : ""}"  ${IsAttend == false ? "" : ""}  >${worklogData[i].Comment}</textarea>`
+                    } else {
+                        comments = `<textarea id="${worklogData[i].WLogId}_comment" logtype='issue'  logid="${worklogData[i].WLogId}" class="comments" ></textarea>`
+                    }
+
+
+                    if (worklogData[i].IsAttended == true) {
+                        if (worklogData[i].IsApproved == true) {
+                            approval = `<div class="approval-radios"><input name="${worklogData[i].WLogId}_approval" logtype='issue' value='true'    logid="${worklogData[i].WLogId}"  type="radio" checked="true"  /> <input name="${worklogData[i].WLogId}_approval" value='false' logtype='issue'  logid="${worklogData[i].WLogId}"  type="radio"  /> </div>`;
+                        } else {
+                            approval = `<div class="approval-radios"><input value='true' name="${worklogData[i].WLogId}_approval" logtype='issue'  logid="${worklogData[i].WLogId}"  type="radio"  /> <input name="${worklogData[i].WLogId}_approval" value='false' logtype='issue'  logid="${worklogData[i].WLogId}"  type="radio"  checked="true" /> </div>`;
+                        }
+                    } else {
+                        approval = `<div class="approval-radios"><input value='true' name="${worklogData[i].WLogId}_approval" logtype='issue'  logid="${worklogData[i].WLogId}"  type="radio"  /> <input name="${worklogData[i].WLogId}_approval" logtype='issue' value='false'  logid="${worklogData[i].WLogId}"  type="radio"  /> </div>`;
+                    }
+
+
+                    let total = worklogData[i].LogHours * worklogData[i].RatePerHour;
+                    let obj ={};
+                    if(@Model.IsManager.ToString().ToLower() == true)
+                    {
+                        obj = {
+                            Name: worklog_resource,
+                            ProjectName: worklog_project, 
+                            LogHours: worklogData[i].LogHours,
+                            RatePerHour: worklogData[i].RatePerHour,
+                            SubTotal: total,
+                            IsApproved: approval,
+                            Comment: comments
+                        }
+                    }
+                    else{
+                        obj = {
+                            Name: worklog_resource,
+                            ProjectName: worklog_project,
+                            LogHours: worklogData[i].LogHours,
+                            RatePerHour: worklogData[i].RatePerHour,
+                            SubTotal: total,
+                        }
+                    }
+
+                    workLogObj.push(obj);
+                });
+
+
+                // Data Table
+                var columns=[];
+                if(@Model.IsManager.ToString().ToLower() == true)
+                {
+                    columns =  [
+                     { "data": "Name", "width": "30%"  },
+                      { "data": "ProjectName", "width": "25%"   },
+                      { "data": "LogHours" },
+                      { "data": "RatePerHour" },
+                      { "data": "SubTotal" },
+                      { "data": "IsApproved" },
+                      { "data": "Comment" }
+                    ];
+                }
+                else{
+                    columns =  [
+                      { "data": "Name" },
+                      { "data": "ProjectName" },
+                      { "data": "LogHours" },
+                      { "data": "RatePerHour" },
+                      { "data": "SubTotal" },
+                    ];
+                }
+                var workLogTable = $('#worklog-issue-table').DataTable({
+                    "dom": '<"top"r>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                    lengthChange: true,
+                    ordering: true,
+                    destroy: true,
+                    data: workLogObj,
+                    "columns": columns,
+                 });
+
+                _Worklog.footertasks("Issue");
+                function filterColumn(i) {
+                    $('#worklog-issue-table').DataTable().column(i).search(
+                        $('#col' + i).val()
+                    ).draw();
+                }
+            }
+            function _manageapproveworklogs(logid,type) {
+                if(type.toString().toLowerCase() == "task"){
+                            _approveworklogs.push(_worklogs_charlie_bravo.filter(x=>x.WLogId.toString() == logid)[0]);
+                            let currentlog = _approveworklogs.filter(x=>x.WLogId.toString() == logid)[0];
+                            currentlog.Comment = $(`#${logid}_comment`).val();
+                            currentlog.IsAttended = true;
+                            currentlog.IsApproved = $(`input[name=${logid}_approval]:checked`).val();
+                       
+                 
+                }
+                else {
+                           _approveworklogs_issue.push(_worklogs_charlie_bravo_issue.filter(x=>x.WLogId.toString() == logid)[0]);
+                            let currentlog = _approveworklogs_issue.filter(x=>x.WLogId.toString() == logid)[0];
+                            currentlog.Comment = $(`#${logid}_comment`).val();
+                            currentlog.IsAttended = true;
+                            currentlog.IsApproved =$(`input[name=${logid}_approval]:checked`).val();
+                      
+                  
+                }
+            }
+            function _footertasks(type) {
+                //Total log hours & cost
+                $("#tasktotalloghours").html($('#worklog-table').DataTable()
+                 .rows({ order: 'index', search: 'applied' })
+                 .data().reduce((a, b) => +a + +b.LogHours, 0).toString().toLowerCase() != 'nan' ? $('#worklog-table').DataTable()
+                 .rows({ order: 'index', search: 'applied' })
+                 .data().reduce((a, b) => +a + +b.LogHours, 0) : 0);
+
+                $("#tasktotalcost").html($('#worklog-table').DataTable()
+                      .rows({ order: 'index', search: 'applied' })
+                      .data().reduce((a, b) => +a + +(b.LogHours * b.RatePerHour), 0).toString().toLowerCase() != 'nan' ? $('#worklog-table').DataTable()
+                      .rows({ order: 'index', search: 'applied' })
+                      .data().reduce((a, b) => +a + +b.SubTotal, 0) : 0);
+                $("#issuetotalloghours").html($('#worklog-issue-table').DataTable()
+                .rows({ order: 'index', search: 'applied' })
+                .data().reduce((a, b) => +a + +b.LogHours, 0).toString().toLowerCase() != 'nan' ? $('#worklog-issue-table').DataTable()
+                .rows({ order: 'index', search: 'applied' })
+                .data().reduce((a, b) => +a + +b.LogHours, 0) : 0);
+
+                $("#issuetotalcost").html($('#worklog-issue-table').DataTable()
+                      .rows({ order: 'index', search: 'applied' })
+                      .data().reduce((a, b) => +a + +(b.LogHours * b.RatePerHour), 0).toString().toLowerCase() != 'nan' ? $('#worklog-issue-table').DataTable()
+                      .rows({ order: 'index', search: 'applied' })
+                      .data().reduce((a, b) => +a + +b.SubTotal, 0) : 0);
+            }
+            function _getfilterdropdowns(_url){
+                var   _result=[];
+                $.ajax({
+                    url:_url,
+                    async:false,
+                    success: function (result) {
+                        if(result.Status.toString().toLowerCase() == "true"){
+                            _result =  result.Value;
+                        }
+                        else {
+                            _result = [];
+                        }
+                    },
+                    error: function (result) {
+                        console.log("error", result);
+                        _result = [];
+                    }
+                });
+                return _result;
+            }
+            function _advancesearch(logtype,date) {
+                var _result = [];
+                $.ajax({
+                    async:false,
+                    url: `/swi/pm/worklog/_advancesearch?projectid=
+                        ${$("#projectfilter").val()}
+                        &workgroups=${$("#workgroupfilter").val()}
+                        &users=${$("#resourcefilter").val()}
+                        &logtype=${logtype}&startdate=${$("#datefilteradvance").val().toString().split(' - ')[0]}&enddate=${$("#datefilter").val().toString().split(' - ')[1]}
+                        &userid=${@Model.UserId.ToString()}&taskid=${$("#taskfilter").val()}&siteid=${$("#sitefilter").val()}`,
+                    success: function (result) {
+
+                        _result= result;
+                        $('#criteria-filters').jstree().deselect_all(true);
+                        $(".get_logs").addClass('disabled');
+                       //  _Worklog.approveworklogs(result.Value);
+                    },
+                    error: function (result) {
+                        console.log("error", result);
+                        // return null;
+                    }
+                })
+                return _result;
+            }
+            function _setsummarydatatable(type) {
+
+                if(type.toString().toLowerCase() =="get")
+                    worklogData = _Worklog.getworklogs("",$("#datefilter").val());
+                else
+                    worklogData = _Worklog.advancesearch("",$("#datefilteradvance").val());
+                worklogData = worklogData.Value;
+                let _chartsdata = worklogData;
+                _setsummaryprojectchart(_chartsdata);
+                _setsummaryworkgroupchart(_chartsdata);
+                let workLogObj = [];
+                var tabledatabyuser =[]
+                if(worklogData.length > 0) 
+                {
+                    var tabledatabyuser =  $.map(worklogData.groupBy('Name'), function(n, i) {
+                        return {
+                            Name:i,
+                            Cost: n.length == 0 ? 0: n.reduce((a, b) => +a + +(b.RatePerHour * b.LogHours), 0),
+                            Picture: n[0].Picture,
+                            LogHours: n.length == 0 ? 0: n.reduce((a, b) => +a + + b.LogHours, 0),
+                        }
+                    })
+                 }
+              
+               $(tabledatabyuser).each(function (i, e) {
+                    let img = `<img src=${tabledatabyuser[i].Picture} alt="" />`;
+                    let attended = '';
+                    let approval = '';
+                    let comments = '';
+                    var IsAttend = false;
+                    let worklog_resource = `<div class="wl-res"><img src="${tabledatabyuser[i].Picture}" alt="" /><strong>${tabledatabyuser[i].Name}</strong></div>`;
+                   let  obj = {
+                            Name: worklog_resource,
+                            LogHours: tabledatabyuser[i].LogHours,
+                            SubTotal: tabledatabyuser[i].Cost,
+                              }
+                   workLogObj.push(obj);
+                });
+
+
+                // Data Table
+                var columns =  [
+                     { "data": "Name", "width": "30%"  },
+                      { "data": "LogHours" },
+                      { "data": "SubTotal" },
+                      ];
+                var workLogTable = $('#summary-table').DataTable({
+                    "dom": '<"top"r>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+                    lengthChange: true,
+                    ordering: true,
+                    destroy: true,
+                    data: workLogObj,
+                    "columns": columns,
+                     });
+
+            }
+            function _setsummaryprojectchart(_data){
+                if(_data == undefined)
+                      return false
+                let _tasksbyhours =[{
+                    name:'Project 1',
+                    y: _data.groupBy('LogType').Task == undefined ? 0 : _data.groupBy('LogType').Task.reduce((a, b) => +a + +b.LogHours, 0),
+                    drilldown: 'taskbyhour'
+                }];
+                let _issuesbyhours =[{
+                    name:'Project 1',
+                    y: _data.groupBy('LogType').Issue == undefined ? 0 : _data.groupBy('LogType').Issue.reduce((a, b) => +a + +b.LogHours, 0),
+                    drilldown: 'issuebyhour'
+                }];
+                let _tasksbycost =[{
+                    name:'Project 1',
+                    y:  _data.groupBy('LogType').Task == undefined ? 0 : _data.groupBy('LogType').Task.reduce((a, b) => +a + +(b.RatePerHour * b.LogHours), 0),
+                    drilldown: 'taskbycost'
+                }];
+                let _issuesbycost =[{
+                    name:'Project 1',
+                    y:  _data.groupBy('LogType').Issue == undefined ? 0 : _data.groupBy('LogType').Issue.reduce((a, b) => +a + +(b.RatePerHour * b.LogHours), 0),
+                    drilldown: 'taskbycost'
+                }];
+
+                let _series =[{
+                    name: 'Issues',
+                    color: '#ff738a',
+                    data: _issuesbyhours,
+                    stack: 'hours',
+                    yAxis: 1
+                },{
+                    name: 'Tasks',
+                    color: '#29b1cc',
+                    data: _tasksbyhours,
+                    stack: 'hours',
+                    yAxis: 1
+                },
+                {
+                    name: 'Issues',
+                    color: '#ff738a',
+                    data: _issuesbycost,
+                    stack: 'cost',
+                    yAxis: 1
+                },{
+                    name: 'Tasks',
+                    color: '#29b1cc',
+                    data: _tasksbycost,
+                    stack: 'cost',
+                }];
+
+
+                ////drilldown
+
+              //by hour
+                let   _taskbyhourdrilldown =  $.map(_data.groupBy('Task'), function(n, i) {
+                    return {
+                        color: '#29b1cc',
+                        name:i,
+                        y:  n.groupBy('LogType').Task == undefined ? 0: n.groupBy('LogType').Task.reduce((a, b) => +a + +b.LogHours, 0),
+                    };
+                })
+                let   _issuebyhourdrilldown =  $.map(_data.groupBy('Task'), function(n, i) {
+                    return {
+                        color: '#ff738a',
+                        name:i,
+                        y:  n.groupBy('LogType').Issue == undefined ? 0: n.groupBy('LogType').Issue.reduce((a, b) => +a + +b.LogHours, 0),
+                    };
+                })
+
+                //by cost
+                let   _taskbycostdrilldown =  $.map(_data.groupBy('Task'), function(n, i) {
+                    return {
+                        color: '#29b1cc',
+                        name:i,
+                        y:  n.groupBy('LogType').Task == undefined ? 0: n.groupBy('LogType').Task.reduce((a, b) => +a + +(b.RatePerHour * b.LogHours), 0),
+                    };
+                })
+                let   _issuebycostdrilldown =  $.map(_data.groupBy('Task'), function(n, i) {
+                    return {
+                        color: '#ff738a',
+                        name:i,
+                        y:  n.groupBy('LogType').Issue == undefined ? 0: n.groupBy('LogType').Issue.reduce((a, b) => +a + +(b.RatePerHour * b.LogHours), 0),
+                    };
+                })
+
+                function dynamicSort(property) {
+                    var sortOrder = 1;
+
+                    if(property[0] === "-") {
+                        sortOrder = -1;
+                        property = property.substr(1);
+                    }
+
+                    return function (a,b) {
+                        if(sortOrder == -1){
+                            return b[property].localeCompare(a[property]);
+                        }else{
+                            return a[property].localeCompare(b[property]);
+                        }        
+                    }
+                }
+
+                let _seriesdrilldown =[{
+                    id: 'taskbyhour',
+                    color: '#ff738a',
+                    data: _taskbyhourdrilldown.concat(_issuebyhourdrilldown).sort(dynamicSort("name")),
+                    stack: 'hours',
+                },{
+                    id: 'taskbycost',
+                    color: '#ff738a',
+                    data: _taskbycostdrilldown.concat(_issuebycostdrilldown).sort(dynamicSort("name")),
+                    stack: 'cost',
+                }];
+                //drilldown end 
+                Highcharts.chart('projectsChart', {
+                    chart: {type: 'column',
+                        style: {
+                            fontFamily: 'Open Sans'
+                        },
+                        },
+
+                    title: {text: 'Project Tasks & Issue With Hours and Cost'},
+                    xAxis: {
+                        type:'category',
+                        labels: {
+                            style: {
+                                color:'black'
+                            }
+                        }
+                    },
+                    yAxis: [{ // Primary yAxis
+                        labels: {
+                            format: '{value}',
+                            style: {
+                                color:'black'  // color: Highcharts.getOptions().colors[2]
+                            }
+                        },
+                        title: {
+                            text: 'Cost',
+                            style: {
+                                color:'black' //color: Highcharts.getOptions().colors[2]
+                            }
+                        },
+                        opposite: true
+
+                    }, { // Secondary yAxis
+                        gridLineWidth: 0,
+                        title: {
+                            text: 'Hours',
+                            style: {
+                                color:'black'//color: Highcharts.getOptions().colors[0]
+                            }
+                        },
+                        labels: {
+                            format: '{value} ',
+                            style: {
+                                //color: Highcharts.getOptions().colors[0]
+                            }
+                        }
+
+                    }],
+                    legend: {enabled: true},
+                    plotOptions: {
+                        column: {stacking: 'normal'},
+                        series: {
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: true
+                            }
+                        }
+                    },
+                    series: _series,
+                    drilldown: {
+                        series:_seriesdrilldown
+                    }
+                });
+            }
+            function _setsummaryworkgroupchart(_data){
+                if(_data == undefined) return false
+
+
+                let _tasksbyhours =   $.map(_data.groupBy('WorkGroup'), function(n, i) {
+                    return {
+                        name:i,
+                        y:  n.groupBy('LogType').Task == undefined ? 0: n.groupBy('LogType').Task.reduce((a, b) => +a + +b.LogHours, 0),
+                        drilldown: `byhours${i}`
+                    };
+                })
+
+              
+                let _issuesbyhours = $.map(_data.groupBy('WorkGroup'), function(n, i) {
+                    return {
+                        name:i,
+                        y: n.groupBy('LogType').Issue == undefined ? 0 : n.groupBy('LogType').Issue.reduce((a, b) => +a + +b.LogHours, 0),
+                        drilldown: `byhours${i}`
+                    };
+                })
+
+               
+
+                let _tasksbycost   = $.map(_data.groupBy('WorkGroup'), function(n, i) {
+                    return {
+                        name:i,
+                        y: n.groupBy('LogType').Task == undefined ? 0: n.groupBy('LogType').Task.reduce((a, b) => +a + +(b.RatePerHour * b.LogHours), 0),
+                        drilldown: `bycost${i}`
+                    };
+                })
+
+                
+
+                let _issuesbycost   = $.map(_data.groupBy('WorkGroup'), function(n, i) {
+                    return {
+                        name:i,
+                        y: n.groupBy('LogType').Issue == undefined ? 0 : n.groupBy('LogType').Issue.reduce((a, b) => +a + +(b.RatePerHour * b.LogHours), 0),
+                        drilldown: `bycost${i}`
+                    };
+                })
+
+                var _series = [{
+                    name: 'Issue',
+                    color: '#ff738a',
+                    data:_issuesbyhours,
+                    stack: 'hours',
+                    yAxis: 1
+                 }, {
+                    name: 'Task',
+                    color: '#29b1cc',
+                    data:_tasksbyhours,
+                    stack: 'hours',
+                    yAxis: 1
+                }, {
+                    name: 'Issue',
+                    color: '#ff738a',
+                    data:_issuesbycost,
+                    stack: 'cost',
+                    yAxis: 1
+                }, {
+                    name: 'Task',
+                    color: '#29b1cc',
+                    data:_tasksbycost,
+                    stack: 'cost',
+                }]
+
+
+    
+                /////Task filter
+
+                /* MultiSelect */
+            //    $('#summarytaskfilter').multiselect('destroy');
+                var options = [];
+                if(_data.groupBy('Task').undefined == undefined ){
+                    $('.multiselect-container').html("");
+                $.map(_data.groupBy('Task'), function(n, i) {
+                    options.push( {label:`${i}`, title: `${i}`, value:`${parseInt(n[0].TaskId)}`, selected: true})
+                  //  $('.multiselect-container').append(`<li><a tabindex="0"><label class="checkbox"><input checked type="checkbox" value=${n[0].TaskId} > ${i}
+                    //</label></a></li>`)
+                   // $('#summarytaskfilter').append(`<option selected value=${n[0].TaskId} >${i} </option>`)
+                })
+                }
+ 
+               // $('#summarytaskfilter').multiselect('dataprovider', options);
+      //  debugger
+                $('#summarytaskfilter').multiselect('dataprovider', options,{onChange: function(option, checked, select) {
+                    alert('Changed option ' + $(option).val() + '.');
+                }});
+                     
+                //abc.onChange: function(option, checked, select) {
+                //    alert('Changed option ' + $(option).val() + '.');
+                //}
+
+
+                ///task filter end
+                ////drilldown
+
+                //by hour
+
+                let _seriesdrilldown =[];
+                _seriesdrilldown =  $.map(_data.groupBy('WorkGroup'), function(n, i) {
+
+
+                    //check
+
+
+                    let   _taskbyhourdrilldown =  $.map(n.groupBy('Name'), function(ni, ii) {
+                        return {
+                            color: '#29b1cc',
+                            name:ii,
+                            y:  ni.groupBy('LogType').Task == undefined ? 0: ni.groupBy('LogType').Task.reduce((a, b) => +a + +b.LogHours, 0),
+                        };
+                    })
+                    let   _issuebyhourdrilldown =  $.map(n.groupBy('Name'), function(ni, ii) {
+                        return {
+                            color: '#ff738a',
+                            name:ii,
+                            y:  ni.groupBy('LogType').Issue == undefined ? 0: ni.groupBy('LogType').Issue.reduce((a, b) => +a + +b.LogHours, 0),
+                        };
+                    })
+
+                    //by cost
+                    let   _taskbycostdrilldown =  $.map(n.groupBy('Name'), function(ni, ii) {
+                        return {
+                            color: '#29b1cc',
+                            name:ii,
+                            y:  ni.groupBy('LogType').Task == undefined ? 0: ni.groupBy('LogType').Task.reduce((a, b) => +a + +(b.RatePerHour * b.LogHours), 0),
+                        };
+                    })
+                    let   _issuebycostdrilldown =  $.map(n.groupBy('Name'), function(ni, ii) {
+                        return {
+                            color: '#ff738a',
+                            name:ii,
+                            y:  ni.groupBy('LogType').Issue == undefined ? 0: ni.groupBy('LogType').Issue.reduce((a, b) => +a + +(b.RatePerHour * b.LogHours), 0),
+                        };
+                    })
+
+    //check end
+
+
+                  return [{
+                        id: `byhours${i}`,
+                        color: '#ff738a',
+                        data: _taskbyhourdrilldown.concat(_issuebyhourdrilldown).sort(dynamicSort("name")),
+                        stack: 'hours',
+                        },{
+                            id: `bycost${i}`,
+                            color: '#ff738a',
+                            data: _taskbycostdrilldown.concat(_issuebycostdrilldown).sort(dynamicSort("name")),
+                            stack: `cost`,
+                        }]
+                })
+  
+
+               function dynamicSort(property) {
+                   var sortOrder = 1;
+
+                   if(property[0] === "-") {
+                       sortOrder = -1;
+                       property = property.substr(1);
+                   }
+
+                   return function (a,b) {
+                       if(sortOrder == -1){
+                           return b[property].localeCompare(a[property]);
+                       }else{
+                           return a[property].localeCompare(b[property]);
+                       }        
+                   }
+               }
+              //let _seriesdrilldown =[{
+                //    id: 'byhours',
+                //    color: '#ff738a',
+                //    data: _taskbyhourdrilldown.concat(_issuebyhourdrilldown).sort(dynamicSort("name")),
+                //    stack: 'hours',
+                //},{
+                //    id: 'bycost',
+                //    color: '#ff738a',
+                //    data: _taskbycostdrilldown.concat(_issuebycostdrilldown).sort(dynamicSort("name")),
+                //    stack: 'cost',
+                //}];
+
+
+
+    //drilldown end
+                Highcharts.chart('workgroupChart', {
+                    chart: {type: 'column',
+                        style: {
+                            fontFamily: 'Open Sans'
+                        },
+                    },
+
+                    title: {text: 'WorkGroup & Resource With Hours and Cost'},
+                    xAxis: {
+                        type:'category',
+                        crosshair: true,
+                        labels: {
+                            style: {
+                                color:'black'
+                            }
+                        }
+                    },
+                    yAxis: [ { // Secondary yAxis
+                        gridLineWidth: 0,
+                        title: {
+                            text: 'Hours',
+                            style: {
+                                color:'black'//color: Highcharts.getOptions().colors[0]
+                            }
+                        },
+                        labels: {
+                            format: '{value} ',
+                            style: {
+                                //color: Highcharts.getOptions().colors[0]
+                            }
+                        }
+
+                    },{ // Primary yAxis
+                        labels: {
+                            format: '{value}',
+                            style: {
+                                color:'black'  // color: Highcharts.getOptions().colors[2]
+                            }
+                        },
+                        title: {
+                            text: 'Cost',
+                            style: {
+                                color:'black' //color: Highcharts.getOptions().colors[2]
+                            }
+                        },
+                        opposite: true
+
+                    }],
+                    tooltip: {
+                        shared: true
+                    },
+                    legend: {enabled: true},
+                    plotOptions: {
+                        column: {stacking: 'normal'},
+                        series: {
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: true
+                            }
+                        }
+                    },
+                    series:_series,
+                    drilldown: {
+                        series:_seriesdrilldown
+                    }
+                });
+}
+            return {
+                getlookupdata: function (projectid) {
+                    _getlookupdata(projectid);
+                },
+                getworklogs: function (logtype,date,_summary) {
+                    return   _getworklogs(logtype,date,_summary);
+                },
+                approveworklogs: function (type) {
+                    _approveworklog(type);
+                },
+                manageapproveworklogs: function (logid,type) {
+                    _manageapproveworklogs(logid,type);
+                },
+                settaskdatatable: function (type) {
+                    _settaskdatatable(type);
+                },
+                setissuedatatable: function (type) {
+                    _setissuedatatable(type);
+                },
+                footertasks: function (type) {_footertasks(type)},
+                getfilterdropdowns:function(url){
+                    return _getfilterdropdowns(url);
+                },
+                advancesearch :function (logtype,date) {
+                    return   _advancesearch(logtype,date);
+                },
+                setsummarydatatable:function (type){
+                    return _setsummarydatatable(type)
+                },
+                setsummaryprojectchart: function(data){
+                    return _setsummaryprojectchart(data);
+                },
+                setsummaryworkgroupchart : function(data){
+                    return _setsummaryworkgroupchart(data) 
+}
+            };
+        }());
+
+        let worklogData;
+        $("body").on("click", ".get_logs", function () {
+
+            var taskflag = 0;
+            var issueflag = 0;
+
+            function checkStatus() {
+                let activated = $(".worklog-content > ul.nav li.active").find('a').attr('href').replace('#', '');
+                if (activated == 'tasks' && taskflag < 1) {
+                    taskflag++;
+                    _Worklog.setsummarydatatable("get");
+                    _Worklog.settaskdatatable("get");
+                   
+                } else if (activated == 'issues' && issueflag < 1) {
+                    issueflag++;
+                    _Worklog.setsummarydatatable("get");
+                    _Worklog.setissuedatatable("get");
+                     
+                }
+            }
+            checkStatus();
+
+            return false;
+        });
+        $("body").on("click", ".advance_search", function () {
+
+            var taskflag = 0;
+            var issueflag = 0;
+
+            function checkStatus() {
+                let activated = $(".worklog-content > ul.nav li.active").find('a').attr('href').replace('#', '');
+                if (activated == 'tasks' && taskflag < 1) {
+                    taskflag++;
+                    _Worklog.settaskdatatable("search");
+                    _Worklog.setsummarydatatable("search");
+                } else if (activated == 'issues' && issueflag < 1) {
+                    issueflag++;
+                    _Worklog.setsummarydatatable("search");
+                    _Worklog.setissuedatatable("search");
+                   
+                }
+            }
+            checkStatus();
+
+            return false;
+        });
+        let urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('projectid')) //if projectid found
+        {
+            _Worklog.getlookupdata(urlParams.get('projectid'));
+            function ProjectTitles(){
+                $.post("/Project/Defination/ToSingle", { Filter: 'ByProjectId', Value: parseInt(urlParams.get('projectid')) }).then(function (res) {
+                    $('#detail').empty();
+                    $('#template').empty();
+                    $('#setting').empty();
+                    $('#Deshboard').empty();
+                    var s = res;
+                    var EndDate = "Continue";
+                    if (s.EstimateEndDate != null && s.EstimateEndDate != undefined) {
+                        EndDate = moment(s.EstimateEndDate).format('DD MMM, YYYY');
+                    }
+                    var ProjectInfo = '<span style="font-size: 16px;font-family: inherit;color:#000;"><strong>Project: </strong>' + s.ProjectName + '</span>' +
+                        '<span style="margin-left:1%;font-size: 16px;font-family: inherit;color:#000;">' +
+                        '<strong style="margin-left:2%;color:#000;">Start Date: </strong><span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;;margin-right: 27px;">' + moment(s.EstimateStartDate).format('DD MMM, YYYY') + ' </span> <strong> Expected End Date: </strong> ' +
+                        '<span class="ProjectDate" style="font-size: 16px;font-family: inherit;color:#000;">' + EndDate+ '</span>';
+                    $('#ProjectInfo').html(ProjectInfo);
+
+                    var detail = '<span> <a title="Project Timeline" href="/Project/Defination/Details/' +parseInt(urlParams.get('projectid'))  + '"><i class="fa fa-calendar"></i></a> </span>'
+                    $('#detail').html(detail);
+
+                    var template = '<span> <a title="Project Template" href="/Project/Template/list?ProjectId=' +parseInt(urlParams.get('projectid'))  + '"><i class="fa fa-list-alt"></i></a> </span>'
+                    $('#template').html(template);
+
+                    var seting = '<span> <a  title="Project Chart Settings" href= "/Project/Dashboard/Configuration?Id=' +parseInt(urlParams.get('projectid')) + '"><i class="fa fa-cog"></i></a> </span>'
+                    $('#setting').html(seting);
+                    var Deshboard = '<span> <a title="Project Dashboard" href="/Project/Dashboard/Index?Id=' +parseInt(urlParams.get('projectid'))+ '"><i class="fa fa-dashboard"></i></a> </span>'
+
+                    $('#Deshboard').html(Deshboard);
+                });
+            }
+            ProjectTitles();
+        }
+
+       
+
+        $("body").on("change", ".approval-radios input", function () {
+            _Worklog.manageapproveworklogs($(this).attr("logid"), $(this).attr("logtype"));
+            $(this).parents('tr').addClass('changed');
+        });
+
+
+        $("body").on("change", "textarea.comments", function () {
+            _Worklog.manageapproveworklogs($(this).attr("logid"), $(this).attr("logtype"));
+            $(this).parents('tr').addClass('changed');
+        });
+
+        $("body").on("click", ".TaskWorklog", function () {
+            _Worklog.approveworklogs("task");
+        })
+        $("body").on("click", ".IssueWorklog", function () {
+            _Worklog.approveworklogs("issue");
+        })
+        $("body").on("change", ".advancefilter", function () {
+            var filterid= $(this).attr("id");
+            if(filterid == "projectfilter"){
+                var _result = _Worklog.getfilterdropdowns(`/swi/pm/worklog/_getfilterdropdowns?filter=getsites&projectid=${$(this).val()}&userid=${@Model.UserId}`)
+                $("#sitefilter").html(`<option value="0" >--Site--</option>`)
+                $("#taskfilter,#workgroupfilter,#resourcefilter").html(`<option value="0" ></option>`)
+                for(var i=0;i<_result.length;i++){
+                    $("#sitefilter").append(`<option value=${_result[i].ProjectSiteId} >${_result[i].FACode}</option>`)
+
+                }
+                if(_result.length > 0){
+                    $(this).parents('.acc-box').find(".advance_search").removeClass('disabled');
+                }
+                else{
+                    $(this).parents('.acc-box').find(".advance_search").addClass('disabled');
+                }
+            }
+            if(filterid == "sitefilter"){
+                var _result = _Worklog.getfilterdropdowns(`/swi/pm/worklog/_getfilterdropdowns?filter=gettasks&projectsiteid=${$(this).val()}&userid=${@Model.UserId}`)
+                $("#taskfilter").html(`<option value="0" >--Task--</option>`)
+                $("#workgroupfilter").html(`<option value="0" ></option>`)
+                for(var i=0;i<_result.length;i++){
+                    $("#taskfilter").append(`<option value=${_result[i].TaskId} >${_result[i].Title}</option>`);
+                    $('.multiselect-container').append(`<li><a tabindex="0"><label class="checkbox"><input type="checkbox" value=${_result[i].TaskId} > ${_result[i].Title}
+    </label></a></li>`)
+                }
+               
+
+
+            }
+            if(filterid == "taskfilter"){
+                var _result = _Worklog.getfilterdropdowns(`/swi/pm/worklog/_getfilterdropdowns?filter=getworkgroups&sitetaskid=${$(this).val()}&userid=${@Model.UserId}`)
+                $("#workgroupfilter").html(`<option value="0" >--Workgroup--</option>`)
+                $("#resourcefilter").html(`<option value="0" ></option>`)
+                for(var i=0;i<_result.length;i++){
+                        $("#workgroupfilter").append(`<option value=${_result[i].WorkGroupId} >${_result[i].Name}</option>`)
+                }
+
+            }
+            if(filterid == "workgroupfilter"){
+                let urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('projectid')) //if projectid found
+                {
+                    var _result = _Worklog.getfilterdropdowns(`/swi/pm/worklog/_getfilterdropdowns?filter=getresources&workgroupid=${$(this).val()}&userid=${@Model.UserId}&sitetaskid=${$("#taskfilter").val()}&projectid=${urlParams.get('projectid')}`)
+                    $("#resourcefilter").html(`<option value="0" >--Resource--</option>`)
+                    for(var i=0;i<_result.length;i++){
+                       // if(__global_users_jstree.split(",").filter(a => a.toString().toLowerCase() == _result[i].ResourceId.toString().toLowerCase()).length > 0)
+                            $("#resourcefilter").append(`<option value=${_result[i].ResourceId} >${_result[i].ResourceName}</option>`)
+                    }
+                }
+
+
+            }
+        })
+
+
+        /* Main Tab event on change   */
+        
+        $("body").on("click", "#myTab > li", function () {
+            $('ul#myTab li.active').find('a').attr('href').replace('#', '');
+       })
+    
+        
+
+        /*   ==== Scripts Used In Summary Tab ====== */
+      
+        /* Select2 */
+        $('.select').select2({
+            placeholder: "Select a state"
+        });
+
+        //multiselect 
+
+        $('#summarytaskfilter').multiselect();
+
+
+        /* Collapse UnCollapse Widget */
+        $(".collapse-widget").on("click", function () {
+            $(this).parent('header').next('.box-body').slideToggle();
+            if ($(this).find("i").hasClass("fa fa-minus")) {
+                $(this).find("i").attr("class", "fa fa-plus");
+            }
+            else if ($(this).find("i").hasClass("fa fa-plus")) {
+                $(this).find("i").attr("class", "fa fa-minus");
+            }
+            return false;
+        });
+
+        
+    });
+</script>

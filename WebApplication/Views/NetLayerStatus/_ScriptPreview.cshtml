@@ -1,0 +1,56 @@
+﻿@model IEnumerable<SWI.Libraries.AirView.Entities.AV_SiteConfigurations>
+@{
+    int cc = Model.Count();
+    
+   
+}
+@if (Model.Count() > 0)
+{
+
+    var rec = Model.FirstOrDefault();
+    var testtype = "";
+    var lsttesttype = "-1";
+    var html = "";
+    var count = 0;
+    var abcc = cc;
+    string HeadTest = "";
+    string Head = ViewBag.TestTitles;
+    foreach (var item in Model)
+    {
+
+        testtype = item.SortOrder;
+        if (testtype != lsttesttype)
+        {
+
+            string[] obj = Head.Split(',');
+            obj = obj.Skip(int.Parse(item.SortOrder)-1).ToArray();
+            //Head = string.Join(",", obj);
+            HeadTest = obj[0].ToString();
+            item.TestCategory = HeadTest;
+            if (html != "")
+            {
+
+                html = html + "</table></div>";
+            }
+            html = html + "<div  style=\"border:groove 1px;margin-bottom:5px;\"><table class=\"table table-striped\"><tr style=\"background-color:#3c8dbc;color:white\"><th colspan=\"2\">" + item.TestCategory  + " Test </th></tr>  <tr> <td style=\"width:50%\">" + item.TestType + "</td><td style=\"width:50%;text-align:center\">" + item.KPI + "</td></tr>";
+
+            lsttesttype = testtype;
+
+
+        }
+        else
+        {
+            html = html + "<tr><td style=\"width:50%\">" + @item.TestType + "</td><td style=\"width:50%;text-align:center\">" + @item.KPI + "</td></tr>";
+
+        }
+
+        count++;
+    }
+    if (count == abcc)
+    {
+        html = html + "</table></div>";
+    }
+
+     @Html.Raw(html)
+
+}

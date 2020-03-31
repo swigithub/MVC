@@ -1,0 +1,39 @@
+﻿@*<div class="clear"></div>
+    <div class="rptFooter" style="position:relative;bottom: 0;width: 100%;margin-top: 10px;">
+        <!--<img width="40" height="40" id="SWI_LOGO" data-type="BOOLEAN" src="/Content/Images/Application/swi_logo_globe.png" class="left" alt="Logo">-->
+        @if (!string.IsNullOrEmpty(ViewBag.VendorLogo))
+            {
+                <img src="@ViewBag.VendorLogo" class="right" style="height: 40px;" />
+            }
+
+    <img src="@ViewBag.ClientLogo" class="right" style="height: 40px;" />
+        <div class="clear"></div>
+    </div>*@
+
+<style>
+    @@media print {
+        div.divFooter {
+            position: fixed;
+            bottom: 18px;
+            right:10px;
+        }
+        
+    }
+    
+</style>
+<div  style="text-align:right !important;margin-top:20px" class="divFooter">
+    @if (!string.IsNullOrEmpty(ViewBag.VendorLogo))
+            {
+        <img src="@ViewBag.VendorLogo"  class="right" style="height: 20px;" />
+    }
+    @if (ViewBag.ClientLogo!=null)
+    {
+        <img src="@ViewBag.ClientLogo" style="height: 20px;" >
+    }
+    else
+    {
+
+        <img src="~/Content/Images/ClientLogo/T_Mobile.png" style="height: 20px;" />
+    }
+    @*<img src="@ViewBag.ClientLogo" class="right" style="height: 40px;" />*@
+</div>

@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="Scripts/jquery-1.10.2.min.js"></script>
+    <script src="SmartAdmin/js/moment.min.js"></script>
+    <script src="Content/js/Project/canvasjs.min.js"></script>
+
+    <script>
+
+
+
+        window.onload = function () {
+
+            /* = Global Options for the Chart = */
+            var ProjectMilestoneReadinessChart_Options = {
+                animationEnabled: true,
+                theme: "light2",
+                //height: 290,
+                exportEnabled: true,
+                //width:700,
+                toolTip: {
+                    content: "{name}: {y}",
+                    enabled: false,
+                },
+                title: {
+                    text: ""
+                },
+                axisX: {
+                    interval: 1
+                    //intervalType: "year"
+                },
+                subtitles: [{
+                    text: "",
+                    backgroundColor: "#2eacd1",
+                    fontSize: 16,
+                    fontColor: "white",
+                    padding: 5
+                }],
+                legend: {
+                    fontFamily: "calibri",
+                    fontSize: 14,
+                    labelAngle: -70
+                },
+                dataPointWidth: 40,
+                data: []
+            };
+
+            /* = Global Screen size settings for the Chart = */
+            function setChartHeight() {
+                var chartHeight = $(window).height();
+                chartHeight = chartHeight - (chartHeight / 9);
+                var chartWidth = $(window).width();
+                chartWidth = chartWidth - (chartWidth / 50);
+                $('#ProjectMilestoneReadinessChart').css({
+                    "height": chartHeight,
+                    "width": chartWidth
+                });
+                //console.log('setChartHeight');
+            }
+
+            setChartHeight();
+
+            $(window).resize(function () {
+                setChartHeight();
+            });
+
+            $(window).onresize = function () {
+                setChartHeight();
+            };
+            function UniquNamesList(data) {
+                var uniqueNames = [];
+                for (i = 0; i < data.length; i++) {
+                    if (uniqueNames.indexOf(data[i].Task) === -1) {
+                        uniqueNames.push(data[i].Task);
+                    }
+                }
+                return uniqueNames;
+            }
+            function getParameter(theParameter) {
+                var params = window.location.search.substr(1).split('&');
+                for (var i = 0; i < params.length; i++) {
+                    var p = params[i].split('=');
+                    if (p[0] == theParameter) {
+                        return decodeURIComponent(p[1]);
+                    }
+                }
+                return false;
+            }
+            /* == Render Data For Chart == */
+            var ProjectId = getParameter('ProjectId');
+            var FromDate = getParameter('FromDate');
+            var ToDate = getParameter('ToDate');
+
+            var tempdata = [];
+            var tempdataName = []; var StackedCompleted = []; var StackedRemaining = [];
+            var url = document.location.origin+'/swi/PM_Dashboard?filter=Get_Readiness&ProjectId=' + ProjectId + '&FromDate=' + FromDate + '&ToDate=' + ToDate;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                async: false,
+                success: function (data) {
+
+                    var uniqueNames = UniquNamesList(data);
+                   
+
+                  
+                        /*tempdata.push({
+                            type: "stackedColumn",
+                            legendText: data[j].Task,
+                            name: "New vs Returning Visitors",
+                            legendMarkerColor: TempColor,
+                            showInLegend: true,
+                            dataPoints: issueStackbar
+                        })*/
+                    
+
+                    $(data).each(function (index, value) {
+                        /*var TempColor = "";
+                        if (value.Color == 'null') {
+                            TempColor = '#4682B4';
+                        } else {
+                            TempColor = value.Color;
+                        }*/
+                        var TotalCount = value.Remaining + value.Compeleted;
+                        if (value.Task == "") {
+                            StackedCompleted.push({ label: "Empty" + index, y: value.Compeleted, indexLabel: "" + value.Compeleted });
+                            StackedRemaining.push({ label: "Empty" + index, y: value.Remaining, indexLabel: "" + value.Remaining });
+                        } else {
+                            StackedCompleted.push({ label: value.Task, y: value.Compeleted, indexLabel: "" + value.Compeleted });
+                            StackedRemaining.push({ label: value.Task, y: value.Remaining, indexLabel: "" + TotalCount });
+                        }
+                        
+                    });
+
+
+                    tempdata.push({
+                        indexLabelFontColor: "white",
+                        type: "stackedColumn",                   
+                        name: "Completed",
+                        legendMarkerColor: '#6d78ad',
+                        showInLegend: true,
+                        dataPoints: StackedCompleted
+                    });
+
+                    tempdata.push({
+                        indexLabelFontColor: "black",
+                        type: "stackedColumn",         
+                        name: "Total",
+                        legendMarkerColor: '#64cea0',
+                        showInLegend: true,
+                        dataPoints: StackedRemaining
+                    });
+                        
+                }
+            });
+
+            /* = Develop chart = */
+            var chart = new CanvasJS.Chart("ProjectMilestoneReadinessChart", ProjectMilestoneReadinessChart_Options);
+            chart.options.data = tempdata;
+            //console.log('tempdata:' + JSON.stringify(tempdata));
+            chart.render();
+
+
+            /*var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                title: {
+                    text: "",
+                    fontFamily: "arial black",
+                    fontColor: "#695A42"
+                },
+                axisX: {
+                    interval: 1
+                },
+                axisY: {
+                    valueFormatString: "$#0bn",
+                    gridColor: "#B6B1A8",
+                    tickColor: "#B6B1A8"
+                },
+                toolTip: {
+                    shared: true,
+                    content: toolTipContent
+                },
+                data: [{
+                    type: "stackedColumn",
+                    showInLegend: true,
+                    color: "#696661",
+                    name: "Q1",
+                    dataPoints: [
+                        { y: 6.75, x: new Date(2010, 0) },
+                        { y: 8.57, x: new Date(2011, 0) },
+                        { y: 10.64, x: new Date(2012, 0) },
+                        { y: 13.97, x: new Date(2013, 0) },
+                        { y: 15.42, x: new Date(2014, 0) },
+                        { y: 17.26, x: new Date(2015, 0) },
+                        { y: 20.26, x: new Date(2016, 0) }
+                    ]
+                },
+                {
+                    type: "stackedColumn",
+                    showInLegend: true,
+                    name: "Q2",
+                    color: "#EDCA93",
+                    dataPoints: [
+                        { y: 6.82, x: new Date(2010, 0) },
+                        { y: 9.02, x: new Date(2011, 0) },
+                        { y: 11.80, x: new Date(2012, 0) },
+                        { y: 14.11, x: new Date(2013, 0) },
+                        { y: 15.96, x: new Date(2014, 0) },
+                        { y: 17.73, x: new Date(2015, 0) },
+                        { y: 21.5, x: new Date(2016, 0) }
+                    ]
+                }
+                ]
+            });
+            chart.render();
+
+            function toolTipContent(e) {
+                var str = "";
+                var total = 0;
+                var str2, str3;
+                for (var i = 0; i < e.entries.length; i++) {
+                    var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\"> " + e.entries[i].dataSeries.name + "</span>: $<strong>" + e.entries[i].dataPoint.y + "</strong>bn<br/>";
+                    total = e.entries[i].dataPoint.y + total;
+                    str = str.concat(str1);
+                }
+                str2 = "<span style = \"color:DodgerBlue;\"><strong>" + (e.entries[0].dataPoint.x).getFullYear() + "</strong></span><br/>";
+                total = Math.round(total * 100) / 100;
+                str3 = "<span style = \"color:Tomato\">Total:</span><strong> $" + total + "</strong>bn<br/>";
+                return (str2.concat(str)).concat(str3);
+            }*/
+
+        }
+
+    </script>
+</head>
+    <body>
+        <div id="ProjectMilestoneReadinessChart"></div>
+    </body>
+</html>

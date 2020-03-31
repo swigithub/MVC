@@ -1,0 +1,995 @@
+﻿
+@{
+    string id = ViewBag.Id;
+    Layout = null;
+}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+<link href="/Areas/Project/Content/CustomBootstrap/bootstrap.css" rel="stylesheet" />
+<link href="/Content/js/Plugins/gridstack/gridstack.css" rel="stylesheet" />
+<link href="/Content/js/Plugins/AngularQueryBuilder/css/StyleQueryBuilderTemplate.css" rel="stylesheet" />
+
+<style type="text/css">
+    #areaToPrint{
+        height: auto;
+        background-color: red;
+        display: block;
+        width: auto;
+    }
+    /* Node Styling */
+    @@font-face {
+    font-family: DeliciousRoman;
+    src: url(http://youngfb.com/cdn/bootstrap/fonts/glyphicons-halflings-regular.ttf);
+}
+     @@font-face {
+    font-family: DeliciousRoman;
+    src: url(http://youngfb.com/cdn/bootstrap/fonts/glyphicons-halflings-regular.woff);
+}
+    .bodyarea {
+        width: inherit;
+    }
+
+    .topbar {
+        z-index: 999;
+    }
+
+    .setting {
+        background-image: url('../../../../Content/Images/GridStackImg/settings-black.png');
+        background-repeat: no-repeat;
+    }
+
+    .NodePropertyWindow {
+        display: none;
+        float: right;
+        width: 40%;
+        border-left: 1px solid;
+        position: fixed;
+        top: 0px;
+        right: 0;
+        bottom: 1px;
+        background-color: white;
+        overflow-y: auto;
+        padding: 25px;
+    }
+
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+
+        .settingBtn {
+            visibility: hidden;
+        }
+
+        #report_stack, #report_stack * {
+            visibility: visible;
+        }
+
+            #report_stack > div:nth-child(n+2) {
+                page-break-before: always;
+            }
+
+        * {
+            -webkit-print-color-adjust: exact !important;
+            -moz-print-color-adjust: exact !important;
+            -o-print-color-adjust: exact !important;
+            -ms-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .container{width:800px!important}
+    }
+    .bodyarea {
+    border: 0;
+    position: relative;
+}
+
+</style>
+
+<style type="text/css">
+    .container{width:1400px}
+    /* Node Styling */
+    #notification {
+        margin-top: -20px;
+        position: fixed;
+        right: 4px;
+        width: 100%;
+        z-index: 105;
+        text-align: center;
+        font-weight: normal;
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        background-color: #cc4944;
+        padding: 5px;
+    }
+
+        #notification span.dismiss {
+            padding: 0 5px;
+            cursor: pointer;
+            float: right;
+            margin-right: 10px;
+        }
+
+        #notification a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+    .condition {
+        margin-top: 18px;
+        margin-bottom: 15px;
+        margin-left: 35px !important;
+    }
+
+    .ng-scope.select.input-sm {
+        height: 30px !important;
+        padding: 0px 10px !important;
+    }
+
+    .parent-class {
+        border: none !important;
+    }
+
+    .topbar {
+        background: dimgrey;
+        color: white;
+        padding: 5px;
+        height: 25px;
+    }
+
+    .bodyarea {
+        font-size: 17px;
+        height: inherit;
+        background-color: white;
+        width: 100%;
+        position: absolute;
+        border: 1px solid;
+    }
+
+    .grid-stack {
+        background: #e0e0e0 !important;
+        border-left: 5px solid #e0e0e0;
+        border-right: 5px solid #e0e0e0;
+        border-bottom: 10px solid #e0e0e0;
+        border-top: 10px solid #e0e0e0;
+    }
+
+    .grid-stack-item-content {
+        color: #2c3e50;
+        border: 1px solid black;
+        overflow: hidden;
+    }
+
+    .remove {
+        background-image: url('../../../../Content/Images/GridStackImg/remove-button.png');
+        background-repeat: no-repeat;
+    }
+
+    .grippy {
+        background-image: url('../../../../Content/Images/GridStackImg/move-option.png');
+        background-repeat: no-repeat;
+        cursor: move;
+    }
+
+    .setting {
+        background-image: url('../../../../Content/Images/GridStackImg/settings.png');
+        background-repeat: no-repeat;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    li {
+        float: left;
+    }
+
+        li a {
+            display: block;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+    .NodePropertyWindow {
+        display: none;
+        float: right;
+        width: 40%;
+        position: fixed;
+        top: 50px;
+        right: 0;
+        bottom: 1px;
+        background-color: white;
+        overflow-y: auto;
+        -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .sticky0 {
+        position: fixed;
+        top: 0;
+    }
+
+    .sticky45 {
+        position: fixed;
+        top: 90px;
+    }
+
+    .bodyarea {
+        border: 0;
+        position: relative;
+    }
+
+    .parent-class {
+        padding: 0 5px !important;
+    }
+
+    .topbar {
+        width: 100%;
+        background: white !important;
+        color: #333 !important;
+    }
+
+    div#grid-stack-DIV {
+        float: left;
+        width: 100%;
+    }
+
+    .grid-stack.grid-stack-instance-441.grid-stack-animate {
+        float: left;
+        width: 100%;
+    }
+
+    ul#settingsTab {
+        background: #3276b1;
+        border: 0;
+    }
+
+        ul#settingsTab li {
+            margin: 0;
+        }
+
+            ul#settingsTab li a {
+                margin: 0 !important;
+                border: 0;
+                color: #FFF;
+                padding: 10px 20px !important;
+            }
+
+            ul#settingsTab li.active a {
+                color: #3e3e3e;
+            }
+
+            ul#settingsTab li a:hover {
+                background: #8c8c8c;
+            }
+
+    .grid-stack.container {
+        padding: 0;
+    }
+
+    div#grid-stack-DIV {
+        float: left;
+        width: 100%;
+        padding-bottom: 20px;
+        background: #e0e0e0;
+    }
+
+    .disabled {
+    background-color: rgba(0,0,0,0.1) !important;
+    color: black !important;
+ 
+}
+
+
+
+    /*   Abrar Code   */
+
+    #QueryBuilderTable tbody {
+        display: block;
+        max-height: 470px;
+        overflow-y: scroll;
+    }
+
+        #QueryBuilderTable thead,
+        #QueryBuilderTable tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+    .tableColumnsItem:hover {
+        cursor: pointer;
+    }
+
+    .condition {
+        /*margin-top: 18px;
+        margin-bottom: 15px;
+        margin-left: 35px !important;*/
+        margin-top: 0px;
+        margin-bottom: 15px;
+        margin-right: 0px;
+        margin-left: 0px !important;
+    }
+
+    #QueryBuilderBody > tr:hover {
+        background-color: #cdffb9;
+    }
+
+    #QueryBuilderMainArea table {
+        margin: 0;
+    }
+
+    .create-query {
+        padding: 30px 20px;
+        height: 600px;
+        overflow: auto;
+        margin: -20px -20px -20px 0px;
+        background: #eff6f8;
+        border-left: 1px solid #e4e6e7;
+    }
+
+   .mainButtonDiv {
+            padding: 0 !important;
+            display: inline-block;
+        }
+
+   .mainButtonDiv button {
+                float: none !important;
+                margin: 0 0 10px;
+                font-size: 13px;
+                padding: 3px 17px;
+                width: auto !important;
+                border-radius: 4px;
+                margin-right: 6px !important;
+                border: 0;
+            }
+
+ .alert {
+            background: #fff !important;
+            margin: 0 !important;
+            border: 1px solid #ddd;
+            height: auto;
+            padding: 10px 20px !important;
+        }
+
+        .alert .condition {
+                /*margin: 0 !important;*/
+            }
+
+       table {
+            margin: 0 !important;
+        }
+
+       .groupOperator {
+            margin: -10px 0 10px !important;
+            width: auto;
+        }
+
+     .btnDiv {
+            margin: 0 !important;
+        }
+
+    .query-builder-popup {
+        display: flex;
+    }
+
+    .querybuilderarea {
+        width: 750px;
+        padding: 0 20px;
+    }
+
+    .create-query-area {
+        flex: auto;
+    }
+
+
+
+
+
+
+
+
+
+
+
+    .mainButtonDiv {
+        padding-bottom: 10px;
+    }
+
+        .mainButtonDiv .btnMain {
+            margin-top: 2px;
+            display: inline-block;
+        }
+
+    .first3 {
+        background: 0;
+        margin-left: 14px;
+           
+    }
+
+        .first3 .innerButton {
+            margin-left: 5px;
+            width: 21px;
+         padding-top: 3px;
+    padding-bottom: 4px;
+    margin-top: 0px;
+        }
+
+    .custom-select-dropdown-columns {
+        width: 160px;
+    }
+
+    .custom-select-rules {
+        width: 100px;
+    }
+
+    .custom-select-input {
+        margin-left: 10px;
+        width: 154px;
+    }
+
+    .custom-select-data-dropdown {
+        width: 100px;
+    }
+
+    .btnremovecondition {
+        margin-left: 5px;
+        height: 25px;
+        padding: 3px;
+        width: 28px;
+        border-radius: 0;
+        margin-top: 2px;
+    }
+
+    .tbl-query-builder {
+        margin-bottom: -38px;
+        margin-left: 14px;
+        margin-top: -14px;
+    }
+
+    .rules-row-td {
+        display: inline;
+        float: left;
+    }
+
+    .conditionOperator {
+        margin-bottom: 4px;
+    }
+
+    .group-operator {
+        margin-bottom: 4px;
+        font-weight: bold;
+        width: 60px;
+        padding: 2px;
+        margin-top: 20px !important;
+    }
+
+    .first-time-buttons {
+        text-align: left;
+    }
+
+     .dataTables_scrollHead, .dataTables_scrollBody
+    {
+        overflow: inherit !important;
+    }
+
+</style>
+
+<span style="padding: 8px; background-color: #3276b1; position: fixed; top: 40%; left: 0px; color: white; font-size: 34px; cursor: pointer" id="btnSave">
+    <span class="glyphicon glyphicon-print" style=""></span>
+</span>
+
+
+<!-- Add Node Modal -->
+<div class="modal fade" id="QueryBuilder" role="dialog" ng-app="Myapp" ng-controller="Myctrl">
+    <div class="modal-dialog" style="width:1000px;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Query Builder</h4>
+            </div>
+            <div class="modal-body" style="min-height:300px;">
+                <!-- Add Node Modal -->
+                <input type="hidden" id="QueryBuilderModalId" />
+                <div id="notification" style="display: none;">
+                    <span class="dismiss"><a title="dismiss this notification">x</a></span>
+                </div>
+                <div id="QueryBuilder" class="querybuilderwhere" style="padding:20px;">
+                  
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" data-dismiss="modal" class="btn btn-default">Cancel</button>
+                <button type="submit" id="QueryBuilderModalBtnOk" data-dismiss="modal" class="btn btn-default">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin: auto;padding:2px;">
+    <span id="areaToPrint">
+        <div id="report_stack" style="width: inherit;  " class="grid-stack grid-stack-instance-7377 container">
+
+        </div>
+    </span>
+   
+
+</div>
+
+<!-- Edit Settings Modal   class="propertyWindow" id="propertyWindow" -->
+<div class="NodePropertyWindow" id="NodePropertyWindow" style="width: 25%; padding: 0 !important;">
+    <div style="background-color: #3276b1; padding: 10px; color: white; ">Query Builder</div>
+    <div class="widget-body" style="margin-top: 5px; margin-top: 5px;padding: 20px;">
+        <div class="tab-pane fade in active">
+            <div id="baseSettings">
+                <div id="advanceSettings">
+                    <form id="AdvanceSettingForm">
+                        <input type="hidden" id="selectedNodeId" name="selectedNodeId" />
+                        <input type="hidden" id="routeTemplateId" name="routeTemplateId" value="@Url.RequestContext.RouteData.Values["id"]" />
+                        <input type="hidden" name="DataSetColumnsHidden" id="DataSetColumnsHidden" value="[]" />
+                        <input type="hidden" name="FilterClauseHidden" id="FilterClauseHidden" value="[]" />
+
+                        <div id="advanceSettingsdynamicForm">
+                            <!-- Form to render dynamically  -->
+                        </div>
+                    </form>
+                    <br />
+                    <button type="submit" id="editAdvancedSettingsBtnOk" class="btn btn-success">Save</button>
+                    <button type="button" class="editSettingsBtnCancel btn btn-danger">Cancel</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/SmartAdmin/js/libs/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+<script src="/Content/js/Plugins/gridstack/gridstack.js"></script>
+@*<script src="/Content/js/Plugins/gridstack/gridstack.jQueryUI.js"></script>*@
+
+<script src="~/SmartAdmin/js/libs/jquery-ui-1.10.3.min.js"></script>
+<script src="~/Scripts/angular.js"></script>
+
+<script src="~/AdminLTE/bootstrap/js/bootstrap.js"></script>
+<script src="~/Content/js/Plugins/canvasjs/canvasjs.min.js"></script>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAdDzJ4ggDZu4WAguesEjYlVEl1Y80YYDI&sensor=false&libraries=geometry&bogusParam=.js"></script>
+<script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+<script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+<script src="~/Content/js/GoogleMapsNTL.js"></script>
+<script src="~/Content/js/Plugins/AjaxLoading/loading.js"></script>
+
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/angular.min.js"></script>
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/QueryBuilderDirective.js"></script>
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/ui-bootstrap-tpls-0.13.3.js"></script>
+
+
+<link rel="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" type="text/css" />
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+
+<script type="text/javascript">
+    var loading = $.loading();
+    loading.ajax(true);
+    $(document).ready(function(){
+        jQuery(document).bind("keyup keydown", function(e){
+            if(e.ctrlKey && e.keyCode == 80){
+                $('.MapControls').hide();
+                $('.canvasjs-chart-toolbar').hide();
+                $('.btn-default').hide();
+
+                window.print();
+
+                $('.MapControls').show();
+                $('.canvasjs-chart-toolbar').show();
+                $('.btn-default').show();
+            }
+        });
+    });
+
+    $(function () {
+        var gridData = "";
+        var serializedData = "";
+        var routeTemplateId = @id;
+
+        $.ajax({
+            url: "/Project/Template/GetNodeData/",
+            type: "GET",
+            data: {
+                TemplateId: routeTemplateId,
+                nocache: Math.random(),
+            },
+            async: false,
+            cache: false,
+        }).done(function (data) {
+            gridData = JSON.parse(JSON.stringify(data.NodeJson));
+
+            if (data.TemplateCoreSetting != null) {
+                if (data.TemplateCoreSetting.BackgroundColor != null) {
+                    $('.grid-stack').css("background-color", data.TemplateCoreSetting.BackgroundColor);
+                }
+                if (data.TemplateCoreSetting.PageType == "contained") {
+                    $('.grid-stack').addClass("container");
+                }
+            }
+
+            if (gridData != null && gridData != "") {
+                serializedData = gridData;
+                var items =JSON.parse(serializedData)
+                $(items).each(function(i){
+                    $("#report_stack").append(`
+                                    <div class="parent-class grid-stack-item-content grid-stack-item" id="grid-stack-id-` + items[i].id + `" data-gs-x="`+items[i].x+`" data-gs-y="`+items[i].y+`" data-gs-width="`+items[i].width+`" data-gs-height="`+items[i].height+`" data-gs-id="`+items[i].id+`">
+                                    <div id="dv` + items[i].id + `" class="bodyarea">
+                                            <div class="pull-right settingBtn" style="margin-right: 20px;"><div class="settingBtn" style="position: absolute"><a class="settingBtn" onclick="ChangeNodeSettings(` + items[i].id + `)"><span class="settingBtn glyphicon glyphicon-cog"></span></a>                   
+                                            </div></div>
+                                    </div> </div>`);
+                });
+                var options = {
+                cellHeight: 70,
+                verticalMargin: 10
+                };
+                $('#report_stack').gridstack(options);
+
+                $(items).each(function(count){
+                    $.get("/Project/Template/GetNodeWidget", {
+                        NodeId: items[count].id,
+                        CurrentPageURL: window.location.href,
+                        WithPartialView: true,
+                        nocache: Math.random(),
+                    }).done(function (PageData) {
+                        $('#report_stack').find('#dv'+items[count].id).append(PageData);
+                    });
+                });
+
+                $('.btn-default').css('z-index','999');
+
+            }
+        });
+
+    });
+
+ 
+
+
+    function ChangeNodeSettings(id) {
+        var whereClauseJson = "";
+        var tempId = @id;
+        var nodeTemplateURL = "";
+        var tablename = "";
+        $('#selectedNodeId').val(id)
+
+        // Dropdown of Id's in partial view
+        var selectListDOMIds = "<select class='DomIdSelectList form-control'>";
+        selectListDOMIds += "<option value='-1'> Select ID to Map </option>";
+        $('#dv' + id).find('*').each(function () {
+            if ($(this).attr('id') != undefined && $(this).attr('id').includes('_')) {
+
+                if (isUpperCase($(this).attr('id'))) {
+                    selectListDOMIds += "<option value=" + $(this).attr('id') + ">" + $(this).attr('id') + "</option>";
+                }
+            }
+        });
+        selectListDOMIds += "</select>"
+
+        $.ajax({
+            url: "/Project/Template/GetFormBuilderForQueryRenderedHTML/",
+            type: "post",
+            data: {
+                FormTypeId: "node",
+                NodeId: id,
+                TemplateId: tempId,
+            },
+            async: false,
+        }).done(function (data) {
+
+            $('#advanceSettingsdynamicForm').html(data.FormHtml);
+            $('#editAdvancedSettingsBtnOk').show();
+            if (data.FormHtml == "") {
+                $('#advanceSettingsdynamicForm').html("<h3> No Query Builder </h3>");
+                $('#editAdvancedSettingsBtnOk').hide();
+            }
+
+            $('div.nodeTitleName').html(data.NodeBasicInfo.NodeTitle);
+            $('#nodeTitle').val(data.NodeBasicInfo.NodeTitle);
+            $('#nodeTemplateURL').html(data.NodeTempList);
+            $('#nodeSQLQuery').val(data.NodeBasicInfo.NodeSQL);
+            $('div.DomIdsList').html(selectListDOMIds);
+            $('#nodeTitleForSetting').html(toTitleCase(data.NodeBasicInfo.NodeTitle));
+            whereClauseJson = data.WhereClauseJson;
+            // Adjust dropdown values and assign name
+            var DOMIdList = data.MappingIds;
+            $('.DomIdSelectList').each(function (i) {
+                $(this).attr("name", "AdvSettingMappingId" + i);
+                if (DOMIdList[i] != null) {
+                    $(this).val(DOMIdList[i]);
+                }
+            });
+            tablename = '';		
+            var settings = JSON.parse( data.Settings);		
+            tablename = settings.QuerySetting.Table;
+        });
+
+        var data = '{"group": {"operator": "AND","rules": []}}';
+        if (whereClauseJson != "" && whereClauseJson != "undefined") {
+            data = whereClauseJson;
+        }
+        LoadData(data, tablename);
+
+        $("div.NodePropertyWindow").toggle();
+    }
+
+    $('.editSettingsBtnCancel').click(function () {
+        $("div.NodePropertyWindow").hide();
+        $('#editAdvancedSettingsBtnOk').show();
+    });
+
+    function OpenQueryBuilder(COntrolType, Id) {
+        $('#QueryBuilderModalId').val(Id);
+        $('#QueryBuilder').modal('show');
+    }
+
+    function toTitleCase(str) {
+        return str.replace(/\w\S*/g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    }
+
+    function isUpperCase(str) {
+        return str === str.toUpperCase();
+    }
+
+</script>
+
+<script>
+    var LoadData = '';
+    var app = angular.module('Myapp', ['queryBuilder', 'ui.bootstrap']);
+    app.controller('Myctrl', ['$compile', '$scope', '$http', '$timeout', '$rootScope', function ($compile, $scope, $http, $timeout, $rootScope) {
+
+
+        LoadData = function (datat1, tablename) {
+
+            $('.querybuilderwhere').html('');
+            var queryele = '<query-builder group="filter.group"></query-builder>';
+            var queryeleCom = $compile(queryele)($scope);
+            $('.querybuilderwhere').append(queryeleCom);
+
+
+
+
+
+            var data = datat1;
+
+            function htmlEntities(str) {
+                return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+
+            function addremoveqoute(str, flag) {
+                if (flag == "System.DateTime") {
+                    dt = new Date(str);
+                    str = dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
+                }
+                if (flag == "System.Integer") {
+                    return String(str);
+                }
+                else {
+                    str = "'" + str + "'"
+                    return String(str);
+                }
+            }
+
+            function computed(group) {
+                if (!group) return "";
+                for (var str = "(", i = 0; i < group.rules.length; i++) {
+
+
+
+                    if (group.rules[0].group) {
+                        group.rules[0].group.removefirstcondition = false;
+                    }
+                    if (group.rules.length == 1) {
+                        group.rules[i].isoperator = false;
+
+                    }
+
+
+                    if (i > 0 && group.rules[i].group) {
+
+                        str += group.rules[i].group.operator + " ";
+
+                    }
+                    if (group.rules[i].operator) {
+                        str += " " + group.rules[i].operator;
+                    }
+
+                    str += group.rules[i].group ?
+                        computed(group.rules[i].group) :
+                        " [" + group.rules[i].field + "] " + htmlEntities(group.rules[i].condition) + " " + addremoveqoute(group.rules[i].data, group.rules[i].type) + " ";
+                }
+                $scope.Querystring = str + ")";
+                console.log($scope.Querystring);
+                return str + ")";
+            }
+
+            $scope.json = null;
+
+            $scope.filter = JSON.parse(data);
+
+            $scope.$watch('filter', function (newValue) {
+                $("#FilterClauseHidden").val(JSON.stringify(newValue));
+                $scope.json = JSON.stringify(newValue, null, 2);
+                $scope.output = computed(newValue.group);
+            }, true);
+
+
+            $scope.Report;
+            $scope.Column = [];
+            $scope.ColumnId = [];
+
+            $scope.CallDirective = function () {
+                $rootScope.$emit('callDirective', $scope.Column);
+            };
+
+            $.ajax({
+                url: "/Project/Template/GetDbTableColumnName",
+                type: "POST",
+                data: {
+                    ViewName: tablename
+                },
+                async: false,
+            }).done(function (result) {
+                
+
+                
+                
+                SelectedTablesColumnName = [];
+                if (result.length != 0) {
+                  
+                    var i = 0;
+                    $.each(result, function (i, item) {
+                      
+                        var dataType = 'System.String';
+                        var DataType = "[" + item.ColumnName + "]";
+                        if (item.DataType == 'int' || item.DataType == 'numeric') {
+                            dataType = "System.Int32";
+                        } else if (item.DataType == 'varchar' || item.DataType == 'nvarchar') {
+                            dataType = "System.String";
+                        }
+                        else if (item.DataType == 'float') {
+                            dataType = "System.Double";
+                        }
+                        else if (item.DataType == 'datetime' || item.DataType == 'date') {
+                            dataType = "System.DateTime";
+                        }
+                        SelectedTablesColumnName.push({ name: item.ColumnName, DataType: dataType, DisplayType: item.IsSelectType, $$hashKey: "object:" + i });
+                        i++;
+                    });
+                }
+
+                $scope.Column = SelectedTablesColumnName;
+                $scope.CallDirective();
+                $rootScope.testing = SelectedTablesColumnName;
+            });
+
+            $scope.getAllReports = function () {
+                $http.get("/ReportTest/GetReport?Filter=byDefinationType").then(function (response) {
+                    $scope.Report = response.data;
+                })
+            }
+
+            $('#QueryBuilderModalBtnOk').click(function () {
+                var FieldId = $('#QueryBuilderModalId').val();
+               
+                $('#' + FieldId).val($scope.Querystring);
+                $("#CustomQueryTextArea").val(JsonToQuery(json, $scope.Querystring));
+            });
+
+        }
+
+
+
+    }]);
+    
+    $(document).ready(function () {
+        var Areaheight = document.getElementById("report_stack").style.height;
+        document.getElementById("report_stack").style.height = parseInt(Areaheight.replace("px", "")) + 20+"px";
+    });
+
+
+    $(document).ajaxStop(function() {
+       // $(".dataTables_scrollHeadInner").css("width","99%");
+    });
+
+    $(function() { 
+        $(".default-cell-icon").hide();
+        $("#btnSave").click(function() { 
+            $(".settingBtn").hide();
+            html2canvas($("#areaToPrint"), {
+                useCORS: true,
+                onrendered:function(canvas) {
+                    var contentWidth = canvas.width;
+                    var contentHeight = canvas.height;
+                    var pageHeight = contentWidth / 592.28 * 841.89;
+                    var leftHeight = contentHeight;
+                    var position = 0;     
+                    var imgWidth = 595.28;
+                    var imgHeight = 592.28/contentWidth * contentHeight;
+                    var pageData = canvas.toDataURL('PNG', 1.0);
+                    var pdf = new jsPDF('', 'pt', 'a4');
+                    if (leftHeight < pageHeight) {
+                        pdf.addImage(pageData, 'PNG', 0, 0, imgWidth, imgHeight );
+                    } else {
+                        while(leftHeight > 0) {
+                            pdf.addImage(pageData, 'PNG', 0, position, imgWidth, imgHeight)
+                            leftHeight -= pageHeight;
+                            position -= 841.89;
+                            //avoid blank page
+                            if(leftHeight > 0) {
+                                pdf.addPage();
+                            }
+                        }
+                    }
+	
+                    pdf.save('Report.pdf');
+                    $(".settingBtn").show();
+                }
+            })
+            //$(".settingBtn").hide();
+            //var pdf = new jsPDF({
+            //    unit: 'px',
+            //    format: 'a4'
+            //});
+            //var width = pdf.internal.pageSize.width;    
+            //var height = pdf.internal.pageSize.height;
+            //html2canvas($("#areaToPrint"), {
+            //    useCORS: true,
+            //    onrendered: function(canvas) {
+            //        var img =canvas.toDataURL("image/jpeg");
+            //        pdf.addImage(img, 'JPEG', 0, 0, width, height);
+            //        pdf.save('a4.pdf');
+            //        $(".settingBtn").show();
+            //    }
+            //});
+        });
+
+
+        $('#editAdvancedSettingsBtnOk').click(function () {
+
+         
+            $.ajax({
+                url: "/project/template/PostFormBuilderValuesReport",
+                type: "post",
+                data: $("#AdvanceSettingForm").serialize(),
+                async: false,
+            }).done(function (data) {
+                if (data == "ok") {
+                    $("#nodeSettingmessage").html(`<div class="alert alert-success alert-dismissible fade in">
+                        <a href="#" class ="close" data-dismiss="alert" aria-label="close">&times; </a>
+                  <strong>Success!</strong> Setting saved succesfully.
+                </div>`);
+                } else if (data == "error") {
+                    $("#nodeSettingmessage").html(`<div class="alert alert-danger alert-dismissible fade in">
+                        <a href="#" class ="close" data-dismiss="alert" aria-label="close">&times; </a>
+                  <strong>Error!</strong> There is an error. Please try again.
+                </div>`);
+                }
+                location.reload();
+            });
+           
+
+        });
+    }); 
+
+</script>
+

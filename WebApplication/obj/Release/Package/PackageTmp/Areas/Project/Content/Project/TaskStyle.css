@@ -1,0 +1,19 @@
+﻿.filters button#SearchIssue,.filters button#SearchMarket,button#SearchProject {
+    height: 30px;
+    margin-top: 0px;
+    float: left;
+    border-radius: 4px;
+}
+.widget-toolbar.filters.pv{
+    float: left;
+}
+.filters .input-group {
+    float: left;
+    display: unset;
+}
+.filters .example {
+    float: left;
+}
+.widget-toolbar {
+    padding: 1px 8px!important;
+}

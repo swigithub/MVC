@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[PM_ProjectTrend] (
+    [SrId]                 NUMERIC (18) IDENTITY (1, 1) NOT NULL,
+    [ProjectId]            NUMERIC (18) NULL,
+    [MilestoneId]          NUMERIC (18) NULL,
+    [StageId]              NUMERIC (18) NULL,
+    [RegionId]             NUMERIC (18) NULL,
+    [MarketId]             NUMERIC (18) NULL,
+    [ReportDate]           DATETIME     NULL,
+    [PlannedSites]         INT          CONSTRAINT [DF_Table1_ForecastSites] DEFAULT ((0)) NULL,
+    [ForecastSites]        INT          CONSTRAINT [DF_PM_ProjectTrend_ForecastSites] DEFAULT ((0)) NULL,
+    [TargetSites]          INT          CONSTRAINT [DF_PM_ProjectTrend_TargetSites] DEFAULT ((0)) NULL,
+    [ActualSites]          INT          CONSTRAINT [DF_PM_ProjectTrend_ActualSites] DEFAULT ((0)) NULL,
+    [CumPlannedSites]      INT          CONSTRAINT [DF_PM_ProjectTrend_CumPlannedSites] DEFAULT ((0)) NULL,
+    [CumForecastSites]     INT          CONSTRAINT [DF_PM_ProjectTrend_CumForecastSites] DEFAULT ((0)) NULL,
+    [CumTargetSites]       INT          CONSTRAINT [DF_PM_ProjectTrend_CumTargetSites] DEFAULT ((0)) NULL,
+    [CumActualSites]       INT          CONSTRAINT [DF_PM_ProjectTrend_CumActualSites] DEFAULT ((0)) NULL,
+    [RequiredRunRate]      FLOAT (53)   CONSTRAINT [DF_PM_ProjectTrend_RequiredRunRate] DEFAULT ((0)) NULL,
+    [ScheduledSites]       INT          CONSTRAINT [DF_PM_ProjectTrend_ScheduledSites] DEFAULT ((0)) NULL,
+    [PlannedStatusSites]   INT          CONSTRAINT [DF_PM_ProjectTrend_PlannedStatusSites] DEFAULT ((0)) NULL,
+    [OngoingStatusSites]   INT          CONSTRAINT [DF_PM_ProjectTrend_OngoingStatusSites] DEFAULT ((0)) NULL,
+    [MigratedStatusSites]  INT          CONSTRAINT [DF_PM_ProjectTrend_MigratedStatusSites] DEFAULT ((0)) NULL,
+    [CompletedStatusSites] INT          CONSTRAINT [DF_PM_ProjectTrend_CompletedStatusSites] DEFAULT ((0)) NULL,
+    CONSTRAINT [PK_PM_ProjectTrend] PRIMARY KEY CLUSTERED ([SrId] ASC)
+);
+

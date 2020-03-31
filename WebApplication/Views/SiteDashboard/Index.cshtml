@@ -1,0 +1,1803 @@
+﻿@using SWI.Libraries.AirView.Entities
+@model AV_GetSiteDashboardInfo
+@{
+    ViewBag.Title = "Site Dashboard";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = Int32.MaxValue;
+    var WoStatus = jss.Serialize(ViewBag.WoStatus);
+}
+<style>
+    .custom-table {
+        border-radius: 4px;
+        z-index: 1;
+        border: 2px solid #ddd;
+        padding: 3px 5px;
+        background: #FFF;
+    }
+
+        .custom-table h3 {
+            margin: 0 0 10px;
+            font-size: 25px;
+        }
+
+    table.info-table {
+        width: 100%;
+        background: #313131;
+        color: #FFF;
+        font-size: 17px;
+    }
+
+
+        table.info-table th, table.info-table td {
+            padding: 3px 8px;
+            border: 1px solid #545454;
+            position: relative;
+            z-index: 1;
+            font-size: 15px;
+        }
+
+        table.info-table th {
+            font-weight: 200;
+            font-size: 15px;
+        }
+
+    .data-progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: transparent;
+        z-index: -1;
+        transition: all 0.3s linear;
+    }
+
+    div#allGraphArea {
+        background: #FFF;
+        z-index: 1000001 !important;
+    }
+
+    ul.selectors {
+        display: flex;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        margin: 0;
+        float: left;
+        width: 100%;
+    }
+
+        ul.selectors li {
+            flex: 1;
+        }
+
+            ul.selectors li a {
+                float: left;
+                width: 100%;
+                padding: 10px 25px;
+                transition: all 0.3s;
+                border-top: 2px solid #ddd;
+                background: #f0f0f0;
+                border-right: 2px solid #ddd;
+            }
+
+                ul.selectors li a img {
+                    width: 40px;
+                    margin-right: 10px;
+                }
+
+                ul.selectors li a span.username {
+                    font-size: 18px;
+                    color: #5c5c5c;
+                }
+
+            ul.selectors li.active a {
+                border-top: 2px solid #3c8dbc;
+                background: #FFF;
+            }
+
+            ul.selectors li:last-child a {
+                border-right: 0;
+            }
+
+    .tab-content {
+        float: left;
+        width: 100%;
+    }
+
+    #SiteGrid.table-responsive {
+        overflow: visible;
+    }
+
+        #SiteGrid.table-responsive table {
+            margin: 0 !important;
+        }
+
+
+
+    /* ===== SITE DASHBOARD TABS STYLING =====*/
+    .site-db-tabs {
+        float: left;
+        width: 100%;
+        margin: -8px 0 -8px -15px;
+    }
+
+        .site-db-tabs ul.nav {
+            float: left;
+            width: 100%;
+            border-radius: 4px 0 0 0;
+            overflow: hidden;
+        }
+
+            .site-db-tabs ul.nav li {
+                float: left;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+                .site-db-tabs ul.nav li a {
+                    transition: all 0.2s;
+                    color: #58595b;
+                    float: left;
+                    position: relative;
+                    font-size: 15px;
+                    padding: 8px 18px 7px;
+                    font-weight: 500;
+                    border-left: 1px solid transparent;
+                    border-right: 1px solid transparent;
+                }
+
+                .site-db-tabs ul.nav li.active a {
+                    background: #e7e8e9;
+                    border-left-color: #bcbec0;
+                    border-right-color: #bcbec0;
+                }
+
+                .site-db-tabs ul.nav li:first-child a {
+                    border-left: 0 !important;
+                }
+
+    .table-container {
+        float: left;
+        width: 100%;
+        min-width: 600px;
+        overflow: hidden;
+        -webkit-border-radius: 0 0 4px 4px;
+        -moz-border-radius: 0 0 4px 4px;
+        border-radius: 0 0 4px 4px;
+    }
+
+    .table-wrapper {
+        float: left;
+        width: 100%;
+        margin: 0 0 20px;
+        overflow: auto;
+    }
+
+        .table-wrapper:last-child {
+            margin: 0;
+        }
+
+    .table-title {
+        float: left;
+        width: 100%;
+        min-width: 600px;
+        background: #64a5da;
+        padding: 5px 10px;
+        -webkit-border-radius: 4px 4px 0 0;
+        -moz-border-radius: 4px 4px 0 0;
+        border-radius: 4px 4px 0 0;
+    }
+
+        .table-title h3 {
+            float: left;
+            margin: 0;
+            padding: 0;
+            margin-right: 20px;
+            font-size: 15px;
+            color: #FFF;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+    .table-wrapper thead td {
+        font-weight: 600;
+        font-size: 13px;
+        color: #231f20;
+        text-align: center;
+        line-height: 1.2 !important;
+    }
+
+    .table-wrapper table td {
+        width: 90px;
+        vertical-align: middle !important;
+        vertical-align: middle;
+        padding: 4px 10px !important;
+    }
+
+    .table-wrapper tbody td {
+        font-size: 13px;
+        color: #231f20;
+        font-weight: 600;
+        text-align: center;
+    }
+
+        .table-wrapper tbody td img {
+            margin-right: 5px;
+        }
+
+        .table-wrapper tbody td span {
+            color: #58595b;
+            font-weight: 500;
+            text-align: left;
+            float: left;
+            width: 100%;
+        }
+
+    canvaschart {
+        float: left;
+        width: 100%;
+    }
+
+    #chartContainer {
+        float: left;
+    }
+
+    .overflowset {
+        float: left;
+        width: 100%;
+        max-height: 100%;
+        overflow: auto;
+    }
+
+    .tab-content .tab-pane {
+        float: left;
+        width: 100%;
+    }
+
+    .canvaschart {
+        position: relative;
+        float: left;
+        width: 100%;
+    }
+
+    a.collapse-table {
+        float: right;
+        color: #64a5da;
+        width: 18px;
+        height: 18px;
+        background: #FFF;
+        border-radius: 3px;
+        font-size: 9px;
+        color: #ddd;
+        text-align: center;
+        line-height: 20px;
+    }
+
+        a.collapse-table i {
+            color: #64a5da;
+        }
+
+    .table-container {
+        float: left;
+        width: 100%;
+    }
+
+        .table-container table {
+            float: left;
+            margin: 0;
+        }
+
+    .box.style2 {
+        border: 0;
+    }
+
+        .box.style2 .box-header h3 {
+            color: #58595b;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .box.style2 .box-header {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 8px 15px;
+        }
+
+            .box.style2 .box-header .box-tools button, .box.style2 .box-header .box-tools .btn-group {
+                background: #a7a9ac !important;
+                color: #FFF;
+                width: 19px;
+                height: 19px;
+                padding: 0;
+                line-height: 18px;
+                font-size: 10px !important;
+                margin-left: 5px;
+                margin-top: 3px;
+                float: left;
+                border-radius: 4px;
+                border: 0;
+            }
+
+                .box.style2 .box-header .box-tools .btn-group a {
+                    background: none !important;
+                }
+
+    .simple-tabs {
+        float: left;
+        width: 100%;
+        border: 1px solid #dcdddf;
+        padding: 10px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+    }
+
+        .simple-tabs .nav li {
+            float: left;
+        }
+
+        .simple-tabs ul.nav {
+            float: left;
+            border: 1px solid #dddddd;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+            .simple-tabs ul.nav li a {
+                float: left;
+                padding: 5px 14px;
+                color: #58585a;
+                font-size: 13px;
+                border-right: 1px solid #d0d0d2;
+                font-weight: 500;
+            }
+
+            .simple-tabs ul.nav li.active a {
+                background: #e7e8ea;
+                color: #949599;
+            }
+
+            .simple-tabs ul.nav li:last-child a {
+                border: 0;
+            }
+
+    .btn-group.custom-btn-group {
+        float: right;
+        border-color: #cdcdcf;
+    }
+
+        .btn-group.custom-btn-group .btn {
+            padding: 4px 15px;
+            background: #FFF;
+            color: #646466;
+            font-size: 14px;
+            border-color: #cdcdcf;
+            font-weight: 500;
+        }
+
+    .simple-tabs .tab-content {
+        float: left;
+        width: 100%;
+        padding-top: 20px;
+    }
+
+    /*=== Touch Splitter === */
+    .TouchSplitter.h-ts > div {
+        width: 42%;
+        width: calc(50% - .5em);
+    }
+
+    .TouchSplitter.h-ts > div {
+        width: 42%;
+        float: none;
+        width: calc(50% - .5em);
+        display: unset;
+    }
+
+    .TouchSplitter > div {
+        display: block;
+        margin: 0;
+        padding: 0;
+        float: left;
+    }
+
+    .TouchSplitter.h-ts > div.splitter-bar {
+        width: 1em;
+        cursor: col-resize;
+    }
+
+    .TouchSplitter.v-ts > div.splitter-bar {
+        height: 1em;
+        cursor: row-resize;
+    }
+
+    .TouchSplitter > div.splitter-bar.dock > div {
+        width: 1em;
+        height: 1em;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .TouchSplitter,
+    .TouchSplitter > div,
+    .TouchSplitter > div.splitter-bar > div {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+        .TouchSplitter > div.test-calc {
+            width: 10px;
+            width: calc(10px + 10px);
+        }
+
+        .TouchSplitter > div.test-em {
+            width: 1em;
+        }
+
+        .TouchSplitter > div.splitter-bar > div {
+            width: 1em;
+            height: 1em;
+            position: relative;
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        .TouchSplitter.h-ts > div.splitter-bar > div {
+            margin-top: -.5em;
+            top: 50%;
+        }
+
+        .TouchSplitter.v-ts > div.splitter-bar > div {
+            margin-left: -.5em;
+            left: 50%;
+        }
+    /*=== Custom Added For Touch Splitter === */
+    .row.split-me {
+        display: flex;
+        overflow: hidden;
+    }
+
+        .row.split-me > div.splitter-bar {
+            background: rgba(0,0,0,0.2);
+            z-index: 2;
+            max-width: 5px;
+        }
+
+            .row.split-me > div.splitter-bar > div {
+                width: 100%;
+            }
+
+        .row.split-me .box.style2 {
+            margin: 0;
+            height: 100%;
+        }
+
+            .row.split-me .box.style2.tabs-box {
+                overflow: auto;
+            }
+
+                .row.split-me .box.style2.tabs-box .box-header, .row.split-me .box.style2.tabs-box .box-body {
+                    min-width: 800px;
+                }
+                .selectRows{
+                    background-color: #cccddc !important;
+    color: #5a2222;
+                }
+</style>
+<link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+<div class="row">
+    @*<div class="col-sm-2">
+
+            @Html.Partial("~/views/siteDashboard/_ClientOrVendor.cshtml", Model.ClientOrVendor)
+            <div id="pan-TeamMembers">
+                @Html.Partial("~/views/siteDashboard/_TeamMembers.cshtml", Model.TeamMember)
+            </div>
+            <!--Hand Over Status-->
+            <div id="pan-HandoverStatus"></div>
+
+            <!--MOMT Status-->
+            <div id="pan-MOMTStatus"></div>
+
+
+            <!--Ookla Results-->
+            <div id="pan-OoklaResults"></div>
+
+        </div>*@
+
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="box box-primary style2">
+                    <div class="box-header">
+                        <h3 class="box-title">Site History</h3>
+                        <div class="box-tools pull-right">
+                            <button id="btn-reload" type="button" class="btn btn-box-tool"><i class="fa fa-refresh"></i></button>
+                            <button type="button" class="btn btn-box-tool collapse1" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body" style="display:block;">
+                        <div id="SiteGrid" class="table-responsive">
+                            @Html.Action("SiteGrid", "SiteDashboard", new { Page = 1, SiteId = ViewBag.SiteId, filter = "SiteDashboard" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row split-me">
+            <div class="col-sm-7">
+                <div class="box box-primary style2 tabs-box">
+                    <div class="box-header">
+                        <div class="site-db-tabs">
+                            <ul class="nav">
+                                <li class="active"><a href="#site-tab1" title="" data-toggle="tab">Test Status</a></li>
+                                <li><a href="#site-tab2" title="" data-toggle="tab">Stationary Test</a></li>
+                            </ul>
+
+                        </div>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool collapse1" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="tab-content overflowset">
+                            <div class="tab-pane active" id="site-tab1">
+
+
+                                @*<div class="table-wrapper">
+                                        <div class="table-title">
+                                            <h3>Net Mode:GSM</h3><h3>Band:GSM 1800</h3><h3>Carrier: NA</h3>
+                                            <a class="collapse-table" href="#" title=""><i class="fa fa-minus"></i></a>
+                                        </div>
+                                        <div class="table-container">
+                                            <table class="table table-bordered table-striped ">
+                                                <thead>
+                                                    <tr>
+                                                        <td>Sector</td>
+                                                        <td>MO Call</td>
+                                                        <td>MT Call</td>
+                                                        <td>SMS MO</td>
+                                                        <td>SMS MT</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><span>Alpha</span></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Beta</span></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Gamma</span></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-wrapper">
+                                        <div class="table-title">
+                                            <h3>Net Mode:LTE</h3><h3>Band:LTE1800</h3><h3>Carrier: 1392</h3>
+                                            <a class="collapse-table" href="#" title=""><i class="fa fa-minus"></i></a>
+                                        </div>
+                                        <div class="table-container">
+                                            <table class="table table-bordered table-striped ">
+                                                <thead>
+                                                    <tr>
+                                                        <td>Sector</td>
+                                                        <td>DL</td>
+                                                        <td>Status</td>
+                                                        <td>UL</td>
+                                                        <td>Status</td>
+                                                        <td>MO Call</td>
+                                                        <td>MT Call</td>
+                                                        <td>SMS MO</td>
+                                                        <td>SMS MT</td>
+                                                        <td>L1800 to L850 Reselection</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><span>Alpha</span></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Beta</span></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Gamma</span></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-wrapper">
+                                        <div class="table-title">
+                                            <h3>Net Mode:LTE</h3><h3>Band:LTE 850</h3><h3>Carrier: 2425</h3>
+                                            <a class="collapse-table" href="#" title=""><i class="fa fa-minus"></i></a>
+                                        </div>
+                                        <div class="table-container">
+                                            <table class="table table-bordered table-striped ">
+                                                <thead>
+                                                    <tr>
+                                                        <td>Sector</td>
+                                                        <td>DL</td>
+                                                        <td>Status</td>
+                                                        <td>UL</td>
+                                                        <td>Status</td>
+                                                        <td>MO Call</td>
+                                                        <td>MT Call</td>
+                                                        <td>SMS MO</td>
+                                                        <td>SMS MT</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><span>Alpha</span></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Beta</span></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>Gamma</span></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>*@
+                            </div>
+                            <div class="tab-pane fade" id="site-tab2">
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-5">
+                <div class="box box-primary style2">
+                    <div class="box-header">
+                        <div class="pull-right box-tools">
+                            <span class="RouteInfo" style="font-weight:bold"></span>
+                            <div class="btn-group">
+
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="background-color:#337ab7;color:white;">
+                                    <span style="margin: 5px;" class="caret"></span>
+                                </a>
+
+                                <ul class="dropdown-menu" style="left:-148px!important;">
+                                    <li>
+                                        <a class="MapPlot" data-file="pci.kml" href="#">
+
+                                            PCI Plot
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="MapPlot" data-file="ho.kml" href="#">
+
+                                            Handover Plot
+                                        </a>
+                                    </li>
+
+
+                                    <li>
+                                        <a class="MapPlot" data-file="ccw.kml" href="#">
+
+                                            CCW Handover Plot
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="MapPlot" data-file="Rsrp.kml" href="#">
+
+                                            RSRP Plot
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="MapPlot" data-file="Rsrq.kml" href="#">
+
+                                            RSRQ Plot
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="MapPlot" data-file="Cinr.kml" href="#">
+
+                                            CINR Plot
+                                        </a>
+                                    </li>
+
+
+                                </ul>
+                            </div>
+
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                        <i class="fa fa-map-marker"></i>
+                        <h3 class="box-title">Drive Test View</h3>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="row">
+
+                            <div class="col-sm-12">
+
+                                <div id="SiteMap" style="height:682px;width:100%;">
+
+                                </div>
+                            </div>
+                            @*<div class="row" id="divtestersites">
+                                    <div class="col-sm-12" style="position: absolute;top: 40px;right: -250px;opacity: 0.9;overflow: auto;height: 300px;width: 0px;"></div>
+
+                                </div>*@
+                            <div class="col-sm-1">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane hide" id="tab1"><div class="box-body pan-PingThroughtput" id=pan-PingThroughtput> </div></div>
+
+    @*<div class="col-sm-2">
+        <!--Ping Chart-->
+
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Ping (Rtt)</h3>
+                </div>
+                <div class="box-body chart-responsive">
+                    <div id="pan-PingThroughtput">
+                        <div id="PingChart" style="height: 230px; width: 100%;"></div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Downlink (Mbps)</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body chart-responsive">
+                <div id="pan-Downlink">
+                    <div id="DLChart" style="height: 230px; width: 100%;"></div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Uplink (Mbps)</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body chart-responsive">
+                <div id="pan-Uplink">
+                    <div id="ULChart" style="height: 230px; width: 100%;"></div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+
+            </div>*@
+</div>
+
+
+@section scripts{
+    @Scripts.Render("~/AdminLTE/plugins/datatables/js")
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.GmapsKey)&sensor=false&libraries=geometry&bogusParam=.js"></script>
+    <script src="~/Content/js/MapLabel.js"></script>
+
+    <script src="~/Content/js/Plugins/kml/js/geoxml3.js"></script>
+    <script src="~/Content/js/Plugins/kml/js/ProjectedOverlay.js"></script>
+
+    <script src="~/Content/js/GoogleMapsNTL.js"></script>
+    <script src="~/Content/js/Plugins/canvasjs/jquery.canvasjs.min.js"></script>
+    <script src="~/Content/js/Plugins/QueryBuilder/js/moment.min.js"></script>
+
+    <script>
+        var WoStatus = JSON.parse('@Html.Raw(WoStatus)');
+        var domain = '@ViewBag.domain';
+        var SiteId='@ViewBag.SiteId';
+    </script>
+
+    <script src="~/Content/js/SiteDashboard.js"></script>
+    <script>
+        var siteid='@ViewBag.SiteId';
+
+
+        $(function () {
+            $('#site-tab1').load('/SiteDashboard/getLeftPanel',{ Page : 1, SiteId :parseInt(siteid) , filter : "SiteDashboard" },function(res,stutas,xhr){
+
+                renderHref();
+            });
+            var renderHref=function(){
+                $("a.collapse-table").on("click", function () {
+                    $(".collapse-table").parents(".table-wrapper").find(".table-container").hide();
+                  
+                   
+                    if ($(this).find("i").hasClass("fa-minus")) {
+                   
+                        $(this).find("i").attr("class", "fa fa-plus");
+                    }
+                    else if ($(this).find("i").hasClass("fa-plus")) {
+                        $(".collapse-table").find("i").attr("class", "fa fa-plus");
+                        NetLayer = $(this).attr('data-NetLayer');
+                        var SiteId = $(this).attr('data-SiteId');
+                        var NetworkModeId = $(this).attr('data-NetworkModeId');
+                        var CarrierId = $(this).attr('data-CarrierId');
+                        var ScopeId = $(this).attr('data-ScopeId');
+                        var BandId = $(this).attr('data-BandId');
+                        $(this).parents(".table-wrapper").find(".table-container").show();
+                        sectors($(this).attr("data-BandId"),$(this).attr("data-SiteId"),$(this).attr("data-NetworkModeId"),$(this).attr("data-ScopeId"),$(this).attr("data-CarrierId"),'',this);
+                        getPolygons(NetLayer, SiteId, NetworkModeId, CarrierId, ScopeId, BandId);
+
+                      
+                        $(this).find("i").attr("class", "fa fa-minus");
+                    }
+                    return false;
+                });
+            }
+            var sectors=function(BandId, SiteId, NetworkModId, ScopeId, CarrierId,Scope,that) {
+                loading.open();
+
+                var retTable;
+
+                var ur = "/Dashboard/SiteGridSectorsLeftPanel?BandId=" + BandId + "&SiteId=" + SiteId + "&NetworkModId=" + NetworkModId + "&ScopeId=" + ScopeId + "&CarrierId=" + CarrierId +"&RequestFrom="+window.location.pathname.split("/")[1];
+
+
+                if (Scope=='TSS') {
+                    ur = "/Dashboard/SiteGridTSSDetails?SiteSurveyId=" + BandId +"&RequestFrom="+window.location.pathname.split("/")[1];
+                }
+                if (Scope=='CLS') {
+                    ur = "/Dashboard/SiteGridCLSDetails?SiteId=" + SiteId + "&LayerId=" + NetworkModId+ "&ScopeId=" + BandId+"&RequestFrom="+window.location.pathname.split("/")[1];
+                }
+                $.ajax({
+                    url: ur,
+                    type: 'POST',
+                    async: false,
+                    success: function (data) {
+                        $(that).parents(".table-wrapper").find(".table-container").empty();
+                        $(that).parents(".table-wrapper").find(".table-container").html(data);
+                    }
+                });
+                $.ajax({
+                    url: "/Dashboard/getStationaryTab?BandId=" + BandId + "&SiteId=" + SiteId + "&NetworkModId=" + NetworkModId + "&ScopeId=" + ScopeId + "&CarrierId=" + CarrierId +"&RequestFrom="+window.location.pathname.split("/")[1],
+                    type: 'POST',
+                    async: false,
+                    success: function (data) {
+                        $("#site-tab2").empty();
+                        $("#site-tab2").html(data);
+                    }
+                });
+                
+
+                return retTable;
+            }
+
+            //    function updateValue(){
+            //        $(".data-progress").each(function(){
+            //            var randomNumber =  $(this).attr("data-percent");
+            //            var randomColor = $(this).attr("data-color");
+            //            $(this).css({
+            //                //"width":randomNumber,
+            //                "background":randomColor
+            //            })
+            //        });
+            //    }
+
+            //    updateValue();
+
+            //window.setInterval(function(){
+            //    $(".data-progress").each(function(){
+            //        $(this).attr("data-percent",Math.floor(Math.random() * 100) + 0 + "%");
+            //        $(this).attr("data-color","#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);}));
+            //    });
+            //    updateValue();
+            //},2000);
+            var IndexPingChartData=[
+                {
+                    type: "stackedColumn",
+                    name: "Min",
+                    showInLegend: true,
+                    dataPoints: [
+                     @foreach (var item in ViewBag.PingThroughtputChart)
+                             {
+                                @: { label: "@item.SiteCode", y: @item.MinResult },
+                             }
+                    ]
+                },
+                {
+                    type: "stackedColumn",
+                    name: "Avg",
+                    showInLegend: true,
+                    dataPoints: [
+                    @foreach (var item in ViewBag.PingThroughtputChart)
+                            {
+                            @: { label: "@item.SiteCode", y: @item.AvgResult },
+                         }
+                    ]
+                }  ,
+                {
+                    type: "stackedColumn",
+                    name: "Max",
+                    showInLegend: true,
+                    dataPoints: [
+                    @foreach (var item in ViewBag.PingThroughtputChart)
+                        {
+                        @: { label: "@item.SiteCode", y: @item.MaxResult },
+                        }
+                    ]
+                }
+            ]
+
+            var IndexDLChartData=[
+                {
+                    type: "stackedColumn",
+                    name: "Min",
+                    showInLegend: true,
+                    dataPoints: [
+                     @foreach (var item in ViewBag.DLThroughtputChart)
+                             {
+                                @: { label: "@item.SiteCode", y: @item.MinResult },
+                             }
+                    ]
+                },
+                {
+                    type: "stackedColumn",
+                    name: "Avg",
+                    showInLegend: true,
+                    dataPoints: [
+                    @foreach (var item in ViewBag.DLThroughtputChart)
+                            {
+                            @: { label: "@item.SiteCode", y: @item.AvgResult },
+                         }
+                    ]
+                }  ,
+                {
+                    type: "stackedColumn",
+                    name: "Max",
+                    showInLegend: true,
+                    dataPoints: [
+                    @foreach (var item in ViewBag.DLThroughtputChart)
+                        {
+                        @: { label: "@item.SiteCode", y: @item.MaxResult },
+                        }
+                    ]
+                }
+            ]
+
+            var IndexULChartData=[
+                {
+                    type: "stackedColumn",
+                    name: "Min",
+                    showInLegend: true,
+                    dataPoints: [
+                     @foreach (var item in ViewBag.ULThroughtputChart)
+                             {
+                                @: { label: "@item.SiteCode", y: @item.MinResult },
+                             }
+                    ]
+                },
+                {
+                    type: "stackedColumn",
+                    name: "Avg",
+                    showInLegend: true,
+                    dataPoints: [
+                    @foreach (var item in ViewBag.ULThroughtputChart)
+                            {
+                            @: { label: "@item.SiteCode", y: @item.AvgResult },
+                         }
+                    ]
+                }  ,
+                {
+                    type: "stackedColumn",
+                    name: "Max",
+                    showInLegend: true,
+                    dataPoints: [
+                    @foreach (var item in ViewBag.ULThroughtputChart)
+                        {
+                        @: { label: "@item.SiteCode", y: @item.MaxResult },
+                        }
+                    ]
+                }
+            ]
+
+           
+
+
+           function MakeChart(){
+                
+               if($("#PingChart").length>0){
+                   $("#PingChart").CanvasJSChart({
+                       nimationEnabled: true,
+                       title: {
+                           text: ""
+                       },
+                       axisY: {
+                           title: ""
+                       },
+                       toolTip: {
+                           content: "{label} <br/>{name} : {y} "
+                       },
+                       data: IndexPingChartData
+                   });
+               }
+                
+
+               if($("#ULChart").length>0){
+                   $("#ULChart").CanvasJSChart({
+                       nimationEnabled: true,
+                       title: {
+                           text: ""
+                       },
+                       axisY: {
+                           title: ""
+                       },
+                       toolTip: {
+                           content: "{label} <br/>{name} : {y} "
+                       },
+                       data: IndexULChartData
+                   });
+               }
+                
+               if($("#DLChart").length>0){
+                   $("#DLChart").CanvasJSChart({
+                       nimationEnabled: true,
+                       title: {
+                           text: ""
+                       },
+                       axisY: {
+                           title: ""
+                       },
+                       toolTip: {
+                           content: "{label} <br/>{name} : {y} "
+                       },
+                       data: IndexDLChartData
+                   });
+               }
+                
+            }
+
+           MakeChart();
+            $('#btn-reload').click(function(){
+                MakeChart();
+
+                $.ajax({
+                    url:'/SiteDashboard/SiteGrid?Page=1&SiteId='+SiteId,
+                    success:function(res){
+                        $('#SiteGrid').empty();
+                        $('#SiteGrid').html(res);
+
+                        $('#pan-HandoverStatus').empty();
+                        $('#pan-MOMTStatus').empty();
+                        $('#pan-OoklaResults').empty();
+                    }
+                });
+            });
+        });
+
+
+
+    </script>
+
+    <script src="~/Content/js/SiteGrid.js"></script>
+    <script src="~/Content/js/Plugins/swipebox/jquery.swipebox.js"></script>
+    @*<script src="http://brutaldesign.github.io/swipebox/src/js/jquery.swipebox.js"></script>*@
+
+
+    <script type="text/javascript">
+        ;( function( $ ) {
+
+            $( '.swipebox' ).swipebox( {
+                useCSS : true, // false will force the use of jQuery for animations
+                useSVG : true, // false to force the use of png for buttons
+                initialIndexOnArray : 0, // which image index to init when a array is passed
+                hideCloseButtonOnMobile : false, // true will hide the close button on mobile devices
+                removeBarsOnMobile : true, // false will show top bar on mobile devices
+                hideBarsDelay : 3000, // delay before hiding bars on desktop
+                videoMaxWidth : 500, // videos max width
+                //beforeOpen: function() {}, // called before opening
+                //afterOpen: null, // called after opening
+                //afterClose: function() {}, // called after closing
+                //loopAtEnd: false // true will return to the first image after the last image is reached
+            } );
+
+        } )( jQuery );
+    </script>
+
+    <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+    <script>
+        var counts=0;
+
+        var masterStatus=true;
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCG0Hx7HSM_AqxBAb0H-ix477cf5Mq-w0M",
+            authDomain: "trackerapp-3bf46.firebaseapp.com",
+            databaseURL: "https://trackerapp-3bf46.firebaseio.com",
+            projectId: "trackerapp-3bf46",
+            storageBucket: "trackerapp-3bf46.appspot.com",
+            messagingSenderId: "309548736445"
+        };
+        var defaultApp = firebase.initializeApp(config);
+
+        var defaultDatabase = defaultApp.database();
+        var lat = 31.477745;
+        var long = 74.281039;
+        var marker, Angle, Band, Carrier, CellID, Distance, NetMode, PhysicalCellID, SignalNoiseRatio, SignalQuality, SignalStrength, Tac, SiteCode, SiteRefID, ConstantVariables;
+        var infowindow;
+        ConstantVariables = "hey";
+        function round(value, decimals) {
+            return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+        }
+        var starCountRef = firebase.database().ref('Location/UserLocation');
+        var starTracker = firebase.database().ref('Location/Tracker');
+        starCountRef.on('value', function (snapshot) {
+            console.log(snapshot.val());
+            console.log(siteID);
+            if(siteID==snapshot.val().siteRefID)
+            {var tbl='<div class="custom-table"><h3>RF Parameters</h3><table class="info-table">'
+                if(masterStatus)
+                {
+                    marker = new google.maps.Marker({
+                        // The below line is equivalent to writing:
+                        // position: new google.maps.LatLng(-34.397, 150.644)
+                        position: { lat: lat, lng: long },
+                        map: map,
+                        icon: "http://192.168.3.28:90/Content/Images/Common/UE_x24.png"
+
+                    });
+                    masterStatus=false;
+                    google.maps.event.addListener(marker, 'click', function() {
+                        infowindow.opened = false;
+                    });
+
+                }
+                lat =                snapshot.val().latitude;
+                long =               snapshot.val().longitude;
+                Angle =              snapshot.val().angle;
+                Band =               snapshot.val().band;
+                Carrier =            snapshot.val().carrier;
+                CellID =             snapshot.val().cellID;
+                Distance =           snapshot.val().distance;
+                NetMode =            snapshot.val().netMode;
+                PhysicalCellID =     snapshot.val().physicalCellID;
+                SignalNoiseRatio =   snapshot.val().signalNoiseRatio;
+                SignalQuality =      snapshot.val().signalQuality;
+                SignalStrength =     snapshot.val().signalStrength;
+                Tac =                snapshot.val().tac;
+                SiteCode =           snapshot.val().siteCode;
+                SiteRefID =          snapshot.val().siteRefID;
+                var  rrcState= snapshot.val().rrcState;
+
+
+
+                if(typeof marker !="undefined")
+                    marker.setPosition(new google.maps.LatLng(lat, long));
+                var tr='';
+
+
+
+
+
+
+
+                // map.panTo(new google.maps.LatLng(lat, long));
+
+                ConstantVariables = "<div id='GMAP'><span><b>Network Mode:</b> " + NetMode + "</span><br><span><b>Band:</b> " + Band + "</span><br>";
+                if (NetMode == "LTE" || NetMode == "IWLAN") {
+
+                    tr+='<thead><tr><td>Net Mode: '+NetMode+'</td><td>Band: '+Band+'</td><td>Carrier: '+Carrier+'</td></tr></thead> <tbody>';
+                    tr+='<tr><td>PCI: '+PhysicalCellID+'</td><td>Cell ID: '+CellID+'</td><td>TAC: '+Tac+'</td></tr>'
+                    tr+='<tr><td>RSRP: '+SignalStrength+'<div class="data-progress" style="width:'+Math.abs(SignalStrength)+'%" data-percent="40%" data-color="' + getRFColor(NetMode,SignalStrength,'signal_strength') + '"></div></td>';
+                    tr+=' <td>RSRQ: '+SignalQuality+' dBm<div class="data-progress" style="width:'+Math.abs(SignalQuality)+'%" data-percent="65%" data-color="' + getRFColor(NetMode,SignalQuality,'signal_quality') + '"></div></td>';
+                    tr+='  <td>NSR: '+SignalNoiseRatio+' dB<div class="data-progress" style="width:'+Math.abs(SignalNoiseRatio)+'%" data-percent="88%" data-color="' + getRFColor(NetMode,SignalNoiseRatio,'signal_noise') + '"></div></td></tr>';
+                    tr+='<tr><td>Angle: '+Math.round(Angle)+'°</td><td>Distance: '+round(Distance,1)+' km</td><td>RRC: '+rrcState+'</td></tr>';
+                    //var Carrier = "<span><b>Carrier:</b> " + Carrier + "</span><br>";
+                    //var Cell_ID = "<span><b>Cell ID:</b> " + CellID + "</span><br>";
+                    //var PCI = "<span><b>PCI:</b> " + PhysicalCellID + "</span><br>";
+                    //var RSRP = "<span><b>RSRP:</b> " + SignalStrength + " <i>dBm</i></span><br>";
+                    //var RSRP = "<span><b>RSRQ:</b> " + SignalQuality + " <i>dB</i></span><br>";
+                    //var RSRP = "<span><b>RSRQ:</b> " + SignalNoiseRatio + " <i>dB</i></span><br>";
+                    //ConstantVariables = ConstantVariables + Carrier + Cell_ID + PCI + RSRP + RSRQ + RSNR;
+
+                }
+                if (NetMode == "WCDMA" || NetMode == "UMTS" || NetMode == "EVDO_0" || NetMode == "EVDO_A" || NetMode == "HSDPA" || NetMode == "HSUPA" || NetMode == "HSPA" || NetMode == "EVDO_B" || NetMode == "EHRPD" || NetMode == "HSPAP" || NetMode == "TD_SCDMA") {
+                    tr+='<thead><tr><td>Net Mode: '+NetMode+'</td><td>Band: '+Band+'</td><td>Carrier: '+Carrier+'</td></tr></thead> <tbody>';
+                    tr+='<tr><td>PSC: '+PhysicalCellID+'</td><td>Cell ID: '+CellID+'</td><td>LAC: '+Tac+'</td></tr>'
+                    tr+='<tr><td>RSCP: -'+SignalStrength+' dBm<div class="data-progress" style="width:'+Math.abs(SignalStrength)+'%" data-percent="40%" data-color="' + getRFColor(NetMode,SignalStrength,'signal_strength') + '"></div></td>';
+                    tr+=' <td>Ec/Io: '+SignalQuality+' dB<div class="data-progress" style="width:'+Math.abs(SignalQuality)+'%" data-percent="65%" data-color="' + getRFColor(NetMode,SignalQuality,'signal_quality') + '"></div></td>';
+                    tr+='  <td>'+''+'<div class="data-progress" tyle="width:'+''+'%" data-percent="88%" data-color="' + getRFColor(NetMode,SignalQuality,'signal_quality') + '"></div></td></tr>';
+                    tr+='<tr><td>Angle: '+Math.round(Angle)+'°</td><td>Distance: '+round(Distance,1)+' km</td><td>RRC: '+rrcState+'</td></tr>';
+                    //var Carrier = "<span><b>Carrier:</b> " + Carrier + "</span><br>";
+                    //var Cell_ID = "<span><b>Cell ID:</b> " + CellID + "</span><br>";
+                    //var PSC = "<span><b>PSC:</b> " + PhysicalCellID + "</span><br>";
+                    //var RSCP = "<span><b>RSCP:</b> " + SignalStrength + " <i>dBm</i></span><br>";
+                    //var EcIo = "<span><b>EcIo:</b> " + SignalQuality + " <i>dB</i></span><br>";
+                    //ConstantVariables = ConstantVariables + Carrier + Cell_ID + PSC + RSCP + EcIo;
+
+                }
+                if (NetMode == "GSM" || NetMode == "GPRS" || NetMode == "EDGE" || NetMode == "CDMA" || NetMode == "1xRTT" || NetMode == "IDEN") {
+                    tr+='<thead><tr><td>Net Mode: '+NetMode+'</td><td>Band: '+Band+'</td><td>Carrier: '+Carrier+'</td></tr></thead> <tbody>';
+                    tr+='<tr><td>BCCH: '+PhysicalCellID+'</td><td>Cell ID: '+CellID+'</td><td>LAC: '+Tac+'</td></tr>'
+                    tr+='<tr><td>RxLevel: '+SignalStrength+' dBm<div class="data-progress" style="width:'+Math.abs(SignalStrength)+'%" data-percent="40%" wi data-color="' + getRFColor(NetMode,SignalStrength,'signal_strength') + '"></div></td>';
+                    tr+=' <td>RxQual: '+SignalQuality+' dB<div class="data-progress" style="width:'+Math.abs(SignalQuality)+'%" data-percent="65%" data-color="' + getRFColor(NetMode,SignalQuality,'signal_quality') + '"></div></td>';
+                    tr+='  <td>'+''+'<div class="data-progress" tyle="width:'+''+'%" data-percent="88%" data-color="#3b4b9b"></div></td></tr>';
+                    tr+='<tr><td>Angle: '+Math.round(Angle)+'°</td><td>Distance: '+round(Distance,1)+' km</td><td>RRC: '+rrcState+'</td></tr>';
+
+
+                    //var BCCH = "<span><b>BCCH:</b> " + PhysicalCellID + "</span><br>";
+                    //var RSSI = "<span><b>RSSI:</b> " + SignalStrength + " <i>dBm</i></span><br>";
+                    //var RxQual = "<span><b>RxQual:</b> " + SignalQuality + " <i>dB</i></span><br>";
+                    //ConstantVariables = ConstantVariables + Cell_ID + BCCH + RSSI + RxQual;
+                }
+                if(NetMode =="N/A"){
+                    tr+='<thead><tr><td>Net Mode: '+NetMode+'</td><td>Band: '+Band+'</td><td>Carrier: '+Carrier+'</td></tr></thead> <tbody>';
+                    tr+='<tr><td>BCCH: '+PhysicalCellID+'</td><td>Cell ID: '+CellID+'</td><td>LAC: '+Tac+'</td></tr>'
+                    tr+='<tr><td>RxLevel: '+SignalStrength+' dBm<div class="data-progress" style="width:'+Math.abs(SignalStrength)+'%" data-percent="40%" wi data-color="' + getRFColor(NetMode,SignalStrength,'signal_strength') + '"></div></td>';
+                    tr+=' <td>RxQual: '+SignalQuality+' dB<div class="data-progress" style="width:'+Math.abs(SignalQuality)+'%" data-percent="65%" data-color="' + getRFColor(NetMode,SignalQuality,'signal_quality') + '"></div></td>';
+                    tr+='  <td>'+''+'<div class="data-progress" tyle="width:'+''+'%" data-percent="88%" data-color="#3b4b9b"></div></td></tr>';
+                    tr+='<tr><td>Angle: '+Math.round(Angle)+'°</td><td>Distance: '+round(Distance,1)+' km</td><td>RRC: '+rrcState+'</td></tr>';
+
+                }
+                tr+='</tbody>'
+                tbl+=tr;
+                ConstantVariables = ConstantVariables + "<span><b>Distance From Site:</b> " + round(Distance, 1) + " <i>km</i></span><br>" + "<span><b>Angle to Site:</b> " + round(Angle, 0) + "°</span><br></div>";
+                infowindow.setContent(tbl);
+
+                updateValue();
+
+
+
+
+                if(!infowindow.opened){
+                    infowindow.opened = true;
+                    infowindow.open(map, marker);
+
+                }
+
+
+                //$('#GMAP').remove(function () {
+                //    infowindow.close();
+                //});
+                google.maps.event.addListener(infowindow, 'domready', function() {
+                    // Reference to the DIV that wraps the bottom of infowindow
+                    var iwOuter = $('.gm-style-iw');
+                    /* Since this div is in a position prior to .gm-div style-iw.
+                     * We use jQuery and create a iwBackground variable,
+                     * and took advantage of the existing reference .gm-style-iw for the previous div with .prev().
+                    */
+                    var iwBackground = iwOuter.prev();
+
+
+
+                    // Removes background shadow DIV
+                    iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+
+                    // Removes white background DIV
+                    iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+
+                    // Moves the infowindow 115px to the right.
+                    iwOuter.parent().parent().css({left: '115px', background:'transparent!important'});
+
+                    // Moves the shadow of the arrow 76px to the left margin.
+                    iwBackground.children(':nth-child(1)').attr('style', function(i,s){ return s + 'left: 76px !important;display:none'});
+
+                    // Moves the arrow 76px to the left margin.
+                    iwBackground.children(':nth-child(3)').attr('style', function(i,s){ return s + 'left: 76px !important;display:none'});
+
+                    // Changes the desired tail shadow color.
+                    iwBackground.children(':nth-child(3)').find('div').children().css({'box-shadow': 'rgba(72, 181, 233, 0.6) 0px 1px 6px', 'z-index' : '1'});
+
+                    // Reference to the div that groups the close button elements.
+                    var iwCloseBtn = iwOuter.next();
+
+                    // Apply the desired effect to the close button
+                    iwCloseBtn.css({opacity: '1', right: '38px', top: '3px', border: '7px solid #48b5e9', 'border-radius': '13px', 'box-shadow': '0 0 5px #3990B9'});
+
+                    // If the content of infowindow not exceed the set maximum height, then the gradient is removed.
+                    if($('.iw-content').height() < 140){
+                        $('.iw-bottom-gradient').css({display: 'none'});
+                    }
+
+                    // The API automatically applies 0.7 opacity to the button after the mouseout event. This function reverses this event to the desired value.
+                    iwCloseBtn.mouseout(function(){
+                        $(this).css({opacity: '1'});
+                    });
+                });
+            }
+        });
+
+
+        starTracker.on('value', function (snapshot) {
+            
+            console.log('starTracker');
+            console.log(snapshot.val());
+            var testKeyCode=snapshot.val().testKeyCode;
+            var testStatus=snapshot.val().testStatus;
+            var sectorID=snapshot.val().sectorID
+            var SiteId=snapshot.val().siteID;
+            var  NetworkModeId=snapshot.val().networkModeID;
+            var CarrierId=snapshot.val().carrierID;
+            var ScopeId=snapshot.val().scopeID;
+            var BandId=snapshot.val().bandID;
+            var Sector=snapshot.val().sector
+            var testKpiValue=parseFloat(snapshot.val().testKpiValue);
+     
+            var testResult=parseFloat(snapshot.val().testResult);
+            
+            var netlayerID=snapshot.val().networkModeID+"_"+snapshot.val().bandID+"_"+snapshot.val().carrierID;
+            if(siteID==snapshot.val().siteID && snapshot.val().action=="Start")
+            {
+                if($("."+netlayerID).find('i').hasClass('fa-plus'))
+                {    $("."+netlayerID).click();
+                let getIcon=getStatusIcon(testStatus,snapshot.val().action);
+                    $('[data-sectorid="'+sectorID+'"]').find('.'+testKeyCode+' img').attr('src',getIcon);
+                }
+                else{
+                    let getIcon=getStatusIcon(testStatus,snapshot.val().action);
+                    $('[data-sectorid="'+sectorID+'"]').find('.'+testKeyCode+' img').attr('src',getIcon);
+                }
+            }
+            if(siteID==snapshot.val().siteID && snapshot.val().action=="Stop")
+            { 
+                var fnlResult;
+              
+                    fnlResult=testResult+"/"+testKpiValue;
+
+             
+                if($("."+netlayerID).find('i').hasClass('fa-plus'))
+                {
+                    $("."+netlayerID).click();
+                    let getIcon=getStatusIcon(testStatus,snapshot.val().action);
+                    $('[data-sectorid="'+sectorID+'"]').find('.'+testKeyCode+' img').attr('src',getIcon);
+                    $('[data-sectorid="'+sectorID+'"]').find('.'+testKeyCode+' div').html(fnlResult);
+                    $(".SectorLeftRow").removeClass("SelectedRow");
+                    $('[data-sectorid="'+sectorID+'"]').addClass("SelectedRow");
+                    var ChartTimeFormat = 'HH:mm:ss:ff';
+          
+                    getGraph(SiteId, NetworkModeId, CarrierId, ScopeId, BandId, Sector, ChartTimeFormat);
+                }
+                else
+                {
+                    let getIcon=getStatusIcon(testStatus,snapshot.val().action);
+                    $('[data-sectorid="'+sectorID+'"]').find('.'+testKeyCode+' img').attr('src',getIcon);
+                    $('[data-sectorid="'+sectorID+'"]').find('.'+testKeyCode+' div').html(fnlResult);
+                    $(".SectorLeftRow").removeClass("selectRows");
+                    $('[data-sectorid="'+sectorID+'"]').addClass("SelectedRow");
+                    getGraph(SiteId, NetworkModeId, CarrierId, ScopeId, BandId, Sector, ChartTimeFormat);
+                }
+            }
+        });
+
+        function getStatusIcon(testStatus,action)
+        {
+            if(testStatus=="Passed" || testStatus=="Pass"){
+                return "/Content/Images/Common/DarkGreen.png";
+            }
+            else if(testStatus=="Failed"){return "/Content/Images/Common/red.png";
+
+            }
+            else if(testStatus=="N/A" && action=="Start"){
+                return  "/Content/Images/Common/yellow-dot.gif";
+            }
+            else if(testStatus=="N/A" && action=="Stop"){
+                return  "/Content/Images/Common/gray.png";
+            }
+
+        }
+        function getRFColor(netmode, signalstrength, type)
+        {
+            if (type == "signal_strength")
+            {
+                if (netmode == "LTE" || netmode == "IWLAN") {
+
+
+                    if (signalstrength>-75 && signalstrength<=-40)
+                    {
+                        return "#007A00";
+                    }
+                    else if (signalstrength>-85 && signalstrength<=-75)
+                    {
+                        return "#99cc00";
+                    }
+                    else if (signalstrength>-95 && signalstrength<=-85)
+                    {
+                        return "#FFD700";
+                    }
+                    else if (signalstrength>-105 && signalstrength<=-95)
+                    {
+                        return "#ffbb33";
+                    }
+                    else if (signalstrength>-120 && signalstrength<=-105)
+                    {
+                        return "#ff4444";
+                    }
+                    else if (signalstrength>-130 && signalstrength<=-120)
+                    {
+                        return "#ff0018"; //dark red
+                    }
+                    else
+                    {
+                        return "#87898A";
+                    }
+
+                }
+                if (NetMode == "WCDMA" || NetMode == "UMTS" || NetMode == "EVDO_0" || NetMode == "EVDO_A" || NetMode == "HSDPA" || NetMode == "HSUPA" || NetMode == "HSPA" || NetMode == "EVDO_B" || NetMode == "EHRPD" || NetMode == "HSPAP" || NetMode == "TD_SCDMA")
+                {
+                    if (signalstrength>-75 && signalstrength<=-40)
+                    {
+                        return "#007A00";
+                    }
+                    else if (signalstrength>-85 && signalstrength<=-75)
+                    {
+                        return "#99cc00";
+                    }
+                    else if (signalstrength>-95 && signalstrength<=-85)
+                    {
+                        return "#FFD700";
+                    }
+                    else if (signalstrength>-105 && signalstrength<=-95)
+                    {
+                        return "#ffbb33";
+                    }
+                    else if (signalstrength>-130 && signalstrength<=-105)
+                    {
+                        return "#ff4444";
+                    }
+                    else
+                    {
+                        return "#87898A";
+                    }
+                }
+                else if (NetMode == "GSM" || NetMode == "GPRS" || NetMode == "EDGE" || NetMode == "CDMA" || NetMode == "1xRTT" || NetMode == "IDEN")
+                {
+                    if (signalstrength>-75 && signalstrength<=-40)
+                    {
+                        return "#007A00";
+                    }
+                    else if (signalstrength>-85 && signalstrength<=-75)
+                    {
+                        return "#99cc00";
+                    }
+                    else if (signalstrength>-95 && signalstrength<=-85)
+                    {
+                        return "#FFD700";
+                    }
+                    else if (signalstrength>-105 && signalstrength<=-95)
+                    {
+                        return "#ffbb33";
+                    }
+                    else if (signalstrength>-130 && signalstrength<=-105)
+                    {
+                        return "#ff4444";
+                    }
+                    else
+                    {
+                        return "#87898A";
+                    }
+                }
+            }
+            else if (type == "signal_quality")
+            {
+                if (netmode == "LTE" || netmode == "IWLAN") {
+
+
+                    if (signalstrength>-7 && signalstrength<=0)
+                    {
+                        return "#007A00";
+                    }
+                    else if (signalstrength>-12 && signalstrength<=-7)
+                    {
+                        return "#99cc00";
+                    }
+                    else if (signalstrength>-16 && signalstrength<=-12)
+                    {
+                        return "#FFD700";
+                    }
+                    else if (signalstrength>-20 && signalstrength<=-16)
+                    {
+                        return "#ff4444";
+                    }
+                    else
+                    {
+                        return "#87898A";
+                    }
+
+                }
+                if (NetMode == "WCDMA" || NetMode == "UMTS" || NetMode == "EVDO_0" || NetMode == "EVDO_A" || NetMode == "HSDPA" || NetMode == "HSUPA" || NetMode == "HSPA" || NetMode == "EVDO_B" || NetMode == "EHRPD" || NetMode == "HSPAP" || NetMode == "TD_SCDMA")
+                {
+                    if (signalstrength>-6 && signalstrength<=0)
+                    {
+                        return "#007A00";
+                    }
+                    else if (signalstrength>-10 && signalstrength<=-6)
+                    {
+                        return "#99cc00";
+                    }
+                    else if (signalstrength>-14 && signalstrength<=-10)
+                    {
+                        return "#FFD700";
+                    }
+                    else if (signalstrength>-16 && signalstrength<=-14)
+                    {
+                        return "#ffbb33";
+                    }
+                    else if (signalstrength>-40 && signalstrength<=-16)
+                    {
+                        return "#ff4444";
+                    }
+                    else
+                    {
+                        return "#87898A";
+                    }
+                }
+                else if (NetMode == "GSM" || NetMode == "GPRS" || NetMode == "EDGE" || NetMode == "CDMA" || NetMode == "1xRTT" || NetMode == "IDEN")
+                {
+                    if (signalstrength>=0 && signalstrength<2)
+                    {
+                        return "#007A00";
+                    }
+                    else if (signalstrength>=2 && signalstrength<4)
+                    {
+                        return "#99cc00";
+                    }
+                    else if (signalstrength>=4 && signalstrength<6)
+                    {
+                        return "#FFD700";
+                    }
+                    else if (signalstrength>=6 && signalstrength<7)
+                    {
+                        return "#ffbb33";
+                    }
+                    else
+                    {
+                        return "#87898A";
+                    }
+                }
+            }
+            else if (type == "signal_noise")
+            {
+                if (netmode == "LTE" || netmode == "IWLAN") {
+
+
+                    if (signalstrength>25 && signalstrength<=30)
+                    {
+                        return "#007A00";
+                    }
+                    else if (signalstrength>15 && signalstrength<=25)
+                    {
+                        return "#99cc00";
+                    }
+                    else if (signalstrength>5 && signalstrength<=15)
+                    {
+                        return "#FFD700";
+                    }
+                    else if (signalstrength>-15 && signalstrength<=5)
+                    {
+                        return "#ffbb33";
+                    }
+                    else
+                    {
+                        return "#87898A";
+                    }
+
+                }
+            }
+        }
+
+        function updateValue(){
+            $(".data-progress").each(function(){
+                var randomNumber =  $(this).attr("data-percent");
+                var randomColor = $(this).attr("data-color");
+                $(this).css({
+                    "background":randomColor
+                    //"width":randomNumber,
+                })
+            });
+        }
+
+        // Sets the map on all markers in the array.
+        function setMapOnAll(map) {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+
+        // Removes the markers from the map, but keeps them in the array.
+        function clearMarkers() {
+            setMapOnAll(null);
+
+        }
+
+        var siteID='@ViewBag.SiteId';
+
+
+    </script>
+
+}
+@section style{
+    @Styles.Render("~/AdminLTE/plugins/datatables/css")
+
+    <link href="~/Content/js/Plugins/swipebox/swipebox.css" rel="stylesheet" />
+
+}
+
+
+<script src="~/Content/js/splitter.js"></script>
+<script>
+    window.onload = function () {
+        function chartTab2() {
+            CanvasJS.addColorSet("blueShades",
+                [//colorSet Array
+                "#8db4c7",
+                "#025271",
+                "#1b6a8f"
+                ]);
+
+            //var chart = new CanvasJS.Chart("chartContainer", {
+            //    exportEnabled: true,
+            //    animationEnabled: true,
+            //    colorSet: "blueShades",
+            //    title:{
+            //        text: "Downlink",
+            //        horizontalAlign:"left"
+            //    },
+            //    dataPointWidth: 60,
+            //    axisX: {
+            //    },
+            //    toolTip: {
+            //        shared: true
+            //    },
+            //    legend: {
+            //        cursor: "pointer",
+            //        itemclick: toggleDataSeries
+            //    },
+            //    data: [{
+            //        type: "column",
+            //        name: "Min",
+            //        showInLegend: true,
+            //        yValueFormatString: "#,##0.# Units",
+            //        dataPoints: [
+            //            { label: "Alpha",  y: 19034.5 },
+            //            { label: "Beta", y: 20015 },
+            //            { label: "Gamma", y: 25342 },
+            //        ]
+            //    },
+            //    {
+            //        type: "column",
+            //        name: "Max",
+            //        axisYType: "secondary",
+            //        showInLegend: true,
+            //        yValueFormatString: "#,##0.# Units",
+            //        dataPoints: [
+            //            { label: "Alpha", y: 210.5 },
+            //            { label: "Beta", y: 135 },
+            //            { label: "Gamma", y: 425 }
+            //        ]
+            //    },
+            //    {
+            //        type: "column",
+            //        name: "Avg",
+            //        axisYType: "secondary",
+            //        showInLegend: true,
+            //        yValueFormatString: "#,##0.# Units",
+            //        dataPoints: [
+            //            { label: "Alpha", y: 156.5 },
+            //            { label: "Beta", y: 235 },
+            //            { label: "Gamma", y: 536 }
+            //        ]
+            //    }
+            //    ]
+            //});
+            //chart.render();
+            function toggleDataSeries(e) {
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else {
+                    e.dataSeries.visible = true;
+                }
+                e.chart.render();
+            }
+
+
+            function chartTypeChanged() {
+                chart.options.data[0].type = "line";   // you can update chart type here
+                chart.render();
+            }
+
+            $("label").on("click",function(){
+                chartTypeChanged();
+            });
+
+        }
+
+        chartTab2();
+
+
+        $('#open-tab3').on("shown.bs.tab",function(){
+            chartTab2();
+            $('#open-tab3').off();//to remove the binded event after initial rendering
+        });
+
+
+
+
+
+        splitter = $('.split-me').touchSplit({leftMin:0, rightMin:350, thickness: "10px", dock:"right"})
+    }
+</script>

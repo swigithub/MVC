@@ -1,0 +1,282 @@
+﻿
+@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.Security.Entities
+@model SitesVM
+@{
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var UserDevices = jss.Serialize(ViewBag.UserDevices);
+    int rowcount = 0;
+    Int64 ParentDeviceId = 0;
+    Int64 ParentTester = 0;
+    List<AV_ScopeTests> Tests = ViewBag.ScopeTests as List<AV_ScopeTests>;
+    var SelectedLayers = ViewBag.SelectedLayer as List<AV_WoDevices>;
+    var Devices = ViewBag.UserDevices as List<Sec_UserDevices>;
+    var Parent = ViewBag.ParentTester as List<AV_SiteScript>;
+    var Scripts = ViewBag.CLS as List<AV_SiteScript>;
+}
+
+
+<div class="" id="schedule-model">
+
+    <form method="post" action="#" id="frm-SiteSchedule">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="" style="width:300px;">
+                    <tr>
+                        <td><label>Site Code: </label></td>
+                        <td>@Model.SiteCode</td>
+                    </tr>
+                    <tr>
+                        <td><label>Region: </label></td>
+                        <td>@Model.Region</td>
+                    </tr>
+                    <tr>
+                        <td><label>Market: </label></td>
+                        <td>@Model.Market</td>
+                    </tr>
+                </table>
+                <div>
+                    <div class="btn-group">
+                        <button type="button" data-value="@DateTime.Now.ToShortDateString()" class="btn btn-default dateSelection">@DateTime.Now.Day</button>
+                        @for (int i = 1; i < 7; i++)
+                        {
+                            <button type="button" data-value="@DateTime.Now.AddDays(i).ToShortDateString()" class="btn btn-default dateSelection">@DateTime.Now.AddDays(i).Day</button>
+
+                        }
+                        <button type="button" id="btn-PickDate" class="btn btn-default dateSelection">Pick Date</button>
+                        <div id="EmptyClick"></div>
+
+                    </div>
+                    <div class="input-group" id="pan-date" style="width: 305px;visibility:hidden;">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+
+                        <input type="text" required readonly class="form-control pull-right UserLiveDate" name="Date" placeholder="Pick Schedule" id="schduledate">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        @if (ViewBag.Scope == "CLS")
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row" style="margin-bottom:5px;">
+                        <div class="col-sm-2">
+                            @if (Scripts.Count == 0)
+                            {
+
+                            }
+                            else
+                            {
+                                <b>Parent tester :</b>
+                            } </div>
+                        <div class="col-sm-4">
+                            
+                            @if (Scripts.Count == 0)
+                            {
+
+                            }
+                            else
+                            {
+                                var ss = Scripts[0].DeviceScheduleId-1;
+                                if(Parent.Count > 0)
+                                {
+                                    ParentTester = Parent[0].TesterId;
+                                    ParentDeviceId = Parent[0].UserDeviceId;
+                                  }
+
+                                <input type="hidden" name="NetworkMode" value="@ViewBag.NetworkModeId" />
+                                    <input type="hidden" name="NetLayerId" value="@Scripts[0].NetLayerId" />
+                                    <input type="checkbox" class="SelectLayer hidden" value="@ss" name="Layer" />
+                                    <input type="hidden" name="Band" value="@ViewBag.BandId" />
+                                    <input type="hidden" name="SequenceId" value="0" />
+                                    <input type="hidden" name="Carrier" value="@ViewBag.CarrierId" />
+                                    <input type="hidden" name="DeviceScheduleId" value="@ss" />
+                                    <input type="hidden" name="IsMaster" value="true" />
+                                    @Html.DropDownList("TesterId", ViewBag.Users as List<SelectListItem>, new { @class = "form-control TesterId select", id = "TesterId-" + rowcount, data_Selected = ParentTester, data_row = rowcount, style = "width:170px;" })
+                                   <input type="hidden"  id="ddlTestType-@rowcount" data-row="@rowcount" />
+                                    <input type="hidden" name="TestTypes" id="TestTypes-@rowcount" />
+
+                                    
+                            }
+                           
+                    </div>
+                        <div class="col-sm-2">
+                        @if (Scripts.Count > 0)
+                        { <b>Devices :</b>}
+                       </div>
+                        <div class="col-sm-4">
+@if (Parent.Count > 0)
+{
+    if (Scripts.Count > 0)
+    {
+                            @Html.DropDownList("Devices", ViewBag.Devices as List<SelectListItem>, new { @class = "form-control DeviceId select", id = "DeviceId-" + rowcount, data_Selected = ParentDeviceId, data_row = rowcount, style = "width:170px;" })
+        }
+    }
+                        </div>
+</div>
+                </div>
+                <div class="col-sm-12">
+                    <table class="table table-bordered table-striped" style="width:100%;">
+                        <tr>
+                           <th><input type="checkbox" id="selectall" /></th>
+
+
+                            <th>UE ID </th>
+                            <th>Scope</th>
+                            <th>Function</th>
+
+
+                            <th class="hidden">Tester</th>
+                            <th>WO Devices</th>
+                            @*<th>Test Types</th>*@
+
+                        </tr>
+                        @{ rowcount++;}
+                        @foreach (var item in ViewBag.CLS)
+                        {
+                            bool IsMaster = false;
+                            Int64 DeviceId = 0;
+                            Int64 TesterId = 0;
+                            decimal Device = 0;
+                            string DeviceName = "";
+                            string layer = item.NetLayerId + "_" + item.SequenceId;
+                            var selected = SelectedLayers.Where(m => m.DeviceScheduleId == item.DeviceScheduleId && m.SequenceId == item.SequenceId && m.LayerStatusId == item.NetLayerId && m.IsDownlaoded==false).FirstOrDefault();
+                            if (selected != null)
+                            {
+                                TesterId = selected.UserId;
+                                DeviceId = selected.UserDeviceId;
+                                var deviceselected = Devices.Where(m => m.DeviceId == DeviceId).FirstOrDefault();
+                                if (deviceselected != null)
+                                {
+                                    Device = deviceselected.DeviceId;
+                                    DeviceName = deviceselected.Model;
+                                }
+                            }
+
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="SelectLayer" value="@layer" name="Layer" />
+                                    <input type="hidden" name="NetworkMode" value="@ViewBag.NetworkModeId" />
+                                    <input type="hidden" name="NetLayerId" value="@item.NetLayerId" />
+                                   <input type="hidden" name="Band" value="@ViewBag.BandId" />
+                                    <input type="hidden" name="SequenceId" value="@item.SequenceId" />
+                                        <input type="hidden" name="Carrier" value="@ViewBag.CarrierId" />
+                                    <input type="hidden" name="IsMaster" value="false" />
+                                    <input type="hidden" name="DeviceScheduleId" value="@item.DeviceScheduleId" />
+                                </td>
+
+
+                                <td>
+                                   @if (DeviceName != "")
+                                   {
+                                    <b>@DeviceName </b>
+                                   }
+                                   else
+                                   {
+
+                                    <b>UE # &nbsp; @item.SequenceId</b>
+                                    }
+
+                                </td>
+                                <td>@item.pDefinationName</td>
+                                <td>@item.DefinationName</td>
+
+
+
+                                <td class="hidden">
+                                    @*@Html.DropDownList("TesterId", ViewBag.Users as List<SelectListItem>, new { @class = "form-control TesterId select", id = "TesterId-" + rowcount, data_Selected = TesterId, data_row = rowcount, style = "width:150px;" })*@
+
+                                </td>
+                                <td class="TableCell" id="TableCellId-@rowcount">
+                                    @Html.DropDownList("Devices", ViewBag.Devices as List<SelectListItem>, new { @class = "form-control DeviceId select", id = "DeviceId-" + rowcount, data_Selected = DeviceId, data_row = rowcount, style = "width:150px;" })
+
+                                </td>
+                                <td class="hidden">
+
+                                    <select class="form-control select" style="width:150px;" id="ddlTestType-@rowcount" data-row="@rowcount" onchange="ddlTestTypeChange('@rowcount' ); return false" multiple>
+                                        @foreach (var tst in Tests)
+                                        {
+                                            <option value="@tst.TestTypeId">@tst.Test</option>
+                                        }
+                                    </select>
+                                    <input type="hidden" name="TestTypes" id="TestTypes-@rowcount" />
+                                </td>
+                            </tr>
+                            rowcount++;
+                        }
+                    </table>
+                    <input type="hidden" name="SiteId" value="@Model.SiteId" />
+                    <input type="hidden" name="Scope" value="@ViewBag.Scope" />
+                </div>
+            </div>
+        }
+       
+        <div class="pull-right">
+            <button type="submit" class="btn btn-success btn-sm "><span class="fa fa-calendar-check-o"></span> Schedule</button>
+            <a href="#" class="btn btn-danger btn-sm " data-dismiss="modal">
+                <span class="glyphicon glyphicon-remove"></span> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+    $(function () {
+        var UserDevices = JSON.parse('@Html.Raw(UserDevices)');
+
+
+        $("select").each(function (j) {
+
+            var selected = $(this).attr('data-Selected');
+            if (selected != undefined) {
+               // debugger;
+
+                var row = $(this).attr('data-row');
+                var id = $(this).attr('id');
+
+                $('#' + id ).val(selected);
+
+                if (id.startsWith("TesterId")) {
+                    LoadDevices(row, selected)
+                }
+            }
+
+        });
+
+        $(".select").select2();
+        $(document).on('change', '.TesterId', function () {
+            debugger
+            var val = $(this).val();
+            var row = $(this).attr('data-row');
+            LoadDevices(row, val);
+            $(".select").select2();
+        });
+        $("#selectall").change(function () {
+            var status = this.checked;
+            $('.SelectLayer').each(function () {
+                this.checked = status;
+            });
+        });
+
+        function LoadDevices(row, value) {
+            var ids=0
+            $('.DeviceId').empty();
+            // $('.TableCell').append('<select class="form-control select DeviceId" data-row="0" id="DeviceId-' + row + '" name="Devices" style="width:150px;"> <option value="0">-Device-</option></select>');
+            $('.DeviceId').append('<option value="0">-Device-</option>');
+            $.each(UserDevices, function (i, v) {
+                if (v.UserId == value) {
+                    $('.DeviceId').append(' <option value=' + v.DeviceId + '>' + v.Manufacturer + ' ' + v.Model + '[' + v.IMEI + ']' + '</option></select>');
+                }
+            });
+            $(".select").select2();
+        }
+
+
+    })
+</script>

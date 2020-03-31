@@ -1,0 +1,913 @@
+﻿@{
+        Layout = null;
+ }
+
+<!--helping Link -> https://www.w3schools.com/w3css/tryit.asp?filename=tryw3css_sidebar_left_right&stacked=h-->
+<!DOCTYPE html>
+<html style="height:100%;">
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/Content/LeftRightSidebar.css" rel="stylesheet" />
+    <link href="~/Content/LeftRightSidebar.css" rel="stylesheet" />
+    @Styles.Render("~/AdminLTE/plugins/font-awesome/css")
+    @Styles.Render("~/AdminLTE/plugins/ionicons/css")
+    @Styles.Render("~/AdminLTE/bootstrap/css")
+    @Styles.Render("~/AdminLTE/dist/css")
+    @Styles.Render("~/AdminLTE/dist/css/skins")
+    <!--<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">-->
+    <script src="~/Scripts/jquery-3.1.1.js"></script>
+
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/Content/js/Plugins/spectrum/spectrum.js"></script>
+    <link href="~/Content/js/Plugins/spectrum/spectrum.css" rel="stylesheet" />
+
+    <script src="~/Content/js/Plugins/angularmultislect/multiselect.js"></script>
+
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=geometry,places&key=AIzaSyAoCJ1belG4uie8L6bVMsZzo_BU5FkEW68"
+            async defer"></script>
+    <script src="https://code.angularjs.org/1.3.15/angular.js"></script>
+    <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/geocodezip/geoxml3/master/polys/geoxml3.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>    
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-animate.js"></script>
+    <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
+    <script src="~/AdminLTE/bootstrap/js/bootstrap.min.js"></script>
+    <!--<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script data-require="angular-bootstrap@0.13.0" data-semver="0.12.0" src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.0.min.js"></script>
+    <script src="https://rawgit.com/Elijen/angular-popover-toggle/v0.0.10/popover-toggle.js"></script>
+    <script src="https://rawgithub.com/buberdds/angular-bootstrap-colorpicker/master/js/bootstrap-colorpicker-module.js"></script>
+    <link href="~/AdminLTE/dist/css/admin-lte.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://rawgithub.com/buberdds/angular-bootstrap-colorpicker/master/css/colorpicker.css" />
+    @*<link href="https://getbootstrap.com/docs/3.3/examples/sticky-footer/sticky-footer.css" rel="stylesheet">*@
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.18/angular-sanitize.min.js"></script>    
+    <script src="~/Content/js/Plugins/AngularQueryBuilder/js/QueryBuilderDirective.js"></script>
+    <script src="~/Content/js/MapController.js"></script>
+    
+    <script src="~/AdminLTE/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/js/SiteGrid.js"></script>
+    <!--<script src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&key=AIzaSyAoCJ1belG4uie8L6bVMsZzo_BU5FkEW68"></script>-->
+
+</head>
+<body ng-app="mainApp" class="hold-transition skin-blue sidebar-mini sidebar-collapse" ng-controller="mapCtrl" ng-click="Bodyfunction()" id="ttt" style="height:100%">
+    <div id="notification" style="display: none;">
+        <span class="dismiss"><a title="dismiss this notification">x</a></span>
+    </div>
+    
+    @*@Html.Partial("~/views/shared/_header.cshtml")*@
+    @{
+        var id = Url.RequestContext.RouteData.Values["id"];
+    }
+    <div>
+        <div style="margin-bottom:-20px;">
+            <div>
+                <div class="panel panel-primary" style="border-radius:0;">
+                    <div class="panel-heading" style="border-radius:0;height:41px;" >
+                        <a href="/dashboard/index" class="logo col-md-2"><img width="40" height="40" style="margin-top:-8px;margin-left:-24px;" src="~/Content/Images/Application/swi_logo_globe.png" alt="Logo" ></a><h3 class="panel-title col-md-4" style="font-size: 25px;margin-top: -3px;margin-left: -220px;">Site Information</h3>
+                        <span class="pull-right clickable" style="margin-top:2px;"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                    </div>
+                    <div class="panel-body">
+                        @Html.Action("SiteGrid", "SiteDashboard", new { Page = 1, SiteId = id, filter = "SINGLE_SITE" })
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="w3-sidebar w3-bar-block w3-card-2 w3-animate-left" style="display:none;background-color:#d9e2f7;" id="leftMenu">
+
+
+        <div class="box box-widget widget-user" style="margin-top:-3px;">
+
+            <div class="widget-user-header bgimg" style="border-radius:0">
+                <div class="col-md-2 close-Right-Button">
+                    <a href="" id="closebutton" class="cancil" onclick="closeLeftMenu()">X</a>
+                </div>
+                <div style="margin-top:-37px;margin-left:-8px;">
+                    <h3 style="color:#fff;">
+                        {{SiteCode}}
+
+                    </h3>
+                </div>
+
+
+            </div>
+
+            <div class="widget-user-image">
+                <img class="img-circle" src="/Content/Images/Application/swi_logo_globe.png" alt="Vendor">
+            </div>
+            <div class="box-footer" style="background-color: #3a789c; padding-top:15px !important;border-radius:0;">
+                <div style="color:white;">
+
+                    <h3 class="widget-user-username">
+                        T-Mobile
+                        <span class="pull-right">Nokia</span>
+                    </h3>
+                </div>
+
+            </div>
+        </div>
+
+
+        <form style="margin: -12px 0 0 0">
+
+            @*<fieldset class="region">
+                    <div class="form-group col-md-12" style="margin-bottom: 25px;text-align:right">
+                        <div class="col-md-4" style="padding-top: 6px;font-weight: bold;">Net Mode:</div>
+                        <div class="col-md-8 input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+                            <multiselect name="NetworkMode" ms-header="All" multiple="true" showcheckuncheckall="false" ng-model="SelectedIds.NetworkModeId" ng-change="getBand()" template-url="../Scripts/multiselect.tmpl.html" options="c.NetworkModeId as c.NetworkMode for c in NetworkMode"></multiselect>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" style="margin-bottom: 25px;text-align:right">
+                        <div class="col-md-4" style="padding-top: 6px;font-weight: bold;">Band:</div>
+                        <div class="col-md-8 input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-signal"></i></span>
+                            <multiselect name="Band" ms-header="All" multiple="true" showcheckuncheckall="false" ng-model="SelectedIds.BandId" ng-change="getCarrier()" template-url="../Scripts/multiselect.tmpl.html" options="c.BandId as c.Band for c in Band"></multiselect>
+
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-12" style="margin-bottom: 25px;text-align:right">
+                        <div class="col-md-4" style="padding-top: 6px;font-weight: bold;">Carrier:</div>
+                        <div class="col-md-8 input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+                            <multiselect name="Review" ms-header="All" multiple="true" showcheckuncheckall="false" ng-model="SelectedIds.CarrierId" template-url="../Scripts/multiselect.tmpl.html" options="c.CarrierId as c.Carrier for c in Carrier"></multiselect>
+
+                        </div>
+
+                    </div>
+                </fieldset>*@
+            <div style="width:100%;height:40px;background-color:#337ab7"><label style="padding-top: 4px;padding-left: 9px;color:#fff;font-size:20px;font-weight:500;">Default Reports</label></div>
+            <fieldset class="region" style="height:auto; background-color:#e7e5e5;margin-top: 7px;">
+                @*<div class="form-group col-md-12" style="margin-bottom: 25px;text-align:right">
+                        <div class="col-md-4" style="padding-top: 6px;font-weight: bold;">Test:</div>
+                        <div class="col-md-8 input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+                            <multiselect name="BandId" ms-header="All" ng-change="DrawKml()" multiple="false" showcheckuncheckall="false" ng-model="TestId" template-url="../Scripts/multiselect.tmpl.html" options="c.Name for c in Test"></multiselect>
+
+                        </div>
+
+
+                    </div>
+                    <div class="form-group col-md-12" style="margin-bottom: 25px;text-align:right">
+                        <div class="col-md-4" style="padding-top: 6px;font-weight: bold;">U.E:</div>
+                        <div class="col-md-8 input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+                            <multiselect name="UEId" ms-header="All" multiple="true" showcheckuncheckall="false" ng-model="SelectedIds.UEId" template-url="../Scripts/multiselect.tmpl.html" options="c.Id as c.Name for c in UE"></multiselect>
+
+                        </div>
+
+                    </div>*@
+
+                <table class="table-Local" style="width:100%;">
+                    <tr>
+                        <th></th>
+                        <th>Report</th>
+                    </tr>
+                    <tr ng-repeat="x in Test">
+                        <td style="padding-left:10px;width:60px;">
+                            <input type="checkbox"
+                                   ng-model="x.selected"
+                                   ng-true-value="'YES'"
+                                   ng-false-value="'NO'">
+                        </td>
+                        @*<td>{{x.UEId}}</td>*@
+                        <td>{{ x.Name }}</td>
+                    </tr>
+                </table>
+            </fieldset>
+
+            <footer class="footer" style="height:45px;bottom:28px;background-color:#d6d6d4;">
+                <div class="container" style="text-align: right;margin-right: -6px;margin-top: 5px;">
+
+                    <button ng-click="DrawKml(Test)" style="border-radius:0;color:#fff;" class="btn btn-primary">Search</button>
+                </div>
+            </footer>
+        </form>
+    </div>
+
+
+    <div class="w3-sidebar w3-bar-block w3-card-2 w3-animate-right" style="display:none;right:0;width:790px" id="rightMenu">
+        <div style="border-color:rebeccapurple;height:50px;width:100%;background-color:#085c98;" class="col-md-12">
+            <div class="col-md-10">
+                <label style="margin: 12px 0 0 -7px;color:#fff;font-family:sans-serif;font-size:18px;">Filter Criteria</label>
+            </div>
+            <div style="text-align:right;margin-top:10px;font-size:18px;" class="col-md-2">
+                <a href="" id="closebutton" class="cancil" onclick="closeRightMenu()">X</a>
+            </div>
+
+        </div>
+        
+
+        <div>
+
+                <div>
+                    <h1>Angular.js Query Builder</h1>
+                    <div class="alert alert-info">
+                        <strong>Example Output</strong><br>
+                        <span ng-bind-html="output"></span>
+                    </div>
+                    <query-builder group="filter.group"></query-builder>
+                </div>
+                
+            </div>
+
+    </div>
+
+
+
+    <div class="w3-container relative">
+
+        <div style="height:100%;">
+
+            <ng-map zoom="15" center="[{{siteLat}}, {{siteLong}}]" style="height:96%;" mapTypeControl:true>
+
+
+                <shape id="circle" name="circle" centered="true"
+                       center="[{{siteLat}}, {{siteLong}}]" radius="10"></shape>
+                <shape ng-repeat="fence in geofences"
+                       name="circle"
+                       radius="10"
+                       fill-color="#000000"
+                       fill-opacity="1"
+                       center="[{{fence.Latitude}}, {{fence.Longitude}}]" />
+
+                <custom-marker ng-repeat="cm in geofences" position="[{{cm.Latitude}}, {{cm.Longitude}}]">
+                    <div class="cm">
+                        <div style="background-color:#fff;color:#000;margin-top:20px;"> {{cm.SiteCode}}</div>
+                        
+                    </div>
+                </custom-marker>
+
+            </ng-map>
+        </div>
+        <div class="absolute" style="left:50%;top:40%;" ng-show="loader">
+
+            <img src="~/Content/Images/Application/Logo_Loading.gif" />
+        </div>
+        <!--<ng-map zoom="15" center ="41.5972027,-87.5635784" style="height:1000px;" mapTypeControl:false>
+
+            <kml-layer url="http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml">
+            </kml-layer>
+        </ng-map>-->
+
+        <div class="absolute" >
+
+            <button class="w3-button w3-teal w3-xlarge w3-left" ng-click="openLeftMenu()" style="margin-top: -3px;height: 200px;width: 20px;padding: 8px;font-size: 20px!important;"><i class="glyphicon glyphicon-chevron-right" style="right:10px;top:-68px;"></i></button>
+            <label class="vertical" style="margin-top: 52px;padding-right: 31px;color: #fff;">Default Reports</label>
+        </div>
+        @*<div class="absolute" style="margin-left:0px;margin-top: 43px;height:200px;background-color:#1976b9;color:#fff;">
+            <label class="vertical" style="margin-top:32px;">Default Reports</label>
+        </div>*@
+        <div class="absolute" style="right:0px">
+            <button class="w3-button w3-teal w3-xlarge w3-right" onclick="openRightMenu()" style="height:43px;width:20px;padding:8px;font-size:20px!important"><i class="glyphicon glyphicon-chevron-left" style="right:7px"></i></button>
+        </div>
+        <div style="right: 59px;width:86%;" class="absolute">
+
+
+            <div style="margin-right:100px;">
+
+                <button href="#" popover-template="'popover.html'"
+                        popover-toggle="isOpen"
+                        popover-placement="bottom"
+                        ng-click="isOpen = !isOpen;$event.stopPropagation();Bodyfunction('isOpen');" class="Icons-buttons w3-teal w3-xlarge w3-right" style="background-color:transparent !important;">
+                    <img src="~/Content/Images/icons/file_upload_x32.png" />
+                </button>
+
+            </div>
+            <div style="margin-right:125px;" id="isShow">
+
+                <button href="#" popover-template="'popover1.html'"
+                        popover-toggle="isOpen1"
+                        popover-placement="bottom"
+                        ng-click="isOpen1 = !isOpen1;$event.stopPropagation();Bodyfunction('isOpen1');" class="Icons-buttons w3-teal w3-xlarge w3-right" style="background-color:transparent !important;">
+                    <img src="~/Content/Images/icons/sector_x32.png" />
+                </button>
+
+            </div>
+            <div style="margin-right:150px;" id="isShow1">
+
+                <button href="#" popover-template="'popover2.html'"
+                        popover-toggle="isOpen2"
+                        popover-placement="bottom"
+                        ng-click="isOpen2 = !isOpen2;$event.stopPropagation();Bodyfunction('isOpen2');" class="Icons-buttons w3-teal w3-xlarge w3-right" style="background-color:transparent !important;">
+                    <img src="~/Content/Images/icons/pci_x32.png" />
+                </button>
+
+            </div>
+            <div style="margin-right:175px;" id="isShow2">
+
+                <button href="#" popover-template="'popover3.html'"
+                        popover-toggle="isOpen3"
+                        popover-placement="bottom"
+                        ng-click="isOpen3 = !isOpen3; $event.stopPropagation();Bodyfunction('isOpen3');" class="Icons-buttons w3-teal w3-xlarge w3-right" style="background-color:transparent !important;">
+                    <img src="~/Content/Images/icons/range_x32.png" />
+
+                </button>
+
+            </div>
+
+
+            <script type="text/ng-template" id="popover.html">
+
+                <div ng-click="$event.stopPropagation()">
+
+                    <div class="arrow"></div>
+
+                    <div class="popover-inner" style="width:auto">
+                        <div class="header_test">
+                            <label>Upload Cell File</label>
+                        </div>
+
+                        <div class="popover-content" tooltip-template-transclude="contentExp()" tooltip-template-transclude-scope="originScope()">
+                            <div ng-click="$event.stopPropagation()" class="inner_repeate">
+
+                                <div class="input-group" style="margin-left: 3px;margin-right: 3px;">
+                                    <input type="file" id="browse" name="fileupload" style="display: none" ng-files="getTheFiles($files)" onchange="Handlechange();" />
+                                    <input type="text" id="filename" readonly class="form-control" style="background-color:#fff;" onclick="HandleBrowseClick()" />
+                                    <span class="input-group-btn">
+                                        <input type="button" value="Upload" id="fakeBrowse" class="btn btn-default" onclick="HandleBrowseClick()" />
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="footer_test">
+                            <input type="button" value="Plot Cell File" class="btn btn-sm" ng-click="uploadFiles()" style="background-color:#0b5806;color:#fff;" />
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </script>
+            <script type="text/ng-template" id="popover1.html">
+                <div ng-click="$event.stopPropagation()">
+
+                    <div class="arrow"></div>
+
+                    <div class="popover-inner" style="width:200px">
+                        <div class="header_test">
+                            <label style="margin-left: -4px;">Site Sectors</label>
+                        </div>
+                        <form>
+                            <div class="popover-content" tooltip-template-transclude="contentExp()" tooltip-template-transclude-scope="originScope()">
+                                <div ng-click="$event.stopPropagation()" class="inner_repeate">
+
+                                    <div class="row" style="margin-left:3px;" ng-repeat="sec in Sector">
+
+                                        <input type="checkbox" class="checkbox col-md-2 " style="margin-left:3px;" ng-model="sec.selected" ng-true-value="'YES'" ng-false-value="'NO'" />
+                                        <p class="col-md-7" style="left:-15px;">{{sec.SectorCode}} ({{sec.PCI}})</p>
+                                        <ui-colorpicker ng-model="sec.sectorColor" class="col-md-2" style="left: -29px;top: -3px;"></ui-colorpicker>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="footer_test">
+                                <input type="button" ng-click="SiteSector(Sector)" value="Search" class="btn btn-sm" style="background-color:#0b5806;color:#fff;" />
+                            </div>
+                        </form>
+                    </div>
+
+
+                </div>
+            </script>
+
+            <script type="text/ng-template" id="popover2.html">
+                <div ng-click="$event.stopPropagation()">
+
+                    <div class="arrow"></div>
+
+                    <div class="popover-inner" style="width:200px">
+                        <div class="header_test">
+                            <label>Collected PCI</label>
+                        </div>
+                        <form>
+                            <div class="popover-content" tooltip-template-transclude="contentExp()" tooltip-template-transclude-scope="originScope()">
+                                <div ng-click="$event.stopPropagation()" class="inner_repeate">
+
+                                    <div class="row" style="margin-left:-6px;" ng-repeat="p in Pci">
+                                        <input type="checkbox" class="checkbox col-md-4 " ng-model="p.selected" ng-true-value="'YES'" ng-false-value="'NO'" />
+                                        @*<input type="checkbox" ng-model="p.done" class="checkbox col-md-4 " />*@
+                                        <p class="col-md-4" style="left:-35px;">{{p.PciId}}</p><ui-colorpicker ng-model="p.pciColor" id="Color" class="col-md-4" style="left: -7px;top: -3px;"> {{p.pciColor}}</ui-colorpicker>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="footer_test">
+                                <input type="button" ng-click="SelectedPci(Pci)" value="Search" class="btn btn-sm" style="background-color:#0b5806;color:#fff;" />
+                            </div>
+                        </form>
+                    </div>
+
+
+                </div>
+
+
+
+
+            </script>
+            <script type="text/ng-template" id="popover3.html">
+                <div ng-click="$event.stopPropagation()">
+
+                    <div class="arrow"></div>
+
+
+                    <div class="popover-inner" style="width:auto">
+                        <div class="header_test" style="width: auto;margin-right: 12px;padding-left:15px;">
+                            <label>RF Legends</label>
+                        </div>
+
+                        <tabset style="margin-top:0px;margin-left: 12px;">
+                            <tab ng-repeat="(PlotType, ranges) in Range | groupBy:'PlotType'" heading="{{PlotType}}" select="getChilds(PlotType)">
+
+                            </tab>
+                            <button ng-click="addInput()" class="btn btn-default" style="background-color:transparent;border:0px;color:#0b5806;padding-top: 11px;padding-right: 20px;"> <i class="glyphicon glyphicon-plus"></i></button>
+                        </tabset>
+                        <form style="margin-left:12px;" ng-submit="RFLegends(results)">
+                            <div ng-repeat="range in results track by $index" class="inner_repeate" style="margin-left:13px;">
+                                <ui-colorpicker ng-model="range.rangeColor"></ui-colorpicker>
+                                <input type="text" maxlength="4" ng-model="range.rangeFrom" style="width:35px;" />&nbsp; -&nbsp;
+                                <input type="text" maxlength="4" ng-model="range.rangeTo" style="width:35px;" />
+
+                                <button ng-click="removeInput($index)" class="btn btn-default" style="background-color:transparent;border:0px;color:#ff0000"><i class="glyphicon glyphicon-trash"></i></button>
+                            </div>
+                            <div class="footer_test" style="margin-bottom: -12px;width: auto;margin-right: 13px;margin-left: 1px;">
+                                <input type="submit" value="Search" class="btn btn-sm" style="background-color:#0b5806;color:#fff;" />
+                            </div>
+                        </form>
+                    </div>
+
+
+                </div>
+            </script>
+            @*<script type="text/ng-template" id="popover3.html">
+
+
+                                <div ng-click="$event.stopPropagation()">
+
+                                    <div class="arrow"></div>
+
+                                    <div class="popover-inner" style="width:auto">
+                                        <div class="header_test" style="width: auto;margin-right: 12px;padding-left:15px;">
+                                            <label>RF Legends</label>
+                                        </div>
+                                        <form>
+                                            <div class="popover-content" tooltip-template-transclude="contentExp()" tooltip-template-transclude-scope="originScope()">
+
+                                                <div ng-click="$event.stopPropagation()">
+
+                                                    <tabset style="margin-top:-5px;">
+                                                        <tab ng-repeat="(PlotType, ranges) in Range | groupBy:'PlotType'" heading="{{PlotType}}" select="getChilds(PlotType)">
+
+                                                        </tab>
+                                                        <button ng-click="addInput()" class="btn btn-default" style="background-color:transparent;border:0px;color:#0b5806;"> <i class="glyphicon glyphicon-plus"></i></button></li>
+                                                    </tabset>
+                                                    <div ng-repeat="range in results track by $index" class="inner_repeate" style="margin-left:13px;">
+                                                        <ui-colorpicker ng-model="range.rangeColor"></ui-colorpicker>
+                                                        <input type="text" maxlength="4" ng-model="range.rangeFrom" style="width:35px;" />&nbsp; -&nbsp;
+                                                        <input type="text" maxlength="4" ng-model="range.rangeTo" style="width:35px;" />
+
+                                                        <button ng-click="removeInput($index)" class="btn btn-default" style="background-color:transparent;border:0px;color:#ff0000"><i class="glyphicon glyphicon-trash"></i></button>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                            <div class="footer_test" style="margin-bottom: -12px;width: auto;margin-right: 13px;margin-left: 12px;">
+                                                <input type="submit" ng-click="check(result)" value="Search" class="btn btn-sm" style="background-color:#0b5806;color:#fff;" />
+                                            </div>
+                                        </form>
+                </div>
+
+
+                                </div>
+
+
+                            </script>*@
+        </div>
+
+
+    </div>
+
+    <script>
+        $('#isShow').hide();
+        $('#isShow1').hide();
+        $('#isShow2').hide();
+        var layer = {};
+        var data = {};
+
+        $(document).on('click', '.BandRow', function () {
+           
+            var siteId = null;
+            $('#isShow').show();
+            $('#isShow1').show();
+            $('#isShow2').show();
+            $('.BandRow').css({ "background": "#f9f9f9", "color": "#000" });
+            $(this).css({ "background": "blue", "color": "#fff" });
+            layer.NetworkModeId = $(this).attr('data-networkmodeid');
+            layer.CarrierId = $(this).attr('data-carrierid');
+            layer.BandId = $(this).attr('data-bandid');
+            layer.SiteId = $(this).attr('data-siteid');
+            layer.NetlayerId = $(this).attr('data-netlayerid');
+            layer.ScopeId = $(this).attr('data-scopeid');
+            layer.SiteCode = $(this).attr('data-SiteCode');
+
+            angular.element(document.getElementById('ttt')).scope().getSectors(layer);
+            angular.element(document.getElementById('ttt')).scope().getRfRange(layer);
+            angular.element(document.getElementById('ttt')).scope().getPci(layer);
+
+            if (layer.SiteId != siteId) {
+                siteId = layer.SiteId;
+                $.ajax({
+                    url: '/Optimizations/GetAllTest',
+                    type: 'GET',
+                    data: { siteId: layer.SiteId, SiteCode: layer.SiteCode, networkModeId: layer.NetworkModeId, BandId: layer.BandId, CarrierId: layer.CarrierId, ScopeId: layer.ScopeId },
+                    success: function (res) {
+                        data = res.listTest;
+
+
+                    }
+                });
+                $('#Sector').show();
+                $.ajax({
+                    type: "POST",
+                    url: "/Optimizations/Search",
+                    data: layer
+
+
+                });
+            }
+
+
+
+
+        });
+        //.css({"background":"blue","color":"#fff"})
+
+
+        function testData() {
+            document.getElementById("leftMenu").style.display = "block";
+
+            return data;
+
+        }
+
+        function Params() {
+            return layer;
+        }
+        //$('.testtest').find('td').each(function () {
+        //    alert($(this).find('td').text());
+        //});
+
+        $(document).on('click', '.panel-heading span.clickable', function (e) {
+            var $this = $(this);
+            if (!$this.hasClass('panel-collapsed')) {
+                $this.parents('.panel').find('.panel-body').slideUp();
+                $this.addClass('panel-collapsed');
+                $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+            } else {
+                $this.parents('.panel').find('.panel-body').slideDown();
+                $this.removeClass('panel-collapsed');
+                $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+            }
+        })
+
+        $(document).ready(function () {
+            //start
+
+
+
+
+            //end
+            function ChangeText(oFileInput, sTargetID) {
+
+                document.getElementById(sTargetID).value = oFileInput.value;
+            }
+            $(".nav-tabs a").click(function () {
+                $(this).tab('show');
+            });
+            $(function () {
+                $('input[type="file"]').change(function () {
+                    if ($(this).val() != "") {
+                        $(this).css('color', '#333');
+                    } else {
+                        $(this).css('color', 'transparent');
+                    }
+                });
+            })
+        });
+        //$(window).on("load", function () {
+        //    $(".gmnoprint").remove();
+        //});
+
+        function HandleBrowseClick() {
+            var fileinput = document.getElementById("browse");
+            fileinput.click();
+        }
+
+        function Handlechange() {
+            var fileinput = document.getElementById("browse");
+            var textinput = document.getElementById("filename");
+            textinput.value = fileinput.value;
+        }
+        //function openLeftMenu() {
+        //    testData();
+        //    document.getElementById("leftMenu").style.display = "block";
+
+        //}
+        function closeLeftMenu() {
+            document.getElementById("leftMenu").style.display = "none";
+        }
+        function openRightMenu() {
+            document.getElementById("rightMenu").style.display = "block";
+        }
+        function closeRightMenu() {
+            document.getElementById("rightMenu").style.display = "none";
+        }
+        function Notify(Message) {
+            debugger
+            $("#notification").fadeIn("slow").append(Message);
+            //$("#notification").delay(4000).fadeOut("slow");
+            $(".dismiss").click(function () {
+                $("#notification").fadeOut("slow");
+            });
+        }
+    </script>
+
+    <style>
+
+            #notification {
+        /*margin-top: -20px;*/
+    position: fixed;
+    right:4px;
+    width: 100%;
+    z-index: 105;
+    text-align: center;
+    font-weight: normal;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: #cc4944;
+    padding: 9px;
+        height: 45px;
+}
+#notification span.dismiss {
+    /*border:2px solid #FFF;*/
+    padding:0 5px;
+    cursor:pointer;
+    float:right;
+    margin-right:10px;
+}
+#notification a {
+    color:white;
+    text-decoration:none;
+    font-weight:bold
+}
+
+           .custom-marker.my1 {
+        font-size: 1.5em;
+        padding: 10px;
+        background: #fff;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        border: #7F7F7F solid 1px;
+      }
+
+        .vertical{
+        writing-mode:tb-rl;
+    -webkit-transform:rotate(90deg);
+    -moz-transform:rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform:rotate(90deg);
+    transform: rotate(360deg);
+    white-space:nowrap;
+    display:block;
+    bottom:0;
+    width:20px;
+    height:20px;
+}
+        fieldset >table, fieldset > th, fieldset > td {
+            
+            border-collapse: collapse;
+            padding: 5px;
+        }
+
+            fieldset > table tr:nth-child(odd) {
+                background-color: #f1f1f1;
+            }
+
+            fieldset > table tr:nth-child(even) {
+                background-color: #ffffff;
+            }
+
+        .bgimg {
+            background-image: url("https://maps.googleapis.com/maps/api/staticmap?maptype=satellite&center=31.479516,74.280378&markers=color:green%7Clabel:G%7C31.479516,74.280378&zoom=17&size=340x170&key=AIzaSyBRWi1Nq-0x8_F8TlAo7ewSm9AskRjdbrw");
+        }
+
+        .box-widget {
+            border: none;
+            position: relative;
+        }
+
+        .box {
+            position: relative;
+            border-radius: 0;
+            background: #ffffff;
+            border-top: 3px solid #d2d6de;
+            margin-bottom: 20px;
+            width: 100%;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+
+        .image-preview-input {
+            position: relative;
+            overflow: hidden;
+            margin: 0px;
+            color: #333;
+            background-color: #fff;
+            border-color: #ccc;
+        }
+
+        .image-upload > input[type="file"] {
+            display: none;
+        }
+
+        .image-upload img {
+            cursor: pointer;
+        }
+
+        div > a {
+            color: #fff !important;
+        }
+
+            div > a:focus, div > a:hover {
+                color: #fff !important;
+            }
+
+        .relative {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .absolute {
+            position: absolute;
+            top: 10px;
+        }
+
+        .region {
+            -webkit-flow-from: main;
+            float: left;
+            background: #eee;
+            width: 100%;
+            padding: 1%;
+            margin-right: 1%;
+            height: 175px;
+            border-bottom: 1px solid #ccc;
+        }
+
+      
+        #map {
+            height: 100%;
+        }
+
+        .square {
+            width: 20px;
+            height: 20px;
+        }
+
+        .clickable {
+            cursor: pointer;
+        }
+
+        .panel-heading span {
+            border-radius: 0px !important;
+            margin-top: -20px;
+            font-size: 15px;
+        }
+
+        .close-Right-Button {
+            font-size: 20px;
+            float: right;
+            text-align: right;
+            margin-top: -15px;
+            font-weight: bold;
+            margin-right: -19px;
+        }
+
+        .header_test {
+            padding-top: 8px;
+            padding-left: 22px;
+            text-align: left;
+            color: white;
+            background-color: #000080;
+            width: auto;
+            margin-left: 13px;
+            height: 35px;
+            margin-right: 11px;
+        }
+
+        .popover-inner {
+            margin-top: -5px;
+            margin-left: -14px;
+            margin-right: -14px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px; 
+            background: transparent; 
+        }
+
+        .footer_test {
+            width: auto;
+            background-color: #dedcdc;
+            margin-bottom: -10px;
+            text-align: center;
+            height: 35px;
+            padding-top: 3px;
+            margin-left: 13px;
+            margin-right: 13px;
+        }
+
+        .inner_repeate {
+            height: 100%;
+            max-height: 158px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        html {
+            position: relative;
+            height: 100%;
+        }
+
+        body {
+            height: auto;
+            
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            
+            height: 60px;
+            background-color: #f5f5f5;
+        }
+
+
+ 
+
+        .container {
+            width: auto;
+            max-width: 680px;
+            padding: 0 15px;
+        }
+
+            .container .text-muted {
+                margin: 20px 0;
+            }
+            .mainButtonDiv
+            {
+                padding-bottom: 23px !important;
+            }
+        .innerButton {
+        width:34px !important;
+        }
+        .table1 {
+                margin-bottom: -23px !important;
+    margin-left: 14px;
+    margin-top: 0 !important;
+        }
+         .groupOperator {
+      height: 23px;
+    width: 53px;
+    margin-left: -14px;
+    margin-bottom: 2px;
+    padding: 1px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-top: -20px;
+    border-radius: 0;
+    }
+        .outerdiv {
+           margin-bottom: 0px;
+        }
+      
+
+    </style>
+</body>
+
+</html>

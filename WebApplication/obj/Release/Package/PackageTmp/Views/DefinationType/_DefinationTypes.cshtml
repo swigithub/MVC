@@ -1,0 +1,31 @@
+﻿@model SWI.Libraries.AirView.Entities.AD_DefinationTypes
+@{
+    ViewBag.Title = "_DefinationTypes";
+}
+
+                                                <div class="col-lg-4">
+                                                    <form id="myForm">
+          
+                                                        @Html.HiddenFor(x => x.DefinationTypeId)
+                                                        <div class="form-control" style="width: 176px;padding-left: 0px; padding-top: 0px;padding-right: 0px;padding-bottom: 0px;height: 32px;">
+
+                                                            @Html.EditorFor(x => x.DefinationType, new { htmlAttributes = new { @class = "form-control", @style = "width: 174px;height: 31px;",@required="" } })
+                                                        </div>
+                                                        <br />
+                                                        <div class="form-control" style="width: 176px;padding-left: 0px; padding-top: 0px;padding-right: 0px;padding-bottom: 0px;height: 32px;">
+                                                            @Html.DropDownListFor(x => x.PDefinationTypeId, ViewBag.PDefinationName as List<SelectListItem>, new { @class = "form-control", @style = "width: 174px;height: 31px;", @required = "" })
+                                                        </div>
+                                                        <br />
+                                                        @Html.CheckBoxFor(x => x.IsActive)
+                                                       </form>
+</div>
+            
+<script type="text/javascript">
+    function submitform() {
+        $(function () {
+            $("#DefinationType").submit();
+        })
+        @*$('#ItemId').val('@Model.ItemId');*@
+       
+    }
+</script>

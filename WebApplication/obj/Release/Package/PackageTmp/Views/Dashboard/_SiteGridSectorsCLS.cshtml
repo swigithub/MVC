@@ -1,0 +1,116 @@
+﻿
+@model IEnumerable<SWI.Libraries.AirView.Entities.AV_SiteScript>
+@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.Security.Entities
+
+@{
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    jss.MaxJsonLength = int.MaxValue;
+    var UserDevices = jss.Serialize(ViewBag.UserDevices);
+    int rowcount = 0;
+    var SelectedLayers = ViewBag.SelectedLayer as List<AV_WoDevices>;
+    var Devices = ViewBag.UserDevices as List<Sec_UserDevices>;
+
+@functions{
+
+    string StatusImages(bool? status)
+    {
+        if (status == null)
+        {
+            return "/Content/Images/Common/gray.png";
+        }
+        else if (status == true)
+        {
+            return "/Content/Images/Common/DarkGreen.png";
+        }
+        else if (status == false)
+        {
+            return "/Content/Images/Common/red.png";
+        }
+
+        return "/Content/Images/Common/gray.png";
+    }
+
+}
+    if (Model != null && Model.Count() > 0)
+    {
+    <table class="table table-bordered table-striped child-table" cellpadding="5" cellspacing="5" border="0" style="margin-left:70px; margin-top:10px; margin-bottom:10px;">
+        <thead>
+            <tr>
+                <th style="max-width:150px; width:150px;">Device Id</th>
+                <th style="max-width:150px; width:150px;">UE Name</th>
+                <th style="max-width:150px; width:150px;">UE Scope</th>
+                <th style="max-width:150px; width:150px;">UE Function</th>
+                <th style="max-width:150px; width:150px;">Data Status</th>
+                @*@if (@ViewBag.RequestFrom == "KPI")
+                {
+                    <th style="max-width:150px; width:150px;"></th>
+                   
+                }*@
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                Int64 TesterId = 0;
+                Int64 DeviceId = 0;
+                decimal Device = 0;
+                string DeviceName = "";
+                var selected = SelectedLayers.Where(m => m.DeviceScheduleId == item.DeviceScheduleId && m.SequenceId == item.SequenceId && m.LayerStatusId == item.NetLayerId).FirstOrDefault();
+                if (selected != null)
+                {
+                    TesterId = selected.UserId;
+                    DeviceId = selected.UserDeviceId;
+                    var deviceselected = Devices.Where(m => m.DeviceId == DeviceId).FirstOrDefault();
+                    if (deviceselected != null)
+                    {
+                        Device = deviceselected.DeviceId;
+                        DeviceName = deviceselected.Model;
+                    }
+                }
+              <tr>
+                      <td>
+                          @if (Device != 0)
+                          {
+                              @*<b>@Device </b>*@
+                            <b>Device # &nbsp; @item.SequenceId</b>
+                          }
+                          else
+                          {
+                            <b>UE # &nbsp; @item.SequenceId</b>
+
+                          }
+
+
+                      </td>
+
+                    <td>
+                     
+                        @if (DeviceName != "")
+                        {
+                            <b>@DeviceName </b>
+                        }
+                        else
+                        {
+
+                            <b></b>
+                        }
+
+                    </td>
+                    <td>@item.pDefinationName</td>
+                    <td>@item.DefinationName</td>
+                    <td>@*@item.PCI*@</td>
+                  @*@if (@ViewBag.RequestFrom == "KPI")
+                  {
+                      <td>  <a class="KPI" title="" target="_blank" href="/KPI/Monitoring/Add?Type='Sector'&Site=@ViewBag.SiteId&Carrier=@ViewBag.LayerId&Sector="   > <span><img src="/Content/Images/Common/netlayer_x32.png" height="24" width="24" style="margin-right:20px;" /></span></a>  </td>
+
+                  }*@
+                </tr>
+            }
+        </tbody>
+
+    </table>
+}
+
+    }

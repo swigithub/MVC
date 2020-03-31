@@ -1,0 +1,87 @@
+﻿@model Library.SWI.Survey.Model.TSS_SurveyDocument
+
+
+<div>
+    <form ng-submit="SubmitDocument()" id="frm-survey" name="frm-survey">
+        <input type="hidden" ng-model="objDoc.SurveyId" />
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Client<span style="color:red">*</span></label>
+                        <select class="form-control" ng-disabled="objDoc.IsGlobal" ng-required="!objDoc.IsGlobal"  ng-model="objDoc.ClientId">
+                            <option ng-value="0" ng-if="objDoc.IsGlobal">--Client--</option>
+                            <option value="" ng-if="!objDoc.IsGlobal">--Client--</option>
+                            <option ng-value="item.ClientId" ng-repeat="item in clients">{{item.ClientName }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Market<span style="color:red">*</span></label>
+                        <select class="form-control" required ng-model="objDoc.CityId">
+                            <option value="">--Market--</option>
+                            <option ng-value="{{item.DefinationId}}" ng-repeat="item in cities">{{item.DefinationName}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Survey Tilte<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" ng-model="objDoc.SurveyTitle" required />
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Category<span style="color:red">*</span></label>
+                        <select class="form-control" ng-change="LoadSubCategories()" required ng-model="objDoc.CategoryId">
+                            <option value="">--Category--</option>
+                            <option ng-value="{{item.DefinationId}}" ng-repeat="item in Categories">{{item.DefinationName}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Sub Category<span style="color:red">*</span></label>
+                        <select class="form-control" id="SectionId" required ng-model="objDoc.SubCategoryId">
+                            <option value="">--Category--</option>
+                            <option ng-repeat="item in SubCategories" ng-value="{{item.DefinationId}}">{{item.DefinationName}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Unit System<span style="color:red">*</span></label>
+                        <select class="form-control" id="UnitSystem" required ng-model="objDoc.UnitSystemId" ng-change="LoadCommonUnitTypes()">
+                            <option value="">--Unit System--</option>
+                            <option ng-repeat="item in UnitSystem" ng-value="{{item.DefinationId}}">{{item.DefinationName}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-control" ng-model="objDoc.Description" />
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Is Published</label><br />
+                        <input type="checkbox" style="zoom: 1.5;margin:5px;" ng-model="objDoc.IsPublished" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Is Global</label><br />
+                        <input type="checkbox" style="zoom: 1.5;margin:5px;" ng-model="objDoc.IsGlobal" ng-change="GlobalChange(objDoc.IsGlobal)" />
+                    </div>
+                </div>
+                <button style="margin-top: 2%;" class="btn btn-s-md btn-success pull-right" type="submit">Save</button>
+            </div>
+        </div>
+    </form>
+</div>

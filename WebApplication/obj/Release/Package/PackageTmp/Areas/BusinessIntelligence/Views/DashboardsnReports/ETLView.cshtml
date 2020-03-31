@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Areas/BusinessIntelligence/Views/Shared/_Layout.cshtml";
+
+}
+@section TopSection
+{
+
+    <div class="ml-auto" ng-include="'dsrpt/DashboardNReport/getPartialPage/TopSections/ELTTopSection_DashboardAndReport.cshtml'" ></div>
+}
+<div ng-include="'dsrpt/DashboardNReport/getPartialPage/ETLRender/ETLRenderView.cshtml'" ></div>
+<script>
+    var userIDByX1 = JSON.parse(@ViewBag.UserId);
+
+</script>
+
+
+

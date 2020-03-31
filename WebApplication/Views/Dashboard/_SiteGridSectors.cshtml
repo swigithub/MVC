@@ -1,0 +1,146 @@
+﻿@model IEnumerable<SWI.Libraries.AirView.Entities.SectorsVM>
+
+@functions{
+
+    string StatusImages(bool? status)
+    {
+        if (status == null)
+        {
+            return "/Content/Images/Common/gray.png";
+        }
+        else if (status == true)
+        {
+            return "/Content/Images/Common/DarkGreen.png";
+        }
+        else if (status == false)
+        {
+            return "/Content/Images/Common/red.png";
+        }
+
+        return "/Content/Images/Common/gray.png";
+    }
+
+}
+@if (Model != null && Model.Count() > 0)
+{
+    var First = Model.FirstOrDefault();
+    string NetworkMode = First.NetworkMode.DefinationName;
+    <table class="table table-bordered table-striped child-table" cellpadding="5" cellspacing="5" border="0" style="margin-left:70px; margin-top:10px; margin-bottom:10px;">
+        <thead>
+            <tr>
+                <th style="max-width:150px; width:150px;">Sector Id</th>
+                <th style="max-width:150px; width:150px;">Beam Width</th>
+                <th style="max-width:150px; width:150px;">Antenna</th>
+                <th style="max-width:150px; width:150px;">Azimuth</th>
+                <th style="max-width:150px; width:150px;">BCCH/PSC/PCI</th>
+                @if (ViewBag.RequestFrom !="KPI") { 
+                foreach (var item in ViewBag.TestTypes)
+                {
+                    <th style="max-width:150px; width:150px;">@item.DisplayText</th>
+                    }
+                    if (ViewBag.RequestFrom == "KPI")
+                    {
+
+                       <th style="max-width:150px;width:150px;" ></th>
+
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="SectorRow" data-NetworkModeId="@ViewBag.NetworkModeId" data-BandId="@ViewBag.BandId" data-CarrierId="@ViewBag.CarrierId" data-ScopeId="@ViewBag.ScopeId" data-SiteId="@ViewBag.SiteId" data-Sector="@item.SectorCode">
+                    <td>@item.SectorCode</td>
+                    <td>@item.BeamWidth</td>
+                    <td>@item.Antenna</td>
+                    <td>@item.Azimuth</td>
+                    <td>@item.PCI</td>
+                    @**@
+@if (ViewBag.RequestFrom != "KPI")
+{
+                    foreach (var tst in ViewBag.TestTypes)
+                    {
+                        if (tst.KeyCode == "UPLINK")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.UplinkStatus)" />  </td>
+                        }
+                        else if (tst.KeyCode == "DOWNLINK")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.DownlinkStatus)" />  </td>
+                        }
+                        else if (tst.KeyCode == "PING")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.PingStatus)" /> </td>
+                        }
+                        else if (tst.KeyCode == "VOLTE_MO")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.VMoStatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "VOLTE_MT")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.VMtStatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "CSFB_MO")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.MoStatus)" /> </td>
+                        }
+                        else if (tst.KeyCode == "CSFB_MT")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.MtStatus)" /> </td>
+                        }
+                        else if (tst.KeyCode == "CW")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.CwHandoverStatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "CCW")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.Ccwhandoverstatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "E911")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.E911Status)" /></td>
+                        }
+                        else if (tst.KeyCode == "SMS_MO")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.SMoStatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "SMS_MT")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.SMtStatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "VOICE_MO")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.MoStatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "VOICE_MT")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.MtStatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "CA")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.CarrierAggregationStatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "MOBILITY")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.CwHandoverStatus)" /></td>
+                        }
+                        else if (tst.KeyCode == "IRAT")
+                        {
+                            <td><img src="@StatusImages(item.TestResult.IRATHandover)" /></td>
+                        }
+                    }
+                    }
+                    @if (@ViewBag.RequestFrom == "KPI")
+                    {
+
+                    <td>  <a class="KPI" title="" target="_blank"  href="/KPI/Monitoring/Add?Type='Sector'&Site=@ViewBag.SiteId&Carrier=@ViewBag.CarrierId&Sector=@item.SectorId" > <span><img src="/Content/Images/Common/netlayer_x32.png" height="24" width="24" style="margin-right:20px;" /></span></a>  </td>
+
+            }
+                </tr>
+            }
+        </tbody>
+
+    </table>
+}
+

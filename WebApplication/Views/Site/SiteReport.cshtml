@@ -1,0 +1,1041 @@
+﻿@using SWI.Libraries.AirView.Entities
+@using SWI.Libraries.Common
+@using System.Web.Mvc.Html
+
+@model SiteReportVM
+@{ Layout = null;
+    DirectoryHandler dh = new DirectoryHandler();
+    string MapKey = System.Configuration.ConfigurationManager.AppSettings["ApiMapKey"];
+}
+<!DOCTYPE html>
+
+@if (Model != null)
+{
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Site Report</title>
+
+        <STYLE TYPE="text/css">
+            .breakhere {
+                page-break-after: always;
+            }
+
+            .heading {
+                font-family: Verdana;
+                font-size: 16px;
+                font-weight: bold;
+                color: red;
+                margin-left: 20px;
+                margin: 10px;
+            }
+
+            @@media print and (color) {
+                * {
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+            }
+
+            @@page {
+                /* size: 7in 9.25in;*/
+                /*size: 794px 1122pixels;*/
+                size: A4 landscape;
+                margin: 5mm 2mm 2mm 2mm;
+                /*margin: 0mm 2mm 0mm 2mm;*/
+                border: dotted 1px;
+            }
+
+            .left {
+                float: left;
+            }
+
+            .right {
+                float: right;
+            }
+
+            .clear {
+                clear: both;
+            }
+
+            .subheading {
+                font-family: Verdana;
+                font-size: 14px;
+                font-weight: bold;
+                color: green;
+                margin-left: 30px;
+            }
+
+            .mainheading {
+                font-family: Verdana;
+                font-size: 24px;
+                font-weight: bold;
+                color: black;
+                text-align: left;
+                margin-bottom: 12px;
+                margin-top: 20px;
+            }
+
+            .homepage {
+                height: 900px;
+                width: 100%;
+                background-image: url('../../Content/Images/Common/bg-home.PNG');
+                background-repeat: no-repeat;
+                background-size: 100% 100%;
+                border: 1px solid black;
+                position: relative;
+            }
+
+
+                /*.report {
+                    width: 1200px;
+                }*/
+
+                .homepage table tr td {
+                    padding: 8px !important;
+                }
+
+            .SecondHeading {
+                padding-top: 10px;
+                margin-top: 17px;
+                margin-bottom: 3px;
+                font-size: large;
+                font-weight: bold;
+            }
+
+            table tr {
+                min-height: 10px;
+                height: 10px;
+            }
+
+            .tbl-heading {
+                padding: 2px !important;
+                text-align: center !important;
+                background-color: #b2b0b0;
+                vertical-align: central !important;
+            }
+
+            table {
+                page-break-inside: auto;
+            }
+
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+
+            .table {
+                border-collapse: collapse;
+                border: 1px solid black;
+                text-align: center;
+                width: 100%;
+            }
+
+                .table td {
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                    border: 1px solid black;
+                }
+
+                .table th {
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                    border: 1px solid black;
+                    /*background-color: #b2b0b0;*/
+                    background-color: #201eea;
+                    color: white;
+                }
+
+            .pan-map {
+                width: 1400px;
+                height: 860px;
+                position: relative;
+            }
+
+            .googlemap {
+                border: solid 3px;
+                border-color: #3b39e2;
+            }
+
+            .pass {
+                color: green;
+                font-weight: bold;
+            }
+
+            .fail {
+                color: red;
+                font-weight: bold;
+            }
+
+            .colorBox {
+                height: 24px;
+                width: 24px;
+                color: white;
+                border: solid 1px;
+                border-color: black;
+            }
+
+            .customBox {
+                margin-top: 7px;
+                position: absolute;
+                font-weight: bold;
+                color: #201eea;
+                font-size: large;
+                background-color: #fdfffe;
+                opacity: 0.7;
+            }
+
+
+            .ROADMAP-centerText {
+                margin-top: 7px;
+                position: absolute;
+                font-weight: bold;
+                color: #020748;
+                font-size: x-large;
+                background-color: #fdfffe;
+                opacity: 0.7;
+            }
+        </STYLE>
+
+        @Scripts.Render("~/AdminLTE/plugins/jquery/js")
+
+        <script>
+                $(function () {
+                    $('#setting-configuration div').last().remove();
+                    $('#setting-configuration div').last().remove();
+
+                });
+        </script>
+        @*@{ 
+            string MapLink = "https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.ApiMapKey)+&sensor=false&libraries=geometry&bogusParam=.js";
+
+ }*@
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=@(ViewBag.ApiMapKey)+&sensor=false&libraries=geometry&bogusParam=.js"></script>
+
+        <script src="~/Content/js/MapLabel.js"></script>
+        <script src="~/Content/js/GoogleMaps.js"></script>
+
+
+    </head>
+    @if (Model != null && Model.Site != null)
+    {
+        var Bands = Model.Site.Bands;
+        ViewBag.ClientLogo = Model.Site.ClientLogo;
+        ViewBag.VendorLogo = Model.Site.VendorLogo;
+        <body style="font-family:Arial">
+            <div class="container body-content" style="width:1400px;margin: auto;padding:2px;">
+                <div class="report">
+                    <div class="homepage">
+                        <div style="margin-top:50px; margin-left:200px;">
+                            <img height="80" width="200" src="~/Content/Images/Common/swilogo.jpg" />
+                        </div>
+
+                        <div style="border: 1px solid black; background-color:#00B0F0; padding-left:20px;margin-top:50px; color:white;">
+                            <h1> Site Test Report</h1>
+                        </div>
+
+
+                        <div style="margin-left:130px;margin-top:285px;">
+                            <img width="100" src="~/Content/Images/Common/tmobile.png" />
+                            <img width="100" style="margin-top:75px" src="~/Content/Images/Common/nokia.png" />
+                        </div>
+
+                        <div>
+                            <div class="left" style="width:500px;">
+                                <table>
+                                    <tr>
+                                        <td colspan="4">
+                                            <div style="margin-left:40px; text-align:left;">
+                                                <table style="text-align:left">
+                                                    <tr>
+                                                        <th style="text-align:left; width:150px;"><label>Client Name </label></th>
+                                                        <td style="padding-left:15px;">T-Mobile</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="text-align:left; width:150px;">
+                                                            <label>Scope </label>
+                                                        </th>
+                                                        <td style="padding-left:15px;">
+                                                            SSV
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="text-align:left; width:150px;"><label>Submitted Date </label> </th>
+                                                        <td style="padding-left:15px;"> @Model.Site.SubmittedOn.ToString("MMM dd yyy")</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="text-align:left; width:150px;"><label>Scheduled Date </label></th>
+                                                        <td style="padding-left:15px;"> @Model.Site.ScheduledOn.ToString("MMM dd yyy")</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="right" style="width:300px;">
+
+                                <h3>Sublime Wireless Inc.</h3>
+                                <p>
+                                    Suite GRO 2, South Building<br />
+                                    333 Westchester Ave,<br />
+                                    White Plains, NY 10604<br />
+                                    Phone: +1-914-428-2711<br />
+                                    Fax: +1-914-219-1028
+                                </p>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    </div>
+                    @Html.Partial("~/Views/Site/_netLayerReportFooter.cshtml")
+                    <P CLASS="breakhere" />
+                    <hr />
+                    <div class="">
+                        <div class="mainheading">
+                            Site Information
+                        </div>
+                        <div>
+                            <span class="SecondHeading">Site</span>
+                        </div>
+
+
+                        <div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Region</th>
+                                        <th>Market</th>
+                                        <th>Site</th>
+                                        <th>Latitude</th>
+                                        <th>Longitude</th>
+                                        <th>Submitted On</th>
+                                        <th>Scheduled On</th>
+                                        <th>Completed On</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>@Model.Site.Region</td>
+                                        <td>@Model.Site.Market</td>
+                                        <td>@Model.Site.SiteCode</td>
+                                        <td>@Model.Site.Latitude</td>
+                                        <td>@Model.Site.Longitude</td>
+                                        @if (Model.Site.SubmittedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                                        {
+                                        <td>@Model.Site.SubmittedOn.ToString("MM/dd/yyyy")</td>
+                                        }
+                                        else
+                                        {
+                                        <td></td>
+                                        }
+                                        @if (Model.Site.ScheduledOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                                        {
+                                        <td>@Model.Site.ScheduledOn.ToString("MM/dd/yyyy")</td>
+                                        }
+                                        else
+                                        {
+                                        <td></td>
+                                        }
+                                        @if (Model.Site.CompletedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                                        {
+                                        <td>@Model.Site.CompletedOn.ToString("MM/dd/yyyy")</td>
+                                        }
+                                        else
+                                        {
+                                        <td></td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top:10px;">
+                            <span class="SecondHeading">Bands</span>
+                        </div>
+                        <div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="20%">Network Mode</th>
+
+                                        <th>Band</th>
+                                        <th>Carrier</th>
+                                        <th>Scope</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var band in Bands)
+                                    {
+                                    <tr>
+                                        <td>@band.NetworkMode</td>
+
+                                        <td>@band.BandName</td>
+                                        <td>@band.Carrier</td>
+                                        <td>@band.Scope</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <textarea rows="5" readonly style="width:99.5%;margin-top:10px;"></textarea>
+                        </div>
+                        <div class="mainheading">
+                            Settings And Cofigurations
+                        </div>
+                        <div class="SecondHeading">
+                            <span>Test settings</span>
+                        </div>
+                        <div id="setting-configuration">
+                            @foreach (var cat in Model.TestCategories)
+                            {
+                            <div class="heading">
+                                -@cat.TestCategoryName
+                            </div>
+                                <div>
+                                    <table class="table">
+                                        <tbody>
+                                            @foreach (var type in cat.TestTypes)
+                                            {
+                                            <tr>
+                                                <th style="width:200px;"><label>@type.TestTypeName</label></th>
+                                                <td style="padding:0;">
+                                                    <table class="" style="padding:0;">
+                                                        <tr>
+                                                            @for (int i = 0; i < type.TestKpi.Count; i++)
+                                                            {
+                                                                if (type.TestKpi[i].KpiName.ToString().ToLower() != "password")
+                                                                {
+                                                                <td style="text-align:center;padding-left:20px;border:none;">
+                                                                    <label style="font-weight:bold;">@type.TestKpi[i].KpiName</label><p>@type.TestKpi[i].KpiValue</p>
+
+                                                                </td>
+                                                                }
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+
+
+                    </div>
+
+                    <hr />
+                    <P CLASS="breakhere" />
+                    <div class="mainheading">
+                        Field Test Result Summary
+                    </div>
+
+                    <div class="SecondHeading">
+                        <span>Site</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table border="1" id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Region</th>
+                                    <th>Market</th>
+                                    <th>Site</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                    <th>Submitted On</th>
+                                    <th>Scheduled On</th>
+                                    <th>Completed On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@Model.Site.Region</td>
+                                    <td>@Model.Site.Market</td>
+                                    <td>@Model.Site.SiteCode</td>
+                                    <td>@Model.Site.Latitude</td>
+                                    <td>@Model.Site.Longitude</td>
+                                    @if (Model.Site.SubmittedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                                    {
+                                    <td>@Model.Site.SubmittedOn.ToString("MM/dd/yyyy")</td>
+                                    }
+                                    else
+                                    {
+                                    <td></td>
+                                    }
+                                    @if (Model.Site.ScheduledOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                                    {
+                                    <td>@Model.Site.ScheduledOn.ToString("MM/dd/yyyy")</td>
+                                    }
+                                    else
+                                    {
+                                    <td></td>
+                                    }
+                                    @if (Model.Site.CompletedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                                    {
+                                    <td>@Model.Site.CompletedOn.ToString("MM/dd/yyyy ")</td>
+                                    }
+                                    else
+                                    {
+                                    <td></td>
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h3>Stationary Test</h3>
+                    </div>
+                    @foreach (var band in Bands)
+                    {
+                    <br />
+                        <div class="heading">
+                            Band: @band.BandName
+                        </div>
+                        
+                        TestCategoryVM cat = Model.TestCategories.Where(X => X.TestCategoryName.ToString().ToLower() == "test configuration").ToList()[0];
+
+                        foreach (var type in cat.TestTypes)
+                        {
+                        <br />
+                            <div class="subheading">
+                                -@type.TestTypeName:
+                            </div>
+                            <div class="table-responsive">
+                                <table border="1" id="example1" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Sector</th>
+                                            @if (band.NetworkMode.ToString().ToLower() == "gsm")
+                                            {
+                                            <th>BCCH</th>
+                                                <th>RSSI</th>
+                                                <th>Rx Qual</th>
+                                            }
+                                            else if (band.NetworkMode.ToString().ToLower() == "wcdma")
+                                            {
+                                            <th>PSC</th>
+                                                <th>RSCP</th>
+                                                <th>EcIo</th>
+                                            }
+                                            else if (band.NetworkMode.ToString().ToLower() == "lte")
+                                            {
+                                            <th>PCI</th>
+                                                <th>RSRP</th>
+                                                <th>RSRQ</th>
+                                                <th>SNR</th>
+                                            }
+                                            <th>Latitude</th>
+                                            <th>Longitude</th>
+                                            @if (type.TestTypeName.ToString().ToLower() == "ping / latency test")
+                                            {
+                                            <th>Latency Rate</th>
+                                            }
+                                            else if (type.TestTypeName.ToString().ToLower() == "throughput")
+                                            {
+                                            <th>FTP DL</th>
+                                                <th>FTP UL</th>
+                                                <th>Ookla DL</th>
+                                                <th>OoKla UL</th>
+                                                <th>iPerf DL</th>
+                                                <th>iPerf UL</th>
+                                            }
+                                            else if (type.TestTypeName.ToString().ToLower() == "connection setup")
+                                            {
+                                            <th>Connection Setup Time</th>
+                                            }
+                                            else if (type.TestTypeName.ToString().ToLower() == "mo/mt")
+                                            {
+                                            <th>MO Status</th>
+                                                <th>MT Status</th>
+                                            }
+                                            else if (type.TestTypeName.ToString().ToLower() == "volte mo/mt")
+                                            {
+                                            <th>VoLTE MO Status</th>
+                                                <th>VoLTE MT Status</th>
+                                            }
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var sector in band.Sectors.Where(m=>m.TestResult.Band== band.BandName).ToList())
+                                        {
+                                            var TestResult = sector.TestResult;
+                                            <tr>
+                                                <td>@sector.SectorCode</td>
+                                                @if (band.NetworkMode.ToString().ToLower() == "gsm")
+                                                {
+                                                <td>@TestResult.PciId</td>
+                                                    <td>@TestResult.GsmRssi</td>
+                                                    <td>@TestResult.GsmRxQual</td>
+                                                }
+                                                else if (band.NetworkMode.ToString().ToLower() == "wcdma")
+                                                {
+                                                <td>@TestResult.PciId</td>
+                                                    <td>@TestResult.WcdmaRscp</td>
+                                                    <td>@TestResult.WcdmaEcio</td>
+                                                }
+                                                else if (band.NetworkMode.ToString().ToLower() == "lte")
+                                                {
+                                                <td>@sector.PCI</td>
+                                                    <td>@TestResult.LteRsrp</td>
+                                                    <td>@TestResult.LteRsrq</td>
+                                                    <td>@TestResult.LteRsnr</td>
+                                                }
+                                                <td>@TestResult.TestLatitude.ToString("0.00000")</td>
+                                                <td>@TestResult.TestLongitude.ToString("0.00000")</td>
+                                                @if (type.TestTypeName.ToString().ToLower() == "ping / latency test")
+                                                {
+                                                <td>@TestResult.PingAverageResult.ToString("0.000")</td>
+                                                }
+                                                else if (type.TestTypeName.ToString().ToLower() == "throughput")
+                                                {
+                                                <td>@TestResult.DownlinkMaxResult.ToString("0.000")</td>
+                                                    <td>@TestResult.UplinkMaxResult.ToString("0.000")</td>
+                                                    <td>@TestResult.OoklaDownLinkResult.ToString("0.000")</td>
+                                                    <td>@TestResult.OoklaUplinkResult.ToString("0.000")</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                }
+                                                else if (type.TestTypeName.ToString().ToLower() == "connection setup")
+                                                {
+                                                <td>
+                                                
+                                                @if (TestResult.ConnectionSetupStatus == true)
+                                                {
+                                                    <span class="pass">Pass</span>
+                                                }
+                                                else if (TestResult.ConnectionSetupStatus == false)
+                                                {
+                                                    <span class="fail">Failed</span>
+                                                }
+                                                
+                                              </td>
+                                                }
+                                                else if (type.TestTypeName.ToString().ToLower() == "mo/mt")
+                                                {
+                                                <td>
+                                                    @if (TestResult.MoStatus == true)
+                                                    {
+                                                    <span class="pass">Pass</span>
+                                                    }
+                                                    else if (TestResult.MoStatus == false)
+                                                    {
+                                                    <span class="fail">Failed</span>
+                                                    }
+                                                </td>
+                                                    <td>
+                                                        @if (TestResult.MtStatus == true)
+                                                        {
+                                                        <span class="pass">Pass</span>
+                                                        }
+                                                        else if (sector.TestResult.MtStatus == false)
+                                                        {
+                                                        <span class="fail">Failed</span>
+                                                        }
+                                                    </td>
+                                                }
+                                                else if (type.TestTypeName.ToString().ToLower() == "volte mo/mt")
+                                                {
+                                                <td>
+                                                    @if (TestResult.VMoStatus == true)
+                                                    {
+                                                    <span class="pass">Pass</span>
+                                                    }
+                                                    else if (TestResult.VMoStatus == false)
+                                                    {
+                                                    <span class="fail">Failed</span>
+                                                    }
+                                                </td>
+                                                    <td>
+                                                        @if (TestResult.VMtStatus == true)
+                                                        {
+                                                        <span class="pass">Pass</span>
+                                                        }
+                                                        else if (TestResult.VMtStatus == true)
+                                                        {
+                                                        <span class="fail">Failed</span>
+                                                        }
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        <hr />
+                        <P CLASS="breakhere" />
+                        <div class="heading">
+                            AirView Screenshots
+                        </div>
+                        <div>
+                            @foreach (var sector in band.Sectors)
+                            {
+                                if (dh.FileExist(Server.MapPath(sector.TestResult.OoklaTestFilePath)))
+                                {
+                                <img width="200" src="@sector.TestResult.OoklaTestFilePath" alt="AirView Screenshots" />
+                                }
+
+
+                            }
+                            <br /><br />
+                            @foreach (var sector in band.Sectors)
+                        {
+                        <img width="200" src="@sector.TestResult.StationaryTestFilePath" />
+
+                            }
+                            @if (band.Sectors.Count > 0)
+                        {
+                        <img width="200" src="@band.Sectors[0].TestResult.CwTestFilePath" />
+                                <img width="200" src="@band.Sectors[0].TestResult.CcwTestFilePath" />
+                            }
+                           
+                        </div>
+                        <hr />
+                        <P CLASS="breakhere" />
+                        <div>
+                            <h3>Mobility Test</h3>
+                        </div>
+
+                        <!-- PCI Plot-->
+                        <div id="pan-PCIPlot" style="position:relative">
+                            <div class="heading">
+                                PCI Plot
+                            </div>
+
+                            <div class="pan-map googlemap" id="PCI_Plot"></div>
+
+                            <div style="position:absolute;bottom: 31px;background-color:white;border:solid 2px;width: 153px;right: 36px;">
+
+                                <div style="text-align:center;background-color:#2332de;color:white;font-weight:bold;text-align:center;padding:10px;">
+                                    <span>  PCI Plot</span>
+                                </div>
+                                <table style="border-spacing: 10px;width:50%;">
+                                    @for (int i = 0; i < band.Sectors.Where(m => m.TestResult.Band == band.BandName).ToList().Count; i++)
+                                    {
+                                        @*string rgb = ViewBag.SectorColors.SectorColorsRGB(band.);
+                                        <tr>
+
+                                            <td>
+                                                <div class="colorBox" style="height:24px;width:24px;background-color:@rgb;color:white;"></div>
+                                            </td>
+                                            <td><span>@Bands[0].Sectors[i].PCI</span></td>
+                                        </tr>*@
+
+                                    }
+                                </table>
+
+                            </div>
+                        </div>
+                        <hr />
+                        <P CLASS="breakhere" />
+
+                        <!--HO Plot-->
+                        <div style="position:relative">
+                            <div class="heading">
+                                HO Plot
+                            </div>
+
+                            <div class="pan-map googlemap" id="HO_Plot"></div>
+
+                            <div style="position:absolute;bottom: 31px;background-color:white;border:solid 2px;width: 153px;right: 36px;">
+
+                                <div style="text-align:center;background-color:#2332de;color:white;font-weight:bold;text-align:center;padding:10px;">
+                                    <span>  HO Plot</span>
+                                </div>
+                                <table style="border-spacing: 10px;width:50%;">
+                                    @for (int i = 0; i < band.Sectors.Where(m => m.TestResult.Band == band.BandName).ToList().Count; i++)
+                                    {
+                                        @*string rgb = ViewBag.SectorColors.SectorColorsRGB(i);
+                                        <tr>
+
+                                            <td>
+                                                <div class="colorBox" style="height:24px;width:24px;background-color:@rgb;color:white;"></div>
+                                            </td>
+                                            <td><span>@Bands[0].Sectors[i].PCI</span></td>
+                                        </tr>*@
+
+                                    }
+                                </table>
+
+                            </div>
+                        </div>
+                        <hr />
+                        <P CLASS="breakhere" />
+
+                        <!--  RSRP Plot-->
+                        <div style="position:relative">
+                            <div class="heading">
+                                RSRP Plot
+                            </div>
+                            <div class="pan-map googlemap" id="RSRP_Plot"></div>
+
+
+
+                            <div style="position:absolute;bottom: 31px;background-color:white;border:solid 2px;width: 153px;right: 36px;">
+
+                                <div style="text-align:center;background-color:#2332de;color:white;font-weight:bold;text-align:center;padding:10px;">
+                                    <span>RSRP (dBm)</span>
+                                </div>
+                                <table style="border-spacing: 10px;width:100%">
+
+                                    <tr>
+
+                                        <td>
+                                            <div class="colorBox" style="background-color:DarkGreen;"></div>
+                                        </td>
+                                        <td><span>-75 to -40</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="height:24px;width:24px;background-color:LightGreen;color:white;"></div>
+                                        </td>
+                                        <td><span>-85 to -75</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="height:24px;width:24px;background-color:Yellow;color:white;"></div>
+                                        </td>
+                                        <td><span>-95 to -85</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="height:24px;width:24px;background-color:Orange;color:white;"></div>
+                                        </td>
+                                        <td><span>-105 to -95</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="height:24px;width:24px;background-color:Red;color:white;"></div>
+                                        </td>
+                                        <td><span> -130 to -105</span></td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                        <hr />
+                        <P CLASS="breakhere" />
+
+                         <!--  RSRQ Plot-->
+                        <div style="position:relative">
+                            <div class="heading">
+                                RSRQ Plot
+                            </div>
+
+                            <div class="pan-map googlemap" id="RSRQ_Plot"></div>
+
+                            <div style="position:absolute;bottom: 31px;background-color:white;border:solid 2px;width: 153px;right: 36px;">
+
+                                <div style="text-align:center;background-color:#2332de;color:white;font-weight:bold;text-align:center;padding:10px;">
+                                    <span>RSRQ (dBm)</span>
+                                </div>
+                                <table style="border-spacing: 10px;width:100%">
+
+                                    <tr>
+
+                                        <td>
+                                            <div class="colorBox" style="height:24px;width:24px;background-color:DarkGreen;color:white;"></div>
+                                        </td>
+                                        <td><span>-7 to 0</span></td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="height:24px;width:24px;background-color:LightGreen;color:white;"></div>
+                                        </td>
+                                        <td><span>-12 to -7</span></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <div class="colorBox" style="height:24px;width:24px;background-color:Yellow;color:white;"></div>
+                                        </td>
+                                        <td><span>-16 to -12</span></td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                        <hr />
+                        <P CLASS="breakhere" />
+
+
+
+                         <!--  CINR Plot-->
+                        <div style="position:relative">
+                            <div class="heading">
+                                CINR Plot
+                            </div>
+                            <div class="pan-map googlemap" id="CINR_Plot"></div>
+
+
+                            <div style="position:absolute;bottom: 31px;background-color:white;border:solid 2px;width: 153px;right: 36px;">
+
+                                <div style="text-align:center;background-color:#2332de;color:white;font-weight:bold;text-align:center;padding:10px;">
+                                    <span>CINR (dB)</span>
+                                </div>
+                                <table style="border-spacing: 10px;width:100%">
+
+
+
+                                    <tbody>
+                                        <tr>
+
+                                            <td>
+                                                <div class="colorBox" style="height:24px;width:24px;background-color:DarkGreen;color:white;"></div>
+                                            </td>
+                                            <td><span>25 to 30</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="height:24px;width:24px;background-color:LightGreen;color:white;"></div>
+                                            </td>
+                                            <td><span>15 to 25</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="height:24px;width:24px;background-color:Yellow;color:white;"></div>
+                                            </td>
+                                            <td><span>5 to 15</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="colorBox" style="height:24px;width:24px;background-color:Orange;color:white;"></div>
+                                            </td>
+                                            <td><span>-15 to 5</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                        <hr />
+                        <P CLASS="breakhere" />
+
+
+                    }
+                </div>
+
+            </div>
+
+            <style>
+                .map-icon-label .map-icon {
+                    font-size: 24px;
+                    color: #FFFFFF;
+                    line-height: 48px;
+                    text-align: center;
+                    white-space: nowrap;
+                }
+            </style>
+
+
+           
+
+
+            <script>
+
+                $(function () {
+                    @{
+                        var Sectors  = Bands[0].Sectors;
+                        string SiteCode = Model.Site.SiteCode;
+                        var PCI = Bands[0].PciPlot.ToList();
+                        double siteLatitude=0;
+                        double siteLongitude = 0;
+                        string iconColor = string.Empty;
+                        if (PCI.Count>0)
+                        {
+                            siteLatitude = PCI[0].siteLatitude;
+                            siteLongitude = PCI[0].siteLongitude;
+                        }
+
+                    }
+
+                    var centerPt;
+                    var gm = google.maps;
+
+                    var Colors = [];
+                    @for (int i = 1; i <= Bands[0].Sectors.OrderBy(m=>m.PCI).Count(); i++) {
+                       @*string rgb = ViewBag.SectorColors.SectorColorsRGB(i);
+                        @:  Colors.push('@rgb');*@
+                                                                                           }
+
+                    var AzmuthData = [
+                        @for (int i = 0; i < Sectors.Count; i++)
+                        {
+                            double start = Sectors[i].Azimuth - (Sectors[i].BeamWidth / 2);
+                            double End= Sectors[i].Azimuth + (Sectors[i].BeamWidth / 2);
+                            @:[@start, @End, Colors['@i']],
+
+                        }
+                    ];
+
+
+                    var HoMarkerData = [];
+                    var HO_PCI_Circles = [];
+
+                    var RsRpCercleData = [];
+                    var RSRQCercleData = [];
+                    var CINRCercleData = [];
+                    @if (Bands.Count>0)
+                    {
+                       foreach (var item in Bands[0].PciPlot)
+                        {
+
+                        if (item.IsHandover)
+                        {
+                            iconColor = item.plotColor.Name;
+                            double Lat = item.Latitude + 0.000160;
+                            double Long = item.Longitude + 0.0000100;
+                            @:  icon = {
+                                                    @:      url: '/Content/Images/Colors/handover_x16.png',
+                                                    @:     scaledSize: new google.maps.Size(30, 30),
+                                                    @:      origin: new google.maps.Point(0, 0),
+                                                    @:      anchor: new google.maps.Point(0, 0)
+
+                                               @:
+                                           @: };
+                                                                                        @:  HoMarkerData.push(['Handshak',@Lat, @Long, icon]);
+                      }
+                            @: HO_PCI_Circles.push([@item.Latitude, @item.Longitude, '@item.plotColor.Name']);
+                            @: RsRpCercleData.push([@item.Latitude, @item.Longitude, '@item.rsrpColor.Name']);
+                            @: RSRQCercleData.push([@item.Latitude, @item.Longitude, '@item.rsrqColor.Name']);
+                            @: CINRCercleData.push([@item.Latitude, @item.Longitude, '@item.rsnrColor.Name']);
+                      }
+
+                        <text>
+                    initialize('HO_Plot', '@siteLatitude', '@siteLongitude', '@SiteCode', HoMarkerData, HO_PCI_Circles, AzmuthData);
+                    initialize('PCI_Plot', '@siteLatitude', '@siteLongitude', '@SiteCode', null, HO_PCI_Circles, AzmuthData);
+                    initialize('RSRP_Plot', '@siteLatitude', '@siteLongitude', '@SiteCode', null, RsRpCercleData, AzmuthData);
+                    initialize('RSRQ_Plot', '@siteLatitude', '@siteLongitude', '@SiteCode', null, RSRQCercleData, AzmuthData);
+                    initialize('CINR_Plot', '@siteLatitude', '@siteLongitude', '@SiteCode', null, CINRCercleData, AzmuthData);
+                    </text>
+                                        }
+
+
+                });
+
+
+            </script>
+
+
+
+
+        </body>
+    }
+
+</html>
+    }

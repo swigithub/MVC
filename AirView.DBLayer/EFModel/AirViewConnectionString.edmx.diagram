@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="bb79cf0b193d4976bfece98c3774687c" Name="Diagram1" ZoomLevel="25">
+        <EntityTypeShape EntityType="AirViewModel.AV_LogsInfo" Width="1.5" PointX="0.75" PointY="11.125" />
+        <EntityTypeShape EntityType="AirViewModel.AV_NemoSiteLogs" Width="1.5" PointX="3" PointY="1.875" />
+        <AssociationConnector Association="AirViewModel.FK_tsvFileInformation_flieInformation" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

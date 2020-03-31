@@ -1,0 +1,1193 @@
+﻿@model SWI.Libraries.AirView.Entities.ClientSitesVM
+
+<style>
+    td.details-control {
+        background: url('/Content/Images/Common/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    td.detail-control {
+        background: url('/Content/Images/Common/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('/Content/Images/Common/details_close.png') no-repeat center center;
+    }
+
+    tr.shownband td.detail-control {
+        background: url('/Content/Images/Common/details_close.png') no-repeat center center;
+    }
+
+    .SelectedRow {
+        background-color: #cccddc !important;
+        color: #5a2222;
+    }
+
+    .xmltree {
+        font-family: 'Trebuchet MS';
+        font-size: 15px;
+    }
+
+        .xmltree ul {
+            display: none;
+        }
+
+        .xmltree ul, .xmltree.xmltree li {
+            list-style: none;
+        }
+
+        .xmltree.startExpanded ul {
+            display: block;
+        }
+
+        .xmltree ul {
+            margin: 0;
+            padding: 10px 0 0 0;
+            border: none;
+            margin-left: 15px;
+            border-left: solid 1px #d86;
+        }
+
+        .xmltree li {
+            font-weight: bold;
+            padding: 0 0 0 12px;
+            display: block;
+            position: relative;
+            margin-bottom: 10px;
+            border: none;
+        }
+
+        .xmltree .attr {
+            margin: -3px 0 7px 0;
+            border: .1em solid;
+        }
+
+        .xmltree a:hover {
+            color: #d00;
+        }
+
+        .xmltree .LIText, .xmltree .noKids .LIText:hover, .xmltree .currSel li .LIText {
+            color: #333;
+        }
+
+        .xmltree .tree_node {
+            margin-right: 8px;
+            background: #d86;
+            padding: 2px 3px;
+            color: #f4f4f4;
+            border-radius: 3px;
+        }
+
+        .xmltree .attr span {
+            color: #373;
+        }
+
+        .xmltree .attrValue {
+            margin-left: 8px;
+        }
+
+        .xmltree .tree_node, .xmltree .attr span, .xmltree .LIText {
+            display: inline !important;
+        }
+
+        .xmltree.hideAttrs .attr, .xmltree.hideNodeNames .tree_node {
+            display: none !important;
+        }
+
+        .xmltree .currSel .LIText {
+            color: #d00;
+            text-decoration: none !important;
+        }
+
+        .xmltree .plusMin {
+            position: absolute;
+            width: 11px;
+            height: 11px;
+            top: 2px;
+            left: -7px;
+            background: #fec;
+            border: solid 1px #d86;
+            color: #d55;
+            font-size: 15px;
+            text-align: center;
+            line-height: 9px;
+            cursor: pointer;
+        }
+
+            .xmltree .plusMin:hover {
+                border-color: #fa8;
+                background: #fff7da;
+            }
+
+        .xmltree .noKids .plusMin {
+            display: none;
+        }
+
+        .xmltree.subTreeRequestsOnAllNodes .plusMin, .xmltree .subTreeNode .plusMin {
+            display: block;
+        }
+
+    .highlight {
+        background-color: #DA300F;
+    }
+
+    .hr {
+        color: black;
+    }
+
+    tr.shownitem td.detail-control {
+        background: url('/Content/Images/Common/details_close.png') no-repeat center center !important;
+    }
+
+
+
+    /*.nested-table-hierarchy ul > li:nth-of-type(odd) {
+         background: #f9f9f9;
+    }
+    .nested-table-hierarchy ul > li:nth-of-type(even) {
+         background: #f9f9f9;
+    }
+    .nested-table-hierarchy .hv-box{
+         background: transparent;
+    }*/
+
+    /*.treetable-expander
+    {
+        visibility:hidden;
+        width: 2px;
+        height: 0px;
+    }*/
+    /*# sourceMappingURL=bootstrap-treefy.css.map */
+</style>
+
+<div class="modal  fade" id="dirtoryandfiles">
+    <div class="modal-dialog" style="width:96%;padding-top:25px;">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"><label> File Explorer </label><label class="labelFacode"></label></h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div id="dirandfiles">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div style="display:flex;margin-left:20px" id="displayFilesSection">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal  fade" id="dirtoryandfilesAVX">
+    <div class="modal-dialog" style="width:70%;padding-top:25px;">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#4c4f53;color:white!important">
+                <button type="button" style="color:white" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <h5 class="modal-title" style="color:white;margin-top: 5px;font-size:16px;"><label> File Explorer </label><label class="labelFacode"></label></h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="dirandfilesAVX">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="">
+    <input type="hidden" id="SiteGridCount" value="@Model.Sites.Count()" />
+    <input type="hidden" id="IsSearch" value="@Session["IsSearch"]" />
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th class="NoExport"></th>
+                <th>WO Ref#</th>
+                @if (@ViewBag.Show != "no")
+                {
+                    <th>Client</th>
+
+                    <th>Region</th>
+                    <th>Market</th>
+                }
+                <th>Site Id</th>
+
+                <th>Drive Tester</th>
+                <th>Received</th>
+                <th>Submitted</th>
+                <th>Scheduled</th>
+                <th>Drive Completed</th>
+                <th>Report Submitted</th>
+                <th>Approved</th>
+                <th>Status</th>
+                <th class="NoExport"></th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            @foreach (var site in Model.Sites)
+            {
+                <tr class="tableRow" data-child-value=@site.SiteId>
+                    <td title="Layers" class="details-control NoExport" data-scope="@site.Scope" data-TesterId="@site.TesterId" data-ClientPrefix="@site.ClientPrefix" data-SiteCode="@site.SiteCode" data-test="value"></td>
+                    @*<td class="SiteDetails" data-SiteId="@site.SiteId">@site.WoRefNo</td>*@
+
+                    @if (@site.SiteType == "Small Cell Site")
+                    {
+                        <td class="SiteDetails" data-SiteId="@site.SiteId"><b>@site.WoRefNo</b></td>
+                    }
+                    else
+                    {
+                        <td class="SiteDetails" data-SiteId="@site.SiteId">@site.WoRefNo</td>
+                    }
+
+                    @if (@ViewBag.Show != "no")
+                    {
+                        <td>@site.Client</td>
+
+                        <td>@site.Region</td>
+                        <td>@site.Market</td>
+                    }
+                    <td class="SiteCode">@site.SiteCode</td>
+
+                    <td>@site.Tester</td>
+
+                    <td>
+                        @if (@site.ReceivedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                        {
+                            @site.ReceivedOn.ToString("MM/dd/yyyy")
+                        }
+
+                    </td>
+                    <td>
+                        @if (@site.SubmittedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                        {
+                            @site.SubmittedOn.ToString("MM/dd/yyyy")
+                        }
+
+                    </td>
+                    @if (@site.ScheduledOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                    {
+                        <td>@site.ScheduledOn.ToString("MM/dd/yyyy")</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        @if (@site.DriveCompletedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                        {
+                            @site.DriveCompletedOn.ToString("MM/dd/yyyy HH:mm")
+                        }
+                    </td>
+                    <td>
+                        @if (@site.ReportSubmittedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                        {
+                            @site.ReportSubmittedOn.ToString("MM/dd/yyyy HH:mm")
+                        }
+                    </td>
+                    <td>
+                        @if (@site.CompletedOn.ToString("MM/dd/yyyy HH:mm") != "01/01/0001 00:00")
+                        {
+                            @site.CompletedOn.ToString("MM/dd/yyyy HH:mm")
+                        }
+                    </td>
+
+
+                    <td id="@site.SiteId-status">
+                        @if (site.Status == "90")
+                        {
+                            <span class="label PENDING_SCHEDULED_COLOR PENDING_SCHEDULED_TITLE">@site.StatusName</span>
+                        }
+                        @if (site.Status == "91")
+                        {
+                            <span class="label SCHEDULED_COLOR SCHEDULED_TITLE">@site.StatusName</span>
+                        }
+                        @if (site.Status == "89")
+                        {
+                            if (site.IsDownloaded)
+                            {
+
+                                <span class="label COMPLETED_COLOR COMPLETED_TITLE" style="color:black!important">@site.StatusName</span>
+                            }
+                            else
+                            {
+                                <span class="label COMPLETED_COLOR COMPLETED_TITLE">@site.StatusName</span>
+                            }
+                        }
+                        @if (site.Status == "92")
+                        {
+                            <span class="label DRIVE_COMPLETED_COLOR DRIVE_COMPLETED_TITLE ">@site.StatusName</span>
+                        }
+                        @if (site.Status == "93")
+                        {
+                            <span class="label PENDING_WITH_ISSUE_COLOR PENDING_WITH_TITLE">@site.StatusName</span>
+                        }
+                        @if (site.Status == "450")
+                        {
+                            <span class="label IN_PROGRESS_COLOR IN_PROGRESS_TITLE">@site.StatusName</span>
+                        }
+                        @if (site.Status == "451")
+                        {
+                            <span class="label REPORT_SUBMITTED_COLOR REPORT_SUBMITTED_TITLE">@site.StatusName</span>
+                        }
+                    </td>
+
+
+                    <td class="NoExport">
+
+                        <div class="btn-group">
+
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="background-color:#337ab7;color:white;">
+                                <span style="margin: 5px;" class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" style="left:-185px!important;">
+                                @if (ViewBag.AllowUri("/Site/SiteSchedule"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS")
+                                    {
+                                        <li>
+                                            <a href="#" class="GridShedule" data-SiteId="@site.SiteId" data-scope="@site.Scope">
+                                                <span><img src="~/Content/Images/Common/schedule_x24.png" alt="" style="margin-right:20px;" /></span>
+                                                Schedule Drive
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                @if (site.Scope == "IND" && ViewBag.AllowUri("/Site/SiteSchedule"))
+                                {
+                                    <li>
+                                        <a href="#" class="FloorPlan" data-SiteId="@site.SiteId" data-scope="@site.Scope" wo-ref="@site.WoRefNo" Site-Code="@site.SiteCode">
+                                            <span><img src="~/Content/Images/Common/edit_x32.png" alt="" style="margin-right:20px;" /></span>
+                                            Floor plan
+                                        </a>
+                                    </li>
+                                }
+                                @if (ViewBag.AllowUri("/Site/SiteReport"))
+                                {
+                                    if (site.StatusKeyCode == "COMPLETED" || site.StatusKeyCode == "IN_PROGRESS" || site.StatusKeyCode == "DRIVE_COMPLETED" || site.StatusKeyCode == "REPORT_SUBMITTED" || site.StatusKeyCode == "PENDING_WITH_ISSUE")
+                                    {
+                                        if (site.Scope != "TSS")
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("SiteReport", "Site", new { id = site.SiteId, scope = site.Scope, AzmuthRadius = "100" })" target="_blank">
+                                                    <span><img src="~/Content/Images/Common/report_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                    Site Report
+                                                </a>
+                                            </li>
+
+                                        }
+                                    }
+                                }
+                                <li>
+                                    <a href="@Url.Action( "ExportSiteToCSV", "site", new { id = site.SiteId })">
+                                        <span><img src="~/Content/Images/Common/export_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                        Export WO
+                                    </a>
+                                </li>
+                                @if (site.Scope == "TSS")
+                                {
+                                    <li>
+                                        <a href="@Url.Action("SurveyReportImages", "Document", new { id = site.SiteId })" target="_blank">
+                                            <span><img src="~/Content/Images/Common/report_x24.png" alt="Site Report" style="margin-right:20px;" /></span>
+                                            Site Report
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action( "ContactInfo", "site", new { Id = site.SiteId })">
+                                            <span><img src="~/Content/Images/Common/export_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                            Contact Info
+                                        </a>
+                                    </li>
+                                }
+
+
+
+                                @if (site.StatusKeyCode == "REPORT_SUBMITTED")
+                                {
+                                    //SitCha
+                                    if (ViewBag.Allow("SitCha"))
+                                    {
+                                        <li>
+                                            <a href="#" class="ApproveWithComment" data-SiteId="@site.SiteId" data-status="COMPLETED">
+                                                <span><img src="~/Content/Images/Common/completed_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                Approve WO
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                @if (ViewBag.AllowUri("/Site/Status"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS")
+                                    {
+
+                                        string Status = "True";
+                                        string Text = "Enable WO";
+                                        if (!site.IsActive)
+                                        {
+                                            Status = "False";
+                                            Text = "Disable WO";
+                                        }
+                                        <li>
+                                            <a data-Id="@site.SiteId" class="SiteInactive" onclick="IsActiveWo('@site.SiteId','@Status'); return false;" href="#">
+                                                <span><img src="~/Content/Images/Common/delete_x32.png" height="24" width="24" alt="View Report" style="margin-right:20px;" /></span>
+                                                @Text
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/WorkOrder/Edit"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS" || site.StatusKeyCode == "DRIVE_COMPLETED")
+                                    {
+                                        <li>
+                                            <a data-Id="@site.SiteId" class="" href="@Url.Action("Edit", "WorkOrder", new { Id = site.SiteId })">
+                                                <span><img src="~/Content/Images/Common/edit_x32.png" height="24" width="24" alt="View Report" style="margin-right:20px;" /></span>
+                                                Edit WO
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/site/WoHold"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS")
+                                    {
+                                        <li>
+                                            <a data-SiteId="@site.SiteId" class="SiteWoHold" href="@Url.Action("Edit", "WoHold", new { Id = site.SiteId })">
+                                                <span><img src="~/Content/Images/Common/hold_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                Hold WO
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/Dashboard/Drive"))
+                                {
+                                    if (site.StatusKeyCode == "PENDING_SCHEDULED" || site.StatusKeyCode == "SCHEDULED" || site.StatusKeyCode == "IN_PROGRESS")
+                                    {
+                                        if (site.Scope != "TSS")
+                                        {
+                                            <li>
+
+                                                <a data-SiteId="@site.SiteId" class="" href="#" onclick=NewTabDrive('bySiteCode','@site.SiteId','@site.SiteCode',@site.Latitude,@site.Longitude,'@site.Scope','@site.ScopeId','@site.ClientPrefix');>
+                                                    <span><img src="~/Content/Images/Common/route_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                    Plan Route
+                                                </a>
+                                            </li>
+                                        }
+
+
+
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/WorkOrder/New"))
+                                {
+
+                                    <li>
+                                        <a class="" href="/WorkOrder/CloneNew/@site.SiteId">
+                                            <span><img src="~/Content/Images/Common/clone_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                            Clone WO
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.AllowUri("/NetLayerStatus/Information"))
+                                {
+                                    if (site.Scope != "TSS")
+                                    {
+                                        <li>
+                                            <a class="" target="_blank" href="/NetLayerStatus/Information/@site.SiteId">
+                                                <span><img src="~/Content/Images/Common/L3Msg_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                L3 Messages
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                @if (site.Scope != "TSS")
+                                {
+                                    <li>
+                                        <a class="viewExportUtility" data-SiteId="@site.SiteId" href="javascript:void(0);">
+                                            <span><img src="~/Content/Images/Common/export_x24.png" alt="Export Utility" style="margin-right:20px;" /></span>
+                                            Export Utility
+                                        </a>
+                                    </li>
+                                }
+                                @if (ViewBag.AllowUri("/NetLayerStatus/LayerActivation"))
+                                {
+                                    if (site.Scope != "TSS")
+                                    {
+                                        <li>
+                                            <a class="" href="#" onclick="LayerActivation(@site.SiteId); return false;">
+                                                <span><img src="~/Content/Images/Common/layerlock_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                Layer & Sector Status
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                @if (ViewBag.AllowUri("/SiteTestLog/TranferLogs"))
+                                {
+                                    <li>
+                                        <a class="" href="/SiteTestLog/TranferLogs/@site.SiteId">
+                                            <span><img src="~/Content/Images/Common/transferlogs_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                            Transfer Logs
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.AllowUri("/Optimization/index"))
+                                {
+                                    if (site.Scope != "TSS")
+                                    {
+                                        <li>
+                                            <a class="" href="/Optimizations/index/@site.SiteId">
+                                                <span><img src="~/Content/Images/Common/transferlogs_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                                RF Optimization
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @if (ViewBag.AllowUri("/dashboard/Support"))
+                                {
+                                    <li>
+                                        <a onclick="OpenStreamWindow(@site.SiteId,'@site.SiteCode')" class="" href="#">
+                                            <span><img src="~/Content/Images/Common/Stream_x24.png" alt="View Report" style="margin-right:20px;" /></span>
+                                            Live Support
+                                        </a>
+                                    </li>
+                                }
+                                @if (ViewBag.RequestFrom == "KPI")
+                                {
+                                    <li>
+                                        <a class="KPI" title="" target="_blank" href="/KPI/Monitoring/Add?Type='Site'&Site=@site.SiteId">
+                                            <span><img src="/Content/Images/Common/netlayer_x32.png" height="24" width="24" style="margin-right:20px;" /></span>
+                                            KPI's
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+    <input type="hidden" id="SitesCount" value="@ViewBag.SiteCount" />
+</div>
+
+<link rel="canonical" href="http://blog.ashwani.co.in/blog/2013-07-18/stylize-your-xml-with-jquery-xml-tree-plugin/">
+<link href="~/Scripts/jstree/dist/themes/default/style.min.css" rel="stylesheet" />
+<script src="~/Scripts/jstree/dist/jstree.min.js"></script>
+<script src="~/Scripts/renderjson.js"></script>
+<script src="~/Scripts/xmltree.js"></script>
+<script src="~/Areas/Survey/Content/bootstrap-treefy.js"></script>
+<script>
+    //$('.dropdown-toggle').click(function () {
+    //    $('.table-responsive').animate({ scrollTop: $(document).height() }, 1000);
+    //});
+    var _selectedNodeId;
+    $(function(){
+        $('#displayFilesSection').on('click','.downloadFile',function(){
+            debugger
+            let _selectedNodeId=$(this).attr('data-id');
+            console.log(_selectedNodeId);
+            var link='@Url.Action("DownloadAttachment", "SiteDashboard", new { filesource =  "-1"})';
+            link = link.replace("-1", _selectedNodeId);
+            window.location = link;
+            $('.checkbox').each(function(){ //iterate all listed checkbox items
+                if(this.checked)
+                    console.log($(this).attr('data-id'))//change ".checkbox" checked status
+            });
+
+        });
+        $('#example1').on('click','.view',function(){
+            debugger;
+            var clientprf= $('.SiteDetails').text();
+            var splitclientprefix = clientprf.split("-");
+
+            var prefix=$(this).parents().parents().parents('table#example1').find('tr.tableRow').find('td.details-control').attr('data-clientprefix');
+            if(prefix==null || prefix==""){
+                prefix = splitclientprefix[0];
+            }
+            var getNetworkLayer=prefix+"/"+$(this).parents().parents().attr('data-NetLayer');
+            var getScope=$(this).parents().parents().attr('data-Scope')
+            $.get('/SiteDashboard/getDirectioryWithFiles',{getNetworkLayer:getNetworkLayer,Scope:getScope},function(response,status,xhr){
+                console.log(response);
+                $("#dirandfiles").html(response)
+                //$("#dirandfiles").jstree('destroy');
+                //$("#dirandfiles").jstree({
+
+                //    plugins: ["checkbox", "types"],
+                //    core: {
+                //        expand_selected_onload: false,
+                //        themes: {
+                //            responsive: !1
+                //        },
+                //        data: response.key,
+
+                //    },
+                //    types: {
+                //        "default": {
+                //            icon: "fa fa-file"
+                //        },
+                //        file: {
+                //            icon: "fa fa-file"
+                //        }
+                //    }, checkbox: {
+                //        three_state: false, // to avoid that fact that checking a node also check others
+                //        whole_node: false,  // to avoid checking the box just clicking the node
+                //        //tie_selection: false // for checking without selecting and selecting without checking
+                //    }
+                //});
+                $("#select_all").change(function(){  //"select all" change
+                    var status = this.checked; // "select all" checked status
+                    $('.checkbox').each(function(){ //iterate all listed checkbox items
+                        this.checked = status; //change ".checkbox" checked status
+                    });
+                });
+
+                $('.checkbox').change(function(){ //".checkbox" change
+                    //uncheck "select all", if one of the listed checkbox item is unchecked
+                    if(this.checked == false){ //if this item is unchecked
+                        $("#select_all")[0].checked = false; //change "select all" checked status to false
+                    }
+
+                    //check "select all" if all checkbox items are checked
+                    if ($('.checkbox:checked').length == $('.checkbox').length ){
+                        $("#select_all")[0].checked = true; //change "select all" checked status to true
+                    }
+                });
+                $('.directorytbl').DataTable();
+                $('#dirtoryandfiles').modal('show');
+
+                $(" #dirtoryandfiles #dirandfiles").on('change',".GetPathOfDirectory", function (e) {
+                    debugger;
+                    //$('.GetPathOfDirectory').prop('checked', false);
+                    //$('#displayFilesSection').empty();
+                    //$(this).prop('checked') ? $(this).prop('checked', false) : $(this).prop('checked', true);
+                    if($(this).is(':checked')){
+
+
+                        $('#displayFilesSection').css('display','flex');
+                        var objOfUsersAndGroupsRight = {};
+                        _selectedNodeId = $(this).attr('data-id');
+                        $('#displayFilesSection').empty();
+                        console.log(_selectedNodeId);
+                        $.get('/SiteDashboard/getFilesText',{filePath:_selectedNodeId},function(response){
+                            if(typeof response.key !="undefined")
+                            {
+                                if(response.key)
+                                {$('#displayFilesSection').empty();
+                                    if(response.fileType==".json")
+                                    {
+                                        var stringIntoJson= $.parseJSON(response.fileTxt);
+                                        document.getElementById("displayFilesSection").appendChild(
+                               renderjson.set_icons('⊕', '⊖')
+                                  .set_show_to_level(2)(stringIntoJson));
+                                        $('#displayFilesSection').append('<a style="margin-left: 780px;" class="downloadFile" data-id="'+_selectedNodeId+'" ><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>');
+                                    }
+                                    else if(response.fileType==".xml")
+                                    {
+
+                                        //parser = new DOMParser();
+                                        //xmlDoc = parser.parseFromString(response.fileTxt,"text/xml");
+                                        //console.log(response.fileTxt);
+
+                                        //  $('#displayFilesSection').html(response.fileTxt);
+                                        new XMLTree({
+                                            xml:response.fileTxt,
+                                            container: '#displayFilesSection',
+                                            startExpanded:false
+                                        });
+                                        $('#displayFilesSection').append('<a style="margin-left: 1200px;" class="downloadFile" data-id="'+_selectedNodeId+'" ><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>');
+                                    }
+                                    else if(response.fileType==".txt")
+                                    {
+
+
+                                        $('#displayFilesSection').html("<p style='height:390px;overflow-x:scroll'>"+response.fileTxt+"</p>");
+                                        $('#displayFilesSection').append('<a style="margin-left:340px;" class="downloadFile" data-id="'+_selectedNodeId+'" ><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>');
+                                    }
+                                    else if(response.fileType==".png" || response.fileType==".jpg" || response.fileType==".jpeg")
+                                    {
+
+                                        $('#displayFilesSection').html('<img style="margin-left: 150px;    width: 528px;height: auto;;max-height:470px" src="'+response.fileTxt+'" />');
+                                        console.log(_selectedNodeId);
+                                        $('#displayFilesSection').append('<a style="margin-left: 300px;" class="downloadFile" data-id="'+_selectedNodeId+'" ><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>');
+                                    }
+                                    else if(response.fileType==".mp4")
+                                    {
+                                        $('#displayFilesSection').html('<video controls  style="margin-left: 150px;width: 528px;height: auto;max-height:470px" src="'+response.fileTxt+'" />');
+                                        console.log(_selectedNodeId);
+                                        $('#displayFilesSection').append('<a style="margin-left: 300px;" class="downloadFile" data-id="'+_selectedNodeId+'" ><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>');
+
+                                    }
+                                    else if(response.fileType==".mp3")
+                                    {
+                                        $('#displayFilesSection').html('<audio controls  style="margin-left: 150px;width: 528px;height: auto;max-height:470px" src="'+response.fileTxt+'" />');
+                                        console.log(_selectedNodeId);
+                                        $('#displayFilesSection').append('<a style="margin-left: 300px;" class="downloadFile" data-id="'+_selectedNodeId+'" ><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>');
+
+                                    }
+                                    else if(response.fileType ==".kml" || response.fileType ==".zip" || response.fileType ==".nmf" || response.fileType ==".gpx" || response.fileType==".avx")
+                                    {var link='@Url.Action("DownloadAttachment", "SiteDashboard", new { filesource =  "-1"})';
+                                        link = link.replace("-1", _selectedNodeId);
+                                        window.location = link;
+                                    }
+
+                                }
+                            }
+                            else
+                            {  $('#displayFilesSection').html(response);
+                                $('.downloadFile').attr('data-id',_selectedNodeId);
+                                $('#displayFilesSection').css('display','')
+                                // $('#displayFilesSection').append('<a class="downloadFile" data-id="'+_selectedNodeId+'" ><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>');
+                            }
+
+                        });
+
+                    }
+                    else{
+                        $('#displayFilesSection').empty();
+                    }
+                })
+            });
+        });
+
+
+        //export utility
+
+        $('#example1').on('click','.viewExportUtility',function(){
+            var siteId=$(this).attr('data-SiteId')
+            $.get('/SiteDashboard/GetDirectioryWithFilesAVX',{Id:siteId},function(response,status,xhr){
+                console.log(response);
+                $("#dirandfilesAVX").html(response)
+                $('.directorytbl').DataTable();
+                $('#dirtoryandfilesAVX').modal('show');
+            });
+        });
+        
+    });
+</script>
+
+<script>
+    var IsShow = '@ViewBag.Show';
+    var view = '@ViewBag.view';
+    var NetLayer = '';
+    var SelectedSector ='';
+    var SitePrefix ='';
+    var SelectedSiteCode ='';
+    var FirstLatitude = '@ViewBag.Latitude';
+    var FirstLongitude = '@ViewBag.Longitude';
+
+
+
+    ///Open Stream Window
+
+    function OpenStreamWindow(Id,code){
+        var id = Id.toString();
+        var code = code.toString();
+        window.open("/Dashboard/Support/"+id+"-"+code, "_blank", "toolbar=no,location=no,scrollbars=no,resizable=no,top=50,left=200,width=350,height=600");
+
+    }
+
+
+
+    function formatBandsTable(SiteId, TesterId, SiteCode,myScope) {
+        SelectedSiteCode=SiteCode;
+        var report = '';
+        if ('@ViewBag.Show' != 'no') {
+            try {
+                google.maps.event.trigger(markers[SiteId], 'click');
+
+            }
+            catch (err) {
+                $.notify('Site not found in map.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6 });
+            }
+        }
+        var bands;
+
+        $.ajax({
+            url: '/Site/GetSiteBands?id=' + SiteId+ "&scope="+myScope+"&RequestFrom="+window.location.pathname.split("/")[1],
+            type: 'POST',
+            async: false,
+            // dataType: 'text',
+            //   processData: false,
+            success: function (data) {
+
+                if (data == "") {
+                }
+                else {
+                    bands = data;
+                }
+            }
+        });
+
+
+
+        return bands;
+        bands = jQuery.parseJSON(bands);
+        var IsShowReDrive = 'false';
+        $.each(bands, function (i, l) {
+            if (l.isReDrive == true) {
+                IsShowReDrive = 'true';
+                return false;
+            }
+        });
+
+        var ShowReDrive = '';
+        if (IsShowReDrive == 'true') {
+            ShowReDrive = '<th>Re-Drive Type</th><th>Re-Drive Reason</th><th>WO Ref#</th>';
+        }
+        var retTable = '';
+
+
+        $.each(bands, function (index, band) {
+            var SiteKpi = '';
+            var IssueTracker = '';
+            var NetLayerReport = '';
+            var EditNetLayerReport = '';
+            var observation = '';
+            var Redrive = '';
+            var PendingWithIssue = '';
+            var ReportSubmitOrApprove = '';
+            var Email = '';
+            var IsActive = '';
+            var LayerWoStatus = '';
+            var Script = '';
+            var view='<a class="view" title="View"><i class="fa fa-eye" aria-hidden="true"></i></a>';
+            NetLayer = SiteCode + '/' + band.NetworkMode + '_' + band.BandName + '_' + band.Carrier;
+
+            if (band.Status != "Pending Schedule"  && band.Scope!="NI") {
+
+                @if (ViewBag.AllowUri("/site/netLayerReport"))
+                {
+                    @: NetLayerReport = '<a class="Net LayerReport" title="Net Layer Report" target="_blank" href="/site/netlayerreport?SiteId=' + SiteId + '&BandId=' + band.BandId + '&Carrier=' + band.CarrierId + '&NetworkMode=' + band.NetworkModeId + '&CircleRadios=20&AzmuthRadius=70&Auto=0"><span><img src="/Content/Images/Common/netlayer_x32.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+
+                 if (ViewBag.RoleName== "Client POC")
+                 {
+                    <text>
+                if (band.Status == "Approved" || band.Status == "Report Submitted") {
+                    // NetLayerReport = '<a class="Net LayerReport" title="NetLayer Report" target="_blank" href="/site/netlayerreport?SiteId=' + SiteId + '&BandId=' + band.BandId + '&Carrier=' + band.CarrierId + '&NetworkMode=' + band.NetworkModeId + '&CircleRadios=17&AzmuthRadius=200&Auto=0"><span><img src="/Content/Images/Common/netlayer_x32.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+                } else {
+                    NetLayerReport = '';
+                }
+                </text>
+                }
+              }
+            }
+            // IssueTracker or Activity
+            @if (ViewBag.AllowUri("/SiteTrackerIssue/NetLayer"))
+            {
+             @: IssueTracker = '<a href="#"  title="Tracker" onclick="ActivityPopup(' + SiteId + ', ' + band.NetworkModeId + ', ' + band.CarrierId + ', ' + band.ScopeId + ',' + band.BandId + ',' + band.TesterId + '); return false;" ><span><img src="/Content/Images/Common/activity_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+                                                                                                                                                            }
+            // SiteKpi
+            @if (ViewBag.AllowUri("/TemplateSetting/Site"))
+            {
+             <text>
+            if (band.Status == "Pending Schedule" || band.Status == "Scheduled" || band.Status == "In Progress") {
+                SiteKpi = '<a title="Test Configuration & KPI" href="/TemplateSetting/site?SiteId=' + SiteId + '&NetworkModeId=' + band.NetworkModeId + '&BandId=' + band.BandId + '" target="_blank"><span><img src="/Content/Images/Common/kpi_x24.png" alt="Site Kpi" style="margin-right:20px;" /></span></a>';
+            }
+            </text>
+                }
+
+            //  Report Submit Or Approve
+            @if (ViewBag.AllowUri("/NetLayerStatus/SetStatus"))
+                {
+                    <text>
+            if (band.Status == "Drive Completed" || band.Status == "Pending With Issues") {
+                ReportSubmitOrApprove = '<a href="#" title="Submit Report" onclick="ReportSubmitOrApprove(' + SiteId + ', ' + band.NetworkModeId + ', ' + band.CarrierId + ', ' + band.ScopeId + ',' + band.BandId + ',\'REPORT_SUBMITTED\'); return false;" ><span><img src="/Content/Images/Common/reportsubmitted_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            }
+            if (band.Status == "Report Submitted") {
+                ReportSubmitOrApprove = '<a  title="Approve Report" href="#" onclick="ReportSubmitOrApprove(' + SiteId + ', ' + band.NetworkModeId + ', ' + band.CarrierId + ', ' + band.ScopeId + ',' + band.BandId + ',\'COMPLETED\'); return false;" ><span><img src="/Content/Images/Common/reportapproved_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            }
+            </text>
+                }
+            //console.log(band);
+
+            @if (ViewBag.AllowUri("/Site/Mail"))
+                {
+                    <text>
+            if (band.Status == "Approved" || band.Status == "Report Submitted") {
+                Email = '<a href="#"  title="Send Email"  class="btn-email" data-City="' + band.City + '" data-Region="' + band.Region + '" data-Scope="' + band.Scope + '"  data-SiteCode="' + band.SiteCode + '" data-NetworkMode="' + band.NetworkMode + '"  data-NetworkModeId="' + band.NetworkModeId + '"  data-TesterId="' + band.TesterId + '" data-BandId="' + band.BandId + '" data-Band="' + band.BandName + '"  data-CarrierId="' + band.CarrierId + '" data-Carrier="' + band.Carrier + '" data-ScopeId="' + band.ScopeId + '" data-SiteId="' + SiteId + '"><span><img src="/Content/Images/Common/email_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            }
+            </text>
+                }
+            //  EditNetLayerReport
+            @if (ViewBag.AllowUri("/site/EditNetLayerReport"))
+                {
+                    <text>
+            if (band.Status == "Drive Completed") {
+                EditNetLayerReport = '<a target="_blank" title="Edit Net Layer Report"  href="/site/EditNetLayerReport?SiteId=' + SiteId + '&BandId=' + band.BandId + '&Carrier=' + band.Carrier + '&NetworkMode=' + band.NetworkMode + '"><span><img src="/Content/Images/Common/update_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            }
+            </text>
+                }
+
+            //  observation
+            @if (ViewBag.AllowUri("/NetLayerStatus/NewObservation"))
+                {
+                    <text>
+            if (band.Status == "Drive Completed") {
+                observation = '<a href="#"  title="Report Observations" onclick="ObservationPopup(' + SiteId + ', ' + band.NetworkModeId + ', ' + band.CarrierId + ', ' + band.ScopeId + ',' + band.BandId + '); return false;" ><span><img src="/Content/Images/Common/observe_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            }
+            </text>
+                }
+
+            //  Redrive
+            @if (ViewBag.AllowUri("/ReDrive/NewRequest"))
+                {
+                    <text>
+            if (band.Status == "Pending With Issues") {
+                Redrive = '<a href="#"  title="Re-Drive Request" onclick="RedrivePopup(' + SiteId + ', ' + band.NetworkModeId + ', ' + band.CarrierId + ', ' + band.ScopeId + ',' + band.BandId + '); return false;"  data-NetworkModeId="' + band.NetworkModeId + '"  data-TesterId="' + band.TesterId + '" data-BandId="' + band.BandId + '" data-CarrierId="' + band.CarrierId + '" data-ScopeId="' + band.ScopeId + '" data-SiteId="' + SiteId + '"><span><img src="/Content/Images/Common/redrive_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            }
+            </text>
+                }
+
+
+            //  PendingWithIssue
+            @if (ViewBag.AllowUri("/NetLayerStatus/NewPendingIssue"))
+            {
+                <text>
+            if (band.Status == "Scheduled" || band.Status == "In Progress" || band.Status == "Drive Completed" || band.Status == "Report Submitted" || band.Status == "Pending With Issues") {
+                PendingWithIssue = '<a href="#" title="Pending with Issue"  title="Site Issues" onclick="PendingIssuesPopup(' + SiteId + ', ' + band.NetworkModeId + ', ' + band.CarrierId + ', ' + band.ScopeId + ',' + band.BandId + '); return false;" ><span><img src="/Content/Images/Common/issuetracker_x32.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            }
+            </text>
+            }
+
+
+
+            var Export = '';
+            @if (ViewBag.AllowUri("/SiteTestLog/Export"))
+            {
+                <text>
+            Export = '<a title="Export Logs" href="/SiteTestLog/Export?SiteId=' + SiteId + '&NetworkmodeId=' + band.NetworkModeId + '&BandId=' + band.BandId + '&CarrierId=' + band.CarrierId + '&ScopeId=' + band.ScopeId + '"  ><span><img src="/Content/Images/Common/testlogs_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            </text>
+            }
+
+
+            //  LayerWoStatus
+            @if (ViewBag.AllowUri("/NetLayerStatus/WoStatus"))
+            {
+                <text>
+            if (band.Status != "Pending Schedule") {
+                LayerWoStatus = '<a href="#" title="Change Layer Status" onclick="LayerWoStatus(' + band.LayerStatusId + '); return false;"  title="Layer Status"><span><img src="/Content/Images/Common/movestatus_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            }
+            </text>
+            }
+
+            ShowReDrive = '';
+            if (IsShowReDrive == 'true') {
+                ShowReDrive = '<td>' + band.RedriveType + '</td><td>' + band.RedriveReason + '</td><td>' + band.PWoRefID + '</td>';
+            }
+
+            @if (ViewBag.AllowUri("/NetLayerStatus/Script"))
+            {
+                //onclick="Script(' + band.LayerStatusId + ',' + SiteId + ',' + band.NetworkModeId + ',' + band.BandId + ',' + band.CarrierId + ',' + band.ScopeId + '); return false;"
+             @:   Script = '<a target="_blank" href="/NetLayerStatus/Script?LayerId=' + band.LayerStatusId + '&SiteId=' + SiteId + '&NetworkModeId=' + band.NetworkModeId + '&BandId=' + band.BandId + '"   title="Script"><span><img src="/Content/Images/Common/script_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+                                                                                                }
+            @if (ViewBag.AllowUri("/NetLayerStatus/IsActive"))
+            {
+                <text>
+            if (band.IsActive) {
+                IsActive = '<a href="#" title="Disable Layer" onclick="LayerIsActive(' + band.LayerStatusId + ',false,0); return false;" ><span><img src="/Content/Images/Common/disable_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+            } else {
+                IsActive = '<a href="#" title="Enable Layer" onclick="LayerIsActive(' + band.LayerStatusId + ',truem,0); return false;" ><span><img src="/Content/Images/Common/enable_x24.png" height="24" width="24" style="margin-right:20px;" /></span></a>';
+                IssueTracker = '';
+                observation = '';
+                NetLayerReport = '';
+                .0
+                EditNetLayerReport = '';
+                PendingWithIssue = '';
+                Redrive = '';
+                SiteKpi = '';
+                ReportSubmitOrApprove = '';
+                Email = '';
+                Export = '';
+                LayerWoStatus = '';
+            }
+            </text>
+            }
+            //  debugger
+            if(band.Scope == "CLS")
+            {
+                retTable = '<table class="table table-bordered table-striped child-table tbl-Scope" id="tbl_' + SiteId + '" cellpadding="5" cellspacing="5" border="0" style="margin-left:20px; margin-top:-10; margin-bottom:10px;width:100%;">' +
+            '<thead>' +
+             '<tr >' +
+
+             '<th style="max-width:50px; width:50px;"></th>' +
+            '<th>Cluster Id</th>' +
+             '<th>Cluster Name</th>' +
+            '<th>Cluster Scope</th>' +
+            '<th>Site Count</th>' +
+            '<th>Client POC</th>' +
+           '<th>Technician</th>' +
+            '<th>Status</th>' +
+            '<th></th>' +
+            '</tr></thead>' +
+            '<tbody>';
+                retTable = retTable +
+                    '<tr class="BandRow" data-NetLayer="' + NetLayer + '" data-NetLayerId="' +  band.LayerStatusId + '"  data-child-value=' + band.BandId + ' data-NetworkModeId="' + band.NetworkModeId + '"  data-BandId="' + band.BandId + '" data-CarrierId="' + band.CarrierId + '" data-ScopeId="' + band.ScopeId + '" data-SiteId="' + SiteId + '">' +
+                             '<td title="Sectors" class="detail-control" data-NetworkModeId="' + band.NetworkModeId + '"  data-BandId="' + band.BandId + '" data-CarrierId="' + band.CarrierId + '" data-ScopeId="' + band.ScopeId + '" data-SiteId="' + SiteId + '" ></td>' +
+                             '<td>' + band.NetworkMode + '</td>' +
+                             '<td>' + band.BandName + '</td>' +
+                             '<td>' + band.Carrier + '</td>' +
+                             '<td>' + band.TesterName + '</td>' +
+                             '<td>' + band.Scope + '</td>' +
+                             ShowReDrive +
+                             '<td><span class="label " style="background-color:' + band.StatusColor + '!important">' + band.Status + '</span></td>' +
+                              '<td>' + IssueTracker + observation + NetLayerReport + EditNetLayerReport + PendingWithIssue + Redrive + SiteKpi + ReportSubmitOrApprove + Email + IsActive + Export + LayerWoStatus +Script+view+ '</td>' +
+                    '</tr>';
+            }
+            else{
+                retTable = '<table class="table table-bordered table-striped child-table tbl-Scope" id="tbl_' + SiteId + '" cellpadding="5" cellspacing="5" border="0" style="margin-left:20px; margin-top:-10; margin-bottom:10px;width:100%;">' +
+            '<thead>' +
+             '<tr >' +
+             '<th style="max-width:50px; width:50px;"></th>' +
+            '<th>Network Mode</th>' +
+             '<th>Band</th>' +
+            '<th>Carrier</th>' +
+            '<th>Tester</th>' +
+            '<th>Scope</th>' +
+             ShowReDrive +
+            '<th>Status</th>' +
+            '<th></th>' +
+            '</tr></thead>' +
+            '<tbody>';
+                retTable = retTable +
+                '<tr class="BandRow" data-NetLayer="' + NetLayer + '" data-NetLayerId="' +  band.LayerStatusId + '"  data-child-value=' + band.BandId + ' data-NetworkModeId="' + band.NetworkModeId + '"  data-BandId="' + band.BandId + '" data-CarrierId="' + band.CarrierId + '" data-ScopeId="' + band.ScopeId + '" data-SiteId="' + SiteId + '">' +
+                         '<td title="Sectors" class="detail-control" data-NetworkModeId="' + band.NetworkModeId + '"  data-BandId="' + band.BandId + '" data-CarrierId="' + band.CarrierId + '" data-ScopeId="' + band.ScopeId + '" data-SiteId="' + SiteId + '" ></td>' +
+                         '<td>' + band.NetworkMode + '</td>' +
+                         '<td>' + band.BandName + '</td>' +
+                         '<td>' + band.Carrier + '</td>' +
+                         '<td>' + band.TesterName + '</td>' +
+                         '<td>' + band.Scope + '</td>' +
+                         ShowReDrive +
+                         '<td><span class="label " style="background-color:' + band.StatusColor + '!important">' + band.Status + '</span></td>' +
+                          '<td>' + IssueTracker + observation + NetLayerReport + EditNetLayerReport + PendingWithIssue + Redrive + SiteKpi + ReportSubmitOrApprove + Email + IsActive + Export + LayerWoStatus +Script+ view+'</td>' +
+                '</tr>';
+            }
+
+        });
+
+
+        retTable = retTable + '</table>';
+        retTable = retTable + '<script type="text/javascript">' +
+        'var tbl_' + SiteId + ' = $("#tbl_' + SiteId + '").DataTable({"paging": false,"ordering": false,"info": false,"searching": false,Filter: false});' +
+        ' $("#tbl_' + SiteId + '").on("click", "td.detail-control", function () {' +
+        'var tr = $(this).closest("tr");' +
+        'var row = tbl_' + SiteId + '.row(tr);' +
+        'if (row.child.isShown()) {' +
+            ' row.child.hide();' +
+            'tr.removeClass("shownband");' +
+            'tr.removeClass("shown");' +
+        '} else {' +
+             ' var temp;\n temp=format($(this).attr("data-BandId"),$(this).attr("data-SiteId"),$(this).attr("data-NetworkModeId"),$(this).attr("data-ScopeId"),$(this).attr("data-CarrierId"));\n' +
+             'row.child(temp).show();' +
+            'tr.addClass("shownband");}}); ' +
+         '<\/script>';
+        return retTable;
+    }
+
+    function format(BandId, SiteId, NetworkModId, ScopeId, CarrierId,Scope) {
+
+        loading.open();
+        var retTable;
+
+        var ur = "/Dashboard/SiteGridSectors?BandId=" + BandId + "&SiteId=" + SiteId + "&NetworkModId=" + NetworkModId + "&ScopeId=" + ScopeId + "&CarrierId=" + CarrierId +"&RequestFrom="+window.location.pathname.split("/")[1];
+
+
+        if (Scope=='TSS') {
+            ur = "/Dashboard/SiteGridTSSDetails?SiteSurveyId=" + BandId +"&RequestFrom="+window.location.pathname.split("/")[1];
+        }
+        if (Scope=='CLS') {
+            ur = "/Dashboard/SiteGridCLSDetails?SiteId=" + SiteId + "&LayerId=" + NetworkModId+ "&ScopeId=" + BandId+"&RequestFrom="+window.location.pathname.split("/")[1];
+        }
+        $.ajax({
+            url: ur,
+            type: 'POST',
+            async: false,
+            success: function (data) {
+
+                if (data == "") {
+
+                }
+                else {
+                    retTable = data;
+                }
+            }
+        });
+
+
+        return retTable;
+    }
+
+
+    $(function () {
+
+        $('td.details-control').click(function () {
+            debugger
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                var TesterId = $(this).attr('data-TesterId');
+                var myScope = $(this).attr('data-scope');
+                var SiteCode = $(this).attr('data-SiteCode');
+                var rec=formatBandsTable(tr.data('child-value'), TesterId, SiteCode,myScope);
+                row.child(rec).show();
+                tr.addClass('shown');
+            }
+        });
+
+        //-----------------------------------
+        if ('@ViewBag.Show' != 'no') {
+            var SiteDetails = $('.SiteDetails');
+            SiteDetails.hover(function () {
+                $(this).css({
+                    'cursor': 'pointer'
+                });
+            });
+            SiteDetails.click(function () {
+                window.location.href = "/sitedashboard/index?id=" + $(this).attr('data-SiteId');
+            });
+        }
+
+        //---------------------------------
+        table = $('#example1').DataTable({
+            "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
+            dom: 'frtlip'
+        });
+
+        tblBands = $('#tblBands').DataTable();
+
+        $('#example1_filter').hide();
+        $('#example1_length').hide();
+
+        $('#example1_info').css({ "float": "left" });
+
+        $('#example1_info').hide();
+        $('#example1_paginate').hide();
+    });
+
+
+
+</script>

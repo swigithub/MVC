@@ -1,0 +1,280 @@
+﻿@model AirView.DBLayer.AirView.Entities.AD_Help
+@{
+    ViewBag.Title = "Create Help";
+    Layout = "~/Views/Shared/_LayoutHelp.cshtml";
+}
+<link href="~/Styles/style.css" type="text/css" rel="stylesheet" />
+<link href="~/Styles/ui.dynatree.css" type="text/css" rel="stylesheet" />
+
+<script src="~/Scripts/dynatree/jquery-ui.custom.js"></script>
+<script src="~/Scripts/dynatree/jquery.dynatree.min.js"></script>
+
+<style>
+    .form-control {
+        margin: 0 0 20px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        $(".dynatree-btn").css({ "pointer-events": "visible", "cursor": "not-allowed", "background-color": "#eee" });
+        $("#FeatureIdx").append($("<option selected disabled></option>").val(null).html('Please Select Feature'));
+
+
+        $("html").on("click", function () {
+            $(".dynatree").removeClass("active");
+        });
+        $(".dynatree-btn").on("click", function (e) {
+            $(this).next(".dynatree").toggleClass("active");
+        });
+        $(".dynatree-drop").on("click", function (e) {
+            e.stopPropagation();
+        });
+
+
+        $('.searchinput').next('ul').addClass("searchable-list");
+
+        function searchFromTree() {
+            var li = $(".searchable-list li");
+            var input = $('.searchinput');
+            var filter = input.val().toUpperCase();
+
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                    $(li[i]).parents("li").css({ "display": "unset" });
+                } else {
+                    li[i].style.display = "none";
+
+                }
+            }
+        }
+
+        $('.searchinput').on("keyup", function () {
+            searchFromTree();
+        });
+
+        var CID, MID, FID;
+        /*This ajax call will populate the ComponentId*/
+        $.ajax({
+            url: "/help/HelpComponent",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+
+                $("#ComponentIdx").append($("<option selected disabled></option>").val(null).html('Please Select Component'));
+                $(result).each(function () {
+                    $("#ComponentIdx").append($("<option></option>").val(this.ComponentId).html(this.ComponentName));
+                });
+
+
+            },
+            error: function (data) { }
+        });
+
+        /*This will disable Module & Feature Dropdown*/
+        $("#FeatureIdx").prop("disabled", true);
+
+        /*This will populate Modules in dropdown when Component is selected*/
+        $('#ComponentIdx').change(function (e) {
+         console.log()
+            $('#FeatureIdx').empty();
+            $("#FeatureIdx").append($("<option selected disabled></option>").val(null).html('Please Select Feature'));
+            $("#FeatureIdx").prop("disabled", true);
+            CID = $('#ComponentIdx').select().val();
+            var URL = "/help/HelpModule/" + CID;
+            var resultData = [];
+            $.ajax({
+                url: URL,
+                type: "POST",
+                success: function (result) {
+
+                    var jsObject = [];
+                    $(result).each(function () {
+                        jsObject.push({ title: this.ModuleName, ModuleId: this.ModuleId, ParentId: this.ParentId });
+                    });
+                    jsObject.forEach(function (item) {
+                        if (item.ParentId == 0) {
+                            var obj = {
+                                title: item.title,
+                                ModuleId: item.ModuleId,
+                                ParentId: item.ParentId
+                            }
+                            resultData.push(obj);
+                        }
+                    });
+
+                    resultData.forEach(function (item, i) {
+                        var resultChild = [];
+                        jsObject.forEach(function (child, i) {
+                            if (item.ModuleId == child.ParentId) {
+                                console.log("Child Insert!: ModuleId:" + item.ModuleId + " ParentId:" + child.ParentId + " ModuleName:" + child.title);
+                                var obj = {
+                                    title: child.title,
+                                    ModuleId: child.ModuleId,
+                                    ParentId: child.ParentId
+                                }
+                                resultChild.push(obj);
+                                //item.children.push(obj);
+                            }
+                        });
+                        item.children = resultChild;
+                    });
+                    $(".dynatree").empty();
+                    $(".dynatree-btn").text("Please Select Module");
+                    console.log('resultData:' + resultData);
+
+                    if (resultData != "") {
+                        $(".dynatree-btn").css({ "pointer-events": "", "cursor": "", "background-color": "#fff" });
+                        $(".dynatree").dynatree({
+
+                            checkbox: false,
+                            selectMode: 1,
+                            autoCollapse: true,
+                            classNames: { checkbox: "dynatree-radio" },
+                            onActivate: function (node) {
+
+                                if (node.data.ParentId != 0) {
+                                    $(".dynatree-btn").text(node.data.title);
+                                    $(".dynatree").toggleClass("active");
+                                    MID = node.data.ModuleId;
+                                    console.log("node.data.ModuleId:" + node.data.ModuleId);
+                                    $('#FeatureIdx').empty();
+                                    var URL = "/help/HelpFeature/?MID=" + node.data.ModuleId + "&CID=" + CID;
+                                    $.ajax({
+                                        url: URL,
+                                        type: "POST",
+                                        success: function (result) {
+                                            if (result != "") {
+                                                $("#FeatureIdx").prop("disabled", false);
+                                                console.log('MID: ' + JSON.stringify(result));
+                                                $("#FeatureIdx").append($("<option selected disabled></option>").val(null).html('Please Select Feature'));
+                                                $(result).each(function () {
+                                                    $("#FeatureIdx").append($("<option></option>").val(this.FeatureId).html(this.FeatureName));
+                                                });
+                                            } else {
+                                                $("#FeatureIdx").prop("disabled", true);
+                                                $("#FeatureIdx").append($("<option selected disabled></option>").val(null).html('Please Select Feature'));
+                                            }
+
+                                        },
+                                        error: function (data) { }
+                                    });
+                                }
+                            },
+                            children: resultData
+                        });
+                        $(".dynatree").dynatree("getTree").reload();
+                    }
+                    else {
+                        $(".dynatree-btn").css({ "pointer-events": "visible", "cursor": "not-allowed", "background-color": "#eee" });
+                    }
+
+                },
+                error: function (data) { }
+            });
+
+        });
+
+
+
+
+
+        $('#save').click(function () {
+
+            $('#ComponentId').val(CID);
+            $('#ModuleId').val(MID);
+            $('#FeatureId').val($('#FeatureIdx').val());
+
+            var Content = $('.note-editable').html();
+            if ($('.note-editable').html() != "<p><br></p>") {
+                $('#Description').val(Content);
+            }
+
+            $('#PostSubmit').click();
+        });
+    });
+</script>
+
+<div class="box box-solid">
+    <div class="box-header">
+        <h3 class="box-title">Help Document</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", @placeholder = "Please Enter Help Title" } })
+                            </div>
+                            <div class="col-lg-4">
+                                @Html.HiddenFor(model => model.ComponentId)
+                                @Html.ValidationMessageFor(model => model.ComponentId)
+                                @Html.DropDownList("ComponentIdx", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" })
+                            </div>
+                            <div class="col-lg-4">
+                                @Html.HiddenFor(model => model.ModuleId)
+                                @Html.ValidationMessageFor(model => model.ModuleId)
+                                <div class="dynatree-drop">
+                                    <span class="dynatree-btn">Please Select Module</span>
+                                    <div class="dynatree">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                @Html.HiddenFor(model => model.FeatureId)
+                                @Html.ValidationMessageFor(model => model.FeatureId)
+                                @Html.DropDownList("FeatureIdx", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+                            <div>
+                                <div class="form-group">
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    @Html.HiddenFor(model => model.Description)
+                                    <input name="Description" id="Description" style="display:none" />
+                                    <script>
+                        $('#Description').summernote({
+                        height: 300,                 // set editor height
+                        minHeight: null,             // set minimum height of editor
+                        maxHeight: null,             // set maximum height of editor
+                        focus: true,                  // set focus to editable area after initializing summernote
+                        });
+                                    </script>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <div>
+                                    <input type="submit" style="display:none" id="PostSubmit" />
+                                    <button id="save" class="btn btn-primary" type="button" style="float:right">Save</button>
+                                    <a class="btn btn-danger" href="/help/all" role="button">Cancel</a>
+                                </div>
+                            </div>
+
+                }
+
+            </div>
+        </div>
+    </div>
+    <!-- /.box-body -->
+
+</div>
+
+
+

@@ -1,0 +1,3 @@
+
+/*=============== Custom Scrollbar ===================*/
+.track4{width:5px;background:#eaeaea;margin-right:2px;-webkit-transition:background 250ms linear;transition:background 250ms linear;border-radius:10px} .track4:hover, .track4.dragging{background:#d9d9d9;/* Browsers without rgba support */ background:rgba(0, 0, 0, 0.15)} .handle4{width:5px;right:0;background:#999;background:#a8a7a7;-webkit-transition:width 250ms;transition:width 250ms;border-radius:7px} .track4:hover .handle4, .track4.dragging .handle4{width:10px}

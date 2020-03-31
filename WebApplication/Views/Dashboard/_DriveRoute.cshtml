@@ -1,0 +1,250 @@
+@using SWI.Libraries.AirView.Entities
+@model IEnumerable<AV_DriveRoutes>
+
+@{
+    Layout = null;
+    int count = 1;
+}
+<style>
+    .SelectedRow {
+        background-color: #454de2 !important;
+        color: white;
+    }
+    #right-panel {
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+}
+
+#right-panel select, #right-panel input {
+  font-size: 15px;
+}
+
+#right-panel select {
+  width: 100%;
+}
+
+#right-panel i {
+  font-size: 12px;
+}
+#right-panel {
+  height: 100%;
+  float: right;
+  width: 390px;
+  overflow: auto;
+}
+#floating-panel {
+  position: absolute;
+  top: 8px;
+  left: 15%;
+  z-index: 5;
+  background-color: white;
+border: 1px solid white;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 25px;
+ 
+  
+}
+#save-panel {
+  position: absolute;
+  bottom: 0px;
+  right: 3%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+  opacity:0.7 !important;
+  
+}
+#direction-panel {
+  position: absolute;
+  bottom: 5%;
+  left: 1%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid white;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+  
+}
+#info-panel {
+  position: absolute;
+  top: 5px;
+  right: 4%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid white;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+ 
+}
+
+</style>
+<style>
+    .checkbox {
+        margin-bottom: -5px !important;
+        margin-top: 10px;
+    }
+</style>
+
+<div>
+    <div id="floating-panel">
+        <div class="row">
+            <div class="col-lg-12">
+                <button onclick="ToggleRoutes()" class="btn btn-success btn-s-sm">Routes</button>&nbsp;@*<button onclick="ToggleDirections()" class="btn btn-danger btn-s-sm">directions</button>*@
+            </div>
+        </div>
+    </div>
+    <div style="width:100%;margin:0;height:800px;max-height:100%" id="map2"></div>
+        <div class="row" id="info-panel" style="width:30%;margin:5px;height:650px; max-height:650px;">
+            <div class="col-lg-12">
+                <div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table class="table table-striped"  style="text-align:center">
+                                <thead>
+                                    <tr>
+                                        <th>Route#</th>
+                                        <th>Created Date</th>
+                                        <th>Created By</th>
+                                        <th>Scope</th>
+                                        <th>Route Type</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" style="height:420px;max-height:420px;overflow:auto !important">
+                        <div class="col-lg-12">
+
+                            <table class="table table-striped" id="tbl-route" style="text-align:center">
+                                
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        string Checked = "";
+                <tr data-RouteId="@item.RouteId" style="align-content:center">
+                    <td>
+                        @if (item.IsSelected)
+                {
+                    Checked = "checked";
+                }
+                        <input onclick="check(this)" data-RouteId="@item.RouteId" type="checkbox" @Checked class="IsSelected"  /> @count
+                    </td>
+                    <td>@item.CreatedDate</td>
+                    <td>@item.UserName</td>
+                    <td>@item.Scope</td>
+                    <td class="TstType">@item.TestType</td>
+                </tr>
+                                        count++;
+                                    }
+                                    </>
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" style="background-color:#f0f5f5;padding-bottom:15px;">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <table style="border-collapse: separate;">
+                                        <tr>
+                                            <td>
+                                              <div style="margin-bottom:18%"><label><b> Route Type:</b></label></div>
+                                            </td>
+
+                                            @if (ViewBag.Scope == "SSV")
+            {
+   <td>
+                                                    <div style="margin-left:5px;" class="checkbox">
+                                                           <form>
+                                                               <label class="checkbox-inline">
+                                                                   <input class="checkbox" name="TestType" value="CW" type="checkbox"><span style="bottom:3px;">CW</span>
+                                                               </label>
+                                                               <label class="checkbox-inline">
+                                                                   <input class="checkbox" name="TestType" value="CCW" type="checkbox"> CCW
+                                                               </label>
+                                                           </form>
+                                                    </div>
+                                                    &emsp;
+      
+                                                </td>
+                                              
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input name="TestType" value="Mobility" type="checkbox"> Mobility
+                                                        </label>
+                                                    </div>
+                                                    &emsp;
+                                                </td>
+                                            }
+
+                                            @*<td><b> Add Aditional Route: </b> <input type="text" id="RouteColor" class="" style="width:50px;" /></td>*@
+
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="row" >
+                                <div class="col-lg-12">
+                                    <div style="color:red;font-weight:bold" id="RouteMsg"></div>
+                                    <button style="margin-right:5px;" class="btn btn-danger  pull-right" id="Close">Close</button>
+                                    <button style="margin-right:5px;" class="btn btn-danger  pull-right" id="clear">Clear</button>
+
+                                    <button style="margin-right:5px;" class="btn btn-danger  pull-right" id="Undo">Undo</button>
+
+                                     <button style="margin-right:5px;" class="btn btn-success  pull-right" onclick=SaveKml('@ViewBag.SiteId');>Save Route</button>
+                                    <div style="clear:both"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    <div id="direction-panel" ondblclick="ToggleDirections()" style="width:25%;height:700px;max-height:700px;overflow:auto">
+        <table id="tbl-d" class="table table-striped" style="text-align:left">
+            <tbody>
+                <tr><td>Directions</td></tr>
+
+            </tbody>
+        </table>
+    </div>
+        @*<div id="right-panel" style="height:250px !important;max-height:250px;overflow: auto;">
+
+            </div>*@
+        
+    @*<div id="save-panel">
+      
+    </div>*@
+
+    </div>
+
+<div class="hidden" id="myclick"></div>
+<script>
+   $("#direction-panel").slideToggle("fast");
+    $("#info-panel").slideToggle("fast");
+    function ToggleDirections() {
+        $("#direction-panel").slideToggle("fast");
+    }
+    function ToggleRoutes() {
+        $("#info-panel").slideToggle("fast");
+    }
+</script>

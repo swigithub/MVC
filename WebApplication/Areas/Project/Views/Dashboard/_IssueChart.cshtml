@@ -1,0 +1,324 @@
+﻿
+<div id="Issue_By_Geo" style="min-width: 310px; height:270px;width:100%; margin: 0 auto"></div>
+<script>
+function UniquNamesList(data) {
+                var uniqueNames = [];
+                for (i = 0; i < data.length; i++) {
+                    if (uniqueNames.indexOf(data[i].DefinationName) === -1) {
+                        uniqueNames.push(data[i].DefinationName);
+                    }
+                }
+                return uniqueNames;
+            }
+
+            function GetNames(data, value) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].label == value) {
+                        return true;
+                    }
+
+                }
+                return false;
+            }
+
+            function GroupByIssues(data) {
+                var group_to_values = data.reduce(function (obj, item) {
+                    obj[item.Issue] = obj[item.Issue] || [];
+                    obj[item.Issue].push({ label: item.DefinationName, count: item.TotalSite, id: item.DefinationId, Issue: item.Issue,ColorCode:item.ColorCode });
+                    return obj;
+                }, {});
+
+                var groups = Object.keys(group_to_values).map(function (key) {
+                    return { Issue: key, chartdata: group_to_values[key] };
+                });
+
+                return groups;
+            }
+
+            var tempdata = [];
+            function SortByName(a, b) {
+                var aName = a.Issue.toLowerCase();
+                var bName = b.Issue.toLowerCase();
+                return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+            }
+            var url = ''
+    
+            if (marketid != null &&marketid!=undefined) {
+                url = '/Project/Dashboard/GetDashboardCharts?filter=Get_Region_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie(CookiesIdentifier + 'ProjectTasks')
+           + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=Daily'
+
+            }
+            else {
+                var url = '/Project/Dashboard/GetDashboardCharts?filter=Get_Region_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie(CookiesIdentifier + 'ProjectTasks')
+          + '&LocationIds=' + $.cookie(CookiesIdentifier + "IssueMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + "IssueFromDate") + '&ToDate=' + $.cookie(CookiesIdentifier + "IssueToDate") + '&SearchFilter=Daily'
+
+            }
+            $.ajax({
+                //url: '/Project/Dashboard/GetRegionIssue?Filter=Get_Region_Issue&ProjectId=' + $("#pId").attr("data-ProjectId"),
+                //    url: '/Project/Dashboard/GetDashboardCharts?filter=Get_Region_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + '' + '&TaskIds=' + $.cookie('ProjectTasks')
+                //+ '&LocationIds=' + $.cookie("ProjectMarkets") + '&FromDate=' + $.cookie("FromDate") + '&ToDate=' + $.cookie("ToDate") + '&SearchFilter=Daily',
+                url:url,
+                type: 'Get',
+                async: false,
+                success: function (data) {
+                    
+                    var uniqueNames = UniquNamesList(data)
+                    var grpIssues = GroupByIssues(data)
+                    grpIssues = grpIssues.sort(SortByName);
+                    for (var i = 0; i < grpIssues.length; i++) {
+                        
+                        var issueStackbar = [];
+                        var col =''
+                        for (var j = 0; j < uniqueNames.length; j++) {
+
+                            if (GetNames(grpIssues[i].chartdata, uniqueNames[j])) {
+                                var index = grpIssues[i].chartdata.map(function (v) { return v.label; }).indexOf(uniqueNames[j]);
+                                col = grpIssues[i].chartdata[index].ColorCode;
+                                issueStackbar.push({ label: grpIssues[i].chartdata[index].label, y: grpIssues[i].chartdata[index].count, name: 'Market Issue', id: grpIssues[i].chartdata[index].id, toolTipContent: grpIssues[i].chartdata[index].Issue + ': ' + grpIssues[i].chartdata[index].count, color: grpIssues[i].chartdata[index].ColorCode });
+                            }
+                            else {
+                                issueStackbar.push({ label: uniqueNames[j], y: 0 });
+                            }
+
+
+                        }
+
+                        tempdata.push({
+                            type: "stackedColumn",
+                            legendText: grpIssues[i].Issue,
+                            name: "New vs Returning Visitors",
+                            legendMarkerColor: col,
+                            click: visitorsChartDrilldownHandler,
+                            showInLegend: true,
+                            dataPoints: issueStackbar
+                        })
+
+                    }
+                }
+
+            });
+            var chartIssue = tempdata;
+            var visitorsData = {
+                "Geo Issue By Region": chartIssue,
+                "Market Issue": [],
+                "Resource Issue": []
+            };
+
+            var GeoIssueByRegionOptions = {
+                animationEnabled: false,
+                theme: "light2",
+                height: 290,
+                exportEnabled: true,
+                //width:700,
+              
+                title: {
+                    text: "Regional View",
+                    horizontalAlign : "center"
+                },
+                subtitles: [{
+                    text: "",
+                    backgroundColor: "#2eacd1",
+                    fontSize: 16,
+                    fontColor: "white",
+                    padding: 5
+                }],
+                legend: {
+                    fontFamily: "calibri",
+                    fontSize: 14,
+                    labelAngle: -70
+
+                },
+                data: []
+            };
+
+           
+            var chart = new CanvasJS.Chart("Issue_By_pie", GeoIssueByRegionOptions);
+            chart.options.data = visitorsData["Geo Issue By Region"];
+            
+            chart.render();
+
+            
+            function visitorsChartDrilldownHandler(e) {
+               debugger
+                chart = new CanvasJS.Chart("Issue_By_pie", GeoIssueByRegionOptions);
+
+                //chart.options.title = { text: e.dataPoint.name }
+                GetData(e.dataPoint.id, e.dataPoint.name,'Daily');
+                if (e.dataPoint.name == 'Resource Issue') {
+                    $('.issue-button').show();
+                    backButton1 = 'last';
+                    chart.options.title.text = e.dataPoint.label+ ' ' + 'Market View'
+                    chart.options.data = ResourceIssue
+                }
+                else {
+                    backButton1 = 'first';
+                    chart.options.title.text = e.dataPoint.label + ' ' + 'Regional View';
+                    TitleText = e.dataPoint.label + ' ' + 'Regional View';
+                    chart.options.data = marketissue;
+                }
+                chart.options.title.horizontalAlign = "left";
+                chart.options.title.fontSize = 22;
+                chart.render();
+                $("#backButton11").toggleClass("invisible");
+                if (e.dataPoint.name == 'Resource Issue') {
+                    $('.isssuesbtn').show();
+                    //$("#backButton1").toggleClass("invisible");
+                    $("#backButton1").removeClass("invisible");
+                }
+                if (e.dataPoint.name == 'Market Issue') {
+                    $("#backButton1").removeClass("invisible");
+                    //$("#backButton1").toggleClass("invisible");
+                }
+            }
+
+            $("#backButton1").click(function () {
+             debugger
+                $('.issue-button').hide();
+                
+                chart = new CanvasJS.Chart("Issue_By_pie", GeoIssueByRegionOptions);
+                if (backButton1 == 'last') {
+                    chart.options.data = marketissue;
+                    chart.options.title.text = TitleText;
+                    backButton1 = 'first';
+                }
+                else if (backButton1 == 'first') {
+                    $(this).addClass("invisible");
+                    chart.options.title.text = '';
+                    chart.options.data = visitorsData["Geo Issue By Region"];
+                }
+                
+                chart.render();
+            });
+
+            function GetData(Id, name,type) {
+                var url = ''
+             
+
+                
+                MarketId = Id;
+                if (name == 'Market Issue') {
+                    if (marketid != null) {
+                        url = '/Project/Dashboard/GetDashboardCharts?filter=Get_Market_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + Id + '&TaskIds' + taskid
+                   + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=Daily'
+
+                    }
+                    else {
+                        url = '/Project/Dashboard/GetDashboardCharts?filter=Get_Market_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + Id + '&TaskIds=' + $.cookie(CookiesIdentifier + 'ProjectTasks')
+          + '&LocationIds=' + $.cookie(CookiesIdentifier + "IssueMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + "IssueFromDate") + '&ToDate=' + $.cookie(CookiesIdentifier + "IssueToDate") + '&SearchFilter=Daily'
+
+                    }
+                    $.ajax({
+                        //url: '/Project/Dashboard/GetMarketIssue?ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + Id,
+                            url:url,
+                        type: 'Get',
+                        async: false,
+                        success: function (data) {
+                            tempdata = []
+                            var uniqueNames = UniquNamesList(data)
+                            var grpMarket = GroupByIssues(data)
+                            grpMarket = grpMarket.sort(SortByName);
+                            debugger
+                            for (var i = 0; i < grpMarket.length; i++) {
+                                var issueStackbar = [];
+                                var col=''
+                                for (var j = 0; j < uniqueNames.length; j++) {
+
+                                    if (GetNames(grpMarket[i].chartdata, uniqueNames[j])) {
+                                        var index = grpMarket[i].chartdata.map(function (v) { return v.label; }).indexOf(uniqueNames[j]);
+                                        issueStackbar.push({ label: grpMarket[i].chartdata[index].label, y: grpMarket[i].chartdata[index].count, name: 'Resource Issue', color: grpMarket[i].chartdata[index].ColorCode, id: grpMarket[i].chartdata[index].id, toolTipContent: grpMarket[i].chartdata[index].Issue + ': ' + grpMarket[i].chartdata[index].count });
+                                        col = grpMarket[i].chartdata[index].ColorCode;
+                                    }
+                                    else {
+                                        issueStackbar.push({ label: uniqueNames[j], y: 0 });
+                                    }
+
+
+                                }
+
+                                tempdata.push({
+                                    type: "stackedColumn",
+                                    name: "",
+                                    legendText: grpMarket[i].Issue,
+                                    legendMarkerColor: col,
+                                    click: visitorsChartDrilldownHandler,
+                                    showInLegend: true,
+                                    dataPoints: issueStackbar
+                                })
+
+                            }
+                            marketissue = tempdata;
+                        }
+                    });
+                }
+                if (name == 'Resource Issue') {
+                    debugger
+                    if (marketid != null) {
+                        var url = '/Project/Dashboard/GetDashboardCharts?filter=Get_Datewise_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + Id + '&TaskIds' + taskid
+                   + '&LocationIds=' + marketid + '&FromDate=' + fromdate + '&ToDate=' + todate + '&SearchFilter=Daily'
+
+                    }
+                    else {
+                        url = '/Project/Dashboard/GetDashboardCharts?filter=Get_Datewise_Issue&ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + Id + '&TaskIds=' + $.cookie(CookiesIdentifier + 'ProjectTasks')
+                              + '&LocationIds=' + $.cookie(CookiesIdentifier + "IssueMarkets") + '&FromDate=' + $.cookie(CookiesIdentifier + "IssueFromDate") + '&ToDate=' + $.cookie(CookiesIdentifier + "IssueToDate") + '&SearchFilter=Daily'
+
+                    }
+                    $('.issue-button').show();
+                    $.ajax({
+                        //url: '/Project/Dashboard/GetResourceIssue?ProjectId=' + $("#pId").attr("data-ProjectId") + '&Value1=' + Id,
+                        url:url,
+                        type: 'Get',
+                        async: false,
+                        success: function (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                var date = new Date(moment.utc(data[i].DefinationName));
+                                data[i].DefinationName = (date.getDate()) + '/' + (date.getMonth() + 1);
+
+                            }
+                            tempdata = []
+                            var uniqueNames = UniquNamesList(data)
+                            var grpMarket = GroupByIssues(data)
+                            grpMarket = grpMarket.sort(SortByName);
+                            for (var i = 0; i < grpMarket.length; i++) {
+                                var issueStackbar = [];
+                                var col = '';
+                                for (var j = 0; j < uniqueNames.length; j++) {
+
+                                    if (GetNames(grpMarket[i].chartdata, uniqueNames[j])) {
+
+                                        var index = grpMarket[i].chartdata.map(function (v) { return v.label; }).indexOf(uniqueNames[j]);
+                                        col = grpMarket[i].chartdata[index].ColorCode;
+                                        issueStackbar.push({ label: grpMarket[i].chartdata[index].label, y: grpMarket[i].chartdata[index].count, color: grpMarket[i].chartdata[index].ColorCode, name: 'Resource Issue', id: grpMarket[i].chartdata[index].id, toolTipContent: grpMarket[i].chartdata[index].Issue + ': ' + grpMarket[i].chartdata[index].count });
+                                    }
+                                    else {
+                                        //col = grpMarket[i].chartdata[index].ColorCode;
+                                        issueStackbar.push({ label: uniqueNames[j], y: 0 });
+                                    }
+
+
+                                }
+
+                                tempdata.push({
+                                    type: "stackedColumn",
+                                    legendText: grpMarket[i].Issue,
+                                    legendMarkerColor: col,
+                                    name: "New vs Returning Visitors",
+                                    //click: visitorsChartDrilldownHandler,
+                                    showInLegend: true,
+                                    dataPoints: issueStackbar
+                                })
+
+                            }
+                            ResourceIssue = tempdata;
+                        }
+
+                    });
+
+                }
+            }
+
+            //$('.issue-button').click(function () {
+            //    GetDatalo('Issue_By_Geo', 'Resource Issue', 'Weekly')
+
+            //})
+
+</script>

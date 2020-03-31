@@ -1,0 +1,414 @@
+﻿@using SWI.Libraries.Security.Entities
+
+@model IEnumerable<Sec_Permission>
+@{
+    ViewBag.Title = "Role Permissions";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+@helper GetTreeView(List<Sec_Permission> Per, Int64 ParentId)
+{
+
+foreach (var item in Per.Where(m => m.ParentId.Equals(ParentId)))
+{
+    var subItems = Per.Where(m => m.ParentId.Equals(item.Id)).Count();
+
+
+        <li Id="@item.Id" class="control">
+            @item.Title
+
+
+            @if (subItems > 0)
+            {
+
+                <ul>
+                    @GetTreeView(Per, item.Id)
+                </ul>
+            }
+        </li>
+}
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <section class="panel panel-default">
+            <header class="panel-heading font-bold flex">
+                Role Permissions
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#modules" data-toggle="tab">Modules</a></li>
+                    <li><a href="#notifications" data-toggle="tab">Alerts</a></li>
+                </ul>
+            </header>
+
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="modules">
+
+                        @if (ViewBag.RoleId > 0)
+                        {
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div id="treeview-container">
+                                        <ul>
+                                            @if (Model != null && Model.Count() > 0)
+                                            {
+                                                @GetTreeView(Model.ToList(), Model.FirstOrDefault().ParentId)
+
+                                            }
+                                        </ul>
+                                        <input type="text" style="visibility:hidden;position:absolute; z-index:-1;" id="txt-selected" />
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                <input type="button" id="btn-save" value="Save" class="btn btn-success" />
+                            </div>
+                        }
+                    </div>
+                    <div class="tab-pane fade" id="notifications">
+                        <div class="notifications-settings-screen">
+                            <ul class="nav flex" id="NotificationNav"></ul>
+                            <div class="tab-content" id="TabBody">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<input type="hidden" id="PIds" value="@ViewBag.PIds" />
+
+@section scripts{
+<script src="~/Content/js/Plugins/treeView/ui.custom.js"></script>
+<script src="~/Content/js/Plugins/treeView/dynatree.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Custom Accordions
+            $(".acc-box:first-child").find('.acc-body').slideDown();
+            $("body").on("click", ".acc-title", function () {
+                $(this).next('.acc-body').slideToggle();
+                //$(this).parents('.acc-box').siblings('.acc-box').find('.acc-body').slideUp();
+            });
+
+            // Enable Disable Checkbox Of Table On Main Checkbox Checked
+            $("body").on("change", ".inbox-notification input", function () {
+                if ($(this).prop('checked') == true) {
+                    $(this).parents('tr').find('.stop-actions').addClass('enable');
+                }
+                if ($(this).prop('checked') == false) {
+                    $(this).parents('tr').find('.stop-actions').removeClass('enable');
+                    $(this).parents('tr').find('input').eq(1).prop('checked', false);
+                    $(this).parents('tr').find('input').eq(2).prop('checked', false);
+                }
+            });
+
+            /* == Render GETAlertRoleConfiguration == */
+            $.ajax({
+                url: "/swi/GETAlertRoleConfiguration",
+                type: "POST",
+                data: JSON.stringify({ "KeyCode": "", "RoleId": @ViewBag.RoleId}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+
+                    /* = get unique names for the category = */
+                    var GetJson = JSON.stringify(result);
+                    var jsonOut = {};
+                    console.log(result);
+
+                    result.forEach(function (e, i) {
+
+                        if (e.ParentId == 0) {
+                            jsonOut[e.AlertCategoryName] = jsonOut[e.AlertCategoryName] || [];
+                            jsonOut[e.AlertCategoryName].push(e);
+                        }
+
+                    });
+                    //console.log(jsonOut);
+                    /* = build parent child relation for the category = */
+                    $.each(jsonOut, function (index, value) {
+                        result.forEach(function (e, i) {
+                            if(value[0].AlertCategoryId == e.ParentId)
+                            {
+                                jsonOut[value[0].AlertCategoryName] = jsonOut[value[0].AlertCategoryName] || [];
+                                jsonOut[value[0].AlertCategoryName].push(e);
+                            }
+
+                        });
+                    });
+
+                    /* == render unique categories as the nav of notification == */
+                    var Parentkeys = Object.keys(jsonOut);
+                    var TempHTML = "";
+                    Parentkeys.forEach(function (Name, i) {
+                        //console.log('i:' + i);
+                        //console.log('Name:' + Name);
+                        if (i != 0) {
+                            /* == render accordions body dynamically == */
+                            var jsonAccordion = {};
+                            $.each(jsonOut[Name], function (index, value) {
+
+                                jsonAccordion[value.AlertCategoryName] = jsonAccordion[value.AlertCategoryName] || [];
+                                jsonAccordion[value.AlertCategoryName].push(value);
+
+                            });
+                            var AccordionBody = "";
+
+                            $.each(jsonAccordion, function (index, value) {
+                                {
+
+                                    var TableBody = "";
+
+                                    for (var x = 0; x < value.length; x++) {
+                                        TableBody += '<tr data-notification-config="' + value[x].AlertConfigId + '">' +
+                                                            '<td class="inbox-notification switcher">' +
+                                                                '<label class="switch">' +
+                                                                    '<input type="checkbox">' +
+                                                                    '<span class="slider round"></span>' +
+                                                                '</label>' +
+                                                            '</td>' +
+                                                            '<td>  ' + value[x].Name + ' </td>' +
+                                                            '<td class="stop-actions"><input type="checkbox" /></td>' +
+                                                            '<td class="stop-actions"><input type="checkbox" /></td>' +
+                                                        '</tr>';
+                                    }
+
+                                    
+                                    
+                                    if(value[0].AlertConfigId!=0){
+                                        AccordionBody +=
+                                   '<div class="acc-box">' +
+                                       '<div class="acc-title"><h4>' + value[0].AlertCategoryName.split(' ')[0] + '</h4></div>' +
+                                       '<div class="acc-body" style="display: block;">' +
+                                           '<table class="table table-bordered table-hover fancy-table table-striped">' +
+                                               '<thead>' +
+                                                   '<tr>' +
+                                                       '<th style="width:150px"></th>' +
+                                                       '<th>Notification</th>' +
+                                                       '<th style="width:300px">Push</th>' +
+                                                       '<th style="width:250px">Email</th>' +
+                                                   '</tr>' +
+                                               '</thead>' +
+                                               '<tbody>' +
+                                                  TableBody +
+                                               '</tbody>' +
+                                           '</table>' +
+                                       '</div>' +
+                                   '</div>';
+                                    }
+                                }
+                            });
+
+                            TempHTML += '<li><a href="#' + Name.replace(/ /g, "_") + '" data-toggle="tab">' + Name + '</a></li>';
+                            /* == render tab body dynamically == */
+                            var TabBody = "";
+                            TabBody += '<div class="tab-pane fade in" id="' + Name.replace(/ /g, "_") + '">' +
+                                '<div class="accordions">' +
+                              AccordionBody+
+                                '</div>' +
+                                '<div class="panel-footer">' +
+                                    '<button class="btn btn-info SaveNotification">Save ' + Name + ' Alerts</button>' +
+                                '</div>' +
+                            '</div>';
+
+                            $('#TabBody').append(TabBody);
+
+                        } else {
+
+
+                            /* == render accordions body dynamically == */
+                            var jsonAccordion = {};
+                            $.each(jsonOut[Name], function (index, value) {
+
+                                jsonAccordion[value.AlertCategoryName] = jsonAccordion[value.AlertCategoryName] || [];
+                                jsonAccordion[value.AlertCategoryName].push(value);
+
+                            });
+                            var AccordionBody = "";
+                            $.each(jsonAccordion, function (index, value) {
+                                {
+                                    var TableBody = "";
+
+                                    for (var x = 0; x < value.length; x++) {
+                                        TableBody += '<tr data-notification-config="' + value[x].AlertConfigId + '">' +
+                                                            '<td class="inbox-notification switcher">' +
+                                                                '<label class="switch">' +
+                                                                    '<input type="checkbox">' +
+                                                                    '<span class="slider round"></span>' +
+                                                                '</label>' +
+                                                            '</td>' +
+                                                            '<td>  ' + value[x].Name + ' </td>' +
+                                                            '<td class="stop-actions"><input type="checkbox" /></td>' +
+                                                            '<td class="stop-actions"><input type="checkbox" /></td>' +
+                                                        '</tr>';
+                                    }
+
+                                    if(value[0].AlertConfigId!=0){
+                                        AccordionBody +=
+                                   '<div class="acc-box">' +
+                                       '<div class="acc-title"><h4>' + value[0].AlertCategoryName.split(' ')[0] + '</h4></div>' +
+                                       '<div class="acc-body" style="display: block;">' +
+                                           '<table class="table table-bordered table-hover fancy-table table-striped">' +
+                                               '<thead>' +
+                                                   '<tr>' +
+                                                       '<th style="width:150px"></th>' +
+                                                       '<th>Notification</th>' +
+                                                       '<th style="width:300px">Push</th>' +
+                                                       '<th style="width:250px">Email</th>' +
+                                                   '</tr>' +
+                                               '</thead>' +
+                                               '<tbody>' +
+                                                  TableBody +
+                                               '</tbody>' +
+                                           '</table>' +
+                                       '</div>' +
+                                   '</div>';
+                                    }
+                                    
+                                }
+                            });
+
+                            TempHTML += '<li class="active"><a href="#' + Name.replace(/ /g, "_") + '" data-toggle="tab">' + Name + '</a></li>';
+                            /* == render tab body dynamically == */
+                            var TabBody = "";
+                            TabBody += '<div class="tab-pane fade in active" id="' + Name.replace(/ /g, "_") + '">' +
+                                '<div class="accordions">' +
+                                AccordionBody+
+                                '</div>' +
+                                '<div class="panel-footer">' +
+                                    '<button class="btn btn-info SaveNotification">Save ' + Name + ' Alerts</button>' +
+                                '</div>' +
+                            '</div>';
+
+                            $('#TabBody').append(TabBody);
+                        }
+
+                        $('#NotificationNav').html(TempHTML);
+
+                    });
+
+                    /* == Checked the subscribed checkbox == */
+                    result.forEach(function (e, i) {
+
+                        if(e.AlertConfigId!=0){
+                            if(e.IsSubscribed){
+                                $('tr[data-notification-config='+e.AlertConfigId+']').find('input').eq(0).prop("checked", true);
+                                $('tr[data-notification-config='+e.AlertConfigId+']').find('td').eq(2).addClass('enable');
+                                $('tr[data-notification-config='+e.AlertConfigId+']').find('td').eq(3).addClass('enable');
+                            }
+                                
+                            if(e.IsPushAlertRequired){
+                                $('tr[data-notification-config='+e.AlertConfigId+']').find('input').eq(1).prop("checked", true);
+                            }
+                                
+                            if(e.IsEmailAlertRequired){
+                                $('tr[data-notification-config='+e.AlertConfigId+']').find('input').eq(2).prop("checked", true);
+                            }        
+                        }
+
+                           
+
+                    });
+
+                    $('.acc-body').slideToggle();
+                }
+
+
+            });
+
+            $(document).on('click', '.SaveNotification', function () {
+                //active panel $('.tab-pane.fade.in.active').eq(1).find('tr[data-notification-config]')
+                var ConfigLength = $('.tab-pane.fade.in.active').eq(1).find('tr[data-notification-config]').length;
+                var ModelArray = [];
+                for (var x = 0; x < ConfigLength; x++) {
+                    var ConfigId = $('.tab-pane.fade.in.active').eq(1).find('tr[data-notification-config]').eq(x).attr('data-notification-config');
+                    var IsSubscribeValue = $('.tab-pane.fade.in.active').eq(1).find('tr[data-notification-config]').eq(x).find('input').eq(0).is(":checked");
+                    var IsPushValue = $('.tab-pane.fade.in.active').eq(1).find('tr[data-notification-config]').eq(x).find('input').eq(1).is(":checked");
+                    var IsEmailValue = $('.tab-pane.fade.in.active').eq(1).find('tr[data-notification-config]').eq(x).find('input').eq(2).is(":checked");
+
+                    var Model = {
+                        AlertConfigId: ConfigId,
+                        IsSubscribed: IsSubscribeValue,
+                        IsPushAlertRequired: IsPushValue,
+                        IsEmailAlertRequired: IsEmailValue,
+                        RoleId: @ViewBag.RoleId
+                    };
+
+                    ModelArray.push(Model);
+                }
+                //console.log('----ModelArray');
+                console.log(ModelArray);
+                //process model via AJAX
+
+                $.ajax({
+                    url: window.location.origin + '/swi/POSTAlertRoleConfiguration',
+                    type: "POST",
+                    data: JSON.stringify(ModelArray),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                  
+                       if(result.Status == "true"){
+                            swal("", result.Message, "success");
+                       }
+                       else{
+                           swal("", "Error Occured!", "error");
+                       }
+                        
+                    }
+                });
+
+               
+            });
+        });
+
+        $(function () {
+            var arr;
+            $("#treeview-container").dynatree({
+                checkbox: true,
+               // selectMode: 3,
+                onClick: function (node, event) {
+
+                },
+                onActivate: function (node) {
+                    console.log(node.data.key);
+                },
+                onSelect: function (flag, node) {
+
+
+                    var selectedNodes = node.tree.getSelectedNodes();
+                    var selectedKeys = $.map(selectedNodes, function (node) {
+                        return node.data.key;
+                    });
+                    arr = selectedKeys;
+                }
+            });
+
+            var Role = $('#PIds').val().split(',');
+            var i;
+            for (i = 0; i < Role.length; ++i) {
+                $("#treeview-container").dynatree("getTree").selectKey(Role[i]);
+            }
+            $('#btn-save').click(function () {
+                $.ajax({
+                    url: '/permission/ByRole',
+                    data: { RoleId: '@ViewBag.RoleId', PermissionIds: arr },
+                    type: 'post',
+                    success: function () {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+    </script>
+
+}
+@section style{
+<link href="~/Content/js/Plugins/treeView/skin/ui.dynatree.css" rel="stylesheet" />
+
+
+
+}

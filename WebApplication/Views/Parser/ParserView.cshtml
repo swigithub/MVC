@@ -1,0 +1,866 @@
+﻿@using System.Reflection;
+@{Layout = null;
+    List<string> li = new List<string>();
+    string nameSpace = "AirView_Parser.Model";
+
+    //create an Assembly and use its GetExecutingAssembly Method
+    Assembly asm = Assembly.Load("AirView_Parser");
+
+    //create a list for the namespaces
+
+    List<string> namespaceList = new List<string>();
+
+    //create a list that will hold all the classes
+
+    //the suplied namespace is executing
+
+    List<string> returnList = new List<string>();
+
+    //loop through all the "Types" in the Assembly using
+
+    //the GetType method:
+
+
+
+    foreach (Type type in asm.GetTypes())
+
+    {
+
+        if (type.Namespace == nameSpace)
+        {
+            namespaceList.Add(type.Name);
+        }
+
+    }
+
+    //now loop through all the classes returned above and add
+
+    //them to our classesName list
+
+
+}
+@helper CreateInstancesofObj(string Modelname, Assembly a)
+{
+try
+{
+
+    var cls = a.CreateInstance(Modelname);
+    var prop = cls.GetType().GetProperties();
+
+    foreach (var item in prop)
+    {
+        if (item.Name == "header")
+        {
+            var headercls = a.CreateInstance(item.PropertyType.FullName);
+            var headerprop = headercls.GetType().GetProperties();
+            foreach (var pro in headerprop)
+            {
+                if (pro.Name != "Msg_Tag")
+                {
+                        <li Id="@(increment())" class="control">
+                            @pro.Name
+                        </li>
+                    }
+
+                }
+
+            }
+            else
+            {
+
+
+                if (!item.Name.Contains("rsrv"))
+                {
+                    <li Id="@(increment())" class="control">
+                        @item.Name
+
+
+                        @if (item.PropertyType.FullName.Contains("AirView_Parser.Model"))
+                        {
+                            string classname = "";
+                            if (item.PropertyType.FullName.Contains("System.Collections.Generic.List"))
+                            {
+                                var listclassname = item.PropertyType.FullName.Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                                classname = listclassname[1].Split(',')[0];
+
+                            }
+                            <ul>
+                                @CreateInstancesofObj(string.IsNullOrEmpty(classname) ? item.PropertyType.FullName : classname, a);
+                                @addtolist(string.IsNullOrEmpty(classname) ? item.PropertyType.FullName : classname);
+
+                            </ul>
+                        }
+
+                    </li>
+            }
+        }
+    }
+}
+catch (Exception e)
+{
+
+
+}
+
+
+
+}
+
+@functions{
+    List<string> addclassname = new List<string>();
+    public bool addtolist(string clasname)
+    {
+        if (!addclassname.Contains(clasname))
+        {
+            addclassname.Add(clasname);
+            if (clasname.Contains("+"))
+            {
+                var splitclassarr = clasname.Split('+');
+                clasname = "AirView_Parser.Model." + splitclassarr[1];
+                addclassname.Add(clasname);
+            }
+
+            return true;
+        }
+        else
+        {
+
+            return false;
+        }
+
+
+    }
+    int count = 0;
+    public int increment()
+    {
+        return count = count + 1;
+
+    }
+}
+
+<div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+        <div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6" id="treeview-container" style="height:700px !important">
+                        <ul>
+                            @foreach (string className in namespaceList)
+                            {
+                                if (className != "Header" && className != "Header_With_Instance" && className != "Header_FTP")
+                                {
+                                    if (addtolist("AirView_Parser.Model." + className))
+                                    {
+
+                                        <li>
+                                            @className
+                                            <ul>
+
+
+                                                @CreateInstancesofObj("AirView_Parser.Model." + className, asm);
+
+
+                                            </ul>
+                                        </li>
+                                    }
+                                }
+                            }
+
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <table id="myTable">
+                            <thead>
+                                <tr>
+                                    <td> FieldName</td>
+                                    <td> SetNewName</td>
+
+
+                                </tr>
+                            </thead>
+                            <tbody id="tblbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+            @*<ul>
+                    <li>
+                        asdf
+                        <ul>
+                            <li>123</li>
+                            <li>456</li>
+                            <li>789</li>
+                        </ul>
+                    </li>
+                </ul>*@
+            <input type="text" style="visibility:hidden;position:absolute; z-index:-1;" id="txt-selected" />
+        </div>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+        <table id="griddata"></table>
+    </div>
+</div>
+
+@*<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>*@
+<script src="~/Scripts/jquery-3.1.1.js"></script>
+@*<script src="~/Assets/jquery/jquery.js"></script>*@
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="~/Content/js/Plugins/AngularQueryBuilder/js/jquery-ui.min.js"></script>
+@*<script src="~/Assets/jquery/jquery-ui.custom.min.js"></script>*@
+<script src="~/Content/js/Project/jquery-cookie.js"></script>
+@*<script src="~/Assets/jquery/jquery.cookie.js"></script>*@
+<link href="~/Areas/Project/Content/skin/skin/ui.dynatree.css" rel="stylesheet" />
+@*<link href="~/Assets/icon_font/css/ui.dynatree.css" rel="stylesheet" />*@
+<script src="~/Content/js/Plugins/treeView/dynatree.js"></script>
+@*<script src="~/Assets/jquery/jquery.dynatree.js"></script>*@
+<script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"> </script>
+<script>
+    var FieldsModelList = [];
+    var CustomNameList = [];
+    var pageindex = 1;
+    var Selectedkeys = [];
+    var TempNameArray = [];
+    var t = $('#myTable').DataTable({ "pageLength": 25 });
+
+
+
+    $(function () {
+        _onStart();
+    });
+
+    function _onStart() {
+        var removeobjarray = [];
+        var inEventHandler = false;
+        // --- Initialize sample trees
+        $("#treeview-container").dynatree({
+            checkbox: true,
+            //selectMode: 3,
+            //children: treeData,
+            onSelect: function (select, dtnode) {
+
+                var nodecheck = false;
+                var removenodecheck = false;
+
+
+                // Get a list of all selected nodes, and convert to a key array:
+                var selKeys = $.map(dtnode.tree.getSelectedNodes(), function (node) {
+                    return node.data.key;
+
+
+                });
+                Selectedkeys = selKeys;
+                if (dtnode.data.title != "Time") {
+
+                    if (!select) {
+                        RemoveFromArray(dtnode);
+
+                        if (dtnode.childList != null) {
+                            if (inEventHandler)
+                                return;
+                            // Select all children of currently selected node
+                            try {
+                                inEventHandler = true;
+                                dtnode.visit(function (childNode) {
+                                    removenodecheck = true;
+                                    childNode.select(false);
+
+                                });
+                            }
+                            finally {
+                                inEventHandler = false;
+                            }
+                        }
+
+                        //if (!nodecheck) {
+                        //    RemoveFromArray(dtnode);
+                        //    removenodecheck = false;
+                        //}
+                        //row remove from table
+
+
+                    }
+                    else {
+                        // add row in table
+                        AddToArray(dtnode);
+
+
+                        if (dtnode.childList != null) {
+                            if (inEventHandler)
+                                return;
+
+                            // Select all children of currently selected node
+                            try {
+                                inEventHandler = true;
+                                dtnode.visit(function (childNode) {
+                                    nodecheck = true;
+                                    childNode.select(true);
+               
+
+                                    //console.log(childNode);
+                                });
+                            }
+                            finally {
+                                inEventHandler = false;
+                            }
+                        }
+                        //if (!nodecheck)
+                        //{
+                        //    AddToArray(dtnode);
+                        //    nodecheck = false;
+                        //}
+
+
+
+
+                        // Get a list of all selected TOP nodes
+                        var selRootNodes = dtnode.tree.getSelectedNodes(true);
+                        // ... and convert to a key array:
+                        var selRootKeys = $.map(selRootNodes, function (node) {
+                            return node.data.key;
+                        });
+                    }
+
+                }
+
+                //removeobjarray.reverse();
+                //debugger
+                //    for (var i = 0; i < removeobjarray.length; i++) {
+                //        RemoveFromArray(removeobjarray[i]);
+                //    }
+                //$("#echoSelectionRootKeys3").text(selRootKeys.join(", "));
+                //$("#echoSelectionRoots3").text(selRootNodes.join(", "));
+            },
+            onDblClick: function (dtnode, event) {
+                dtnode.toggleSelect();
+            },
+            onKeydown: function (dtnode, event) {
+                if (event.which == 32) {
+                    dtnode.toggleSelect();
+                    return false;
+                }
+            },
+            // The following options are only required, if we have more than one tree on one page:
+            //        initId: "treeData",
+            cookieId: "ui-dynatree-Cb3",
+            idPrefix: "ui-dynatree-Cb3-"
+        });
+    }
+    var found = false;
+    var searchedobj = null;
+    function RemoveNodeFromTree(obj, parentname) {
+
+        var i = 0;
+
+        for (; i < obj.Children.length; i++) {
+            if (obj.Children[i].Field == parentname) {
+                searchedobj = obj;
+                found = true;
+                break;
+
+            }
+            else if (obj.Children[i].Children.length > 0) {
+
+                RemoveNodeFromTree(obj.Children[i], parentname);
+            }
+
+
+        }
+
+    }
+    function RemoveifNochild(remObj, obj, index) {
+
+        obj.Children.splice(index, 1);
+        if (obj.Children.length == 0) {
+            null;
+
+        }
+
+    }
+    function CreateChildObj(objtoadd, parent, tagname) {
+        var newFieldobj = new Object();
+        newFieldobj.Field = parent.data.title;
+        newFieldobj.Key = parent.data.key;
+        newFieldobj.CustomName = null;
+        newFieldobj.Parent = null;
+
+        newFieldobj.Children = [];
+        objtoadd.CustomName = tagname + "." + parent.data.title + "." + objtoadd.Field;
+        newFieldobj.Children.push(objtoadd);
+        return newFieldobj;
+
+    }
+
+    function RemoveFromArray(dtnode) {
+
+        var parettt = test(dtnode.parent);
+        if (parettt == null) {
+            for (var i = 0; i < FieldsModelList.length; i++)
+                if (FieldsModelList[i].Field === dtnode.data.title) {
+                    FieldsModelList.splice(i, 1);
+                    break;
+                }
+            //obj.Children.splice($.inArray(fieldname, obj.Children), 1);
+
+
+        }
+        else {
+
+            var currentobj = checkObjectExistence(parettt.data.title);
+
+            if (currentobj != null) {
+                var fieldname = dtnode.data.title;
+                do {
+
+                    RemoveNodeFromTree(currentobj, fieldname);
+                    if (searchedobj != null) {
+                        var Filterobjarr = RemoveitsChild(searchedobj, fieldname);
+                        if (Filterobjarr.Children.length > 0) {
+                            break;
+                        }
+                        else {
+                            fieldname = Filterobjarr.Field;
+                            if (fieldname == parettt.data.title) {
+                                FieldsModelList.splice($.inArray(fieldname, FieldsModelList), 1);
+                                break;
+                            }
+                            RemoveNodeFromTree(currentobj, dtnode.parent.data.title);
+
+                        }
+                    }
+                    searchedobj = null;
+                }
+                while (true)
+                {
+
+
+                }
+
+            }
+            RemoveNameFromTempArray(dtnode.data.title).then(function (res) {
+                if (!res) {
+                    t.row("#" + dtnode.data.title).remove().draw();
+                }
+            })
+
+        }
+    }
+    function AddToArray(dtnode) {
+        debugger
+
+        var parettt = test(dtnode.parent);
+        if (parettt != null) {
+            var currentobj = checkObjectExistence(parettt.data.title);
+            if (currentobj != null) {
+                var childobjtoadd = new Object();
+                childobjtoadd.Field = dtnode.data.title;
+                childobjtoadd.Key = dtnode.data.key;
+                childobjtoadd.CustomName = null;
+                childobjtoadd.Parent = dtnode.parent.data.title;
+                childobjtoadd.Children = [];
+
+                if (dtnode.parent.parent.data.title == null) {
+                    childobjtoadd.CustomName = currentobj.Field + "." + dtnode.data.title;
+                    currentobj.Children.push(childobjtoadd);
+
+                }
+
+                else {
+                    var getnextparent = dtnode.parent;
+                    AddobjectintocurrentArray(currentobj.Children, getnextparent.data.title, childobjtoadd, parettt.data.title);
+                    var createdobj = CreateChildObj(childobjtoadd, getnextparent, parettt.data.title);
+                    childobjtoadd = createdobj;
+                    while (!checkvalueset) {
+                        getnextparent = getnextparent.parent;
+                        if (getnextparent != null) {
+                            AddobjectintocurrentArray(currentobj.Children, getnextparent.data.title, childobjtoadd, parettt.data.title);
+                            createdobj = CreateChildObj(childobjtoadd, getnextparent, parettt.data.title);
+                            childobjtoadd = createdobj;
+                        }
+                        else {
+                            checkvalueset = true;
+                        }
+                    }
+                    checkvalueset = false;
+                }
+            }
+            else {
+                var FieldObj = new Object();
+                FieldObj.Field = dtnode.parent.data.title;
+                FieldObj.Key = dtnode.data.key;
+                FieldObj.CustomName = null;
+                FieldObj.Parent = null;
+                FieldObj.Children = [];
+                var childobj = new Object();
+                childobj.Field = dtnode.data.title;
+                childobj.Key = dtnode.data.key;
+                childobj.CustomName = parettt.data.title + "." + dtnode.parent.data.title + "." + dtnode.data.title;
+                childobj.Parent = dtnode.parent.data.title;
+
+                childobj.Children = [];
+                FieldObj.Children.push(childobj);
+                var parentobject = null;
+                if (dtnode.parent.parent.data.title == null) {
+                    parentobject = FieldObj;
+
+                }
+                else {
+
+                    var getpar = dtnode.parent;
+                    do {
+
+                        parentobject = addtoparent(currentobj, getpar, FieldObj)
+                        getpar = getpar.parent;
+                        FieldObj = parentobject;
+                        currentobj = 1;
+
+                        if (parentobject.Field == parettt.data.title)
+                            break;
+
+                    }
+                    while (true)
+                    {
+
+                    }
+                }
+            }
+            if (parentobject != undefined) {
+                FieldsModelList.push(parentobject);
+            }
+            // Check if Not Exists ()
+            if (!CheckNamesDuplication(dtnode.data.title)) {
+                t.row.add([
+                dtnode.data.title,
+                '<input type="text" parent="' + parettt.data.title + '"  class="form-control" />'
+
+                ]).node().id = dtnode.data.title;
+                t.draw(false);
+                console.log(dtnode.data.title);
+                console.log(dtnode.data.key);
+            }
+
+        }
+    }
+    function CheckNamesDuplication(name) {
+        // check if Exists
+        name = name.toUpperCase().trim();
+        var res = false;
+        var get = TempNameArray.find(function (val) {
+            var checkName = "";
+            if (val) {
+                if (val.name == name) {
+                    val.count = val.count + 1;
+                }
+                checkName = val.name;
+            }
+            return checkName == name;
+        });
+        get = get == undefined ? "" : get;
+        if (get.name != undefined ? get.name.length : -1 > 0 && get != "") {
+            res = true;
+        }
+        else {
+            TempNameArray.push({ name: name, count: 1 });
+            res = false;
+        }
+        return res;
+    }
+    function RemoveNameFromTempArray(name) {
+        var res = true;
+        return new Promise(function (resolve, reject) {
+            name = name.toUpperCase().trim();
+            TempNameArray.find(function (val, i) {
+                if (val.name == name) {
+                    val.count = val.count - 1;
+                    if (val.count == 0) {
+                        TempNameArray.splice(i, 1);
+                        res = false;
+                        resolve(res);
+                    }
+                    else {
+                        resolve(res);
+                    }
+                }
+            });
+        });
+    }
+    function RemoveitsChild(obj, fieldname) {
+
+        for (var i = 0; i < obj.Children.length; i++)
+            if (obj.Children[i].Field === fieldname) {
+                obj.Children.splice(i, 1);
+                break;
+            }
+        //obj.Children.splice($.inArray(fieldname, obj.Children), 1);
+        return obj;
+
+    }
+
+    function updatecustomname(obj, fieldname, customname) {
+
+        var ind = obj.Children.find(a=>a.Field == fieldname);
+        ind.CustomName = customname;
+
+    }
+
+    function addtoparent(fieldobj, node, newobj) {
+
+        var parobj = new Object();
+        if (fieldobj == null) {
+            fieldobj = GetParentObj(node);
+
+        }
+        else {
+            fieldobj = Getnextparent(node);
+
+        }
+
+        fieldobj.Children.push(newobj);
+        return fieldobj;
+    }
+
+
+    function Getnextparent(node) {
+        var NewFieldobj = new Object();
+        NewFieldobj.Field = node.parent.data.title;
+        NewFieldobj.CustomName = null;
+        NewFieldobj.Key = null;
+        NewFieldobj.Parent = null;
+
+        NewFieldobj.Children = [];
+
+        return NewFieldobj;
+
+    }
+
+    function GetParentObj(node) {
+        var NewFieldobj = new Object();
+        NewFieldobj.Field = node.parent.data.title;
+        NewFieldobj.CustomName = null;
+        NewFieldobj.Key = null;
+        NewFieldobj.Parent = null;
+
+        NewFieldobj.Children = [];
+
+        return NewFieldobj;
+
+
+    }
+    var sendrequest = false;
+    function FilterFields() {
+        $("#griddata").html("");
+        $("#LOAD").show();
+        var Model = new Object();
+        CustomNameList = [];
+        t.rows().every(function (rowIdx, tableLoop, rowLoop) {
+
+            var rowNode = this.node();
+            var fieldname = $(rowNode).find("td").eq(0).html();
+            var customname = $(rowNode).find("td > input").val();
+            var parentname = $(rowNode).find("td > input").attr("parent");
+            var getcurrentobj = checkObjectExistence(parentname);
+
+            RemoveNodeFromTree(getcurrentobj, fieldname);
+            if (searchedobj != null && customname != null && customname != "") {
+                updatecustomname(searchedobj, fieldname, customname);
+
+            }
+            searchedobj = null;
+            var rowid = rowNode.id;
+
+        });
+        Model.CustomNameList = CustomNameList;
+        Model.FieldsModelList = FieldsModelList;
+
+        $.ajax({
+            url: "/Parser/FilterFields",
+            type: "POST",
+
+
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            data: JSON.stringify({ 'Model': Model }),
+            success: function (res) {
+                debugger
+                $("#LOAD").hide();
+                $("#griddata").html("");
+                $("#griddata").html(res);
+                sendrequest = true;
+                pageindex = 1;
+                $('a[href="#menu1"]').click();
+            },
+            error: function (e) {
+                debugger
+                console.log("Error:" + e);
+            },
+            complete: function (msg) {
+
+            }
+        }
+                        );
+    }
+
+    var par = new Object();
+    function test(parent) {
+        if (parent.parent != null) {
+            if (parent.parent.data.title == null || parent.parent.data.title == "null") {
+
+                par = parent;
+
+            }
+            else {
+                test(parent.parent);
+            }
+        }
+        else {
+            par = null;
+
+        }
+        return par;
+    }
+
+
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+
+    function ResetAll() {
+        location.reload(true);
+        //t.clear().draw();
+        ////$("#node").dynatree("getTree");
+        //$("#treeview-container").dynatree("getTree").reload();
+    }
+
+
+    function checkObjectExistence(desc) {
+
+        var obj = null;
+        for (var i in FieldsModelList) {
+            if (FieldsModelList[i].Field == desc) {
+                //projects[i].desc = desc;
+
+                obj = FieldsModelList[i];
+
+                break; //Stop this loop, we found it!
+            }
+        }
+        return obj;
+    }
+    var checkvalueset = false;
+    function AddobjectintocurrentArray(obj, parentname, objtopush, msgtag) {
+
+
+        for (var i = 0; i < obj.length; i++) {
+            if (obj[i].Field == parentname) {
+
+                obj[i].Children.push(objtopush);
+                checkvalueset = true;
+                break;
+
+            }
+            else if (parentname == msgtag) {
+                obj.push(objtopush);
+                break;
+            }
+            else if (obj[i].Children.length > 0) {
+
+                AddobjectintocurrentArray(obj[i].Children, parentname, objtopush, msgtag);
+            }
+        }
+
+    }
+
+    function downloadjsonfile() {
+        $.ajax({
+            url: "/Parser/DownloadJson",
+            type: "POST",
+
+
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+
+            success: function (res) {
+
+            },
+            error: function (e) {
+
+            },
+            complete: function (msg) {
+
+            }
+        }
+      );
+
+    }
+
+    var NoMoredata = false;
+    var inProgress = false;
+    var flag = true;
+    //scrolling Function for data
+    window.onscroll = function (ev) {
+        if (sendrequest && $(window).scrollTop() >= $(document).height() - $(window).height()) {
+            if (flag) {
+                flag = false;
+
+                console.log("module scrolled to bottom");
+                inProgress = true;
+                //$("#loadingdiv").show();
+                $("#LOAD").show();
+                $.post("@Url.Action("GetNextRecords", "Parser")", { "pageindex": pageindex },
+
+            function (data) {
+                debugger
+                pageindex = pageindex + 1;
+                $("#LOAD").hide();
+                $("#griddata").append(data);
+
+                //NoMoredata = data.NoMoredata;
+                //$("#trow").append(data.HTMLString);
+                //$("#loadingdiv").hide();
+                //inProgress = false;
+                flag = true;
+            }
+                            );
+            }
+        }
+    };
+</script>
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" />
+<style>
+    .transfer-demo {
+        width: 640px;
+        height: 400px;
+        margin: 0 auto;
+    }
+
+    table.dataTable tbody td {
+        padding: 2px 10px !important;
+    }
+
+    td .form-control {
+        height: 23px !important;
+    }
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        min-width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+

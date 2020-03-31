@@ -1,0 +1,165 @@
+﻿<div class="panel panel-default table-panel">
+    <header class="panel-heading font-bold" id="workinghours-title">Positioning Statement <span><i class="fa fa-angle-right" aria-hidden="true"></i></span> Working Hours Report </header>
+    <div class="panel-body">
+        <div class="custom-filters" id="workinghours-custom-filters">
+            <div class="filter-field">
+                <label>Vehicle</label>
+                <input type="text" id="workinghours-asset" class="assets" placeholder="" />
+            </div>
+            <div class="filter-field">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                    <input type="text" class="form-control daterange" id="workinghours-date-range">
+                </div>
+            </div>
+            <div class="filter-field">
+                <label>Start work</label>
+                <input type="text" id="start-work" class="workhour_date-range"  placeholder="" style="width:100px"/>
+            </div>
+            <div class="filter-field">
+                <label>End work</label>
+                <input type="text" id="end-work" class="workhour_date-range" placeholder="" style="width:100px" />
+            </div>
+            <div class="filter-field button">
+                <button id="workinghours-apply_filters" class="apply-filters btn btn-primary btn-sm" type="button">Apply Filters </button>
+            </div>
+            </div><!-- Custom Filters -->
+
+        <div class="report-table" id="workinghours-table">
+            <table id="workinghours-report" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Vehicle</th>
+                        <th>Driving Time</th>
+                        <th>Parking Time</th>
+                        <th>Total Mileage (km)</th>
+                        <th>Work Driving Time (Hours)</th>
+                        <th>Mileage Traveled (km)(km)</th>
+                        <th>Non-Work Driving Time</th>
+                        <th>Non-Work Driving Mileage (km)(km)</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Start Work</th>
+                        <th>End Work</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#workinghours-apply_filters").click(function () {
+        debugger;
+
+        var assetname = $("#workinghours-asset").val();
+        var daterange = $("#workinghours-date-range").val();
+        var splitdate = daterange.split("-");
+        var startdate = splitdate[0];
+        var enddate = splitdate[1];
+        var startwork = $("#start-work").val();
+        var endwork = $("#end-work").val();
+        var reportexporttitle = $("#workinghours-title").text();
+        var exportfilename = $("#workinghours-title").text();
+        var frcmodel = {
+            ReportFilter: "WorkingHoursReport",
+            startDate: startdate,
+            endDate: enddate,
+            Device: assetname,
+            startWork: startwork,
+            endWork:endwork
+        }
+
+        var table = $('#workinghours-report').DataTable({
+            "dom": '<"top"Bfr>t<"dt-bottom"<"dt-information"li><"dt-pagination"p>>',
+            lengthChange: true,
+            ordering: true,
+            destroy: true,
+
+            buttons: [
+
+                 //'excel', 'pdf'
+                        {
+                            extend: 'excel',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            filename: exportfilename,
+                            title: reportexporttitle,
+                            orientation: 'landscape',
+                            pageSize: 'A3',
+                            exportOptions: {
+                                columns: ':visible',
+                                rows: ':visible'
+                            },
+                            customize: function (doc) {
+                                doc.defaultStyle.alignment = 'center';
+                            }
+
+                        }
+            ],
+            "ajax": {
+                'type': 'POST',
+                'url': window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+                'data': frcmodel,
+                'dataSrc': ''
+            },
+            //"deferRender": true,
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0,
+                "className": "dt-center", "targets": "_all"
+            },
+            {
+                "className": "dt-center", "targets": "_all"
+            }],
+            "order": [[ 1, 'asc' ]],
+            columns: [
+               { data: 'id', defaultContent: '' },
+               { data: 'AssetName', "name": "Vehicle"},
+               { data: 'DrivingTime', "name": "Driving Time", "autoWidth": true },
+               { data: 'ParkingTime', "name": "Parking Time", "autoWidth": true },
+               { data: 'TotalMileage', "name": "Total Mileage (km)", "autoWidth": true },
+               { data: 'WorkDrivingTime', "name": "Work driving time (Hours)", "autoWidth": true },
+               { data: 'MileageTraveled', "name": "Mileage traveled (km)(km)", "autoWidth": true },
+               { data: 'NonworkDrivingTime', "name": "Non-work driving time", "autoWidth": true },
+               { data: 'NonworkDrivingMileage', "name": "Non-work driving mileage (km)(km)", "autoWidth": true },
+               { data: 'StartTime', "name": "Start Time", "autoWidth": true },
+               { data: 'EndTime', "name": "End Time", "autoWidth": true },
+               { data: 'StartWork', "name": "Start work", "autoWidth": true },
+               { data: 'EndWork', "name": "End work", "autoWidth": true }
+            ],
+            initComplete: function( settings, json ) {
+                $("#workinghours-custom-filters .top").remove();
+                $($("#workinghours-table .top")).appendTo("#workinghours-custom-filters");
+            }
+
+        });
+        createIndex(table);
+
+        //$.ajax({
+        //    url: window.location.origin + "/swi/Fleet/Get_PositioningStatement",
+        //    type: "POST",
+        //    traditional: true,
+        //    data:JSON.stringify(frcmodel),
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    error: function (response) {
+        //        alert(response.responseText);
+        //    },
+
+        //    success: function (response) {
+        //        alert(response);
+        //    }
+        //});
+    });
+</script>

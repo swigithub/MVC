@@ -1,0 +1,175 @@
+﻿@model IEnumerable<AirView.DBLayer.Project.Model.PM_ImportProjectPlan>
+
+<style>
+    .redTxt {
+        color: red;
+    }
+
+    .OldTxt {
+        font-size: 10px;
+    }
+
+    input {
+        width: 100px;
+    }
+</style>
+
+<form method="post" id="frm-script" onsubmit="SavePlan(); return false;">
+
+    <table class="table table-bordered table-striped" style="width:100%;">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FACode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Milestone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Stage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Plan)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Forecast)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Target)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Actual)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+        </tr>
+
+        @{ var itemList = Model.ToList();}
+        @for (int i = 0; i < itemList.Count; i++)
+        {
+            var item = itemList[i];
+
+            <input type="hidden" value="@item.FACode" name="FACode" />
+            <input type="hidden" value="@item.Milestone" name="Milestone" />
+            <input type="hidden" value="@item.Stage" name="Stage" />
+            <input type="hidden" value="@item.Status" name="Status" />
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FACode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Milestone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Stage)
+                </td>
+
+                @if (item.Plan != item.OldPlan)
+                {
+                    <td>
+                        @if (item.OldPlan.ToString() != "")
+                        {
+                            @Html.TextBoxFor(modelItem => item.Plan, "{0:dd/MM/yyyy}", new { @class = "datePicker redTxt", @id = "datePicker" })
+                            <br />
+                            <div class="OldTxt">
+                                @Html.DisplayFor(modelItem => item.OldPlan, "{0:dd/MM/yyyy}")
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(modelItem => item.Plan, "{0:dd/MM/yyyy}", new { @class = "datePicker", @id = "datePicker" })
+                        }
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.TextBoxFor(modelItem => item.Plan, "{0:dd/MM/yyyy}", new { @class = "datePicker", @id = "datePicker" })
+                    </td>
+                }
+
+                @if (item.Forecast != item.OldForecast)
+                {
+                    <td>
+                        @if (item.OldForecast.ToString() != "")
+                        {
+                            @Html.TextBoxFor(modelItem => item.Forecast, "{0:dd/MM/yyyy}", new { @class = "datePicker redTxt", @id = "datePicker" })
+                            <br />
+                            <div class="OldTxt">
+                                @Html.DisplayFor(modelItem => item.OldForecast, "{0:dd/MM/yyyy}")
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(modelItem => item.Forecast, "{0:dd/MM/yyyy}", new { @class = "datePicker", @id = "datePicker" })
+                        }
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.TextBoxFor(modelItem => item.Forecast, "{0:dd/MM/yyyy}", new { @class = "datePicker", @id = "datePicker" })
+                    </td>
+                }
+
+
+                @if (item.Target != item.OldTarget)
+                {
+                    <td>
+                        @if (item.OldTarget.ToString() != "")
+                        {
+                            @Html.TextBoxFor(modelItem => item.Target, "{0:dd/MM/yyyy}", new { @class = "datePicker redTxt", @id = "datePicker", })
+                            <br />
+                            <div class="OldTxt">
+                                @Html.DisplayFor(modelItem => item.OldTarget, "{0:dd/MM/yyyy}")
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(modelItem => item.Target, "{0:dd/MM/yyyy}", new { @class = "datePicker", @id = "datePicker", })
+                        }
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.TextBoxFor(modelItem => item.Target, "{0:dd/MM/yyyy}", new { @class = "datePicker", @id = "datePicker" })
+                    </td>
+                }
+
+
+                @if (item.Actual != item.OldActual)
+                {
+                    <td>
+                        @if (item.OldActual.ToString() != "")
+                        {
+                            @Html.TextBoxFor(modelItem => item.Actual, "{0:dd/MM/yyyy}", new { @class = "datePicker redTxt", @id = "datePicker" })
+                            <br />
+                            <div class="OldTxt">
+                                @Html.DisplayFor(modelItem => item.OldActual, "{0:dd/MM/yyyy}")
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(modelItem => item.Actual, "{0:dd/MM/yyyy}", new { @class = "datePicker", @id = "datePicker" })
+                        }
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.TextBoxFor(modelItem => item.Actual, "{0:dd/MM/yyyy}", new { @class = "datePicker", @id = "datePicker" })
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+            </tr>
+        }
+    </table>
+
+    <button type="submit" id="btnSavePlan" class="btn btn-xs btn-info " style="margin-right:5px;float:right; max-height:500px; overflow:auto;">
+        Save Plan
+    </button>
+</form>

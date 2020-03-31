@@ -1,0 +1,97 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AirView | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+
+    <link href="~/AdminLTE/bootstrap/css/bootstrap.css" rel="stylesheet" />
+
+    @Styles.Render("~/AdminLTE/plugins/font-awesome/css")
+    @Styles.Render("~/AdminLTE/plugins/ionicons/css")
+    <link href="~/Content/js/Plugins/validation/parsley.css" rel="stylesheet" />
+    <!-- Theme style -->
+    <link href="~/AdminLTE/dist/css/admin-lte.min.css" rel="stylesheet" />
+   
+
+
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <img src="~/Content/Images/Application/swi_logo.png" height="80" width="200" />
+
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            @Html.Partial("~/Views/Shared/_message.cshtml")
+            <p class="login-box-msg">Sign in to start your session</p>
+
+            @using (Html.BeginForm("Login", "Login", new { tctl = ViewBag.TController, tact = ViewBag.TAction }, FormMethod.Post, new { id = "frm-login", @class = "form-horizontal" }))
+            {
+                <div class="form-group has-feedback">
+                    @Html.TextBox("UserName", null, new { @class = "form-control", placeholder = "User Name", required = "required" })
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    @Html.Password("Password", null, new { @class = "form-control", placeholder = "Password", required = "required" })
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="checkbox icheck">
+                            <label style="padding-left:15px;">
+                                @Html.CheckBox("Remember")Remember Me
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            }
+
+          
+
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <!-- jQuery 2.2.3 -->
+    <script src="~/AdminLTE/plugins/jquery/js/jQuery-2.1.4.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="~/AdminLTE/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Content/js/Plugins/validation/parsley.min.js"></script>
+    <script>
+  
+        $(function () {
+            $('#frm-login').parsley();
+            msieversion();
+
+            function msieversion() {
+
+                var ua = window.navigator.userAgent;
+                var msie = ua.indexOf("MSIE ");
+
+                if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))  // If Internet Explorer, return version number
+                {
+                    window.location.href = '/Error/Browser';
+                }
+                
+                return false;
+            }
+        });
+    </script>
+   
+</body>
+</html>

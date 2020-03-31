@@ -1,0 +1,114 @@
+﻿@model IEnumerable<SWI.Libraries.AirView.Entities.AV_Site>
+@{ 
+    int Count = 0;
+}
+
+<div>
+    <div style="overflow:auto;max-height:600px;">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectall" /></th>
+                    <th>Wo RefId</th>
+                    <th>Site Code</th>
+                    <th>Client</th>
+                    <th>Market</th>
+                    <th>
+                        @Html.DropDownList("thddlStatus", ViewBag.WoStatus as List<SelectListItem>, new { @class = "form-control col-md-8", style = "width:200px;" })
+
+                    </th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox"  value="@item.SiteId" class="SiteSelect" data-row="@Count" />
+                        </td>
+                        <td>@item.WoRefId</td>
+                        <td>@item.SiteCode</td>
+                        <td>@item.Client</td>
+                        <td>@item.Market</td>
+                        <td>@Html.DropDownList("tblddlStatus", ViewBag.WoStatus as List<SelectListItem>, new { @class = "form-control tblddlStatus",id="tblStatus-"+Count, data_value = item.Status, style = "width:200px;" })</td>
+                        <td><input type="text" class="form-control required datetimepicker1" id="date-@Count" value="@DateTime.Now" style="width:145px;height: 29px;" readonly="" placeholder="To Date"></td>
+                    </tr>
+                    Count++;
+                }
+            </tbody>
+        </table>
+    </div>
+   
+</div>
+
+<script>
+
+   
+    $(document).ready(function () {
+        $('.datetimepicker1').datetimepicker({
+            format: 'DD/MM/YYYY hh:mm:ss A',
+            minDate: new Date(),
+            ignoreReadonly: true
+        });
+    })
+
+    $('.tblddlStatus').each(function () { 
+        var val = $(this).attr('data-value');
+        $(this).val(val);
+    });
+
+    $("#selectall").change(function () {  
+        var status = this.checked; 
+        $('.SiteSelect').each(function () { 
+            this.checked = status;
+        });
+    });
+    $("#thddlStatus").change(function () {  
+        var val = $(this).val();
+        $('.tblddlStatus').each(function () {
+            $(this).val(val);
+        });
+    });
+
+    //$('.SiteSelect').change(function () { 
+    //    if (this.checked == false) { 
+    //        $("#selectall")[0].checked = false;
+    //    }
+    //    if ($('.checkbox:checked').length == $('.checkbox').length) {
+    //        $("#selectall")[0].checked = true; 
+    //    }
+    //});
+    //$('#btnSave').click(function () {
+    //    var selectedSiteId = [];
+    //    var selectedStatus = [];
+    //    var selectedDate = [];
+    //    $('input:checkbox:checked.SiteSelect').each(function () {
+    //        var row = $(this).attr('data-row');
+    //        selectedSiteId.push($(this).val());
+    //        selectedStatus.push($('#tblStatus-' + row).val());
+    //        selectedDate.push($('#date-' + row).val());
+    //        //tblStatus-
+    //    });
+
+    //    $.ajax({
+    //        url: '/Site/ManageStatus',
+    //        type: 'post',
+    //        data: { SiteId: selectedSiteId, Status: selectedStatus, Date: selectedDate },
+    //        success: function (res) {
+    //            if (res != 'session expired') {
+    //                if (res.Status == 'success') {
+    //                    $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#20D67B", blur: 0.6, delay: 0, });
+
+    //                } else {
+    //                    $.notify(res.Message, { type: res.Status, color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+    //                }
+    //            } else {
+    //                $.notify('Session Expired. Open New Tab & Login Again. Then Press Save Button.', { type: 'danger', color: "#ffffff", background: "#D44950", blur: 0.6, delay: 0, });
+    //            }
+    //        },
+    //        error: function (err) { }
+    //    });
+    //});
+    
+</script>
